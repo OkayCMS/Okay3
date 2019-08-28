@@ -29,6 +29,9 @@ class GetPosts extends Func
         if (!isset($params['visible'])) {
             $params['visible'] = 1;
         }
+
+        // Укажем что нам нужны только записи, которые были опубликованы не более 180 дней назад.
+        $params['new_only'] = true;
         
         if (!empty($params['var'])) {
             $smarty->assign($params['var'], $this->blogEntity->find($params));

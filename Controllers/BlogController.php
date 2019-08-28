@@ -184,6 +184,9 @@ class BlogController extends AbstractController
         $filter['page'] = $currentPage;
         $filter['limit'] = $itemsPerPage;
         
+        // Укажем что нам нужны только записи, которые были опубликованы не более 180 дней назад.
+        $filter['new_only'] = true;
+        
         // Выбираем статьи из базы
         $posts = $blogEntity->cols([
             'id',

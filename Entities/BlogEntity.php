@@ -47,6 +47,20 @@ class BlogEntity extends Entity
     protected static $tableAlias = 'b';
     protected static $alternativeIdField = 'url';
 
+    /**
+     * @param $state
+     * Добавляем метод фильтра.
+     * Его название состоит из ключегвого слова filter__ и далее название фильтра,
+     * который передали в массива $filter из контроллера (в нашем случае $filter['new_only'])
+     * Данный метод вызовется автоматически
+     */
+    protected function filter__new_only($state)
+    {
+        if ($state === true) {
+            $this->select->where('b.date >= DATE_ADD(NOW(), INTERVAL -180 DAY)');
+        }
+    }
+    
     public function delete($ids)
     {
         if (empty($ids)) {
