@@ -1,7 +1,7 @@
 {if $menu->id}
-    {$meta_title = $menu->name scope=parent}
+    {$meta_title = $menu->name scope=global}
 {else}
-    {$meta_title = $btr->menu_new_menu scope=parent}
+    {$meta_title = $btr->menu_new_menu scope=global}
 {/if}
 {*Название страницы*}
 <div class="row">
@@ -163,7 +163,7 @@
                                             <div class="okay_list_boding okay_list_status">
                                                 {*visible*}
                                                 <label class="switch switch-default fn_switch_block" data-hint="{$btr->general_enable|escape}">
-                                                    <input class="switch-input fn_ajax_action fn_visible {if $menu_item->visible}fn_active_class{/if}" data-module="menu_item" data-action="visible" data-id="{$menu_item->id}" type="checkbox"  {if $menu_item->visible}checked=""{/if}/>
+                                                    <input class="switch-input fn_ajax_action fn_visible {if $menu_item->visible}fn_active_class{/if}" data-controller="menu_item" data-action="visible" data-id="{$menu_item->id}" type="checkbox"  {if $menu_item->visible}checked=""{/if}/>
                                                     <input class="form-control fn_visible_input" type="hidden" name="menu_items[visible][]" value="{$menu_item->visible|intval}"/>
                                                     <span class="switch-label"></span>
                                                     <span class="switch-handle"></span>
@@ -172,7 +172,7 @@
                                             <div class="okay_list_boding okay_list_status">
                                                 {*is_target_blank*}
                                                 <label class="switch switch-default hint-bottom-middle-t-info-s-small-mobile hint-anim fn_switch_block" data-hint="{$btr->menu_general_target_blank|escape}">
-                                                    <input class="switch-input fn_ajax_action fn_is_target_blank {if $menu_item->is_target_blank}fn_active_class{/if}" data-module="menu_item" data-action="is_target_blank" data-id="{$menu_item->id}" type="checkbox" {if $menu_item->is_target_blank}checked=""{/if}/>
+                                                    <input class="switch-input fn_ajax_action fn_is_target_blank {if $menu_item->is_target_blank}fn_active_class{/if}" data-controller="menu_item" data-action="is_target_blank" data-id="{$menu_item->id}" type="checkbox" {if $menu_item->is_target_blank}checked=""{/if}/>
                                                     <input class="form-control fn_is_target_blank_input" type="hidden" name="menu_items[is_target_blank][]" value="{$menu_item->is_target_blank|intval}"/>
                                                     <span class="switch-label"></span>
                                                     <span class="switch-handle"></span>

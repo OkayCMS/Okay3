@@ -18,8 +18,8 @@ class SeoFilterPatternsAdmin extends IndexAdmin
         FeaturesAliasesEntity $featuresAliasesEntity,
         CategoriesEntity $categoriesEntity
     ) {
-        $this->design->set_templates_dir('backend/design/html');
-        $this->design->set_compiled_dir('backend/design/compiled');
+        $this->design->setTemplatesDir('backend/design/html');
+        $this->design->setCompiledDir('backend/design/compiled');
 
         if ($this->request->post("ajax")){
 

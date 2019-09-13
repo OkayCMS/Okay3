@@ -1,11 +1,20 @@
-/**
- * (c) 2009-2017 Highsoft, Black Label
+/* *
  *
- * License: www.highcharts.com/license
- */
+ *  (c) 2009-2017 Highsoft, Black Label
+ *
+ *  License: www.highcharts.com/license
+ *
+ * */
+
 'use strict';
+
 import H from '../parts/Globals.js';
-import '../parts/Utilities.js';
+
+import U from '../parts/Utilities.js';
+var defined = U.defined,
+    erase = U.erase,
+    splat = U.splat;
+
 import '../parts/Chart.js';
 import controllableMixin from './controllable/controllableMixin.js';
 import ControllableRect from './controllable/ControllableRect.js';
@@ -19,14 +28,12 @@ import ControlPoint from './ControlPoint.js';
 
 var merge = H.merge,
     addEvent = H.addEvent,
-    defined = H.defined,
-    erase = H.erase,
+    fireEvent = H.fireEvent,
     find = H.find,
-    isString = H.isString,
     pick = H.pick,
     reduce = H.reduce,
-    splat = H.splat,
-    destroyObjectProperties = H.destroyObjectProperties;
+    destroyObjectProperties = H.destroyObjectProperties,
+    chartProto = H.Chart.prototype;
 
 /* *********************************************************************
  *
@@ -54,11 +61,10 @@ var merge = H.merge,
  * existing points or created mock points
  *
  * @class
- * @mixes Annotation.controllableMixin
- * @mixes Annotation.eventEmitterMixin
+ * @name Highcharts.Annotation
  *
  * @param {Highcharts.Chart} chart a chart instance
- * @param {AnnotationOptions} options the options object
+ * @param {Highcharts.AnnotationsOptions} options the options object
  */
 var Annotation = H.Annotation = function (chart, options) {
     var labelsAndShapes;
@@ -73,7 +79,7 @@ var Annotation = H.Annotation = function (chart, options) {
     /**
      * The array of points which defines the annotation.
      *
-     * @type {Array<Annotation.PointLike>}
+     * @type {Array<Highcharts.Point>}
      */
     this.points = [];
 
@@ -103,7 +109,7 @@ var Annotation = H.Annotation = function (chart, options) {
     /**
      * The options for the annotations.
      *
-     * @type {AnnotationOptions}
+     * @type {Highcharts.AnnotationsOptions}
      */
     // this.options = merge(this.defaultOptions, userOptions);
     this.options = options;
@@ -111,7 +117,7 @@ var Annotation = H.Annotation = function (chart, options) {
     /**
      * The user options for the annotations.
      *
-     * @type {AnnotationOptions}
+     * @type {Highcharts.AnnotationsOptions}
      */
     this.userOptions = merge(true, {}, options);
 
@@ -165,15 +171,23 @@ merge(
     true,
     Annotation.prototype,
     controllableMixin,
-    eventEmitterMixin, /** @lends Annotation# */ {
+    eventEmitterMixin,
+    /** @lends Annotation# */
+    {
+
+        /**
+         * List of events for `annotation.options.events` that should not be
+         * added to `annotation.graphic` but to the `annotation`.
+         *
+         * @type {Array<string>}
+         */
+        nonDOMEvents: ['add', 'afterUpdate', 'remove'],
+
         /**
          * A basic type of an annotation. It allows to add custom labels
          * or shapes. The items  can be tied to points, axis coordinates
          * or chart pixel coordinates.
          *
-         * @private
-         * @type {Object}
-         * @ignore-options base, annotations.crookedLine
          * @sample highcharts/annotations/basic/
          *         Basic annotations
          * @sample highcharts/demo/annotations/
@@ -181,13 +195,25 @@ merge(
          * @sample highcharts/css/annotations
          *         Styled mode
          * @sample highcharts/annotations-advanced/controllable
-         *          Controllable items
+         *         Controllable items
          * @sample {highstock} stock/annotations/fibonacci-retracements
          *         Custom annotation, Fibonacci retracement
-         * @since 6.0.0
-         * @optionparent annotations.crookedLine
+         *
+         * @type         {Array<*>}
+         * @since        6.0.0
+         * @optionparent annotations
          */
         defaultOptions: {
+
+            /**
+             * Sets an ID for an annotation. Can be user later when removing an
+             * annotation in [Chart#removeAnnotation(id)](
+             * /class-reference/Highcharts.Chart#removeAnnotation) method.
+             *
+             * @type      {string|number}
+             * @apioption annotations.id
+             */
+
             /**
              * Whether the annotation is visible.
              *
@@ -200,7 +226,10 @@ merge(
              * Allow an annotation to be draggable by a user. Possible
              * values are `"x"`, `"xy"`, `"y"` and `""` (disabled).
              *
-             * @type {string}
+             * @sample highcharts/annotations/draggable/
+             *         Annotations draggable: 'xy'
+             *
+             * @type       {string}
              * @validvalue ["x", "xy", "y", ""]
              */
             draggable: 'xy',
@@ -216,9 +245,10 @@ merge(
                  * The alignment of the annotation's label. If right,
                  * the right side of the label should be touching the point.
                  *
-                 * @validvalue ["left", "center", "right"]
                  * @sample highcharts/annotations/label-position/
                  *         Set labels position
+                 *
+                 * @type {Highcharts.AlignValue}
                  */
                 align: 'center',
 
@@ -235,18 +265,20 @@ merge(
                 /**
                  * The background color or gradient for the annotation's label.
                  *
-                 * @type {Color}
                  * @sample highcharts/annotations/label-presentation/
                  *         Set labels graphic options
+                 *
+                 * @type {Highcharts.ColorString|Highcharts.GradientColorObject|Highcharts.PatternObject}
                  */
                 backgroundColor: 'rgba(0, 0, 0, 0.75)',
 
                 /**
                  * The border color for the annotation's label.
                  *
-                 * @type {Color}
                  * @sample highcharts/annotations/label-presentation/
                  *         Set labels graphic options
+                 *
+                 * @type {Highcharts.ColorString}
                  */
                 borderColor: 'black',
 
@@ -271,6 +303,7 @@ merge(
                  *
                  * @sample highcharts/css/annotations
                  *         Styled mode annotations
+                 *
                  * @since 6.0.5
                  */
                 className: '',
@@ -287,67 +320,70 @@ merge(
                 /**
                  * The label's pixel distance from the point.
                  *
-                 * @type {number}
                  * @sample highcharts/annotations/label-position/
                  *         Set labels position
-                 * @default undefined
-                 * @apioption annotations.crookedLine.labelOptions.distance
+                 *
+                 * @type      {number}
+                 * @apioption annotations.labelOptions.distance
                  */
 
                 /**
-                 * A [format](https://www.highcharts.com/docs/chart-concepts/labels-and-string-formatting) string for the data label.
+                 * A
+                 * [format](https://www.highcharts.com/docs/chart-concepts/labels-and-string-formatting)
+                 * string for the data label.
                  *
-                 * @type {string}
-                 * @see    [plotOptions.series.dataLabels.format](
-                 *         plotOptions.series.dataLabels.format.html)
+                 * @see [plotOptions.series.dataLabels.format](plotOptions.series.dataLabels.format.html)
+                 *
                  * @sample highcharts/annotations/label-text/
                  *         Set labels text
-                 * @default undefined
-                 * @apioption annotations.crookedLine.labelOptions.format
+                 *
+                 * @type      {string}
+                 * @apioption annotations.labelOptions.format
                  */
 
                 /**
                  * Alias for the format option.
                  *
-                 * @type {string}
                  * @see [format](annotations.labelOptions.format.html)
+                 *
                  * @sample highcharts/annotations/label-text/
                  *         Set labels text
-                 * @default undefined
-                 * @apioption annotations.crookedLine.labelOptions.text
+                 *
+                 * @type      {string}
+                 * @apioption annotations.labelOptions.text
                  */
 
                 /**
-                 * Callback JavaScript function to format
-                 * the annotation's label. Note that if a `format` or `text`
-                 * are defined, the format or text take precedence and
-                 * the formatter is ignored. `This` refers to a * point object.
+                 * Callback JavaScript function to format the annotation's
+                 * label. Note that if a `format` or `text` are defined, the
+                 * format or text take precedence and the formatter is ignored.
+                 * `This` refers to a point object.
                  *
-                 * @type {function}
                  * @sample highcharts/annotations/label-text/
                  *         Set labels text
-                 * @default function () {
-                 *  return defined(this.y) ? this.y : 'Annotation label';
-                 * }
+                 *
+                 * @type    {Highcharts.FormatterCallbackFunction<Highcharts.Point>}
+                 * @default function () { return defined(this.y) ? this.y : 'Annotation label'; }
                  */
                 formatter: function () {
                     return defined(this.y) ? this.y : 'Annotation label';
                 },
 
                 /**
-                 * How to handle the annotation's label that flow
-                 * outside the plot area. The justify option aligns the label
-                 * inside the plot area.
+                 * How to handle the annotation's label that flow outside the
+                 * plot area. The justify option aligns the label inside the
+                 * plot area.
                  *
-                 * @validvalue ["none", "justify"]
                  * @sample highcharts/annotations/label-crop-overflow/
                  *         Crop or justify labels
-                 **/
+                 *
+                 * @validvalue ["allow", "justify"]
+                 */
                 overflow: 'justify',
 
                 /**
                  * When either the borderWidth or the backgroundColor is set,
-                 * this is the padding within the box.
+                 * this    is the padding within the box.
                  *
                  * @sample highcharts/annotations/label-presentation/
                  *         Set labels graphic options
@@ -355,13 +391,14 @@ merge(
                 padding: 5,
 
                 /**
-                 * The shadow of the box. The shadow can be
-                 * an object configuration containing
-                 * `color`, `offsetX`, `offsetY`, `opacity` and `width`.
+                 * The shadow of the box. The shadow can be an object
+                 * configuration containing `color`, `offsetX`, `offsetY`,
+                 * `opacity` and `width`.
                  *
-                 * @type {Boolean|Object}
                  * @sample highcharts/annotations/label-presentation/
                  *         Set labels graphic options
+                 *
+                 * @type {boolean|Highcharts.ShadowOptionsObject}
                  */
                 shadow: false,
 
@@ -369,7 +406,6 @@ merge(
                  * The name of a symbol to use for the border around the label.
                  * Symbols are predefined functions on the Renderer object.
                  *
-                 * @type {string}
                  * @sample highcharts/annotations/shapes/
                  *         Available shapes for labels
                  */
@@ -378,34 +414,35 @@ merge(
                 /**
                  * Styles for the annotation's label.
                  *
-                 * @type {CSSObject}
+                 * @see [plotOptions.series.dataLabels.style](plotOptions.series.dataLabels.style.html)
+                 *
                  * @sample highcharts/annotations/label-presentation/
                  *         Set labels graphic options
-                 * @see    [plotOptions.series.dataLabels.style](
-                 *         plotOptions.series.dataLabels.style.html)
+                 *
+                 * @type {Highcharts.CSSObject}
                  */
                 style: {
+                    /** @ignore */
                     fontSize: '11px',
+                    /** @ignore */
                     fontWeight: 'normal',
+                    /** @ignore */
                     color: 'contrast'
                 },
 
                 /**
-                 * Whether to [use HTML](http://www.highcharts.com/docs/chart-concepts/labels-and-string-formatting#html)
+                 * Whether to [use HTML](https://www.highcharts.com/docs/chart-concepts/labels-and-string-formatting#html)
                  * to render the annotation's label.
-                 *
-                 * @type {boolean}
-                 * @default false
                  */
                 useHTML: false,
 
                 /**
                  * The vertical alignment of the annotation's label.
                  *
-                 * @type {string}
-                 * @validvalue ["top", "middle", "bottom"]
                  * @sample highcharts/annotations/label-position/
                  *         Set labels position
+                 *
+                 * @type {Highcharts.VerticalAlignValue}
                  */
                 verticalAlign: 'bottom',
 
@@ -435,60 +472,58 @@ merge(
              * multiple labels, they can be added to the
              * [labelOptions](annotations.labelOptions.html).
              *
-             * @type {Array<Object>}
-             * @extends annotations.crookedLine.labelOptions
-             * @apioption annotations.crookedLine.labels
+             * @type      {Array<*>}
+             * @extends   annotations.labelOptions
+             * @apioption annotations.labels
              */
 
             /**
-             * This option defines the point to which the label
-             * will be connected.
-             * It can be either the point which exists in the series - it is
-             * referenced by the point's id - or a new point with defined x, y
-             * properies and optionally axes.
+             * This option defines the point to which the label will be
+             * connected. It can be either the point which exists in the
+             * series - it is referenced by the point's id - or a new point with
+             * defined x, y properties and optionally axes.
              *
-             * @type {string|MockPointOptions}
              * @sample highcharts/annotations/mock-point/
              *         Attach annotation to a mock point
-             * @apioption annotations.crookedLine.labels.point
+             *
+             * @type      {string|Highcharts.MockPointOptionsObject}
+             * @apioption annotations.labels.point
              */
 
             /**
              * The x position of the point. Units can be either in axis
              * or chart pixel coordinates.
              *
-             * @type {number}
-             * @apioption annotations.crookedLine.labels.point.x
+             * @type      {number}
+             * @apioption annotations.labels.point.x
              */
 
             /**
              * The y position of the point. Units can be either in axis
              * or chart pixel coordinates.
              *
-             * @type {number}
-             * @apioption annotations.crookedLine.labels.point.y
+             * @type      {number}
+             * @apioption annotations.labels.point.y
              */
 
             /**
-             * This number defines which xAxis the point is connected to.
-             * It refers to either the axis id or the index of the axis
-             * in the xAxis array. If the option is not configured or
-             * the axis is not found the point's
-             * x coordinate refers to the chart pixels.
+             * This number defines which xAxis the point is connected to. It
+             * refers to either the axis id or the index of the axis in the
+             * xAxis array. If the option is not configured or the axis is not
+             * found the point's x coordinate refers to the chart pixels.
              *
-             * @type {number|string}
-             * @apioption annotations.crookedLine.labels.point.xAxis
+             * @type      {number|string}
+             * @apioption annotations.labels.point.xAxis
              */
 
             /**
-             * This number defines which yAxis the point is connected to.
-             * It refers to either the axis id or the index of the axis
-             * in the yAxis array. If the option is not configured or
-             * the axis is not found the point's
-             * y coordinate refers to the chart pixels.
+             * This number defines which yAxis the point is connected to. It
+             * refers to either the axis id or the index of the axis in the
+             * yAxis array. If the option is not configured or the axis is not
+             * found the point's y coordinate refers to the chart pixels.
              *
-             * @type {number|string}
-             * @apioption annotations.crookedLine.labels.point.yAxis
+             * @type      {number|string}
+             * @apioption annotations.labels.point.yAxis
              */
 
 
@@ -497,90 +532,106 @@ merge(
              * multiple shapes, then can be added to the
              * [shapeOptions](annotations.shapeOptions.html).
              *
-             * @type {Array<Object>}
-             * @extends annotations.crookedLine.shapeOptions
-             * @apioption annotations.crookedLine.shapes
+             * @type      {Array<*>}
+             * @extends   annotations.shapeOptions
+             * @apioption annotations.shapes
              */
 
             /**
              * This option defines the point to which the shape will be
-             * connected.
-             * It can be either the point which exists in the series - it is
-             * referenced by the point's id - or a new point with defined x, y
-             * properties and optionally axes.
+             * connected. It can be either the point which exists in the
+             * series - it is referenced by the point's id - or a new point with
+             * defined x, y properties and optionally axes.
              *
-             * @type {string|MockPointOptions}
-             * @extends annotations.crookedLine.labels.point
-             * @apioption annotations.crookedLine.shapes.point
+             * @type      {string|Highcharts.MockPointOptionsObject}
+             * @extends   annotations.labels.point
+             * @apioption annotations.shapes.point
              */
 
             /**
-             * An array of points for the shape. This option is available
-             * for shapes which can use multiple points such as path.
-             * A point can be either a point object or a point's id.
+             * An array of points for the shape. This option is available for
+             * shapes which can use multiple points such as path. A point can be
+             * either a point object or a point's id.
              *
-             * @type {Array<string|Highcharts.MockPoint.Options>}
              * @see [annotations.shapes.point](annotations.shapes.point.html)
-             * @apioption annotations.crookedLine.shapes.points
+             *
+             * @type      {Array<string|Highcharts.MockPointOptionsObject>}
+             * @extends   annotations.labels.point
+             * @apioption annotations.shapes.points
              */
 
             /**
-             * Id of the marker which will be drawn at the final
-             * vertex of the path.
-             * Custom markers can be defined in defs property.
+             * Id of the marker which will be drawn at the final vertex of the
+             * path. Custom markers can be defined in defs property.
              *
-             * @type {string}
              * @see [defs.markers](defs.markers.html)
+             *
              * @sample highcharts/annotations/custom-markers/
              *         Define a custom marker for annotations
-             * @apioption annotations.crookedLine.shapes.markerEnd
+             *
+             * @type      {string}
+             * @apioption annotations.shapes.markerEnd
              */
 
             /**
-             * Id of the marker which will be drawn at the first
-             * vertex of the path.
-             * Custom markers can be defined in defs property.
+             * Id of the marker which will be drawn at the first vertex of the
+             * path. Custom markers can be defined in defs property.
              *
-             * @type {string}
              * @see [defs.markers](defs.markers.html)
+             *
              * @sample {highcharts} highcharts/annotations/custom-markers/
              *         Define a custom marker for annotations
-             * @apioption annotations.crookedLine.shapes.markerStart
+             *
+             * @type      {string}
+             * @apioption annotations.shapes.markerStart
              */
 
 
             /**
-             * Options for annotation's shapes. Each shape inherits options
-             * from the shapeOptions object. An option from the shapeOptions
-             * can be overwritten by config for a specific shape.
-             *
-             * @type {Object}
+             * Options for annotation's shapes. Each shape inherits options from
+             * the shapeOptions object. An option from the shapeOptions can be
+             * overwritten by config for a specific shape.
              */
             shapeOptions: {
+
                 /**
                  * The width of the shape.
                  *
-                 * @type {number}
                  * @sample highcharts/annotations/shape/
                  *         Basic shape annotation
-                 * @apioption annotations.crookedLine.shapeOptions.width
+                 *
+                 * @type      {number}
+                 * @apioption annotations.shapeOptions.width
                  **/
 
                 /**
                  * The height of the shape.
                  *
-                 * @type {number}
                  * @sample highcharts/annotations/shape/
                  *         Basic shape annotation
-                 * @apioption annotations.crookedLine.shapeOptions.height
+                 *
+                 * @type      {number}
+                 * @apioption annotations.shapeOptions.height
+                 */
+
+                /**
+                 * The type of the shape, e.g. circle or rectangle.
+                 *
+                 * @sample highcharts/annotations/shape/
+                 *         Basic shape annotation
+                 *
+                 * @type      {string}
+                 * @default   'rect'
+                 * @apioption annotations.shapeOptions.type
                  */
 
                 /**
                  * The color of the shape's stroke.
                  *
-                 * @type {Color}
                  * @sample highcharts/annotations/shape/
                  *         Basic shape annotation
+                 *
+                 * @type {Highcharts.ColorString}
                  */
                 stroke: 'rgba(0, 0, 0, 0.75)',
 
@@ -595,21 +646,12 @@ merge(
                 /**
                  * The color of the shape's fill.
                  *
-                 * @type {Color}
                  * @sample highcharts/annotations/shape/
                  *         Basic shape annotation
+                 *
+                 * @type {Highcharts.ColorString|Highcharts.GradientColorObject|Highcharts.PatternObject}
                  */
                 fill: 'rgba(0, 0, 0, 0.75)',
-
-                /**
-                 * The type of the shape, e.g. circle or rectangle.
-                 *
-                 * @type {string}
-                 * @sample highcharts/annotations/shape/
-                 *         Basic shape annotation
-                 * @default 'rect'
-                 * @apioption annotations.crookedLine.shapeOptions.type
-                 */
 
                 /**
                  * The radius of the shape.
@@ -632,10 +674,16 @@ merge(
              * Options from the controlPointOptions can be overwritten
              * by options in a specific control point.
              *
-             * @type {Annotation.ControlPoint.Options}
-             * @apioption annotations.crookedLine.controlPointOptions
+             * @type      {Annotation.ControlPoint.Options}
+             * @apioption annotations.controlPointOptions
              */
             controlPointOptions: {
+
+                /**
+                 * @function {Annotation.ControlPoint.Positioner}
+                 * @apioption annotations.controlPointOptions.positioner
+                 */
+
                 symbol: 'circle',
                 width: 10,
                 height: 10,
@@ -645,36 +693,53 @@ merge(
                     fill: 'white'
                 },
                 visible: false,
-
-                /**
-                 * @function {Annotation.ControlPoint.Positioner}
-                 * @apioption annotations.crookedLine.controlPointOptions.positioner
-                 */
-
-
                 events: {}
             },
 
+            /**
+             * Event callback when annotation is added to the chart.
+             *
+             * @type      {Highcharts.EventCallbackFunction<Highcharts.Annotation>}
+             * @since     7.1.0
+             * @apioption annotations.events.add
+             */
 
             /**
-             * @type {Object}
+             * Event callback when annotation is updated (e.g. drag and
+             * droppped or resized by control points).
+             *
+             * @type      {Highcharts.EventCallbackFunction<Highcharts.Annotation>}
+             * @since     7.1.0
+             * @apioption annotations.events.afterUpdate
+             */
+
+            /**
+             * Event callback when annotation is removed from the chart.
+             *
+             * @type      {Highcharts.EventCallbackFunction<Highcharts.Annotation>}
+             * @since     7.1.0
+             * @apioption annotations.events.remove
+             */
+
+            /**
+             * Events available in annotations.
              */
             events: {},
 
             /**
              * The Z index of the annotation.
-             *
-             * @type {number}
-             * @default 6
              */
             zIndex: 6
+
         },
 
         /**
          * Initialize the annotation.
          *
-         * @param {Highcharts.Chart} - the chart
-         * @param {AnnotationOptions} - the user options for the annotation
+         * @param {Highcharts.Chart}
+         *        The chart
+         * @param {Highcharts.AnnotationsOptions}
+         *        The user options for the annotation
          */
         init: function () {
             this.linkPoints();
@@ -702,19 +767,17 @@ merge(
         },
 
         addShapes: function () {
-            (this.options.shapes || []).forEach(function (shapeOptions, i) {
-                var shape = this.initShape(shapeOptions, i);
-
-                this.options.shapes[i] = shape.options;
-            }, this);
+            (this.options.shapes || []).forEach(
+                this.initShape,
+                this
+            );
         },
 
         addLabels: function () {
-            (this.options.labels || []).forEach(function (labelOptions, i) {
-                var label = this.initLabel(labelOptions, i);
-
-                this.options.labels[i] = label.options;
-            }, this);
+            (this.options.labels || []).forEach(
+                this.initLabel,
+                this
+            );
         },
 
         addClipPaths: function () {
@@ -787,7 +850,7 @@ merge(
         /**
          * Set an annotation options.
          *
-         * @param {AnnotationOptions} - user options for an annotation
+         * @param {Highcharts.AnnotationsOptions} - user options for an annotation
          */
         setOptions: function (userOptions) {
             this.options = merge(this.defaultOptions, userOptions);
@@ -925,10 +988,11 @@ merge(
         },
 
         /**
-         * See {@link Highcharts.Annotation#destroy}.
+         * See {@link Highcharts.Chart#removeAnnotation}.
          */
         remove: function () {
-            return this.destroy();
+            // Let chart.update() remove annoations on demand
+            return this.chart.removeAnnotation(this);
         },
 
         update: function (userOptions) {
@@ -949,7 +1013,10 @@ merge(
             // Update options in chart options, used in exporting (#9767):
             chart.options.annotations[userOptionsIndex] = options;
 
+            this.isUpdating = true;
             this.redraw();
+            this.isUpdating = false;
+            fireEvent(this, 'afterUpdate');
         },
 
         /* *************************************************************
@@ -961,7 +1028,7 @@ merge(
          * Initialisation of a single shape
          *
          * @param {Object} shapeOptions - a confg object for a single shape
-         **/
+         */
         initShape: function (shapeOptions, index) {
             var options = merge(
                     this.options.shapeOptions,
@@ -1073,7 +1140,7 @@ merge(
             item.destroy();
         },
 
-        /*
+        /**
          * @private
          */
         renderItem: function (item) {
@@ -1090,7 +1157,7 @@ merge(
  * An object uses for mapping between a shape type and a constructor.
  * To add a new shape type extend this object with type name as a key
  * and a constructor as its value.
- **/
+ */
 Annotation.shapesMap = {
     'rect': ControllableRect,
     'circle': ControllableCircle,
@@ -1130,10 +1197,7 @@ H.extendAnnotation = function (
  *
  ******************************************************************** */
 
-// Let chart.update() work with annotations
-H.Chart.prototype.collectionsWithUpdate.push('annotations');
-
-H.extend(H.Chart.prototype, /** @lends Highcharts.Chart# */ {
+H.extend(chartProto, /** @lends Highcharts.Chart# */ {
     initAnnotation: function (userOptions) {
         var Constructor =
             Annotation.types[userOptions.type] || Annotation,
@@ -1151,7 +1215,7 @@ H.extend(H.Chart.prototype, /** @lends Highcharts.Chart# */ {
     /**
      * Add an annotation to the chart after render time.
      *
-     * @param  {AnnotationOptions} options
+     * @param  {Highcharts.AnnotationsOptions} options
      *         The annotation options for the new, detailed annotation.
      * @param {boolean} [redraw]
      *
@@ -1172,19 +1236,22 @@ H.extend(H.Chart.prototype, /** @lends Highcharts.Chart# */ {
     /**
      * Remove an annotation from the chart.
      *
-     * @param {String|Annotation} idOrAnnotation - The annotation's id or
+     * @param {String|Number|Annotation} idOrAnnotation - The annotation's id or
      *      direct annotation object.
      */
     removeAnnotation: function (idOrAnnotation) {
         var annotations = this.annotations,
-            annotation = isString(idOrAnnotation) ? find(
-                annotations,
-                function (annotation) {
-                    return annotation.options.id === idOrAnnotation;
-                }
-            ) : idOrAnnotation;
+            annotation = idOrAnnotation.coll === 'annotations' ?
+                idOrAnnotation :
+                find(
+                    annotations,
+                    function (annotation) {
+                        return annotation.options.id === idOrAnnotation;
+                    }
+                );
 
         if (annotation) {
+            fireEvent(annotation, 'remove');
             erase(this.options.annotations, annotation.options);
             erase(annotations, annotation);
             annotation.destroy();
@@ -1200,8 +1267,13 @@ H.extend(H.Chart.prototype, /** @lends Highcharts.Chart# */ {
     }
 });
 
+// Let chart.update() update annotations
+chartProto.collectionsWithUpdate.push('annotations');
 
-H.Chart.prototype.callbacks.push(function (chart) {
+// Let chart.update() create annoations on demand
+chartProto.collectionsWithInit.annotations = [chartProto.addAnnotation];
+
+chartProto.callbacks.push(function (chart) {
     chart.annotations = [];
 
     if (!chart.options.annotations) {

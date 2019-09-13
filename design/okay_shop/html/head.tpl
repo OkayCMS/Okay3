@@ -1,3 +1,7 @@
+
+    {* Full base address *}
+    <base href="{$base}/">
+
     {literal}
     <script>
         var okay = {};
@@ -21,17 +25,18 @@
     {/literal}
 
     {* Title *}
-    <title>{strip}
-            {if $seo_filter_pattern->title}
-                {$seo_filter_pattern->title|escape}
-            {else}
-                {$meta_title|escape}{$filter_meta->title|escape}
-            {/if}
-            {if $current_page && $current_page != 'all'}
-                {$lang->meta_page} {$current_page}
-            {/if}
-        {/strip}
+    {strip}
+    <title>
+        {if $seo_filter_pattern->title}
+            {$seo_filter_pattern->title|escape}
+        {else}
+            {$meta_title|escape}{$filter_meta->title|escape}
+        {/if}
+        {if $current_page && $current_page != 'all'}
+            {$lang->meta_page} {$current_page}
+        {/if}
     </title>
+    {/strip}
 
     {* Meta tags *}
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -226,3 +231,28 @@
     {/if}
 
     <link rel="search" type="application/opensearchdescription+xml" title="OkayCMS {$config->version_type|escape} Search" href="{url_generator route="opensearch" absolute=1}" />
+
+    {* Favicon *}
+    <link href="{$rootUrl}/{$config->design_images}{$settings->site_favicon}?v={$settings->site_favicon_version}" type="image/x-icon" rel="icon">
+    <link href="{$rootUrl}/{$config->design_images}{$settings->site_favicon}?v={$settings->site_favicon_version}" type="image/x-icon" rel="shortcut icon">
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap&subset=cyrillic" rel="stylesheet">
+    <link href="https://cdn.materialdesignicons.com/3.8.95/css/materialdesignicons.min.css" rel="stylesheet">
+
+    {* JQuery *}
+    <script>ut_tracker.start('parsing:page');</script>
+
+    <script>ut_tracker.start('parsing:head:scripts');</script>
+    {$ok_head}
+    {if $controller == "Products"}
+    {js file='jquery-migrate-3.0.1.min.js' defer=true}
+    {/if}
+    <script>ut_tracker.end('parsing:head:scripts');</script>
+
+    {if !empty($counters['head'])}
+    <script>ut_tracker.start('parsing:head:counters');</script>
+    {foreach $counters['head'] as $counter}
+    {$counter->code}
+    {/foreach}
+    <script>ut_tracker.end('parsing:head:counters');</script>
+    {/if}

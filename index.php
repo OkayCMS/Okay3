@@ -5,10 +5,12 @@ $startTime = microtime(true);
 use Okay\Core\Router;
 use Okay\Core\Request;
 use Okay\Core\Response;
+use Okay\Core\Modules\Modules;
+use OkayLicense\License;
 
 try {
-    ini_set('display_errors', 'on');
-    error_reporting(E_ALL & ~E_DEPRECATED);
+    //ini_set('display_errors', 'on');
+    //error_reporting(E_ALL);
 
     $time_start = microtime(true);
     if (!empty($_SERVER['HTTP_USER_AGENT'])) {
@@ -18,7 +20,7 @@ try {
     
     require_once('vendor/autoload.php');
 
-    $DI = include 'Core/config/container.php';
+    $DI = include 'Okay/Core/config/container.php';
 
     /** @var Response $response */
     $response = $DI->get(Response::class);
@@ -33,6 +35,14 @@ try {
         $response->redirectTo($request->getRootUrl());
         exit();
     }
+
+    /** @var License $license */
+    $license = $DI->get(License::class);
+    $license->check();
+    
+    /** @var Modules $modules */
+    $modules = $DI->get(Modules::class);
+    $modules->startEnabledModules();
 
     /** @var Router $router */
     $router = $DI->get(Router::class);

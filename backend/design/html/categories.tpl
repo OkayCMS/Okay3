@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->general_categories scope=parent}
+{$meta_title=$btr->general_categories scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -9,7 +9,7 @@
                 {$btr->general_categories|escape}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url module=CategoryAdmin return=$smarty.server.REQUEST_URI}">
+                <a class="btn btn_small btn-info" href="{url controller=CategoryAdmin return=$smarty.server.REQUEST_URI}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->categories_add|escape}</span>
                 </a>
@@ -68,7 +68,7 @@
 
                                 <div class="okay_list_boding okay_list_photo hidden-sm-down">
                                     {if $category->image}
-                                        <a href="{url module=CategoryAdmin id=$category->id return=$smarty.server.REQUEST_URI}">
+                                        <a href="{url controller=CategoryAdmin id=$category->id return=$smarty.server.REQUEST_URI}">
                                             <img src="{$category->image|resize:55:55:false:$config->resized_categories_dir}" alt="" />
                                         </a>
                                     {else}
@@ -77,7 +77,7 @@
                                 </div>
 
                                 <div class="okay_list_boding okay_list_categories_name">
-                                    <a class="link" href="{url module=CategoryAdmin id=$category->id return=$smarty.server.REQUEST_URI}">
+                                    <a class="link" href="{url controller=CategoryAdmin id=$category->id return=$smarty.server.REQUEST_URI}">
                                         {$category->name|escape}
                                     </a>
                                 </div>
@@ -85,7 +85,7 @@
                                 <div class="okay_list_boding okay_list_status">
                                     {*visible*}
                                     <label class="switch switch-default">
-                                        <input class="switch-input fn_ajax_action {if $category->visible}fn_active_class{/if}" data-module="category" data-action="visible" data-id="{$category->id}" name="visible" value="1" type="checkbox"  {if $category->visible}checked=""{/if}/>
+                                        <input class="switch-input fn_ajax_action {if $category->visible}fn_active_class{/if}" data-controller="category" data-action="visible" data-id="{$category->id}" name="visible" value="1" type="checkbox"  {if $category->visible}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>
@@ -127,8 +127,6 @@
                         <div class="okay_list_option">
                             <select name="action" class="selectpicker">
                                 <option value="enable">{$btr->general_do_enable|escape}</option>
-                                <option value="in_feed">{$btr->categories_in_xml|escape}</option>
-                                <option value="out_feed">{$btr->categories_out_xml|escape}</option>
                                 <option value="disable">{$btr->general_do_disable|escape}</option>
                                 <option value="delete">{$btr->general_delete|escape}</option>
                             </select>

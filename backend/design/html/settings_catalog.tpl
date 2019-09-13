@@ -1,4 +1,4 @@
-{$meta_title = $btr->settings_catalog_catalog scope=parent}
+{$meta_title = $btr->settings_catalog_catalog scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -9,7 +9,7 @@
 </div>
 
 {*Вывод успешных сообщений*}
-{if $message_success}
+{if $message_success && empty($message_error)}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="boxed boxed_success">
@@ -22,6 +22,21 @@
                             {include file='svg_icon.tpl' svgId='return'}
                             <span>{$btr->general_back|escape}</span>
                         </a>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+{/if}
+
+{*Вывод ошибок*}
+{if $message_error}
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="boxed boxed_warning">
+                <div class="heading_box">
+                    {if $message_error=='truncate_table_password_failed'}
+                        {$btr->truncate_table_password_failed|escape}
                     {/if}
                 </div>
             </div>
@@ -166,7 +181,7 @@
                 <div class="toggle_body_wrap on fn_card">
                     <div class="row">
                         <div class="col-lg-6 col-md-6">
-                            <div class="boxed">
+                            <div class="boxed fn_image_block">
                                 {if $config->watermark_file}
                                     <div class="fn_parent_image">
                                         <input class="fn_accept_delete" name="delete_watermark" value="" type="hidden" />
@@ -181,11 +196,11 @@
 
                                 <div class="fn_upload_image dropzone_block_image text-xs-center {if $config->watermark_file} hidden{/if}">
                                     <i class="fa fa-plus font-5xl" aria-hidden="true"></i>
-                                    <input class="dropzone_image" name="watermark_file" type="file" />
+                                    <input class="dropzone_image" name="watermark_file" type="file" accept="image/jpeg,image/png,image/gif" />
                                 </div>
-                                <div class="image_wrapper fn_image_wrapper fn_new_image text-xs-center">
-                                    <a href="javascript:;" class="fn_delete_item delete_image remove_image"></a>
-                                    <img src="" alt="" />
+                                <div class="banner_image fn_image_wrapper fn_new_image text-xs-center">
+                                    <a href="javascript:;" class="fn_delete_item remove_image"></a>
+                                    <img class="watermark_image" src="" alt="" />
                                 </div>
                             </div>
                         </div>

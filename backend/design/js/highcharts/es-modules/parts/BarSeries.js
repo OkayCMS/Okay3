@@ -1,17 +1,17 @@
 /* *
- * (c) 2010-2019 Torstein Honsi
  *
- * License: www.highcharts.com/license
- */
-
+ *  (c) 2010-2019 Torstein Honsi
+ *
+ *  License: www.highcharts.com/license
+ *
+ *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
+ *
+ * */
 'use strict';
-
 import H from './Globals.js';
 import './Utilities.js';
 import './ColumnSeries.js';
-
 var seriesType = H.seriesType;
-
 /**
  * Bar series type.
  *
@@ -21,54 +21,24 @@ var seriesType = H.seriesType;
  *
  * @augments Highcharts.Series
  */
-seriesType('bar', 'column',
-
-    /**
-     * A bar series is a special type of column series where the columns are
-     * horizontal.
-     *
-     * @sample highcharts/demo/bar-basic/
-     *         Bar chart
-     *
-     * @extends   plotOptions.column
-     * @product   highcharts
-     * @apioption plotOptions.bar
-     */
-
-    /**
-     * Alignment of the data label relative to the data point.
-     *
-     * @sample {highcharts} highcharts/plotoptions/bar-datalabels-align-inside-bar/
-     *         Data labels inside the bar
-     *
-     * @type      {string}
-     * @default   left
-     * @product   highcharts
-     * @apioption plotOptions.bar.dataLabels.align
-     */
-
-    /**
-     * The x position of the data label relative to the data point.
-     *
-     * @sample {highcharts} highcharts/plotoptions/bar-datalabels-align-inside-bar/
-     *         Data labels inside the bar
-     *
-     * @type      {number}
-     * @default   5
-     * @product   highcharts
-     * @apioption plotOptions.bar.dataLabels.x
-     */
-
-    /**
-     * @ignore
-     */
-    null
-
-    , {
-        inverted: true
-    });
-
-
+seriesType('bar', 'column', 
+/**
+ * A bar series is a special type of column series where the columns are
+ * horizontal.
+ *
+ * @sample highcharts/demo/bar-basic/
+ *         Bar chart
+ *
+ * @extends   plotOptions.column
+ * @product   highcharts
+ * @apioption plotOptions.bar
+ */
+/**
+ * @ignore
+ */
+null, {
+    inverted: true
+});
 /**
  * A `bar` series. If the [type](#series.bar.type) option is not specified,
  * it is inherited from [chart.type](#chart.type).
@@ -79,7 +49,6 @@ seriesType('bar', 'column',
  * @product   highcharts
  * @apioption series.bar
  */
-
 /**
  * An array of data points for the series. For the `bar` series type,
  * points can be given in the following ways:
@@ -134,20 +103,19 @@ seriesType('bar', 'column',
  * @sample {highcharts} highcharts/series/data-array-of-objects/
  *         Config objects
  *
- * @type      {Array<number|Array<(number|string),number>|*>}
+ * @type      {Array<number|Array<(number|string),(number|null)>|null|*>}
  * @extends   series.column.data
  * @product   highcharts
  * @apioption series.bar.data
  */
-
 /**
  * @excluding halo,lineWidth,lineWidthPlus,marker
  * @product   highcharts highstock
  * @apioption series.bar.states.hover
  */
-
 /**
  * @excluding halo,lineWidth,lineWidthPlus,marker
  * @product   highcharts highstock
  * @apioption series.bar.states.select
  */
+''; // gets doclets above into transpilat

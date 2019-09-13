@@ -1,7 +1,7 @@
 {* Account page *}
 
 {* The page title *}
-{$meta_title = $lang->user_title scope=parent}
+{$meta_title = $lang->user_title scope=global}
 
 <div class="block">
     {* The page heading*}
@@ -121,7 +121,7 @@
                                     <tr>
                                         {* Order number *}
                                         <td>
-                                            <a href='{$language->label}/order/{$order->url}'><span data-language="user_order_number">{$lang->user_order_number}</span>{$order->id}</a>
+                                            <a href='{url_generator route="order" url=$order->url}'><span data-language="user_order_number">{$lang->user_order_number}</span>{$order->id}</a>
                                         </td>
 
                                         {* Order date *}

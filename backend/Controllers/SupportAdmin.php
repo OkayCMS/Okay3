@@ -1,28 +1,39 @@
 <?php
 
-require_once('api/Okay.php');
 
-class SupportAdmin extends Okay {
+namespace Okay\Admin\Controllers;
 
-    public function fetch() {
+
+use Okay\Entities\SupportInfoEntity;
+use Okay\Core\Support;
+
+class SupportAdmin extends IndexAdmin
+{
+
+    public function fetch(Support $support, SupportInfoEntity $supportInfoEntity)
+    {
         $error = '';
-        if ($this->request->method('post') && $this->request->post('get_new_keys')) {
-            $result = $this->support->get_new_keys();
+        if ($this->request->method('post') && !empty($this->request->post('get_new_keys'))) {
+            $result = $support->getNewKeys();
             if (is_null($result) || (empty($result) && $result!==false)) {
                 $error = 'unknown_error';
             } elseif ($result === false) {
                 $error = 'request_has_already_sent';
             } elseif (!$result->success) {
                 $error = $result->error ? $result->error : 'unknown_error';
+            } else {
+                $this->response->addHeader("Refresh:0");
+                $this->response->sendHeaders();
+                exit();
             }
         }
 
-        $support_info = $this->supportinfo->get_info();
+        $supportInfo = $supportInfoEntity->getInfo();
         if ($error) {
             $this->design->assign('message_error', $error);
         } elseif (in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1', '0:0:0:0:0:0:0:1'))) {
             $this->design->assign('message_error', 'localhost');
-        } elseif (empty($support_info->public_key)) {
+        } elseif (empty($supportInfo->public_key)) {
             $this->design->assign('message_error', 'empty_key');
         } else {
             // Обработка действий
@@ -50,7 +61,7 @@ class SupportAdmin extends Okay {
                 $this->design->assign('keyword', $keyword);
             }
 
-            $result = $this->support->get_topics($filter);
+            $result = $support->getTopics($filter);
             if (!$result) {
                 $this->design->assign('message_error', 'unknown_error');
             } elseif (!$result->success) {
@@ -62,7 +73,8 @@ class SupportAdmin extends Okay {
                 $this->design->assign('topics', (array)$result->topics);
             }
         }
-        return $this->design->fetch('support.tpl');
+
+        $this->response->setContent($this->design->fetch('support.tpl'));
     }
 
 }

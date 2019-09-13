@@ -1,7 +1,7 @@
 {* Page template *}
 
 {* The canonical address of the page *}
-{$canonical="{url_generator route="page" url=$page->url absolute=1}" scope=parent}
+{$canonical="{url_generator route="page" url=$page->url absolute=1}" scope=global}
 
 {if $page->url == '404'}
     {include file='page_404.tpl'}

@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->users_users scope=parent}
+{$meta_title=$btr->users_users scope=global}
 
 {if $users_count>0}
     <div class="row">
@@ -23,7 +23,7 @@
     <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
         <div class="boxed_search">
             <form class="search" method="get">
-                <input type="hidden" name="module" value="UsersAdmin">
+                <input type="hidden" name="controller" value="UsersAdmin">
                 <div class="input-group">
 
                     <input name="keyword" class="form-control" placeholder="{$btr->users_search|escape}" type="text" value="{$keyword|escape}" >
@@ -110,7 +110,7 @@
                                         </div>
 
                                         <div class="okay_list_boding okay_list_users_name">
-                                            <a href="{url module=UserAdmin id=$user->id}">
+                                            <a href="{url controller=UserAdmin id=$user->id}">
                                                 {$user->name|escape}
                                             </a>
                                         </div>

@@ -9,6 +9,10 @@
 'use strict';
 
 import H from '../parts/Globals.js';
+
+import U from '../parts/Utilities.js';
+var isNumber = U.isNumber;
+
 import '../parts/AreaSeries.js';
 
 var addEvent = H.addEvent,
@@ -26,35 +30,36 @@ var addEvent = H.addEvent,
 seriesType('variwide', 'column'
 
     /**
- * A variwide chart (related to marimekko chart) is a column chart with a
- * variable width expressing a third dimension.
- *
- * @sample {highcharts} highcharts/demo/variwide/
- *         Variwide chart
- * @sample {highcharts} highcharts/series-variwide/inverted/
- *         Inverted variwide chart
- * @sample {highcharts} highcharts/series-variwide/datetime/
- *         Variwide columns on a datetime axis
- *
- * @extends      plotOptions.column
- * @since        6.0.0
- * @product      highcharts
- * @excluding    boostThreshold, crisp, depth, edgeColor, edgeWidth,
- *               groupZPadding
- * @optionparent plotOptions.variwide
- */
-    , {
-    /**
-     * In a variwide chart, the point padding is 0 in order to express the
-     * horizontal stacking of items.
+     * A variwide chart (related to marimekko chart) is a column chart with a
+     * variable width expressing a third dimension.
+     *
+     * @sample {highcharts} highcharts/demo/variwide/
+     *         Variwide chart
+     * @sample {highcharts} highcharts/series-variwide/inverted/
+     *         Inverted variwide chart
+     * @sample {highcharts} highcharts/series-variwide/datetime/
+     *         Variwide columns on a datetime axis
+     *
+     * @extends      plotOptions.column
+     * @since        6.0.0
+     * @product      highcharts
+     * @excluding    boostThreshold, crisp, depth, edgeColor, edgeWidth,
+     *               groupZPadding
+     * @optionparent plotOptions.variwide
      */
+    , {
+        /**
+         * In a variwide chart, the point padding is 0 in order to express the
+         * horizontal stacking of items.
+         */
         pointPadding: 0,
         /**
-     * In a variwide chart, the group padding is 0 in order to express the
-     * horizontal stacking of items.
-     */
+         * In a variwide chart, the group padding is 0 in order to express the
+         * horizontal stacking of items.
+         */
         groupPadding: 0
     }, {
+        irregularWidths: true,
         pointArrayMap: ['y', 'z'],
         parallelArrays: ['x', 'y', 'z'],
         processData: function (force) {
@@ -79,21 +84,21 @@ seriesType('variwide', 'column'
         },
 
         /**
-     * Translate an x value inside a given category index into the distorted
-     * axis translation.
-     *
-     * @private
-     * @function Highcharts.Series#postTranslate
-     *
-     * @param {number} index
-     *        The category index
-     *
-     * @param {number} x
-     *        The X pixel position in undistorted axis pixels
-     *
-     * @return {number}
-     *         Distorted X position
-     */
+         * Translate an x value inside a given category index into the distorted
+         * axis translation.
+         *
+         * @private
+         * @function Highcharts.Series#postTranslate
+         *
+         * @param {number} index
+         *        The category index
+         *
+         * @param {number} x
+         *        The X pixel position in undistorted axis pixels
+         *
+         * @return {number}
+         *         Distorted X position
+         */
         postTranslate: function (index, x, point) {
 
             var axis = this.xAxis,
@@ -188,12 +193,48 @@ seriesType('variwide', 'column'
                     xAxis.len - point.shapeArgs.x - point.shapeArgs.width / 2;
                 }
             }, this);
+
+            if (this.options.stacking) {
+                this.correctStackLabels();
+            }
+        },
+
+        // Function that corrects stack labels positions
+        correctStackLabels: function () {
+            var series = this,
+                options = series.options,
+                yAxis = series.yAxis,
+                pointStack,
+                pointWidth,
+                stack,
+                xValue;
+
+            series.points.forEach(function (point) {
+                xValue = point.x;
+                pointWidth = point.shapeArgs.width;
+                stack = yAxis.stacks[(series.negStacks &&
+                    point.y <
+                        (options.startFromThreshold ? 0 : options.threshold) ?
+                    '-' :
+                    '') + series.stackKey];
+                pointStack = stack[xValue];
+
+                if (stack && pointStack && !point.isNull) {
+                    pointStack.setOffset(
+                        -(pointWidth / 2) || 0,
+                        pointWidth || 0,
+                        undefined,
+                        undefined,
+                        point.plotX
+                    );
+                }
+            });
         }
 
         // Point functions
     }, {
         isValid: function () {
-            return H.isNumber(this.y, true) && H.isNumber(this.z, true);
+            return isNumber(this.y) && isNumber(this.z);
         }
     });
 

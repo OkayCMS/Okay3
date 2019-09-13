@@ -1,6 +1,11 @@
 'use strict';
 import H from './../../parts/Globals.js';
-import './../../parts/Utilities.js';
+
+import U from './../../parts/Utilities.js';
+var isObject = U.isObject,
+    isString = U.isString,
+    splat = U.splat;
+
 import './../../parts/Tooltip.js';
 import ControlPoint from './../ControlPoint.js';
 import MockPoint from './../MockPoint.js';
@@ -9,6 +14,7 @@ import MockPoint from './../MockPoint.js';
  * It provides methods for handling points, control points
  * and points transformations.
  *
+ * @private
  * @mixin
  * @memberOf Annotation
  */
@@ -49,7 +55,7 @@ var controllableMixin = {
     getPointsOptions: function () {
         var options = this.options;
 
-        return options.points || (options.point && H.splat(options.point));
+        return options.points || (options.point && splat(options.point));
     },
 
     /**
@@ -142,10 +148,13 @@ var controllableMixin = {
     /**
      * Map point's options to a point-like object.
      *
-     * @param {Annotation.MockPoint.Options} pointOptions point's options
-     * @param {Annotation.PointLike} point a point like instance
-     * @return {Annotation.PointLike|null} if the point is
-     *         found/set returns this point, otherwise null
+     * @param {Highcharts.MockPointOptionsObject} pointOptions
+     *        point's options
+     * @param {Highcharts.PointLike} point
+     *        a point like instance
+     *
+     * @return {Highcharts.PointLike|null}
+     *         if the point is found/set returns this point, otherwise null
      */
     point: function (pointOptions, point) {
         if (pointOptions && pointOptions.series) {
@@ -153,13 +162,13 @@ var controllableMixin = {
         }
 
         if (!point || point.series === null) {
-            if (H.isObject(pointOptions)) {
+            if (isObject(pointOptions)) {
                 point = new MockPoint(
                     this.chart,
                     this,
                     pointOptions
                 );
-            } else if (H.isString(pointOptions)) {
+            } else if (isString(pointOptions)) {
                 point = this.chart.get(pointOptions) || null;
             } else if (typeof pointOptions === 'function') {
                 var pointConfig = pointOptions.call(point, this);
@@ -329,6 +338,30 @@ var controllableMixin = {
      **/
     translatePoint: function (dx, dy, i) {
         this.transformPoint('translate', null, null, dx, dy, i);
+    },
+
+    /**
+     * Translate shape within controllable item.
+     * Replaces `controllable.translate` method.
+     *
+     * @param {number} dx translation for x coordinate
+     * @param {number} dy translation for y coordinate
+     */
+    translateShape: function (dx, dy) {
+        var chart = this.annotation.chart,
+            // Annotation.options
+            shapeOptions = this.annotation.userOptions,
+            // Chart.options.annotations
+            annotationIndex = chart.annotations.indexOf(this.annotation),
+            chartOptions = chart.options.annotations[annotationIndex];
+
+        this.translatePoint(dx, dy, 0);
+
+        // Options stored in:
+        // - chart (for exporting)
+        // - current config (for redraws)
+        chartOptions[this.collection][this.index].point = this.options.point;
+        shapeOptions[this.collection][this.index].point = this.options.point;
     },
 
     /**

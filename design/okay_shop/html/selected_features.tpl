@@ -8,7 +8,7 @@
         </div>
         <div class="filter__group">
             <div class="filter__selected_features d-flex align-items-center flex-wrap">
-                {if $prices->current->min != '' && $prices->current->max != ''}
+                {if $prices->current->min !== '' && $prices->current->max !== '' && $prices->current->min !== null}
                     <div class="filter__selected_feature">
                         <form class="filter__selected_feature_item" method="post">
                             <button type="submit" name="prg_seo_hide" class="fn_filter_reset filter__sf_link checked" value="{furl absolute=1}">

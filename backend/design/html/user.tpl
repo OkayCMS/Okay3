@@ -1,5 +1,5 @@
 {if $user->id}
-    {$meta_title = $user->name|escape scope=parent}
+    {$meta_title = $user->name|escape scope=global}
 {/if}
 
 {*Название страницы*}
@@ -160,7 +160,7 @@
                                     <div class="fn_row okay_list_body_item">
                                         <div class="okay_list_row">
                                             <div class="okay_list_boding okay_list_user_number">
-                                                <a href="{url module=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}">{$btr->general_order_number|escape} {$order->id}</a>
+                                                <a href="{url controller=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}">{$btr->general_order_number|escape} {$order->id}</a>
                                             </div>
                                             <div class="okay_list_boding okay_list_user_name">
                                                 <span>{$order->name|escape}</span>

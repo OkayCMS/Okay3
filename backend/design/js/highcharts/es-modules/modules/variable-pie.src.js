@@ -6,6 +6,10 @@
  * License: www.highcharts.com/license
  */
 
+/**
+ * @typedef {"area"|"radius"} Highcharts.VariablePieSizeByValue
+ */
+
 'use strict';
 
 import H from '../parts/Globals.js';
@@ -13,6 +17,7 @@ import '../parts/Utilities.js';
 import '../parts/Options.js';
 
 var pick = H.pick,
+    fireEvent = H.fireEvent,
     arrayMin = H.arrayMin,
     arrayMax = H.arrayMax,
     seriesType = H.seriesType,
@@ -40,6 +45,7 @@ seriesType(
      *         Variable-radius pie chart
      *
      * @extends      plotOptions.pie
+     * @excluding    dragDrop
      * @since        6.0.0
      * @product      highcharts
      * @optionparent plotOptions.variablepie
@@ -104,8 +110,8 @@ seriesType(
          * @sample {highcharts} highcharts/variable-radius-pie/sizeby/
          *         Difference between area and radius sizeBy
          *
-         * @since      6.0.0
-         * @validvalue ["area", "radius"]
+         * @type  {Highcharts.VariablePieSizeByValue}
+         * @since 6.0.0
          */
         sizeBy: 'area',
 
@@ -395,6 +401,8 @@ seriesType(
                 };
 
             }
+
+            fireEvent(series, 'afterTranslate');
         }
     }
 );

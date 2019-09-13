@@ -1,13 +1,14 @@
-{$meta_title = $btr->settings_general_design scope=parent}
+{$meta_title = $btr->settings_general_design scope=global}
 
 {*Название страницы*}
 <div class="row">
     <div class="col-lg-7 col-md-7">
         <div class="heading_page">
             {$btr->settings_general_design|escape}
-            <div class="tooltip_box hint-bottom-middle-t-info-s-small-mobile hint-anim hidden-sm-down" data-hint="Описание tooltips">
+
+            {*<div class="tooltip_box hint-bottom-middle-t-info-s-small-mobile hint-anim hidden-sm-down" data-hint="Описание tooltips">
                 {include file='svg_icon.tpl' svgId='info_icon'}
-            </div>
+            </div>*}
         </div>
     </div>
     <div class="col-lg-5 col-md-5 text-xs-right float-xs-right"></div>
@@ -47,12 +48,19 @@
                         <div class="heading_box row mb-0">
                             <div class="col-lg-6 col-md-6 mb-1">
                                 {$btr->settings_theme_site_logo|escape}
+                                <i class="fn_tooltips" title="{$btr->tooltip_settings_theme_site_logo|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="activity_of_switch float-xs-right">
                                     <div class="activity_of_switch_item"> {* row block *}
                                         <div class="okay_switch clearfix">
-                                            <label class="switch_label">{$btr->settings_theme_multilang_logo|escape}</label>
+                                            <label class="switch_label">{$btr->settings_theme_multilang_logo|escape}
+                                                <i class="fn_tooltips" title="{$btr->tooltip_settings_theme_multilang_logo|escape}">
+                                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                                </i>
+                                            </label>
                                             <label class="switch switch-default">
                                                 <input class="switch-input" name="multilang_logo" value='1' type="checkbox" {if $settings->multilang_logo}checked=""{/if}/>
                                                 <span class="switch-label"></span>
@@ -114,6 +122,9 @@
                         <div class="heading_box row mb-0">
                             <div class="col-lg-12 col-md-12 mb-1">
                                 {$btr->settings_theme_site_favicon|escape}
+                                <i class="fn_tooltips" title="{$btr->tooltip_settings_theme_site_favicon|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
                             </div>
                             <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                                 <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
@@ -168,6 +179,9 @@
             <div class="boxed fn_toggle_wrap">
                 <div class="heading_box">
                     {$btr->settings_theme_deliveries|escape}
+                    <i class="fn_tooltips" title="{$btr->tooltip_settings_theme_deliveries|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>
@@ -188,6 +202,9 @@
             <div class="boxed fn_toggle_wrap">
                 <div class="heading_box">
                     {$btr->settings_theme_payments|escape}
+                    <i class="fn_tooltips" title="{$btr->tooltip_settings_theme_payments|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>
@@ -211,6 +228,9 @@
             <div class="boxed fn_toggle_wrap">
                 <div class="heading_box">
                     {$btr->settings_theme_contact|escape}
+                    <i class="fn_tooltips" title="{$btr->tooltip_settings_theme_contact|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>
@@ -258,7 +278,11 @@
                 <div class="toggle_body_wrap on fn_card">
                     <div class="row">
                         <div class="col-xs-12">
-                            <div class="heading_label">{$btr->settings_theme_iframe_map|escape}</div>
+                            <div class="heading_label">{$btr->settings_theme_iframe_map|escape}
+                                <i class="fn_tooltips" title="{$btr->tooltip_settings_theme_iframe_map|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </div>
                             <div class="mb-1">
                                 <textarea name="iframe_map_code" class="form-control okay_textarea">{$settings->iframe_map_code}</textarea>
                             </div>
@@ -303,6 +327,9 @@
             <div class="boxed fn_toggle_wrap">
                 <div class="heading_box">
                     {$btr->settings_theme_color|escape}{if $settings->admin_theme} {$settings->admin_theme|escape}{/if}
+                    <i class="fn_tooltips" title="{$btr->tooltip_settings_theme_color|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>

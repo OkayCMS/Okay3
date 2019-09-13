@@ -1,3 +1,6 @@
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: https://codemirror.net/LICENSE
+
 window.CodeMirror = {};
 
 (function() {
@@ -62,7 +65,8 @@ StringStream.prototype = {
     this.lineStart += n;
     try { return inner(); }
     finally { this.lineStart -= n; }
-  }
+  },
+  lookAhead: function() { return null }
 };
 CodeMirror.StringStream = StringStream;
 
@@ -71,7 +75,11 @@ CodeMirror.startState = function (mode, a1, a2) {
 };
 
 var modes = CodeMirror.modes = {}, mimeModes = CodeMirror.mimeModes = {};
-CodeMirror.defineMode = function (name, mode) { modes[name] = mode; };
+CodeMirror.defineMode = function (name, mode) {
+  if (arguments.length > 2)
+    mode.dependencies = Array.prototype.slice.call(arguments, 2);
+  modes[name] = mode;
+};
 CodeMirror.defineMIME = function (mime, spec) { mimeModes[mime] = spec; };
 CodeMirror.resolveMode = function(spec) {
   if (typeof spec == "string" && mimeModes.hasOwnProperty(spec)) {
@@ -139,6 +147,7 @@ CodeMirror.runMode = function (string, modespec, callback, options) {
   for (var i = 0, e = lines.length; i < e; ++i) {
     if (i) callback("\n");
     var stream = new CodeMirror.StringStream(lines[i]);
+    if (!stream.string && mode.blankLine) mode.blankLine(state);
     while (!stream.eol()) {
       var style = mode.token(stream, state);
       callback(stream.current(), style, i, stream.start, state);

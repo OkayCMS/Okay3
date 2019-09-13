@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->general_comments scope=parent}
+{$meta_title=$btr->general_comments scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -22,7 +22,7 @@
     <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
         <div class="boxed_search">
             <form class="search" method="get">
-                <input type="hidden" name="module" value="CommentsAdmin">
+                <input type="hidden" name="controller" value="CommentsAdmin">
                 <div class="input-group">
                     <input name="keyword" class="form-control" placeholder="{$btr->comments_search|escape}" type="text" value="{$keyword|escape}" >
                     <span class="input-group-btn">
@@ -130,7 +130,7 @@
                                             </div>
                                             <div class="hidden-md-up mt-q">
                                                 {if !$comment->approved}
-                                                    <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action {if $comment->approved}fn_active_class{/if}" data-module="comment" data-action="approved" data-id="{$comment->id}" onclick="$(this).hide();">
+                                                    <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action {if $comment->approved}fn_active_class{/if}" data-controller="comment" data-action="approved" data-id="{$comment->id}" onclick="$(this).hide();">
                                                         {$btr->general_approve|escape}
                                                     </button>
                                                 {/if}
@@ -144,7 +144,7 @@
 
                                         <div class="okay_list_boding okay_list_comments_btn">
                                             {if !$comment->approved}
-                                                <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action {if $comment->approved}fn_active_class{/if}" data-module="comment" data-action="approved" data-id="{$comment->id}" onclick="$(this).hide();">
+                                                <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action {if $comment->approved}fn_active_class{/if}" data-controller="comment" data-action="approved" data-id="{$comment->id}" onclick="$(this).hide();">
                                                     {$btr->general_approve|escape}
                                                 </button>
                                             {/if}

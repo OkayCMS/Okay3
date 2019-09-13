@@ -1,7 +1,7 @@
 {if $post->id}
-    {$meta_title = $post->name scope=parent}
+    {$meta_title = $post->name scope=global}
 {else}
-    {$meta_title = $btr->post_new scope=parent}
+    {$meta_title = $btr->post_new scope=global}
 {/if}
 
 {*Название страницы*}
@@ -226,7 +226,7 @@
                                         </div>
                                         <div class="okay_list_boding okay_list_related_photo">
                                             <input type="hidden" name=related_products[] value='{$related_product->id}'>
-                                            <a href="{url module=ProductAdmin id=$related_product->id}">
+                                            <a href="{url controller=ProductAdmin id=$related_product->id}">
                                                 {if $related_product->image}
                                                     <img class="product_icon" src='{$related_product->image->filename|resize:40:40}'>
                                                 {else}
@@ -235,7 +235,7 @@
                                             </a>
                                         </div>
                                         <div class="okay_list_boding okay_list_related_name">
-                                            <a class="link" href="{url module=ProductAdmin id=$related_product->id}">{$related_product->name|escape}</a>
+                                            <a class="link" href="{url controller=ProductAdmin id=$related_product->id}">{$related_product->name|escape}</a>
                                         </div>
                                         <div class="okay_list_boding okay_list_close">
                                             <button data-hint="{$btr->general_delete_product|escape}" type="button" class="btn_close fn_remove_item hint-bottom-right-t-info-s-small-mobile  hint-anim">
@@ -367,7 +367,7 @@
                         new_item = new_related_product.clone().appendTo('.related_products');
                         new_item.removeAttr('id');
                         new_item.find('a.related_product_name').html(suggestion.data.name);
-                        new_item.find('a.related_product_name').attr('href', 'index.php?module=ProductAdmin&id='+suggestion.data.id);
+                        new_item.find('a.related_product_name').attr('href', 'index.php?controller=ProductAdmin&id='+suggestion.data.id);
                         new_item.find('input[name*="related_products"]').val(suggestion.data.id);
                         if(suggestion.data.image)
                             new_item.find('img.product_icon').attr("src", suggestion.data.image);

@@ -4,13 +4,14 @@
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\ManagersEntity;
 use Okay\Entities\OrdersEntity;
+use Okay\Core\QueryFactory;
 use Okay\Core\Managers;
 use Okay\Core\Response;
 use Okay\Core\Database;
 
 require_once 'configure.php';
 
-/*ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+/*˜˜˜˜(˜˜˜˜˜˜˜) ˜˜˜ ˜˜˜˜˜ ˜˜˜˜˜˜˜˜*/
 $columnsNames = [
     'id'=>           'Order ID',
     'date'=>         'Order date',
@@ -30,6 +31,9 @@ $filename = 'export_orders.csv';
 
 /** @var Database $db */
 $db = $DI->get(Database::class);
+
+/** @var QueryFactory $queryFactory */
+$queryFactory = $DI->get(QueryFactory::class);
 
 /** @var Managers $managers */
 $managers = $DI->get(Managers::class);
@@ -54,21 +58,22 @@ session_write_close();
 unset($_SESSION['lang_id']);
 unset($_SESSION['admin_lang_id']);
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1251
+// ˜˜˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜ 1251
 setlocale(LC_ALL, 'ru_RU.1251');
-$db->customQuery('SET NAMES cp1251');
+$sqlQuery = $queryFactory->newSqlQuery()->setStatement('SET NAMES cp1251');
+$db->query($sqlQuery);
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ˜˜˜˜˜˜˜˜, ˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜˜
 $page = $request->get('page');
 if(empty($page) || $page==1) {
     $page = 1;
-    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜˜ - ˜˜˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜ ˜˜˜˜˜˜˜˜
     if(is_writable($exportFilesDir.$filename)) {
         unlink($exportFilesDir.$filename);
     }
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ˜˜˜˜˜˜˜˜˜ ˜˜˜˜ ˜˜˜˜˜˜˜˜ ˜˜ ˜˜˜˜˜˜˜˜˜˜
 $f = fopen($exportFilesDir.$filename, 'ab');
 
 $filter = array();
@@ -76,19 +81,19 @@ $filter = array();
 $filter['page'] = $page;
 $filter['limit'] = $ordersCount;
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ˜˜˜˜˜˜
 $statusId = $request->get('status', 'integer');
 if (!empty($statusId)) {
     $filter['status'] = $statusId;
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½
+// ˜˜˜˜˜
 $labelId = $request->get('label', 'integer');
 if(!empty($labelId)) {
     $filter['label'] = $labelId;
 }
 
-// ï¿½ï¿½ï¿½ï¿½
+// ˜˜˜˜
 $fromDate = $request->get('from_date');
 $toDate = $request->get('to_date');
 
@@ -99,15 +104,15 @@ if (!empty($toDate)) {
     $filter['to_date'] = $toDate;
 }
 
-// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜˜ - ˜˜˜˜˜˜˜ ˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜
 if($page == 1) {
     fputcsv($f, $columnsNames, $columnDelimiter);
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜
 $mainCurrency =  $currenciesEntity->getMainCurrency();
 
-// ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ˜˜˜ ˜˜˜˜˜˜
 $orders = $ordersEntity->find($filter);
 if (!empty($orders)) {
     foreach($orders as $o) {

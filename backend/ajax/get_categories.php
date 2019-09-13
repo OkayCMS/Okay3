@@ -21,8 +21,8 @@ $categoriesEntity = $entityFactory->get(CategoriesEntity::class);
 
 $design->assign('config', $config);
 
-$design->set_templates_dir('backend/design/html');
-$design->set_compiled_dir('backend/design/compiled');
+$design->setTemplatesDir('backend/design/html');
+$design->setCompiledDir('backend/design/compiled');
 
 // Перевод админки
 $file = "backend/lang/".$manager->lang.".php";

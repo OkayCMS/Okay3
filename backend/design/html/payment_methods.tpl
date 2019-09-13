@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->payment_methods_methods scope=parent}
+{$meta_title=$btr->payment_methods_methods scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -9,7 +9,7 @@
                 {$btr->payment_methods_methods|escape}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url module=PaymentMethodAdmin return=$smarty.server.REQUEST_URI}">
+                <a class="btn btn_small btn-info" href="{url controller=PaymentMethodAdmin return=$smarty.server.REQUEST_URI}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->payment_methods_add|escape}</span>
                 </a>
@@ -56,7 +56,7 @@
 
                                 <div class="okay_list_boding okay_list_delivery_photo">
                                     {if $payment_method->image}
-                                        <a href="{url module=PaymentMethodAdmin id=$payment_method->id return=$smarty.server.REQUEST_URI}">
+                                        <a href="{url controller=PaymentMethodAdmin id=$payment_method->id return=$smarty.server.REQUEST_URI}">
                                             <img src="{$payment_method->image|escape|resize:55:55:false:$config->resized_payments_dir}"/>
                                         </a>
                                     {else}
@@ -65,7 +65,7 @@
                                 </div>
 
                                 <div class="okay_list_boding okay_list_delivery_name">
-                                    <a href="{url module=PaymentMethodAdmin id=$payment_method->id return=$smarty.server.REQUEST_URI}">
+                                    <a href="{url controller=PaymentMethodAdmin id=$payment_method->id return=$smarty.server.REQUEST_URI}">
                                         {$payment_method->name|escape}
                                     </a>
                                 </div>
@@ -73,7 +73,7 @@
                                 <div class="okay_list_boding okay_list_status">
                                     {*visible*}
                                     <label class="switch switch-default">
-                                        <input class="switch-input fn_ajax_action {if $payment_method->enabled}fn_active_class{/if}" data-module="payment" data-action="enabled" data-id="{$payment_method->id}" name="visible" value="1" type="checkbox"  {if $payment_method->enabled}checked=""{/if}/>
+                                        <input class="switch-input fn_ajax_action {if $payment_method->enabled}fn_active_class{/if}" data-controller="payment" data-action="enabled" data-id="{$payment_method->id}" name="visible" value="1" type="checkbox"  {if $payment_method->enabled}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>

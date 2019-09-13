@@ -69,7 +69,7 @@ switch ($object) {
         break;
     case 'payment':
         if ($managers->access('payment', $manager)) {
-            $entity = $entityFactory->get(\Okay\Entities\BannersImagesEntity::class);
+            $entity = $entityFactory->get(\Okay\Entities\PaymentsEntity::class);
         }
         break;
     case 'currency':
@@ -118,6 +118,11 @@ switch ($object) {
     case 'feedback':
         if ($managers->access('feedbacks', $manager)) {
             $entity = $entityFactory->get(\Okay\Entities\FeedbacksEntity::class);
+        }
+        break;
+    case 'module':
+        if ($managers->access('modules', $manager)) {
+            $entity = $entityFactory->get(\Okay\Entities\ModulesEntity::class);
         }
         break;
     case 'managers':

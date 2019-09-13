@@ -1,5 +1,5 @@
-{$subject="`$btr->email_comment_from` `$comment->name|escape` `$btr->email_awaits`" scope=parent}
-{$subject="Вопрос от пользователя `$feedback->name|escape`" scope=parent}
+{$subject="`$btr->email_comment_from` `$comment->name|escape` `$btr->email_awaits`" scope=global}
+{$subject="Вопрос от пользователя `$feedback->name|escape`" scope=global}
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>

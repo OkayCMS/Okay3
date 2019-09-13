@@ -1,6 +1,6 @@
 compiled/*/*.php
-xml/compiled/*.php
-vendor/
+Okay/xml/compiled/*.php
+/vendor/
 backend/design/compiled/*.php
 files/resized/*/*.jpg
 files/resized/*/*.jpeg
@@ -9,10 +9,11 @@ files/resized/*/*.gif
 files/resized/*/*.tif
 files/resized/*/*.bmp
 files/resized/*/*.ico
+files/thumbs/*
 cache/
 
 .idea/
 tmp/
 nbproject/
-/log/
+/Okay/log/
 config/config.local.php

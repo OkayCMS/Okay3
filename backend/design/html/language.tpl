@@ -1,7 +1,7 @@
 {if $language->id}
-    {$meta_title = $language->name|escape scope=parent}
+    {$meta_title = $language->name|escape scope=global}
 {else}
-    {$meta_title = $btr->language_new scope=parent}
+    {$meta_title = $btr->language_new scope=global}
 {/if}
 
 {*Название страницы*}
@@ -107,7 +107,9 @@
                                         <div class="col-lg-4 col-md-4 col-sm-6 mb-1">
                                             <div class="heading_label mb-h">
                                                 {if is_file("{$config->lang_images_dir}{$l->label}.png")}
-                                                    <img src="{("{$l->label}.png")|resize:55:55:false:$config->lang_resized_dir}" />
+                                                    <span class="wrap_flag">
+                                                        <img src="{("{$l->label}.png")|resize:55:55:false:$config->lang_resized_dir}" />
+                                                    </span>
                                                 {/if}
                                                 {$l->name|escape}
                                             </div>

@@ -1,4 +1,4 @@
-{$meta_title = $btr->reportstats_orders scope=parent}
+{$meta_title = $btr->reportstats_orders scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -6,6 +6,9 @@
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->reportstats_orders|escape}
+                <i class="fn_tooltips" title="{$btr->tooltip_reportstats_orders|escape}">
+                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                </i>
             </div>
         </div>
     </div>
@@ -30,7 +33,7 @@
                                 {*Блок фильтров*}
                                <div class="date">
                                    <form class="date_filter row" method="get">
-                                       <input type="hidden" name="module" value="ReportStatsAdmin">
+                                       <input type="hidden" name="controller" value="ReportStatsAdmin">
                                        <input type="hidden" name="date_filter" value="">
 
                                        <div class="col-md-5 col-lg-5 pr-0 pl-0">
@@ -144,7 +147,7 @@
                                 {/foreach}
                             </div>
                             <div class="okay_list_boding okay_list_reportstats_products">
-                                <a title="{$purchase->product_name|escape}" href="{url module=ProductAdmin id=$purchase->product_id return=$smarty.server.REQUEST_URI}">{$purchase->product_name}</a> {$purchase->variant_name}
+                                <a title="{$purchase->product_name|escape}" href="{url controller=ProductAdmin id=$purchase->product_id return=$smarty.server.REQUEST_URI}">{$purchase->product_name}</a> {$purchase->variant_name}
                                 <div class="hidden-md-up mt-q">
                                     <span class="text_dark text_600">
                                         <span class="hidden-xs-down">Сумма продаж: </span>

@@ -6,6 +6,8 @@ namespace Okay\Admin\Controllers;
 
 use Okay\Core\Import;
 use Okay\Core\Request;
+use Okay\Core\QueryFactory;
+use Okay\Entities\FeaturesEntity;
 
 class ImportAdmin extends IndexAdmin
 {
@@ -19,13 +21,20 @@ class ImportAdmin extends IndexAdmin
      */
     protected $importCore;
 
-    /*Импорт товаров*/
+    /**
+     * @var QueryFactory
+     */
+    protected $queryFactory;
+
+
     public function fetch(
         Import $importCore,
-        Request $request
+        Request $request,
+        QueryFactory $queryFactory
     ) {
-        $this->request    = $request;
-        $this->importCore = $importCore;
+        $this->request      = $request;
+        $this->importCore   = $importCore;
+        $this->queryFactory = $queryFactory;
         
         $this->design->assign('import_files_dir', $importCore->getImportFilesDir());
         if(!is_writable($importCore->getImportFilesDir())) {
@@ -34,13 +43,13 @@ class ImportAdmin extends IndexAdmin
         
         $oldLocale = setlocale(LC_ALL, 0);
         setlocale(LC_ALL, $importCore->getLocale());
-        if(setlocale(LC_ALL, 0) != $importCore->getLocale()) {
+        if (setlocale(LC_ALL, 0) != $importCore->getLocale()) {
             $this->design->assign('message_error', 'locale_error');
             $this->design->assign('locale', $importCore->getLocale());
         }
         setlocale(LC_ALL, $oldLocale);
 
-        if($request->method('post')) {
+        if ($request->method('post')) {
             if ($request->files("file") && $request->files("file")['error'] == UPLOAD_ERR_OK) {
                 $uploaded_name = $request->files("file", "tmp_name");
                 $temp = tempnam($importCore->getImportFilesDir(), 'temp_');
@@ -138,7 +147,7 @@ class ImportAdmin extends IndexAdmin
     }
 
     private function winToRtf($text) {
-        if(function_exists('iconv')) {
+        if (function_exists('iconv')) {
             return @iconv('windows-1251', 'UTF-8', $text);
         } else {
             $t = '';
@@ -168,7 +177,10 @@ class ImportAdmin extends IndexAdmin
         $source_columns = $this->importCore->getColumns();
         $this->design->assign('columns_names', array_keys($this->importCore->getColumnsNames()));
 
-        $this->db->customQuery('SELECT f.name FROM __features f ORDER BY f.position');
+        $sql = $this->queryFactory->newSqlQuery();
+        $sql->setStatement("SELECT f.name FROM ".FeaturesEntity::getTable()." f ORDER BY f.position");
+        $this->db->query($sql);
+
         $features = $this->db->results('name');
         $this->design->assign('features', $features);
 
@@ -184,11 +196,11 @@ class ImportAdmin extends IndexAdmin
         } else {
             $selected = $fields;
         }
-
+        
         foreach ($source_columns as &$column) {
             $c = new \stdClass();
             $c->name = $column;
-            $c->value = $selected[$c->name];
+            $c->value = isset($selected[$c->name]) ? $selected[$c->name] : '';
             $c->is_feature = in_array($c->name, $features);
             $c->is_exist = in_array($c->name, $internal_columns) || $c->is_feature;
             $c->is_nf_selected = !$c->is_exist && $c->value==$c->name;

@@ -1,4 +1,4 @@
-/**
+/* *
  * (c) 2009-2019 Sebastian Bochann
  *
  * Price indicator for Highcharts
@@ -8,10 +8,12 @@
 
 'use strict';
 import H from '../parts/Globals.js';
-import '../parts/Utilities.js';
+
+import U from '../parts/Utilities.js';
+var isArray = U.isArray;
+
 var addEvent = H.addEvent,
-    merge = H.merge,
-    isArray = H.isArray;
+    merge = H.merge;
 
 /**
  * The line marks the last price from visible range of points.
@@ -72,6 +74,7 @@ var addEvent = H.addEvent,
 addEvent(H.Series, 'afterRender', function () {
     var serie = this,
         seriesOptions = serie.options,
+        pointRange = seriesOptions.pointRange,
         lastVisiblePrice = seriesOptions.lastVisiblePrice,
         lastPrice = seriesOptions.lastPrice;
 
@@ -84,8 +87,10 @@ addEvent(H.Series, 'afterRender', function () {
             origGraphic = yAxis.cross,
             origLabel = yAxis.crossLabel,
             points = serie.points,
+            yLength = serie.yData.length,
+            pLength = points.length,
             x = serie.xData[serie.xData.length - 1],
-            y = serie.yData[serie.yData.length - 1],
+            y = serie.yData[yLength - 1],
             lastPoint,
             yValue,
             crop;
@@ -105,25 +110,32 @@ addEvent(H.Series, 'afterRender', function () {
             });
 
             // Save price
-            serie.lastPrice = serie.yAxis.cross;
-            serie.lastPrice.y = yValue;
+            if (serie.yAxis.cross) {
+                serie.lastPrice = serie.yAxis.cross;
+                serie.lastPrice.y = yValue;
+            }
         }
 
-        if (lastVisiblePrice && lastVisiblePrice.enabled) {
+        if (lastVisiblePrice &&
+            lastVisiblePrice.enabled &&
+            pLength > 0
+        ) {
 
-            crop = points[points.length - 1].x === x ? 1 : 2;
+            crop = (points[pLength - 1].x === x) || pointRange === null ? 1 : 2;
 
             yAxis.crosshair = yAxis.options.crosshair = merge({
                 color: 'transparent'
             }, seriesOptions.lastVisiblePrice);
 
             yAxis.cross = serie.lastVisiblePrice;
-            lastPoint = points[points.length - crop];
+            lastPoint = points[pLength - crop];
             // Save price
             yAxis.drawCrosshair(null, lastPoint);
 
-            serie.lastVisiblePrice = yAxis.cross;
-            serie.lastVisiblePrice.y = lastPoint.y;
+            if (yAxis.cross) {
+                serie.lastVisiblePrice = yAxis.cross;
+                serie.lastVisiblePrice.y = lastPoint.y;
+            }
 
             if (serie.crossLabel) {
                 serie.crossLabel.destroy();

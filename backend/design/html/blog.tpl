@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->blog_blog scope=parent}
+{$meta_title=$btr->blog_blog scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -13,7 +13,7 @@
                 {/if}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url module=PostAdmin return=$smarty.server.REQUEST_URI}">
+                <a class="btn btn_small btn-info" href="{url controller=PostAdmin return=$smarty.server.REQUEST_URI}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->blog_add|escape}</span>
                 </a>
@@ -23,7 +23,7 @@
     <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
         <div class="boxed_search">
             <form class="search" method="get">
-                <input type="hidden" name="module" value="BlogAdmin">
+                <input type="hidden" name="controller" value="BlogAdmin">
                 <div class="input-group">
                     <input name="keyword" class="form-control" placeholder="{$btr->blog_search|escape}" type="text" value="{$keyword|escape}" >
                     <span class="input-group-btn">
@@ -52,9 +52,9 @@
                     <div class="col-md-3 col-lg-3 col-sm-12">
                         <div class="">
                             <select class="selectpicker px-0"  onchange="location = this.value;">
-                                <option value="{url module=BlogAdmin type_post=null keyword=null id=null page=null}" {if !$type_post}selected=""{/if} >{$btr->general_all|escape}</option>
-                                <option value="{url module=BlogAdmin type_post="blog" keyword=null id=null page=null}" {if $type_post == "blog"}selected=""{/if} >{$btr->blog_articles|escape}</option>
-                                <option value="{url module=BlogAdmin type_post="news" keyword=null id=null page=null}" {if $type_post == "news"}selected=""{/if} >{$btr->blog_news|escape}</option>
+                                <option value="{url controller=BlogAdmin type_post=null keyword=null id=null page=null}" {if !$type_post}selected=""{/if} >{$btr->general_all|escape}</option>
+                                <option value="{url controller=BlogAdmin type_post="blog" keyword=null id=null page=null}" {if $type_post == "blog"}selected=""{/if} >{$btr->blog_articles|escape}</option>
+                                <option value="{url controller=BlogAdmin type_post="news" keyword=null id=null page=null}" {if $type_post == "news"}selected=""{/if} >{$btr->blog_news|escape}</option>
                             </select>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
 
                                         <div class="okay_list_boding okay_list_photo">
                                             {if $post->image}
-                                                <a href="{url module=PostAdmin id=$post->id return=$smarty.server.REQUEST_URI}">
+                                                <a href="{url controller=PostAdmin id=$post->id return=$smarty.server.REQUEST_URI}">
                                                     <img src="{$post->image|escape|resize:55:55:false:$config->resized_blog_dir}"/>
                                                 </a>
                                             {else}
@@ -106,7 +106,7 @@
                                         </div>
 
                                         <div class="okay_list_boding okay_list_blog_name">
-                                            <a class="link" href="{url module=PostAdmin id=$post->id return=$smarty.server.REQUEST_URI}">{$post->name|escape}</a>
+                                            <a class="link" href="{url controller=PostAdmin id=$post->id return=$smarty.server.REQUEST_URI}">{$post->name|escape}</a>
                                             <span class="text_grey">{$post->date|date}</span>
                                             <div class="hidden-lg-up mt-q">
                                                 {if $post->type_post == "blog"}
@@ -127,7 +127,7 @@
 
                                         <div class="okay_list_boding okay_list_status">
                                             <label class="switch switch-default ">
-                                                <input class="switch-input fn_ajax_action {if $post->visible}fn_active_class{/if}" data-module="blog" data-action="visible" data-id="{$post->id}" name="visible" value="1" type="checkbox"  {if $post->visible}checked=""{/if}/>
+                                                <input class="switch-input fn_ajax_action {if $post->visible}fn_active_class{/if}" data-controller="blog" data-action="visible" data-id="{$post->id}" name="visible" value="1" type="checkbox"  {if $post->visible}checked=""{/if}/>
                                                 <span class="switch-label"></span>
                                                 <span class="switch-handle"></span>
                                             </label>

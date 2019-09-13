@@ -53,48 +53,48 @@ function show_tooltip()
 
     if(id = $(this).attr('data-page'))
     {
-        tooltipcontent = "<a href='backend/index.php?module=PageAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_page}</a>";
-        tooltipcontent += "<a href='backend/index.php?module=PageAdmin&return="+from+lang+"' class=admin_tooltip_add>{$btr->admintooltip_add_page}</a>";
+        tooltipcontent = "<a href='backend/index.php?controller=PageAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_page}</a>";
+        tooltipcontent += "<a href='backend/index.php?controller=PageAdmin&return="+from+lang+"' class=admin_tooltip_add>{$btr->admintooltip_add_page}</a>";
     }
 
     if(id = $(this).attr('data-category'))
     {
-        tooltipcontent = "<a href='backend/index.php?module=CategoryAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_category}</a>";
-        tooltipcontent += "<a href='backend/index.php?module=CategoryAdmin&return="+from+lang+"' class=admin_tooltip_add>{$btr->admintooltip_add_category}</a>";
-        tooltipcontent += "<a href='backend/index.php?module=ProductAdmin&category_id="+id+"&return="+from+lang+"' class=admin_tooltip_add>{$btr->admintooltip_add_product}</a>";
+        tooltipcontent = "<a href='backend/index.php?controller=CategoryAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_category}</a>";
+        tooltipcontent += "<a href='backend/index.php?controller=CategoryAdmin&return="+from+lang+"' class=admin_tooltip_add>{$btr->admintooltip_add_category}</a>";
+        tooltipcontent += "<a href='backend/index.php?controller=ProductAdmin&category_id="+id+"&return="+from+lang+"' class=admin_tooltip_add>{$btr->admintooltip_add_product}</a>";
     }
 
     if(id = $(this).attr('data-brand'))
     {
-        tooltipcontent = "<a href='backend/index.php?module=BrandAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_brand}</a>";
-        tooltipcontent += "<a href='backend/index.php?module=BrandAdmin&return="+from+lang+"' class=admin_tooltip_add>{$btr->admintooltip_add_brand}</a>";
+        tooltipcontent = "<a href='backend/index.php?controller=BrandAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_brand}</a>";
+        tooltipcontent += "<a href='backend/index.php?controller=BrandAdmin&return="+from+lang+"' class=admin_tooltip_add>{$btr->admintooltip_add_brand}</a>";
     }
 
     if(id = $(this).attr('data-product'))
     {
-        tooltipcontent = "<a href='backend/index.php?module=ProductAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_product}</a>";
-        tooltipcontent += "<a href='backend/index.php?module=ProductAdmin&category_id="+id+"&return="+from+lang+"' class=admin_tooltip_add>{$btr->admintooltip_add_product}</a>";
+        tooltipcontent = "<a href='backend/index.php?controller=ProductAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_product}</a>";
+        tooltipcontent += "<a href='backend/index.php?controller=ProductAdmin&category_id="+id+"&return="+from+lang+"' class=admin_tooltip_add>{$btr->admintooltip_add_product}</a>";
     }
 
     if(id = $(this).attr('data-post'))
     {
-        tooltipcontent = "<a href='backend/index.php?module=PostAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_post}</a>";
+        tooltipcontent = "<a href='backend/index.php?controller=PostAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_post}</a>";
     }
 
     if(id = $(this).attr('data-feature'))
     {
-        tooltipcontent = "<a href='backend/index.php?module=FeatureAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_feature}</a>";
-        tooltipcontent += "<a href='backend/index.php?module=FeatureAdmin&return="+from+lang+"' class=admin_tooltip_add>{$btr->admintooltip_add_feature}</a>";
+        tooltipcontent = "<a href='backend/index.php?controller=FeatureAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_feature}</a>";
+        tooltipcontent += "<a href='backend/index.php?controller=FeatureAdmin&return="+from+lang+"' class=admin_tooltip_add>{$btr->admintooltip_add_feature}</a>";
     }
 
     if(id = $(this).attr('data-language'))
     {
-        tooltipcontent = "<a href='backend/index.php?module=TranslationAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_translarion}</a>";
+        tooltipcontent = "<a href='backend/index.php?controller=TranslationAdmin&id="+id+"&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_translarion}</a>";
     }
 
     if(id = $(this).attr('data-languages'))
     {
-        tooltipcontent = "<a href='backend/index.php?module=LanguagesAdmin&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_language}</a>";
+        tooltipcontent = "<a href='backend/index.php?controller=LanguagesAdmin&return="+from+lang+"' class=admin_tooltip_edit>{$btr->admintooltip_edit_language}</a>";
     }
 
     $('.tooltip').html(tooltipcontent);

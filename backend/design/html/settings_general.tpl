@@ -1,4 +1,4 @@
-{$meta_title = $btr->settings_general_sites scope=parent}
+{$meta_title = $btr->settings_general_sites scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -46,7 +46,11 @@
                 <div class="toggle_body_wrap on fn_card">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="heading_label">{$btr->settings_general_sitename|escape}</div>
+                            <div class="heading_label">{$btr->settings_general_sitename|escape}
+                                <i class="fn_tooltips" title="{$btr->tooltip_settings_general_sitename|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </div>
                             <div class="mb-1">
                                 <input name="site_name" class="form-control" type="text" value="{$settings->site_name|escape}" />
                             </div>
@@ -58,7 +62,11 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="heading_label">{$btr->settings_general_email|escape}</div>
+                            <div class="heading_label">{$btr->settings_general_email|escape}
+                                <i class="fn_tooltips" title="{$btr->tooltip_settings_general_email|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </div>
                             <div class="mb-1">
                                 <input name="admin_email" class="form-control" type="text" value="{$settings->admin_email|escape}" />
                             </div>

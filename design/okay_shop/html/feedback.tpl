@@ -1,6 +1,6 @@
 {* Feedback page *}
 {* The canonical address of the page *}
-{$canonical="{url_generator route="page" url=$page->url absolute=1}" scope=parent}
+{$canonical="{url_generator route="page" url=$page->url absolute=1}" scope=global}
 
 <div class="block">
     {* The page heading *}

@@ -5,9 +5,9 @@ namespace Okay\Admin\Controllers;
 
 
 use Okay\Core\Image;
+use Okay\Core\Modules\Modules;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\DeliveriesEntity;
-use Okay\Entities\ImagesEntity;
 use Okay\Entities\PaymentsEntity;
 
 class PaymentMethodAdmin extends IndexAdmin
@@ -17,22 +17,22 @@ class PaymentMethodAdmin extends IndexAdmin
         PaymentsEntity $paymentsEntity,
         DeliveriesEntity $deliveriesEntity,
         CurrenciesEntity $currenciesEntity,
-        ImagesEntity $imagesEntity,
-        Image $imageCore
+        Image $imageCore,
+        Modules $modules
     ) {
         $paymentMethod = new \stdClass;
         /*Приме информации о способе оплаты*/
-        if($this->request->method('post')) {
+        if ($this->request->method('post')) {
             $paymentMethod->id              = $this->request->post('id', 'intgeger');
             $paymentMethod->enabled         = $this->request->post('enabled', 'boolean');
             $paymentMethod->name            = $this->request->post('name');
             $paymentMethod->currency_id     = $this->request->post('currency_id');
             $paymentMethod->description     = $this->request->post('description');
-            $paymentMethod->module          = $this->request->post('module', 'string');
+            $paymentMethod->module          = $this->request->post('module');
             
-            $paymentSettings = $this->request->post('payment_settings');
+            $paymentSettings = $this->request->post('payment_settings', null, []);
             
-            if(!$paymentDeliveries = $this->request->post('payment_deliveries')) {
+            if (!$paymentDeliveries = $this->request->post('payment_deliveries')) {
                 $paymentDeliveries = [];
             }
             
@@ -41,6 +41,10 @@ class PaymentMethodAdmin extends IndexAdmin
             } else {
                 /*Добавление/Обновление способа оплаты*/
                 if (empty($paymentMethod->id)) {
+                    if (empty($paymentMethod->settings)) {
+                        $paymentMethod->settings = '';
+                    }
+
                     $paymentMethod->id = $paymentsEntity->add($paymentMethod);
                     $this->design->assign('message_success', 'added');
                 } else {
@@ -95,7 +99,7 @@ class PaymentMethodAdmin extends IndexAdmin
         $this->design->assign('payment_method', $paymentMethod);
         $this->design->assign('payment_settings', $paymentSettings);
         
-        $paymentModules = $paymentsEntity->getPaymentModules();
+        $paymentModules = $modules->getPaymentModules();
         $this->design->assign('payment_modules', $paymentModules);
         
         $currencies = $currenciesEntity->find();

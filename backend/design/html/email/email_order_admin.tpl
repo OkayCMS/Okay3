@@ -1,7 +1,7 @@
 {if $order->paid}
-{$subject = "`$btr->email_order` `$order->id` `$btr->email_paid`" scope=parent}
+{$subject = "`$btr->email_order` `$order->id` `$btr->email_paid`" scope=global}
 {else}
-{$subject = "`$btr->email_new_order` `$order->id`" scope=parent}
+{$subject = "`$btr->email_new_order` `$order->id`" scope=global}
 {/if}
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -52,7 +52,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td class="es-p15t es-p10b" align="center">
-                                                                <a href="{$rootUrl}/backend/index.php?module=OrderAdmin&id={$order->id}" class="es-button" target="_blank" >{$btr->email_order_info|escape}</a>
+                                                                <a href="{$rootUrl}/backend/index.php?controller=OrderAdmin&id={$order->id}" class="es-button" target="_blank" >{$btr->email_order_info|escape}</a>
                                                             </td>
                                                         </tr>
                                                         </tbody>
@@ -276,13 +276,7 @@
                                                                             {if $purchase->variant->stock == 0}
                                                                             <div class="es-p5t" style="color: #000; font-size: 12px;font-weight: 600">{$lang->product_pre_order}</div>
                                                                             {/if}
-                                                                            {if $order->paid && $purchase->variant->attachment}
-                                                                            <div class="es-p5t">
-                                                                                <a class="es-download" href="{$config->root_url}/{$lang_link}order/{$order->url}/{$purchase->variant->attachment}">
-                                                                                    <em>{$btr->email_order_download}</em>
-                                                                                </a>
-                                                                            </div>
-                                                                            {/if}
+                                                                            
                                                                         </td>
                                                                         <td style="text-align: center;" width="60">
                                                                             {$purchase->amount} {if $purchase->units}{$purchase->units|escape}{else}{$settings->units}{/if}

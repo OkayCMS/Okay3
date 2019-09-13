@@ -99,6 +99,9 @@ body {
 body:not(.top-nav) header.navbar {
     z-index: 200;
 }
+.fn_tooltips{
+    display: none;
+}
 /********************************************************* Text  */
 .text-success,
 .text_success{color: #10cfbd;}
@@ -281,6 +284,22 @@ body:not(.top-nav) header.navbar {
     font-size: 14px;
     line-height: 24px;
 }
+.heading_label--required span{
+    position: relative;
+}
+.heading_label--required span:after{
+    content: "*";
+    color: #f74c4c;
+    font-size: 14px;
+    margin-left: 3px;
+}
+.required__heading_label {
+    color: #f74c4c;
+    font-size: 12px;
+    margin-left: 3px;
+    font-weight: 600;
+    vertical-align: bottom;
+}
 .heading_normal{
     font-family: 'Open Sans', sans-serif;
     font-weight: normal;
@@ -288,6 +307,18 @@ body:not(.top-nav) header.navbar {
     font-size: 16px;
     line-height: 26px;
 }
+.translation_icon{
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: 3px;
+    height: 24px;
+    border: 1px solid #ccc9;
+    border-radius: 3px;
+}
+.translation_icon img {
+    margin-top: -5px;
+}
+
 .min_height_210px{
     min-height: 210px;
 }
@@ -1691,8 +1722,12 @@ label.switch_label {
 .okay_list{
     text-align: center;
     border: 1px solid #ccc;
-
 }
+.ok_related_list{
+    border: none;
+    margin-bottom: 15px;
+}
+
 .okay_list.variants_list{
     text-align: left;
     border: 1px solid #ccc;
@@ -1854,16 +1889,31 @@ label.switch_label {
 }
 .okay_list .variants_list_item{
     position:relative;
-    height: 210px;
+    height: 90px;
 }
 .okay_list .variants_list_item .okay_list_row{
     min-height: 80px;
 }
-.okay_list .remove_variant{
+.okay_list .okay_list_close.remove_variant{
    position: absolute;
     width: 50px;
     right: 0px;
     top: 0px;
+    padding: 5px;
+    border-radius: 50%;
+    width: 35px;
+}
+.okay_list .okay_list_close.remove_variant .btn_close {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    color: red;
+}
+.okay_list .okay_list_close.remove_variant .btn_close svg{
+    height: 12px;
+    width: 12px;
 }
 
 .okay_list .okay_list_subicon{
@@ -3105,6 +3155,18 @@ header.navbar .container-fluid{
 }
 .admin_languages a img{
     margin-top: -5px;
+}
+.wrap_flag{
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 5px;
+    height: 40px;
+    border: 1px solid #ccc9;
+    border-radius: 3px;
+    margin-bottom: 0;
+}
+.wrap_flag img{
+    margin-top: -8px;
 }
 .admin_notification .notification_title,
 .admin_techsupport a{
@@ -5774,6 +5836,10 @@ div.mce-fullscreen {
     width: 16px;
     height: 16px;
     line-height: 1;
+}
+.tooltip_box--warning{
+    color: #ff9a07;
+
 }
 .tooltip_box svg{
     width: 16px;

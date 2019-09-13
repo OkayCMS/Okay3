@@ -1,4 +1,4 @@
-{$meta_title = $btr->currency_currencies scope=parent}
+{$meta_title = $btr->currency_currencies scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -154,13 +154,13 @@
                                         {/if}
                                         <div class="okay_list_boding okay_list_status hidden-md-down">
                                             <label class="switch switch-default ">
-                                                <input class="switch-input fn_ajax_action {if $c->enabled}fn_active_class{/if}" data-module="currency" data-action="enabled" data-id="{$c->id}" name="enabled" value="1" type="checkbox"  {if $c->enabled}checked=""{/if}/>
+                                                <input class="switch-input fn_ajax_action {if $c->enabled}fn_active_class{/if}" data-controller="currency" data-action="enabled" data-id="{$c->id}" name="enabled" value="1" type="checkbox"  {if $c->enabled}checked=""{/if}/>
                                                 <span class="switch-label"></span>
                                                 <span class="switch-handle"></span>
                                             </label>
                                         </div>
                                         <div class="cur_settings">
-                                            <button data-hint="{$btr->currency_cents_display|escape}" type="button" class="setting_icon setting_icon_yandex hint-bottom-middle-t-info-s-small-mobile hint-anim fn_ajax_action {if $c->cents}fn_active_class{/if}" data-module="currency" data-action="cents" data-id="{$c->id}" name="cents">
+                                            <button data-hint="{$btr->currency_cents_display|escape}" type="button" class="setting_icon setting_icon_yandex hint-bottom-middle-t-info-s-small-mobile hint-anim fn_ajax_action {if $c->cents}fn_active_class{/if}" data-controller="currency" data-action="cents" data-id="{$c->id}" name="cents">
                                                 <i class="fa fa-database fa-sm m-t-2"></i>
                                             </button>
                                         </div>

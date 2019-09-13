@@ -184,8 +184,20 @@
   stroke-width: 3;
 }
 
+.highcharts-point-inactive {
+  opacity: 0.2;
+  transition: opacity 50ms;
+  /* quick in */
+}
+
+.highcharts-series-inactive {
+  opacity: 0.2;
+  transition: opacity 50ms;
+  /* quick in */
+}
+
 .highcharts-state-hover path {
-  transition: stroke-width 50;
+  transition: stroke-width 50ms;
   /* quick in */
 }
 
@@ -393,6 +405,16 @@ g.highcharts-series,
   fill-opacity: 0.75;
 }
 
+.highcharts-vector-series .highcharts-point {
+  fill: none;
+  stroke-width: 2px;
+}
+
+.highcharts-windbarb-series .highcharts-point {
+  fill: none;
+  stroke-width: 2px;
+}
+
 /* Legend */
 .highcharts-legend-box {
   fill: none;
@@ -424,6 +446,11 @@ g.highcharts-series,
 
 .highcharts-legend-nav-inactive {
   fill: #cccccc;
+}
+
+circle.highcharts-legend-nav-active, circle.highcharts-legend-nav-inactive {
+  /* tracker */
+  fill: rgba(192, 192, 192, 0.0001);
 }
 
 .highcharts-legend-title-box {

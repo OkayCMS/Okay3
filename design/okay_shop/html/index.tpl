@@ -1,37 +1,8 @@
 <!DOCTYPE html>
-<html{if $language->href_lang} lang="{$language->href_lang|escape}"{/if} prefix="og: http://ogp.me/ns#">
+<html {if $language->href_lang} lang="{$language->href_lang|escape}"{/if} prefix="og: http://ogp.me/ns#">
 <head>
-    {* Full base address *}
-    <base href="{$base}/">
-
     {* Meta data *}
     {include "head.tpl"}
-    
-	{* Favicon *}
-    <link href="{$rootUrl}/{$config->design_images}{$settings->site_favicon}?v={$settings->site_favicon_version}" type="image/x-icon" rel="icon">
-    <link href="{$rootUrl}/{$config->design_images}{$settings->site_favicon}?v={$settings->site_favicon_version}" type="image/x-icon" rel="shortcut icon">
-
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap&subset=cyrillic" rel="stylesheet">
-    <link href="https://cdn.materialdesignicons.com/3.8.95/css/materialdesignicons.min.css" rel="stylesheet">
-	
-    {* JQuery *}
-    <script>ut_tracker.start('parsing:page');</script>
-
-    <script>ut_tracker.start('parsing:head:scripts');</script>
-    {$ok_head}
-    {if $controller == "Products"}
-        {js file='jquery-migrate-3.0.1.min.js' defer=true}
-    {/if}
-    <script>ut_tracker.end('parsing:head:scripts');</script>
-    
-	{if !empty($counters['head'])}
-        <script>ut_tracker.start('parsing:head:counters');</script>
-        {foreach $counters['head'] as $counter}
-            {$counter->code}
-        {/foreach}
-        <script>ut_tracker.end('parsing:head:counters');</script>
-    {/if}
-    
 </head>
 
 <body class="d-flex flex-column {if $controller == 'MainController'}main_page{else}other_page{/if}">
@@ -66,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <div class="header__center hidden-md-down">
+        <div class="header__center hidden-md-down" >
             <div class="container">
                 <div class="f_row no_gutters flex-nowrap align-items-center justify-content-between">
                     {* Menu button*}
@@ -86,50 +57,50 @@
                     {* header contacts *}
                     <div class="header-contact">
                         <div class="header-contact__inner">
-                            <div class="header-contact__item header-contact__item--visible">
-                                <div class="header-contact__phone">
-                                    <a class="header-contact__section mdi mdi-phone-in-talk" href="tel:{preg_replace('~[^0-9]~', '', $lang->company_phone_1)}" data-language="company_phone_1">
-                                        <span>{$lang->company_phone_1}</span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="header-contact__item">
-                                <div class="header-contact__phone">
-                                    <a class="header-contact__section mdi mdi-phone-in-talk" href="tel:{preg_replace('~[^0-9]~', '', $lang->company_phone_2)}" data-language="company_phone_2">
-                                        <span>{$lang->company_phone_2}</span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="header-contact__item">
-                                <div class="header-contact__email">
-                                    <a class="header-contact__section mdi mdi-email-outline" href="mailto:{$lang->company_email}" data-language="company_email">
-                                        <span>{$lang->company_email}</span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="header-contact__item">
-                                <div class="header-contact__time">
-                                    <div class="header-contact__section mdi mdi-calendar-clock">
-                                        <div class="header-contact__title" data-language="index_we_open">{$lang->index_we_open}</div>
-                                        <div class="header-contact__title-s" data-language="company_open_hours">{$lang->company_open_hours}</div>
+                            {if $settings->site_phones}
+                                {foreach $settings->site_phones as $phone}
+                                    <div class="header-contact__item{if $phone@first} header-contact__item--visible{/if}">
+                                        <div class="header-contact__phone">
+                                            <a class="header-contact__section mdi mdi-phone-in-talk" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
+                                                <span>{$phone|escape}</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {/foreach}
+                            {/if}
+                            {if $settings->site_email}
+                                <div class="header-contact__item">
+                                    <div class="header-contact__email">
+                                        <a class="header-contact__section mdi mdi-email-outline" href="mailto:{$settings->site_email|escape}" >
+                                            <span>{$settings->site_email|escape}</span>
+                                        </a>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="header-contact__item">
+                            {/if}
+                            {if $settings->site_working_hours}
+                                <div class="header-contact__item">
+                                    <div class="header-contact__time">
+                                        <div class="header-contact__section mdi mdi-calendar-clock">
+                                            <div class="header-contact__title-s">{$settings->site_working_hours}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {/if}
+                            {*<div class="header-contact__item">
                                 <div class="header-contact__location">
                                     <div class="header-contact__section mdi mdi-map-marker-outline">
                                         <div class="header-contact__title" data-language="index_location_title">{$lang->index_location_title}</div>
                                         <div class="header-contact__title-s" data-language="company_location">{$lang->company_location}</div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>*}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="header__bottom">
-            <div class="fn_header__sticky">
+            <div class="{if $controller != 'MainController'}fn_header__sticky {/if}" data-margin-top="0" data-sticky-for="1024" data-sticky-class="is-sticky">
                 <div class="container">
                     <div class="header__bottom_panel f_row no_gutters flex-nowrap align-content-stretch justify-content-between">
                         {* Mobile menu button*}
@@ -259,32 +230,34 @@
                         <span class="fn_switch_parent footer__title_arrow hidden-lg-up">{include file="svg.tpl" svgId="arrow_right"}</span>
                     </div>
                     <div class="footer__content hidden-md-down">
-                        <div class="footer__contact_item">
-                            <a class="phone mdi mdi-phone-in-talk" href="tel:{preg_replace('~[^0-9]~', '', $lang->company_phone_1)}" data-language="company_phone_1">
-                                <span>{$lang->company_phone_1}</span>
-                            </a>
-                        </div>
-                        <div class="footer__contact_item">
-                            <a class="phone mdi mdi-phone-in-talk" href="tel:{preg_replace('~[^0-9]~', '', $lang->company_phone_2)}" data-language="company_phone_2">
-                                <span>{$lang->company_phone_2}</span>
-                            </a>
-                        </div>
-                        <div class="footer__contact_item">
-                            <a class="email mdi mdi-email-outline" href="mailto:{$lang->company_email}" data-language="company_email">
-                                <span>{$lang->company_email}</span>
-                            </a>
-                         </div>
-                        <div class="footer__contact_item">
-                            <span class="open_hours mdi mdi-calendar-clock" data-language="company_email">
-                                <div class="open_hours_title" data-language="index_we_open">{$lang->index_we_open}</div>
-                                <div data-language="company_open_hours">{$lang->company_open_hours}</div>
-                            </span>
-                        </div>
-                        <div class="footer__contact_item">
+                        {if $settings->site_phones}
+                            {foreach $settings->site_phones as $phone}
+                                <div class="footer__contact_item">
+                                    <a class="phone mdi mdi-phone-in-talk" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
+                                        <span>{$phone|escape}</span>
+                                    </a>
+                                </div>
+                            {/foreach}
+                        {/if}
+                        {if $settings->site_email}
+                            <div class="footer__contact_item">
+                                <a class="email mdi mdi-email-outline" href="mailto:{$settings->site_email|escape}">
+                                    <span>{$settings->site_email|escape}</span>
+                                </a>
+                            </div>
+                        {/if}
+                        {if $settings->site_working_hours}
+                            <div class="footer__contact_item">
+                                <span class="open_hours mdi mdi-calendar-clock">
+                                    {$settings->site_working_hours}
+                                </span>
+                            </div>
+                        {/if}
+                        {*<div class="footer__contact_item">
                             <span class="location mdi mdi-map-marker-outline" data-language="company_email">
                                 <div data-language="company_location">{$lang->company_location}</div>
                             </span>
-                        </div>
+                        </div>*}
                         <div class="footer__contact_item">
                             <a class="fn_callback callback mdi mdi-phone-return" href="#fn_callback" data-language="index_back_call">
                                 <span>{$lang->index_back_call}</span>
@@ -433,7 +406,6 @@
     {/if}
 
     {$ok_footer}
-    {$admintooltip}
 
     {if $controller == 'ProductController' || $controller == "BlogController"}
         {css file='jssocials.css' dir='js_libraries/js_socials/css'}

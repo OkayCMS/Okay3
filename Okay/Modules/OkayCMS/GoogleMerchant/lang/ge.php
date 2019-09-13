@@ -1,0 +1,30 @@
+<?php
+
+$lang['okaycms__google_merchant__title'] = 'გადმოტვირთვა (GoogleMerchant)';
+$lang['okaycms__google_merchant__left_title'] = 'გადმოტვირთვა (GoogleMerchant)';
+$lang['okaycms__google_merchant__products'] = 'გადმოტვირთვისთვის საქონელი';
+$lang['okaycms__google_merchant__products_remove'] = 'საქონელი, რომლის გადმოტვირთვა არ ჭირდება';
+$lang['okaycms__google_merchant__select_all'] = 'აირჩიეთ ყველა';
+$lang['okaycms__google_merchant__categories'] = 'კატეგორიები';
+$lang['okaycms__google_merchant__select_none'] = 'გააუქმეთ ყველა';
+$lang['okaycms__google_merchant__brands'] = 'კონიაკი';
+$lang['okaycms__google_merchant__generation_url'] = 'ბმული, რომელზეც შესაძლებელია გადმოტვირთვის ფაილი';
+$lang['okaycms__google_merchant__upload_non_exists_products_to_google'] = 'მხოლოდ გადმოტვირთეთ საქონელი საწყობში';
+$lang['okaycms__google_merchant__use_full_description_to_google'] = 'გამოიყენეთ სრული აღწერა';
+$lang['okaycms__google_merchant__products_for_upload'] = 'გადმოტვირთვისთვის საქონელი';
+$lang['okaycms__google_merchant__products_not_for_upload'] = 'საქონელი არ გადმოტვირთვისთვის';
+$lang['okaycms__google_merchant__select_products'] = 'შეარჩიეთ პროდუქტი';
+$lang['okaycms__google_merchant__add_products'] = 'დაამატეთ პროდუქტი';
+$lang['okaycms__google_merchant__has_manufacturer_warranty'] = 'მწარმოებლის გარანტია';
+$lang['okaycms__google_merchant__params'] = 'პარამეტრები';
+$lang['okaycms__google_merchant__company'] = 'კომპანია';
+$lang['okaycms__google_merchant__no_export_without_price'] = 'არ გადმოტვირთოთ პროდუქტები 0 ფასით';
+$lang['okaycms__google_merchant__pickup'] = 'შეგიძლიათ შეარჩიოთ არჩეული ნივთი და შეარჩიოთ იგი საკუთარ თავს';
+$lang['okaycms__google_merchant__store'] = 'შეძენა შესაძლებელია საცალო მაღაზიაში';
+$lang['okaycms__google_merchant__sales_max_length'] = 'ტექსტში მაქსიმალური სიგრძეა 50 სიმბოლო';
+$lang['okaycms__google_merchant__delivery_disallow'] = 'მიწოდების უარყოფა';
+$lang['okaycms__google_merchant__adult'] = 'სექსუალური პროდუქტები';
+$lang['okaycms__google_merchant__color'] = 'ფერი';
+$lang['okaycms__google_merchant__color_notify'] = 'შეარჩიეთ ქონება';
+$lang['okaycms__google_merchant__upload_products'] = 'აირჩიეთ პროდუქტები, რომ ჩამოტვირთოთ';
+$lang['okaycms__google_merchant__use_variant_name_like_size'] = 'გამოიყენეთ ვარიანტის სახელი, როგორც ზომით (ტანსაცმლისთვის)';

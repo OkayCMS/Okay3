@@ -26,7 +26,7 @@
 
                 <div class="okay_list_boding okay_list_photo hidden-sm-down">
                     {if $ajax_category->image}
-                        <a href="index.php?module=CategoryAdmin&id={$ajax_category->id}">
+                        <a href="index.php?controller=CategoryAdmin&id={$ajax_category->id}">
                             <img src="{$ajax_category->image|resize:55:55:false:$config->resized_categories_dir}" alt="" />
                         </a>
                     {else}
@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="okay_list_boding okay_list_categories_name">
-                    <a href="index.php?module=CategoryAdmin&id={$ajax_category->id}">
+                    <a href="index.php?controller=CategoryAdmin&id={$ajax_category->id}">
                         {$ajax_category->name|escape}
                     </a>
                 </div>
@@ -45,7 +45,7 @@
                     {*visible*}
                     <div>
                         <label class="switch switch-default">
-                            <input class="switch-input fn_ajax_action {if $ajax_category->visible}fn_active_class{/if}" data-module="category" data-action="visible" data-id="{$ajax_category->id}" name="visible" value="1" type="checkbox"  {if $ajax_category->visible}checked=""{/if}/>
+                            <input class="switch-input fn_ajax_action {if $ajax_category->visible}fn_active_class{/if}" data-controller="category" data-action="visible" data-id="{$ajax_category->id}" name="visible" value="1" type="checkbox"  {if $ajax_category->visible}checked=""{/if}/>
                             <span class="switch-label"></span>
                             <span class="switch-handle"></span>
                         </label>

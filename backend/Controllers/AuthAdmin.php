@@ -7,6 +7,7 @@ namespace Okay\Admin\Controllers;
 use Okay\Core\Response;
 use Okay\Core\Managers;
 use Okay\Core\Notify;
+use Okay\Core\Validator;
 use Okay\Entities\ManagersEntity;
 
 class AuthAdmin extends IndexAdmin
@@ -16,20 +17,27 @@ class AuthAdmin extends IndexAdmin
         Managers $managers,
         ManagersEntity $managersEntity,
         Notify $notify,
-        Response $response
+        Response $response,
+        Validator $validator
     ) {
         /*Восстановление пароля администратора*/
-        $recovery_email = $this->request->get('recovery_email');
-        if ($this->request->get("ajax_recovery") && !empty($recovery_email)){
-            if ($recovery_email == $this->settings->admin_email){
+        $recoveryEmail = $this->request->get('recovery_email');
+        if ($this->request->get("ajax_recovery")) {
+            $result = new \stdClass();
+            if (!$validator->isEmail($recoveryEmail, true)) {
+                $result->error = 'wrong_email';
+            } elseif ($recoveryEmail != $this->settings->admin_email) {
+                $result->error = 'not_admin_email';
+            } else {
                 $code = $this->config->token(mt_rand(1, mt_getrandmax()) . mt_rand(1, mt_getrandmax()) . mt_rand(1, mt_getrandmax()));
                 $_SESSION['admin_password_recovery_code'] = $code;
                 $notify->passwordRecoveryAdmin($this->settings->admin_email, $code);
-                $result = new \stdClass();
+                
                 $result->send = true;
-                print json_encode($result);
-                die;
             }
+            $this->response->setContent(json_encode($result), RESPONSE_JSON);
+            $this->response->sendContent();
+            exit;
         }
 
         if (isset($_SESSION['admin_password_recovery_code']) && $_SESSION['admin_password_recovery_code'] == $this->request->get('code')){
@@ -76,9 +84,8 @@ class AuthAdmin extends IndexAdmin
                     $_SESSION['admin'] = $manager->login;
                     $managersEntity->update((int)$manager->id, ['cnt_try'=>0, 'last_try'=>null]);
                     $managersEntity->updateLastActivityDate($manager->id);
-                    $url = $_SESSION['before_auth_url'];
+                    $loginRedirectResource = (!empty($_SESSION['before_auth_url']) ? $_SESSION['before_auth_url'] : $this->request->getBasePathWithDomain() . '/backend/index.php');
                     unset($_SESSION['before_auth_url']);
-                    $loginRedirectResource = ($url ? $url : $this->request->getBasePathWithDomain() . '/backend/index.php');
                     $response->redirectTo($loginRedirectResource);
                 } else {
                     /*неверный пароль менеджера*/

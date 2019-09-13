@@ -4,7 +4,12 @@
 namespace Okay\Admin\Controllers;
 
 
-use Aura\SqlQuery\QueryFactory;
+use Okay\Core\QueryFactory;
+use Okay\Entities\OrdersEntity;
+use Okay\Entities\CouponsEntity;
+use Okay\Entities\VariantsEntity;
+use Okay\Entities\PurchasesEntity;
+use Okay\Entities\DeliveriesEntity;
 use Okay\Entities\CurrenciesEntity;
 
 class CurrencyAdmin extends IndexAdmin
@@ -60,20 +65,54 @@ class CurrencyAdmin extends IndexAdmin
                 $coef = $newCurrency->rate_from/$newCurrency->rate_to;
                 /*Пересчет цен по курсу валюты*/
                 if ($this->request->post('recalculate') == 1) {
-                    $this->db->customQuery("UPDATE __variants SET price=price*{$coef}, compare_price=compare_price*{$coef} where currency_id=0");
-                    $this->db->customQuery("UPDATE __delivery SET price=price*{$coef}, free_from=free_from*{$coef}");
-                    $this->db->customQuery("UPDATE __orders SET delivery_price=delivery_price*{$coef}");
-                    $this->db->customQuery("UPDATE __orders SET total_price=total_price*{$coef}");
-                    $this->db->customQuery("UPDATE __purchases SET price=price*{$coef}");
-                    $this->db->customQuery("UPDATE __coupons SET value=value*{$coef} WHERE type='absolute'");
-                    $this->db->customQuery("UPDATE __coupons SET min_order_price=min_order_price*{$coef}");
-                    $this->db->customQuery("UPDATE __orders SET coupon_discount=coupon_discount*{$coef}");
+                    $sql = $queryFactory->newSqlQuery();
+                    $sql->setStatement("UPDATE ".VariantsEntity::getTable()." SET price=price*{$coef}, compare_price=compare_price*{$coef} where currency_id=0");
+                    $this->db->query($sql);
+
+                    $sql = $queryFactory->newSqlQuery();
+                    $sql->setStatement("UPDATE ".DeliveriesEntity::getTable()." SET price=price*{$coef}, free_from=free_from*{$coef}");
+                    $this->db->query($sql);
+
+                    $sql = $queryFactory->newSqlQuery();
+                    $sql->setStatement("UPDATE ".OrdersEntity::getTable()." SET delivery_price=delivery_price*{$coef}");
+                    $this->db->query($sql);
+
+                    $sql = $queryFactory->newSqlQuery();
+                    $sql->setStatement("UPDATE ".OrdersEntity::getTable()." SET total_price=total_price*{$coef}");
+                    $this->db->query($sql);
+
+                    $sql = $queryFactory->newSqlQuery();
+                    $sql->setStatement("UPDATE ".PurchasesEntity::getTable()." SET price=price*{$coef}");
+                    $this->db->query($sql);
+
+                    $sql = $queryFactory->newSqlQuery();
+                    $sql->setStatement("UPDATE ".CouponsEntity::getTable()." SET value=value*{$coef} WHERE type='absolute'");
+                    $this->db->query($sql);
+
+                    $sql = $queryFactory->newSqlQuery();
+                    $sql->setStatement("UPDATE ".CouponsEntity::getTable()." SET min_order_price=min_order_price*{$coef}");
+                    $this->db->query($sql);
+
+                    $sql = $queryFactory->newSqlQuery();
+                    $sql->setStatement("UPDATE ".OrdersEntity::getTable()." SET coupon_discount=coupon_discount*{$coef}");
+                    $this->db->query($sql);
                 }
-                
-                $this->db->customQuery("UPDATE __currencies SET rate_from=1.0*rate_from*$newCurrency->rate_to/$oldCurrency->rate_to");
-                $this->db->customQuery("UPDATE __currencies SET rate_to=1.0*rate_to*$newCurrency->rate_from/$oldCurrency->rate_from");
-                $this->db->customQuery("UPDATE __currencies SET rate_to = rate_from WHERE id={$newCurrency->id}");
-                $this->db->customQuery("UPDATE __currencies SET rate_to = 1, rate_from = 1 WHERE (rate_to=0 OR rate_from=0) AND id={$newCurrency->id}");
+
+                $sql = $queryFactory->newSqlQuery();
+                $sql->setStatement("UPDATE ".CurrenciesEntity::getTable()." SET rate_from=1.0*rate_from*$newCurrency->rate_to/$oldCurrency->rate_to");
+                $this->db->query($sql);
+
+                $sql = $queryFactory->newSqlQuery();
+                $sql->setStatement("UPDATE ".CurrenciesEntity::getTable()." SET rate_to=1.0*rate_to*$newCurrency->rate_from/$oldCurrency->rate_from");
+                $this->db->query($sql);
+
+                $sql = $queryFactory->newSqlQuery();
+                $sql->setStatement("UPDATE ".CurrenciesEntity::getTable()." SET rate_to = rate_from WHERE id={$newCurrency->id}");
+                $this->db->query($sql);
+
+                $sql = $queryFactory->newSqlQuery();
+                $sql->setStatement("UPDATE ".CurrenciesEntity::getTable()." SET rate_to = 1, rate_from = 1 WHERE (rate_to=0 OR rate_from=0) AND id={$newCurrency->id}");
+                $this->db->query($sql);
             }
             
             // Отсортировать валюты

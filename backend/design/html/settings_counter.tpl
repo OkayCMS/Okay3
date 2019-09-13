@@ -1,9 +1,13 @@
-{$meta_title = $btr->counters_title scope=parent}
+{$meta_title = $btr->counters_title scope=global}
 
 {*Название страницы*}
 <div class="row">
     <div class="col-lg-7 col-md-7">
-        <div class="heading_page">{$btr->counters_title|escape}</div>
+        <div class="heading_page">{$btr->counters_title|escape}
+            <i class="fn_tooltips" title="{$btr->tooltip_counters_title|escape}">
+                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+            </i>
+        </div>
     </div>
     <div class="col-lg-5 col-md-5 float-xs-right"></div>
 </div>

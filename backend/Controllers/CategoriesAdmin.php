@@ -36,48 +36,6 @@ class CategoriesAdmin extends IndexAdmin
                         $categoriesEntity->delete($ids);
                         break;
                     }
-                    case 'in_feed': {
-                        /*Выгрузка товаров категории в файл feed.xml*/
-                        foreach($ids as $id) {
-                            $category = $categoriesEntity->get(intval($id));
-                            
-                            $select = $queryFactory->newSelect();
-                            $select->from('__categories AS c')
-                                ->cols(['v.id'])
-                                ->join('right', '__products_categories AS pc', 'c.id=pc.category_id')
-                                ->join('right', '__variants AS v', 'v.product_id=pc.product_id')
-                                ->where('c.id IN (:categories_ids)')
-                                ->bindValue('categories_ids', $category->children);
-                            
-                            $this->db->query($select);
-                            $vIds = $this->db->results('id');
-                            
-                            if (count($vIds) > 0) {
-                                $variantsEntity->update($vIds, ['feed' => 1]);
-                            }
-                        }
-                        break;
-                    }
-                    case 'out_feed': {
-                        /*Снятие товаров категории с выгрузки файла feed.xml*/
-                        foreach($ids as $id) {
-                            $category = $categoriesEntity->get(intval($id));
-                            $select = $queryFactory->newSelect();
-                            $select->from('__categories AS c')
-                                ->cols(['v.id'])
-                                ->join('right', '__products_categories AS pc', 'c.id=pc.category_id')
-                                ->join('right', '__variants AS v', 'v.product_id=pc.product_id')
-                                ->where('c.id IN (:categories_ids)')
-                                ->bindValue('categories_ids', $category->children);
-                            $this->db->query($select);
-                            $vIds = $this->db->results('id');
-                            
-                            if (count($vIds) > 0) {
-                                $variantsEntity->update($vIds, ['feed' => 0]);
-                            }
-                        }
-                        break;
-                    }
                 }
             }
             

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<settings>
+		<variable>liq_pay_public_key</variable>
+		<name>{$lang->liq_pay_public_key}</name>
+	</settings>
+	<settings>
+		<variable>liq_pay_private_key</variable>
+		<name>{$lang->liq_pay_private_key}</name>
+	</settings>
+</module>

@@ -1,12 +1,7 @@
-/* ==================================================
-  Bootstrap 4 grid & flex
-  ================================================== */
 
 .container-fluid,
 .container-less,
 .container {
-    margin-left: auto;
-    margin-right: auto;
     padding-left: 7px;
     padding-right: 7px;
     margin: 0 auto;
@@ -15,60 +10,19 @@
 .container {
     max-width: 1366px;
 }
-
 .container-less{
     max-width: 860px;
 }
-
 .container-fluid {
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 7px;
-    padding-right: 7px;
+    max-width: 100%;
 }
-
+.container-less::after,
 .container-fluid::after,
 .container::after {
     content: "";
     display: table;
     clear: both;
 }
-
-/*@media (min-width: 576px) {*/
-    /*.container {*/
-        /*width: 540px;*/
-        /*max-width: 100%;*/
-    /*}*/
-/*}*/
-
-/*@media (min-width: 768px) {*/
-    /*.container {*/
-        /*width: 720px;*/
-        /*max-width: 100%;*/
-    /*}*/
-/*}*/
-
-/*@media (min-width: 992px) {*/
-    /*.container {*/
-        /*width: 960px;*/
-        /*max-width: 100%;*/
-    /*}*/
-/*}*/
-
-/*@media (min-width: 1200px) {*/
-    /*.container {*/
-        /*width: 1200px;*/
-        /*max-width: 100%;*/
-    /*}*/
-/*}*/
-
-/*@media (min-width: 1366px) {*/
-    /*.container {*/
-        /*width: 1366px;*/
-        /*max-width: 100%;*/
-    /*}*/
-/*}*/
-
 .row {
     margin-right: -7px;
     margin-left: -7px;
@@ -78,7 +32,6 @@
     display: table;
     clear: both;
 }
-
 .f_row {
     display: -webkit-box;
     display: -webkit-flex;
@@ -2816,26 +2769,3 @@
         align-self: stretch;
     }
 }
-
-@media (min-width: 992px) {
-    .transition_1{
-        -webkit-transition: all 0.1s;
-        -o-transition: all 0.1s;
-        -moz-transition: all 0.1s;
-        transition: all 0.1s;
-    }
-    .transition_2{
-        -webkit-transition: all 0.2s;
-        -o-transition: all 0.2s;
-        -moz-transition: all 0.2s;
-        transition: all 0.2s;
-    }
-    .transition_3{
-        -webkit-transition: all 0.3s;
-        -o-transition: all 0.3s;
-        -moz-transition: all 0.3s;
-        transition: all 0.3s;
-    }
-}
-
-

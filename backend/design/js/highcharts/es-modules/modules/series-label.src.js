@@ -1,4 +1,4 @@
-/**
+/* *
  * (c) 2009-2019 Torstein Honsi
  *
  * License: www.highcharts.com/license
@@ -39,14 +39,16 @@
 'use strict';
 
 import H from '../parts/Globals.js';
-import '../parts/Utilities.js';
+
+import U from '../parts/Utilities.js';
+var isNumber = U.isNumber;
+
 import '../parts/Chart.js';
 import '../parts/Series.js';
 
 var labelDistance = 3,
     addEvent = H.addEvent,
     extend = H.extend,
-    isNumber = H.isNumber,
     pick = H.pick,
     Series = H.Series,
     SVGRenderer = H.SVGRenderer,
@@ -502,8 +504,8 @@ Series.prototype.checkClearPoint = function (x, y, bBox, checkDistance) {
         distToPointSquared = Number.MAX_VALUE,
         dist,
         connectorPoint,
-        connectorEnabled = this.options.label.connectorAllowed,
         onArea = pick(this.options.label.onArea, !!this.area),
+        findDistanceToOthers = onArea || this.options.label.connectorAllowed,
         chart = this.chart,
         series,
         points,
@@ -589,7 +591,7 @@ Series.prototype.checkClearPoint = function (x, y, bBox, checkDistance) {
                 // Find the squared distance from the center of the label. On
                 // area series, avoid its own graph.
                 if (
-                    (connectorEnabled || withinRange) &&
+                    (findDistanceToOthers || withinRange) &&
                     (this !== series || onArea)
                 ) {
                     xDist = x + bBox.width / 2 - points[j].chartX;
@@ -604,7 +606,7 @@ Series.prototype.checkClearPoint = function (x, y, bBox, checkDistance) {
             // Do we need a connector?
             if (
                 !onArea &&
-                connectorEnabled &&
+                findDistanceToOthers &&
                 this === series &&
                 (
                     (checkDistance && !withinRange) ||
@@ -660,7 +662,7 @@ Series.prototype.checkClearPoint = function (x, y, bBox, checkDistance) {
 };
 
 /**
- * The main initiator method that runs on chart level after initiation and
+ * The main initialize method that runs on chart level after initialization and
  * redraw. It runs in  a timeout to prevent locking, and loops over all series,
  * taking all series and labels into account when placing the labels.
  *
@@ -707,12 +709,41 @@ Chart.prototype.drawSeriesLabels = function () {
             points = series.interpolatedPoints,
             onArea = pick(labelOptions.onArea, !!series.area),
             label = series.labelBySeries,
+            isNew = !label,
             minFontSize = labelOptions.minFontSize,
-            maxFontSize = labelOptions.maxFontSize;
+            maxFontSize = labelOptions.maxFontSize,
+            dataExtremes,
+            areaMin,
+            areaMax,
+            colorClass = 'highcharts-color-' + pick(
+                series.colorIndex,
+                'none'
+            );
+
+        // Stay within the area data bounds (#10038)
+        if (onArea && !inverted) {
+            dataExtremes = [
+                series.xAxis.toPixels(series.xData[0]),
+                series.xAxis.toPixels(
+                    series.xData[series.xData.length - 1]
+                )
+            ];
+            areaMin = Math.min.apply(Math, dataExtremes);
+            areaMax = Math.max.apply(Math, dataExtremes);
+        }
 
         function insidePane(x, y, bBox) {
-            return x > paneLeft && x <= paneLeft + paneWidth - bBox.width &&
-                y >= paneTop && y <= paneTop + paneHeight - bBox.height;
+            var leftBound = Math.max(paneLeft, pick(areaMin, -Infinity)),
+                rightBound = Math.min(
+                    paneLeft + paneWidth,
+                    pick(areaMax, Infinity)
+                );
+            return (
+                x > leftBound &&
+                x <= rightBound - bBox.width &&
+                y >= paneTop &&
+                y <= paneTop + paneHeight - bBox.height
+            );
         }
 
         function destroyLabel() {
@@ -728,13 +759,17 @@ Chart.prototype.drawSeriesLabels = function () {
                     .addClass(
                         'highcharts-series-label ' +
                         'highcharts-series-label-' + series.index + ' ' +
-                        (series.options.className || '')
-                    )
-                    .css(extend({
+                        (series.options.className || '') +
+                        colorClass
+                    );
+
+                if (!chart.renderer.styledMode) {
+                    label.css(extend({
                         color: onArea ?
                             chart.renderer.getContrast(series.color) :
                             series.color
                     }, series.options.label.style));
+                }
 
                 // Adapt label sizes to the sum of the data
                 if (minFontSize && maxFontSize) {
@@ -751,8 +786,7 @@ Chart.prototype.drawSeriesLabels = function () {
                         'stroke-width': 1,
                         zIndex: 3
                     })
-                    .add()
-                    .animate({ opacity: 1 }, { duration: 200 });
+                    .add();
             }
 
             bBox = label.getBBox();
@@ -912,7 +946,18 @@ Chart.prototype.drawSeriesLabels = function () {
                             anchorY: best.connectorPoint &&
                                 best.connectorPoint.plotY + paneTop
                         }))
-                        .animate(anim);
+                        .animate(
+                            anim,
+                            isNew ?
+                                // Default initial animation to a fraction of
+                                // the series animation (#9396)
+                                H.animObject(
+                                    series.options.animation
+                                ).duration * 0.2 :
+                                // On updating, default to the general chart
+                                // animation
+                                chart.renderer.globalAnimation
+                        );
 
                     // Record closest point to stick to for sync redraw
                     series.options.kdNow = true;
@@ -937,6 +982,8 @@ Chart.prototype.drawSeriesLabels = function () {
             destroyLabel();
         }
     });
+
+    H.fireEvent(chart, 'afterDrawSeriesLabels');
     // console.timeEnd('drawSeriesLabels');
 };
 
@@ -949,10 +996,7 @@ Chart.prototype.drawSeriesLabels = function () {
 function drawLabels(e) {
 
     var chart = this,
-        delay = Math.max(
-            H.animObject(chart.renderer.globalAnimation).duration,
-            250
-        );
+        delay = H.animObject(chart.renderer.globalAnimation).duration;
 
     chart.labelSeries = [];
     chart.labelSeriesMaxSum = 0;

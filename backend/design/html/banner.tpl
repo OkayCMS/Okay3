@@ -1,7 +1,7 @@
 {if $banner->id}
-    {$meta_title = $banner->name scope=parent}
+    {$meta_title = $banner->name scope=global}
 {else}
-    {$meta_title = $btr->banner_new_group scope=parent}
+    {$meta_title = $btr->banner_new_group scope=global}
 {/if}
 {*Название страницы*}
 <div class="row">
@@ -206,37 +206,34 @@
                         {$btr->banner_instruction|escape}
                     </div>
                     <textarea id="fn_banner_code" readonly>
-                    {literal}
-                        {get_banner var="{/literal}banner_{$banner->group_id}{literal}" group="{/literal}{$banner->group_id}{literal}"}
-                        {if {/literal}$banner_{$banner->group_id}{literal}->items}
-                        <div class="container hidden-md-down">
-                            <div class="fn_banner_{/literal}{$banner->group_id}{literal} slick-banner">
-                                {foreach {/literal}$banner_{$banner->group_id}{literal}->items as $bi}
-                                <div>
-                                    {if $bi->url}
-                                        <a href="{$bi->url}" target="_blank">
-                                    {/if}
-                                    {if $bi->image}
-                                        <img src="{$bi->image|resize:1170:390:false:$config->resized_banners_images_dir}" alt="{$bi->alt}" title="{$bi->title}"/>
-                                    {/if}
-                                    <span class="slick-name">
-                                        {$bi->title}
-                                    </span>
-                                    {if $bi->description}
-                                        <span class="slick-description">
-                                        {$bi->description}
-                                    </span>
-                                    {/if}
-                                    {if $bi->url}
-                                    </a>
-                                    {/if}
-                                </div>
-                                {/foreach}
-                            </div>
-                        </div>
-                        {/if}
-                        {/literal}
-                    </textarea>
+{literal}{get_banner var="{/literal}banner_{$banner->group_id}{literal}" group="{/literal}{$banner->group_id}{literal}"}
+{if {/literal}$banner_{$banner->group_id}{literal}->items}
+<div class="container hidden-md-down">
+    <div class="fn_banner_{/literal}{$banner->group_id}{literal} owl-carousel">
+        {foreach {/literal}$banner_{$banner->group_id}{literal}->items as $bi}
+        <div>
+            {if $bi->url}
+                <a href="{$bi->url}" target="_blank">
+            {/if}
+            {if $bi->image}
+                <img src="{$bi->image|resize:1170:390:false:$config->resized_banners_images_dir}" alt="{$bi->alt}" title="{$bi->title}"/>
+            {/if}
+            <span class="owl-carousel__name">
+                {$bi->title}
+            </span>
+            {if $bi->description}
+                <span class="owl-carousel__description">
+                {$bi->description}
+            </span>
+            {/if}
+            {if $bi->url}
+            </a>
+            {/if}
+        </div>
+        {/foreach}
+    </div>
+</div>
+{/if}{/literal}</textarea>
                 </div>
             </div>
             <div class="col-lg-12 col-md-12">
@@ -244,20 +241,14 @@
                     <div class="heading_box">
                        {$btr->banner_instruction2|escape}
                     </div>
-                    <textarea disabled id="fn_banner_js">
-                       $('.fn_banner_{$banner->group_id}').slick({
-                            infinite: true,
-                            speed: 500,
-                            slidesToShow: 1,
-                            slidesToScroll: 1,
-                            swipeToSlide : true,
-                            dots: true,
-                            arrows: false,
-                            adaptiveHeight: true,
-                            autoplaySpeed: 8000,
-                            autoplay: true
-                        });
-                    </textarea>
+<textarea disabled id="fn_banner_js">
+$('.fn_banner_{$banner->group_id}').owlCarousel({
+    loop:false,
+    lazyLoad:true,
+    nav:false,
+    dotsEach:true,
+    items:1
+});</textarea>
                 </div>
             </div>
         </div>

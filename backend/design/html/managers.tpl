@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->managers_managers scope=parent}
+{$meta_title=$btr->managers_managers scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -9,7 +9,7 @@
                 {$btr->managers_managers|escape} - {$managers_count}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url module=ManagerAdmin}">
+                <a class="btn btn_small btn-info" href="{url controller=ManagerAdmin}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->managers_add|escape}</span>
                 </a>
@@ -47,7 +47,7 @@
                                         </div>
 
                                         <div class="okay_list_boding okay_list_manager_name">
-                                            <a class="link" href="{url module=ManagerAdmin id=$manager_admin->id}">
+                                            <a class="link" href="{url controller=ManagerAdmin id=$manager_admin->id}">
                                                 {$manager_admin->login|escape}
                                             </a>
                                             {if $manager_admin->comment}

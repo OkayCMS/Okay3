@@ -14,7 +14,7 @@ chdir('../..');
 
 require_once('vendor/autoload.php');
 
-$DI = include 'Core/config/container.php';
+$DI = include 'Okay/Core/config/container.php';
 
 /** @var Request $request */
 $request = $DI->get(Request::class);
@@ -62,8 +62,7 @@ if ($ext == 'csv') {
     readfile($file);
     exit();
 } elseif ($ext == 'png' || $ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'tif' || $ext == 'bmp' || $ext == 'bmp') {
-    $response->addHeader('Content-type: image');
-    $response->setContent(file_get_contents($file), 'image');
+    $response->setContent(file_get_contents($file), RESPONSE_IMAGE);
     $response->sendContent();
 }
 

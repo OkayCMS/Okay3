@@ -4,7 +4,7 @@
 use Okay\Entities\ManagersEntity;
 use Okay\Core\OkayContainer\OkayContainer;
 use Okay\Entities\FeaturesValuesEntity;
-use \Aura\SqlQuery\QueryFactory;
+use Okay\Core\QueryFactory;
 use Okay\Logic\FeaturesLogic;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\CategoriesEntity;
@@ -20,6 +20,7 @@ use Okay\Core\Translit;
 use Okay\Core\Request;
 use Okay\Core\Managers;
 use Okay\Core\Import;
+use Okay\Core\Image;
 
 require_once 'configure.php';
 
@@ -115,6 +116,11 @@ class ImportAjax
      */
     protected $queryBuilder;
 
+    /**
+     * @var Image
+     */
+    protected $imagesCore;
+
     public function __construct(OkayContainer $DI, EntityFactory $entityFactory)
     {
         $this->featuresValuesEntity = $entityFactory->get(FeaturesValuesEntity::class);
@@ -134,6 +140,7 @@ class ImportAjax
         $this->request              = $DI->get(Request::class);
         $this->managers             = $DI->get(Managers::class);
         $this->import               = $DI->get(Import::class);
+        $this->imagesCore           = $DI->get(Image::class);
     }
 
     public function import()
@@ -166,7 +173,8 @@ class ImportAjax
         if($from = $this->request->get('from')) {
             fseek($f, $from);
         } else {
-            $this->db->customQuery("TRUNCATE __import_log");
+            $sql = $this->queryBuilder->newSqlQuery()->setStatement("TRUNCATE __import_log");
+            $this->db->query($sql);
         }
 
         // Массив импортированных товаров
@@ -209,11 +217,12 @@ class ImportAjax
         // Создаем объект результата
         $result->from = $from;          // На каком месте остановились
         $result->totalsize = $size;     // Размер всего файла
+        
         foreach ($importedItems as $item) {
-            $productId    = $item->product->id;
-            $status       = $item->status;
-            $productName  = $item->product->name;
-            $variantName  = $item->variant->name;
+            $productId    = (int)$item->product->id;
+            $status       = (string)$item->status;
+            $productName  = (string)$item->product->name;
+            $variantName  = (string)$item->variant->name;
 
             $insert = $this->queryBuilder->newInsert();
             $insert->into('__import_log')
@@ -261,9 +270,15 @@ class ImportAjax
         if (isset($item['annotation'])) {
             $product['annotation'] = trim($item['annotation']);
         }
+        else {
+            $product['annotation'] = '';
+        }
         
         if (isset($item['description'])) {
             $product['description'] = trim($item['description']);
+        }
+        else {
+            $product['description'] = '';
         }
         
         if (isset($item['visible'])) {
@@ -314,7 +329,7 @@ class ImportAjax
         $categories_ids = array();
         if (!empty($item['category'])) {
             foreach (explode($this->import->getCategoryDelimiter(), $item['category']) as $c) {
-                $categories_ids[] = $this->importСategory($c);
+                $categories_ids[] = $this->importCategory($c);
             }
             $categoryId = reset($categories_ids);
         }
@@ -352,7 +367,7 @@ class ImportAjax
             $variant['currency_id'] = intval($item['currency']);
         }
         if (isset($item['weight'])) {
-            $variant['weight'] = str_replace(',', '.', str_replace(' ', '', trim($item['weight'])));
+            $variant['weight'] = (float)str_replace(',', '.', str_replace(' ', '', trim($item['weight'])));
         }
 
         if (isset($item['units'])) {
@@ -517,7 +532,7 @@ class ImportAjax
                         $imageFilename = pathinfo($image, PATHINFO_BASENAME);
 
                         if (preg_match("~^https?://~", $image)) {
-                            $imageFilename = $this->imagesEntity->correctFilename($imageFilename);
+                            $imageFilename = $this->imagesCore->correctFilename($imageFilename);
                             $image = rawurlencode($image);
                         }
 
@@ -535,10 +550,10 @@ class ImportAjax
                         $result = $this->db->result();
 
                         if (empty($result->filename)) {
-                            $image = new stdClass();
-                            $image->product_id = $productId;
-                            $image->filename = $imageFilename;
-                            $imagesIds[] = $this->imagesEntity->add($image);
+                            $newImage = new stdClass();
+                            $newImage->product_id = $productId;
+                            $newImage->filename = $image;
+                            $imagesIds[] = $this->imagesEntity->add($newImage);
                         } else {
                             $imagesIds[] = $result->id;
                         }
@@ -586,7 +601,7 @@ class ImportAjax
     }
     
     // Отдельная функция для импорта категории
-    private function importСategory($category)
+    private function importCategory($category)
     {
         // Поле "категория" может состоять из нескольких имен, разделенных subcategory_delimiter-ом
         // Только неэкранированный subcategory_delimiter может разделять категории

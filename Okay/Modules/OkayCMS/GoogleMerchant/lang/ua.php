@@ -1,0 +1,30 @@
+<?php
+
+$lang['okaycms__google_merchant__title'] = 'Вивантаження (GoogleMerchant)';
+$lang['okaycms__google_merchant__left_title'] = 'Вивантаження (GoogleMerchant)';
+$lang['okaycms__google_merchant__products'] = 'Товари для вивантаження';
+$lang['okaycms__google_merchant__products_remove'] = 'Товари які не потрібно вивантажувати';
+$lang['okaycms__google_merchant__select_all'] = 'Вибрати все';
+$lang['okaycms__google_merchant__categories'] = 'Категорії';
+$lang['okaycms__google_merchant__select_none'] = 'Скасувати всі';
+$lang['okaycms__google_merchant__brands'] = 'Бренди';
+$lang['okaycms__google_merchant__generation_url'] = 'Посилання по якому доступний файл вивантаження';
+$lang['okaycms__google_merchant__upload_non_exists_products_to_google'] = 'Вивантажувати тільки товари в наявності';
+$lang['okaycms__google_merchant__use_full_description_to_google'] = 'Використовувати повний опис (якщо вимкнено передається короткий опис)';
+$lang['okaycms__google_merchant__products_for_upload'] = 'Товари для вивантаження';
+$lang['okaycms__google_merchant__products_not_for_upload'] = 'Товари не для вивантаження';
+$lang['okaycms__google_merchant__select_products'] = 'Вибрати товар';
+$lang['okaycms__google_merchant__add_products'] = 'Додати товар';
+$lang['okaycms__google_merchant__has_manufacturer_warranty'] = 'У товарів є гарантія виробника';
+$lang['okaycms__google_merchant__params'] = 'Налаштування вивантаження';
+$lang['okaycms__google_merchant__company'] = 'Повне найменування компанії, що володіє магазином';
+$lang['okaycms__google_merchant__no_export_without_price'] = 'Не вивантажувати товари з ціною 0';
+$lang['okaycms__google_merchant__pickup'] = 'Можливість купити товар без попереднього замовлення';
+$lang['okaycms__google_merchant__store'] = 'Можна купити в роздрібному магазині';
+$lang['okaycms__google_merchant__sales_max_length'] = 'Допустима довжина тексту в елементі - 50 символів';
+$lang['okaycms__google_merchant__delivery_disallow'] = "Можливість кур'єрської доставки";
+$lang['okaycms__google_merchant__adult'] = 'Товари для дорослих (adult)';
+$lang['okaycms__google_merchant__color'] = 'Колір';
+$lang['okaycms__google_merchant__color_notify'] = 'Виберіть властивість';
+$lang['okaycms__google_merchant__upload_products'] = 'Вибір продуктів для завантаження';
+$lang['okaycms__google_merchant__use_variant_name_like_size'] = 'Використовувати назву варіанта, як розмір (для одягу)';

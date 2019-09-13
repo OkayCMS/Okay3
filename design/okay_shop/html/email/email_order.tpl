@@ -1,4 +1,4 @@
-{$subject = "`$lang->email_order_title` `$order->id`" scope=parent}
+{$subject = "`$lang->email_order_title` `$order->id`" scope=global}
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -271,13 +271,6 @@
                                                                             <span class="es-p5t"><em><span style="color: rgb(128, 128, 128); font-size: 12px;">{$purchase->variant_name|escape}</span></em></span>
                                                                             {if $purchase->variant->stock == 0}
                                                                             <div class="es-p5t" style="color: #000; font-size: 12px;font-weight: 600">{$lang->product_pre_order}</div>
-                                                                            {/if}
-                                                                            {if $order->paid && $purchase->variant->attachment}
-                                                                            <div class="es-p5t">
-                                                                                <a class="es-download" href="{url_generator route="order_download" url=$order->url file=$purchase->variant->attachment absolute=1}">
-                                                                                    <em>{$btr->email_order_download}</em>
-                                                                                </a>
-                                                                            </div>
                                                                             {/if}
                                                                         </td>
                                                                         <td style="text-align: center;" width="60">

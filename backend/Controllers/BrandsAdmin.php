@@ -51,40 +51,6 @@ class BrandsAdmin extends IndexAdmin
                         $brandsEntity->delete($ids);
                         break;
                     }
-                    case 'in_feed': {
-                        /*Выгрузка товаров бренда в файл feed.xml*/
-                        $select = $queryFactory->newSelect();
-                        $select->from('__products AS p')
-                            ->cols(['v.id'])
-                            ->join('LEFT', '__variants AS v', 'v.product_id=p.id')
-                            ->where('p.brand_id IN (:brands_ids)')
-                            ->bindValue('brands_ids', $ids);
-
-                        $this->db->query($select);
-                        $vIds = $this->db->results('id');
-
-                        if (count($vIds) > 0) {
-                            $variantsEntity->update($vIds, ['feed' => 1]);
-                        }
-                        break;
-                    }
-                    case 'out_feed': {
-                        /*Снятие товаров бренда с выгрузки файла feed.xml*/
-                        $select = $queryFactory->newSelect();
-                        $select->from('__products AS p')
-                            ->cols(['v.id'])
-                            ->join('LEFT', '__variants AS v', 'v.product_id=p.id')
-                            ->where('p.brand_id IN (:brands_ids)')
-                            ->bindValue('brands_ids', $ids);
-
-                        $this->db->query($select);
-                        $vIds = $this->db->results('id');
-
-                        if (count($vIds) > 0) {
-                            $variantsEntity->update($vIds, ['feed' => 0]);
-                        }
-                        break;
-                    }
                     case 'move_to_page': {
                         /*Переместить на страницу*/
                         $targetPage = $this->request->post('target_page', 'integer');

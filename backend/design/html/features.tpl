@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->features_features scope=parent}
+{$meta_title=$btr->features_features scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -9,7 +9,7 @@
                 {$btr->features_features|escape} - {$features_count}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url module=FeatureAdmin return=$smarty.server.REQUEST_URI}">
+                <a class="btn btn_small btn-info" href="{url controller=FeatureAdmin return=$smarty.server.REQUEST_URI}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->features_add|escape}</span>
                 </a>
@@ -75,9 +75,9 @@
                     </div>
                     <div class="okay_list_heading okay_list_features_name">{$btr->general_name|escape}</div>
                     <div class="okay_list_heading okay_list_features_tag">{$btr->general_categories|escape}</div>
+                    <div class="okay_list_heading okay_list_setting okay_list_features_setting"></div>
                     <div class="okay_list_heading okay_list_url_status">{$btr->feature_url_in_product_short|escape}</div>
                     <div class="okay_list_heading okay_list_status">{$btr->features_in_filter|escape}</div>
-                    <div class="okay_list_heading okay_list_setting okay_list_features_setting">{$btr->general_activities|escape}</div>
                     <div class="okay_list_heading okay_list_close"></div>
                 </div>
                 {*Параметры элемента*}
@@ -97,7 +97,7 @@
                             </div>
 
                             <div class="okay_list_boding okay_list_features_name">
-                                <a class="link" href="{url module=FeatureAdmin id=$feature->id return=$smarty.server.REQUEST_URI}">
+                                <a class="link" href="{url controller=FeatureAdmin id=$feature->id return=$smarty.server.REQUEST_URI}">
                                     {$feature->name|escape}
                                 </a>
                             </div>
@@ -113,10 +113,11 @@
                                 {/if}
                                 </div>
                             </div>
+                            <div class="okay_list_boding okay_list_setting okay_list_features_setting"></div>
                             <div class="okay_list_boding okay_list_url_status">
                                 {*url_in_product*}
                                 <label class="switch switch-default">
-                                    <input class="switch-input fn_ajax_action {if $feature->url_in_product}fn_active_class{/if}" data-module="feature" data-action="url_in_product" data-id="{$feature->id}" name="url_in_product" value="1" type="checkbox"  {if $feature->url_in_product}checked=""{/if}/>
+                                    <input class="switch-input fn_ajax_action {if $feature->url_in_product}fn_active_class{/if}" data-controller="feature" data-action="url_in_product" data-id="{$feature->id}" name="url_in_product" value="1" type="checkbox"  {if $feature->url_in_product}checked=""{/if}/>
                                     <span class="switch-label"></span>
                                     <span class="switch-handle"></span>
                                 </label>
@@ -124,16 +125,10 @@
                             <div class="okay_list_boding okay_list_status">
                                 {*visible*}
                                 <label class="switch switch-default">
-                                    <input class="switch-input fn_ajax_action {if $feature->in_filter}fn_active_class{/if}" data-module="feature" data-action="in_filter" data-id="{$feature->id}" name="in_filter" value="1" type="checkbox"  {if $feature->in_filter}checked=""{/if}/>
+                                    <input class="switch-input fn_ajax_action {if $feature->in_filter}fn_active_class{/if}" data-controller="feature" data-action="in_filter" data-id="{$feature->id}" name="in_filter" value="1" type="checkbox"  {if $feature->in_filter}checked=""{/if}/>
                                     <span class="switch-label"></span>
                                     <span class="switch-handle"></span>
                                 </label>
-                            </div>
-                            <div class="okay_list_boding okay_list_setting okay_list_features_setting">
-                                {*yandex*}
-                                <button data-hint="{$btr->general_add_xml|escape}" type="button" class="setting_icon setting_icon_yandex fn_ajax_action {if $feature->yandex}fn_active_class{/if} hint-bottom-middle-t-info-s-small-mobile  hint-anim" data-id="{$feature->id}" data-module="feature" data-action="yandex">
-                                    XML
-                                </button>
                             </div>
                             <div class="okay_list_boding okay_list_close">
                                 {*delete*}
@@ -158,8 +153,6 @@
                             <select name="action" class="selectpicker features_action">
                                 <option value="set_in_filter">{$btr->features_in_filter|escape}</option>
                                 <option value="unset_in_filter">{$btr->features_not_in_filter|escape}</option>
-                                <option value="to_yandex">{$btr->general_add_xml|escape}</option>
-                                <option value="from_yandex">{$btr->general_remove_xml|escape}</option>
                                 <option value="delete">{$btr->general_delete|escape}</option>
                                 {if $pages_count>1}
                                     <option value="move_to_page">{$btr->products_move_to_page|escape}</option>

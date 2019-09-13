@@ -1,5 +1,5 @@
 {*Вывод меток*}
-{if $smarty.get.module == "OrderAdmin"}
+{if $smarty.get.controller == "OrderAdmin"}
     {foreach $labels as $l}
         {if in_array($l->id, $order_labels)}
             <span class="tag font-xs" style="background-color:#{$l->color};" >{$l->name|escape}</span>

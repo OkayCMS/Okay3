@@ -2,7 +2,7 @@
 
 require_once 'configure.php';
 
-if (!$managers->access('design', $manager)) {
+if (!$managers->access('file_templates', $manager)) {
     exit();
 }
 

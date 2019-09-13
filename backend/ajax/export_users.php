@@ -2,6 +2,7 @@
 
 
 use Okay\Entities\UsersEntity;
+use Okay\Core\QueryFactory;
 use Okay\Core\Managers;
 use Okay\Core\Database;
 use Okay\Core\Response;
@@ -14,18 +15,21 @@ $exportFilesDir  = 'backend/files/export_users/';
 $filename        = 'users.csv';
 
 $columnsNames = [
-    'name'       => 'пїЅпїЅпїЅ',
+    'name'       => 'Имя',
     'email'      => 'Email',
-    'phone'      => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
-    'address'    => 'пїЅпїЅпїЅпїЅпїЅ',
-    'group_name' => 'пїЅпїЅпїЅпїЅпїЅпїЅ',
-    'discount'   => 'пїЅпїЅпїЅпїЅпїЅпїЅ',
-    'created'    => 'пїЅпїЅпїЅпїЅ',
-    'last_ip'    => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ IP',
+    'phone'      => 'Телефон',
+    'address'    => 'Адрес',
+    'group_name' => 'Группа',
+    'discount'   => 'Скидка',
+    'created'    => 'Дата',
+    'last_ip'    => 'Последний IP'
 ];
 
 /** @var Database $db */
 $db = $DI->get(Database::class);
+
+/** @var QueryFactory $queryFactory */
+$queryFactory = $DI->get(QueryFactory::class);
 
 /** @var Managers $managers */
 $managers = $DI->get(Managers::class);
@@ -40,24 +44,24 @@ if (!$managers->access('users', $managersEntity->get($_SESSION['admin']))) {
     exit();
 }
 
-// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 1251
+// Эксель кушает только 1251
 setlocale(LC_ALL, 'ru_RU.1251');
-$db->customQuery('SET NAMES cp1251');
+$sqlQuery = $queryFactory->newSqlQuery()->setStatement('SET NAMES cp1251');
+$db->query($sqlQuery);
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// Страница, которую экспортируем
 $page = $request->get('page');
 if(empty($page) || $page==1) {
     $page = 1;
-    // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     if(is_writable($exportFilesDir.$filename)) {
         unlink($exportFilesDir.$filename);
     }
 }
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// Открываем файл экспорта на добавление
 $f = fopen($exportFilesDir.$filename, 'ab');
 
-// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// Если начали сначала - добавим в первую строку названия колонок
 if($page == 1) {
     fputcsv($f, $columnsNames, $columnDelimiter);
 }
@@ -70,7 +74,7 @@ if($request->get('group_id')) {
 }
 $filter['sort'] = $request->get('sort');
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// Выбираем пользователей
 $users = array();
 foreach($usersEntity->find($filter) as $u) {
     $str = array();

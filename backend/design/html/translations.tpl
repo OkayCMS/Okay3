@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->translations_translate scope=parent}
+{$meta_title=$btr->translations_translate scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -10,7 +10,7 @@
             </div>
             {if !$locked_theme}
                 <div class="box_btn_heading">
-                    <a class="btn btn_small btn-info add" href="{url module=TranslationAdmin return=$smarty.server.REQUEST_URI}">
+                    <a class="btn btn_small btn-info add" href="{url controller=TranslationAdmin return=$smarty.server.REQUEST_URI}">
                         {include file='svg_icon.tpl' svgId='plus'}
                         <span>{$btr->translations_add|escape}</span>
                     </a>
@@ -69,10 +69,10 @@
                             </div>
                             <div class="okay_list_heading okay_list_translations_num">№ {$value@iteration}</div>
                             <div class="okay_list_boding okay_list_translations_name">
-                                <a href="{url module=TranslationAdmin id=$label return=$smarty.server.REQUEST_URI}">{$value|escape}</a>
+                                <a href="{url controller=TranslationAdmin id=$label return=$smarty.server.REQUEST_URI}">{$value|escape}</a>
                             </div>
                             <div class="okay_list_boding  okay_list_translations_variable">
-                                 <a href="{url module=TranslationAdmin id=$label return=$smarty.server.REQUEST_URI}">{$label|escape}</a>
+                                 <a href="{url controller=TranslationAdmin id=$label return=$smarty.server.REQUEST_URI}">{$label|escape}</a>
                             </div>
                             <div class="okay_list_boding okay_list_close">
                                 {if !$locked_theme && $translations_template[$label]}

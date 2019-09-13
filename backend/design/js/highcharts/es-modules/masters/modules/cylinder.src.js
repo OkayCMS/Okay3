@@ -1,5 +1,9 @@
 /**
- * @license @product.name@ JS v@product.version@ (@product.date@)
+ * @license Highcharts JS v7.2.0 (2019-09-03)
+ * @module highcharts/modules/cylinder
+ * @requires highcharts
+ * @requires highcharts/highcharts-3d
+ *
  * Highcharts cylinder module
  *
  * (c) 2010-2019 Kacper Madej

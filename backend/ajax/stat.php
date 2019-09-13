@@ -1,11 +1,11 @@
 <?php
 
-use \Aura\SqlQuery\QueryFactory;
+use Okay\Core\QueryFactory;
 use Okay\Core\Database;
 
 require_once 'configure.php';
 
-if (!$managers->access('stats', $manager)) {
+if (!$managers->access('sales_chart', $manager)) {
     exit();
 }
 

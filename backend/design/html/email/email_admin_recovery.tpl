@@ -1,4 +1,4 @@
-{$subject="`$btr->email_change_pass_request` `$config->root_url`" scope=parent}
+{$subject="`$btr->email_change_pass_request` `$rootUrl`" scope=global}
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>

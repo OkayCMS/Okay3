@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->order_settings_labels scope=parent}
+{$meta_title=$btr->order_settings_labels scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -15,6 +15,9 @@
         <div class="boxed fn_toggle_wrap">
             <div class="heading_box">
                 {$btr->order_settings_statuses|escape}
+                <i class="fn_tooltips" title="{$btr->tooltip_order_settings_statuses|escape}">
+                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                </i>
                 <div class="box_btn_heading ml-1">
                     <button type="button" class="btn btn_mini btn-info fn_add_status ">
                         {include file='svg_icon.tpl' svgId='plus'}

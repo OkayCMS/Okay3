@@ -4,7 +4,7 @@
 namespace Okay\Admin\Controllers;
 
 
-use Aura\SqlQuery\QueryFactory;
+use Okay\Core\QueryFactory;
 use Okay\Core\Translit;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\FeaturesEntity;
@@ -33,13 +33,14 @@ class FeatureAdmin extends IndexAdmin
             $feature->url = $this->request->post('url', 'string');
             $feature->url_in_product = $this->request->post('url_in_product');
             $feature->to_index_new_value = $this->request->post('to_index_new_value');
+            $feature->description = $this->request->post('description');
 
             $feature->url = preg_replace("/[\s]+/ui", '', $feature->url);
             $feature->url = strtolower(preg_replace("/[^0-9a-z]+/ui", '', $feature->url));
             if (empty($feature->url)) {
                 $feature->url = $translit->translitAlpha($feature->name);
             }
-            $featureCategories = $this->request->post('feature_categories');
+            $featureCategories = $this->request->post('feature_categories', null, []);
 
             // Не допустить одинаковые URL свойств.
             if (($f = $featuresEntity->get($feature->url)) && $f->id!=$feature->id) {
@@ -64,6 +65,7 @@ class FeatureAdmin extends IndexAdmin
                     $feature = $featuresEntity->get($feature->id);
                     $this->design->assign('message_success', 'updated');
                 }
+                
                 $featuresEntity->updateFeatureCategories($feature->id, $featureCategories);
             }
 
@@ -143,7 +145,11 @@ class FeatureAdmin extends IndexAdmin
 
                     // Добавляем значение с которым объединяли всем товарам у которых было старое значение
                     foreach ($productsIds as $productId) {
-                        $this->db->customQuery("REPLACE INTO `__products_features_values` SET `product_id`={$productId}, `value_id`={$unionSecondValue->id}");
+                        $sql = $queryFactory->newSqlQuery();
+                        $sql->setStatement("REPLACE INTO `__products_features_values` SET `product_id`=:product_id, `value_id`=:value_id")
+                            ->bindValue('product_id', $productId)
+                            ->bindValue('value_id', $unionSecondValue->id);
+                        $this->db->query($sql);
                     }
 
                     // Удаляем занчение которое мы объединяли
@@ -156,7 +162,7 @@ class FeatureAdmin extends IndexAdmin
             $feature = $featuresEntity->get($feature->id);
         }
 
-        if ($feature->id) {
+        if (!empty($feature->id)) {
 
             $featuresValues = [];
             $featuresValuesFilter = ['feature_id'=>$feature->id];
@@ -242,10 +248,14 @@ class FeatureAdmin extends IndexAdmin
             $this->design->assign('pages_count', $pages_count);
             $this->design->assign('current_page', $featuresValuesFilter['page']);
 
+            $featureValuesIds = [];
             foreach ($featuresValuesEntity->find($featuresValuesFilter) as $fv) {
                 $featuresValues[$fv->translit] = $fv;
+                $featureValuesIds[] = $fv->id;
             }
 
+            $productsCounts = $featuresValuesEntity->countProductsByValueId($featureValuesIds);
+            $this->design->assign('products_counts', $productsCounts);
             $this->design->assign('features_values', $featuresValues);
         }
 

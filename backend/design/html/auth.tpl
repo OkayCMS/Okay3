@@ -1,4 +1,4 @@
-{$wrapper = '' scope=parent}
+{$wrapper = '' scope=global}
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -79,6 +79,7 @@
                                 {/if}
                             </form>
                             <div class="col-xs-12 mt-1 p-h fn_recovery_wrap hidden px-0">
+                                <div class="fn_error" style="display: none;margin-bottom:15px;color: #bf1e1e;font-weight: 600;font-size: 15px;"></div>
                                 <div class="fn_success" style="display: none;margin-bottom:15px;color: #13bb13;font-weight: 600;font-size: 15px;">Сообщение отправлено на емейл администратору</div>
                                 <label class="fn_recovery_label">Введите email администратора для восстановления пароля</label>
                                 <div class="input-group mb-1">
@@ -116,23 +117,35 @@
         $(document).on("click", ".fn_ajax_recover", function () {
             link = window.location.href;
             email = $(".fn_email").val();
-            $(this).attr('disabled',true);
-                $.ajax( {
-                    url: link,
-                    data: {
-                        ajax_recovery : true,
-                        recovery_email : email
-                    },
-                    method : 'get',
-                    dataType: 'json',
-                    success: function(data) {
-                        if(data.send){
-                            $(".fn_success").show();
-                            $(".fn_recovery_label").remove();
-                            $(".fn_email").remove();
+            //$(this).attr('disabled',true);
+            $.ajax( {
+                url: link,
+                data: {
+                    ajax_recovery : true,
+                    recovery_email : email
+                },
+                method : 'get',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.send){
+                        $(".fn_error").hide();
+                        $(".fn_success").show();
+                        $(".fn_recovery_label").remove();
+                        $(".fn_email").remove();
+                    } else if (data.error) {
+                        switch (data.error) {
+                            case 'wrong_email':
+                                $(".fn_error").text('Введите корректный E-mail');
+                                break;
+                            case 'not_admin_email':
+                                $(".fn_error").text('Указанный E-mail не принадлежит админу сайта');
+                                break;
                         }
+                        $(".fn_error").show();
+                        $(".fn_success").hide();
                     }
-                })
+                }
+            })
         });
     })
 </script>

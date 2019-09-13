@@ -78,7 +78,9 @@ class ProductsAdmin extends IndexAdmin
         }
         $this->design->assign('brand_id', $brand_id);
 
-        $filter['features'] = $this->request->get('features');
+        if ($features = $this->request->get('features')) {
+            $filter['features'] = $features;
+        }
         
         /*Фильтр по товарам*/
         if($f = $this->request->get('filter', 'string')) {
@@ -92,10 +94,6 @@ class ProductsAdmin extends IndexAdmin
                 $filter['visible'] = 0;
             } elseif($f == 'outofstock') {
                 $filter['in_stock'] = 0;
-            } elseif($f == 'in_feed') {
-                $filter['feed'] = 1;
-            } elseif($f == 'out_feed') {
-                $filter['feed'] = 0;
             } elseif($f == 'without_images') {
                 $filter['has_images'] = 0;
             }

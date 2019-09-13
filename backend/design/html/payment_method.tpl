@@ -1,7 +1,7 @@
 {if $payment_method->id}
-    {$meta_title = $payment_method->name scope=parent}
+    {$meta_title = $payment_method->name scope=global}
 {else}
-    {$meta_title = $btr->payment_method_new scope=parent}
+    {$meta_title = $btr->payment_method_new scope=global}
 {/if}
 
 {*Название страницы*}
@@ -71,6 +71,9 @@
                     <div class="col-lg-10 col-md-9 col-sm-12">
                         <div class="heading_label">
                             {$btr->general_name|escape}
+                            <i class="fn_tooltips" title="{$btr->tooltip_general_name_payments|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
                         </div>
                         <div class="form-group">
                             <input class="form-control mb-h" name="name" type="text" value="{$payment_method->name|escape}"/>
@@ -150,7 +153,7 @@
                                     <select name="module" class="selectpicker">
                                         <option value='null'>{$btr->payment_method_manual|escape}</option>
                                         {foreach $payment_modules as $payment_module}
-                                            <option value="{$payment_module@key|escape}" {if $payment_method->module == $payment_module@key}selected{/if} >{$payment_module->name|escape}</option>
+                                            <option value="{$payment_module@key|escape}" {if $payment_method->module == $payment_module@key}selected{/if} >{$payment_module->vendor|escape}/{$payment_module->module_name|escape}</option>
                                         {/foreach}
                                     </select>
                                 </div>
@@ -168,7 +171,7 @@
                             <div class="col-lg-12 col-md-12">
                                 {foreach $payment_modules as $payment_module}
                                     <div class="row fn_module_settings" {if $payment_module@key!=$payment_method->module}style="display:none;"{/if} module="{$payment_module@key}">
-                                        <div class="col-lg-12 col-md-12 heading_box">{$payment_module->name|escape}</div>
+                                        <div class="col-lg-12 col-md-12 heading_box">{$payment_module->vendor|escape}/{$payment_module->module_name|escape}</div>
                                         {foreach $payment_module->settings as $setting}
                                             {$variable_name = $setting->variable}
                                             {if !empty($setting->options) && $setting->options|@count>1}
@@ -297,8 +300,8 @@
 
             $('select[name=module]').on('change',function(){
                 $('div.fn_module_settings').hide().find("input, select, textarea").attr("disabled", true);
-                $('div.fn_module_settings[module='+$(this).val()+']').show().find("input, select, textarea").attr("disabled", false);
-                $('div.fn_module_settings[module='+$(this).val()+']').find('select').selectpicker('refresh');
+                $('div.fn_module_settings[module="'+$(this).val()+'"]').show().find("input, select, textarea").attr("disabled", false);
+                $('div.fn_module_settings[module="'+$(this).val()+'"]').find('select').selectpicker('refresh');
             });
         });
     </script>

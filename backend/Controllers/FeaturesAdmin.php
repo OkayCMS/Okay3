@@ -55,16 +55,6 @@ class FeaturesAdmin extends IndexAdmin
                         $featuresEntity->update($ids, ['in_filter'=>0]);
                         break;
                     }
-                    case 'to_yandex': {
-                        /*Выгружать с яндекс*/
-                        $featuresEntity->update($ids, ['yandex'=>1]);    
-                        break;
-                    }
-                    case 'from_yandex': {
-                        /*Не выгружать в яндекс*/
-                        $featuresEntity->update($ids, ['yandex'=>0]);    
-                        break;
-                    }
                     case 'delete': {
                         /*Удалить свойство*/
                         $currentCategoryId = $this->request->get('category_id', 'integer');

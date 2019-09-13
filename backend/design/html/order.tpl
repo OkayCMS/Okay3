@@ -1,7 +1,7 @@
 {if $order->id}
-    {$meta_title = "`$btr->general_order_number` `$order->id`" scope=parent}
+    {$meta_title = "`$btr->general_order_number` `$order->id`" scope=global}
 {else}
-    {$meta_title = $btr->order_new scope=parent}
+    {$meta_title = $btr->order_new scope=global}
 {/if}
 
 <form method="post" enctype="multipart/form-data" class="fn_fast_button">
@@ -54,6 +54,14 @@
                         </span>
                     </div>
                 </div>
+                {if $order->id && !empty($order->url)}
+                    <div class="box_btn_heading">
+                        <a class="btn btn_small btn-info add" target="_blank" href="../{url_generator route="order" url=$order->url}" >
+                            {include file='svg_icon.tpl' svgId='icon_desktop'}
+                            <span>{$btr->general_open|escape}</span>
+                        </a>
+                    </div>
+                {/if}
                 {if $neighbors_orders}
                     <div class="neighbors_orders">
                         {if $neighbors_orders['prev']->id}
@@ -157,7 +165,7 @@
                                             <input type=hidden name=purchases[id][{$purchase->id}] value='{$purchase->id}'>
 
                                             <div class="okay_list_boding okay_list_photo">
-                                                {if $purchase->product->image}
+                                                {if $purchase->variant}
                                                     <img class=product_icon src="{$purchase->product->image->filename|resize:50:50}">
                                                 {else}
                                                     <img width="50" src="design/images/no_image.png"/>
@@ -166,7 +174,7 @@
                                             <div class="okay_list_boding okay_list_order_name">
                                                 <div class="boxes_inline">
                                                     {if $purchase->product}
-                                                        <a href="{url module=ProductAdmin id=$purchase->product->id}">{$purchase->product_name|escape}</a>
+                                                        <a class="{if $purchase->variant->stock == 0}hint-bottom-middle-t-info-s-small-mobile  hint-anim text_warning{/if}" {if $purchase->variant->stock == 0}data-hint="{$btr->product_out_stock|escape}"{/if} href="{url controller=ProductAdmin id=$purchase->product->id}">{$purchase->product_name|escape}</a>
                                                         {if $purchase->variant_name}
                                                             <span class="text_grey">{$btr->order_option|escape} {$purchase->variant_name|escape}</span>
                                                         {/if}

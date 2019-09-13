@@ -10,9 +10,45 @@
  *
  * */
 
+/**
+ * Possible rotation options for data labels in the sunburst series.
+ *
+ * @typedef {"auto"|"perpendicular"|"parallel"} Highcharts.SeriesSunburstDataLabelsRotationValue
+ */
+
+/**
+ * Options for data labels in the sunburst series.
+ *
+ * @interface Highcharts.SeriesSunburstDataLabelsOptionsObject
+ * @extends Highcharts.DataLabelsOptionsObject
+ *//**
+ * @name Highcharts.SeriesSunburstDataLabelsOptionsObject#align
+ * @type {undefined}
+ *//**
+ * @name Highcharts.SeriesSunburstDataLabelsOptionsObject#allowOverlap
+ * @type {undefined}
+ *//**
+ * Decides how the data label will be rotated relative to the perimeter
+ * of the sunburst. Valid values are `auto`, `parallel` and
+ * `perpendicular`. When `auto`, the best fit will be computed for the
+ * point.
+ *
+ * The `series.rotation` option takes precedence over `rotationMode`.
+ *
+ * @name Highcharts.SeriesSunburstDataLabelsOptionsObject#rotationMode
+ * @type {Highcharts.SeriesSunburstDataLabelsRotationValue|undefined}
+ * @since 6.0.0
+ */
+
 'use strict';
 
 import H from '../parts/Globals.js';
+
+import U from '../parts/Utilities.js';
+var isNumber = U.isNumber,
+    isObject = U.isObject,
+    isString = U.isString;
+
 import '../mixins/centered-series.js';
 import drawPoint from '../mixins/draw-point.js';
 import mixinTreeSeries from '../mixins/tree-series.js';
@@ -29,9 +65,6 @@ var CenteredSeriesMixin = H.CenteredSeriesMixin,
     isBoolean = function (x) {
         return typeof x === 'boolean';
     },
-    isNumber = H.isNumber,
-    isObject = H.isObject,
-    isString = H.isString,
     merge = H.merge,
     noop = H.noop,
     rad2deg = 180 / Math.PI,
@@ -382,8 +415,9 @@ var cbSetTreeValuesBefore = function before(node, options) {
         chart = series.chart,
         points = series.points,
         point = points[node.i],
+        colors = (series.options.colors || chart && chart.options.colors),
         colorInfo = getColor(node, {
-            colors: chart && chart.options && chart.options.colors,
+            colors: colors,
             colorIndex: series.colorIndex,
             index: options.index,
             mapOptionsToLevel: options.mapOptionsToLevel,
@@ -413,12 +447,13 @@ var cbSetTreeValuesBefore = function before(node, options) {
  *         Sunburst chart
  *
  * @extends      plotOptions.pie
- * @excluding    allAreas, clip, colorAxis, compare, compareBase, dataGrouping,
- *               depth, endAngle, gapSize, gapUnit, ignoreHiddenPoint,
- *               innerSize, joinBy, legendType, linecap, minSize,
- *               navigatorOptions, pointRange
+ * @excluding    allAreas, clip, colorAxis, colorKey, compare, compareBase,
+ *               dataGrouping, depth, dragDrop, endAngle, gapSize, gapUnit,
+ *               ignoreHiddenPoint, innerSize, joinBy, legendType, linecap,
+ *               minSize, navigatorOptions, pointRange
  * @product      highcharts
  * @optionparent plotOptions.sunburst
+ * @private
  */
 var sunburstOptions = {
 
@@ -512,14 +547,26 @@ var sunburstOptions = {
 
     /**
      * When enabled the user can click on a point which is a parent and
-     * zoom in on its children.
+     * zoom in on its children. Deprecated and replaced by
+     * [allowTraversingTree](#plotOptions.sunburst.allowTraversingTree).
      *
-     * @sample highcharts/demo/sunburst
-     *         Allow drill to node
+     * @deprecated
+     * @type      {boolean}
+     * @default   false
+     * @since     6.0.0
+     * @product   highcharts
+     * @apioption plotOptions.sunburst.allowDrillToNode
+     */
+
+    /**
+     * When enabled the user can click on a point which is a parent and
+     * zoom in on its children.
      *
      * @type      {boolean}
      * @default   false
-     * @apioption plotOptions.sunburst.allowDrillToNode
+     * @since     7.0.3
+     * @product   highcharts
+     * @apioption plotOptions.sunburst.allowTraversingTree
      */
 
     /**
@@ -536,27 +583,26 @@ var sunburstOptions = {
     center: ['50%', '50%'],
     colorByPoint: false,
     /**
-     * @extends   plotOptions.series.dataLabels
-     * @excluding align, allowOverlap, distance, staggerLines, step
+     * Disable inherited opacity from Treemap series.
+     *
+     * @ignore-option
+     */
+    opacity: 1,
+    /**
+     * @type    {Highcharts.SeriesSunburstDataLabelsOptionsObject|Array<Highcharts.SeriesSunburstDataLabelsOptionsObject>}
+     * @default {"allowOverlap": true, "defer": true, "rotationMode": "auto", "style": {"textOverflow": "ellipsis"}}
      */
     dataLabels: {
+        /** @ignore-option */
         allowOverlap: true,
+        /** @ignore-option */
         defer: true,
+        /** @ignore-option */
+        rotationMode: 'auto',
+        /** @ignore-option */
         style: {
             textOverflow: 'ellipsis'
-        },
-        /**
-         * Decides how the data label will be rotated relative to the perimeter
-         * of the sunburst. Valid values are `auto`, `parallel` and
-         * `perpendicular`. When `auto`, the best fit will be computed for the
-         * point.
-         *
-         * The `series.rotation` option takes precedence over `rotationMode`.
-         *
-         * @since      6.0.0
-         * @validvalue ["auto", "perpendicular", "parallel"]
-         */
-        rotationMode: 'auto'
+        }
     },
     /**
      * Which point to use as a root in the visualization.
@@ -609,6 +655,15 @@ var sunburstOptions = {
          */
         unit: 'weight'
     },
+
+    /**
+     * Options for the button appearing when traversing down in a treemap.
+     *
+     * @extends plotOptions.treemap.traverseUpButton
+     * @since 6.0.0
+     * @apioption plotOptions.sunburst.traverseUpButton
+     */
+
     /**
      * If a point is sliced, moved out from the center, how many pixels
      * should it be moved?.
@@ -835,13 +890,17 @@ var sunburstSeries = {
             nodeRoot = mapIdToNode && mapIdToNode[rootId],
             nodeTop,
             tree,
-            values;
+            values,
+            nodeIds = {};
 
         series.shapeRoot = nodeRoot && nodeRoot.shapeArgs;
         // Call prototype function
         Series.prototype.translate.call(series);
         // @todo Only if series.isDirtyData is true
         tree = series.tree = series.getTree();
+
+        // Render traverseUpButton, after series.nodeMap i calculated.
+        series.renderTraverseUpButton(rootId);
         mapIdToNode = series.nodeMap;
         nodeRoot = mapIdToNode[rootId];
         idTop = isString(nodeRoot.parent) ? nodeRoot.parent : '';
@@ -887,6 +946,18 @@ var sunburstSeries = {
         this.setShapeArgs(nodeTop, values, mapOptionsToLevel);
         // Set mapOptionsToLevel on series for use in drawPoints.
         series.mapOptionsToLevel = mapOptionsToLevel;
+
+        // #10669 - verify if all nodes have unique ids
+        series.data.forEach(function (child) {
+            if (nodeIds[child.id]) {
+                H.error(31, false, series.chart);
+            }
+            // map
+            nodeIds[child.id] = true;
+        });
+
+        // reset object
+        nodeIds = {};
     },
 
     // Animate the slices in. Similar to the animation of polar charts.
@@ -942,9 +1013,10 @@ var sunburstSeries = {
 var sunburstPoint = {
     draw: drawPoint,
     shouldDraw: function shouldDraw() {
-        var point = this;
-
-        return !point.isNull;
+        return !this.isNull;
+    },
+    isValid: function isValid() {
+        return true;
     }
 };
 
@@ -959,7 +1031,7 @@ var sunburstPoint = {
  */
 
 /**
- * @type      {Array<number|*>}
+ * @type      {Array<number|null|*>}
  * @extends   series.treemap.data
  * @excluding x, y
  * @product   highcharts
@@ -967,10 +1039,16 @@ var sunburstPoint = {
  */
 
 /**
+ * @type      {Highcharts.SeriesSunburstDataLabelsOptionsObject|Array<Highcharts.SeriesSunburstDataLabelsOptionsObject>}
+ * @product   highcharts
+ * @apioption series.sunburst.data.dataLabels
+ */
+
+/**
  * The value of the point, resulting in a relative area of the point
  * in the sunburst.
  *
- * @type      {number}
+ * @type      {number|null}
  * @since     6.0.0
  * @product   highcharts
  * @apioption series.sunburst.data.value

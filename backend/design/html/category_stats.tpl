@@ -1,5 +1,5 @@
 
-{$meta_title=$btr->category_stats_sales scope=parent}
+{$meta_title=$btr->category_stats_sales scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -7,6 +7,9 @@
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->category_stats_sales|escape} {$category->name|escape} {$brand->name|escape}
+                <i class="fn_tooltips" title="{$btr->tooltip_category_stats_sales|escape}">
+                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                </i>
             </div>
         </div>
     </div>
@@ -31,7 +34,7 @@
                                 <div class="date">
                                     {*Блок фильтров*}
                                     <form class="date_filter row" method="get">
-                                        <input type="hidden" name="module" value="CategoryStatsAdmin" />
+                                        <input type="hidden" name="controller" value="CategoryStatsAdmin" />
                                         <div class="col-md-5 col-lg-5 pr-0 pl-0">
                                             <div class="input-group mobile_input-group">
                                                 <span class=" input-group-addon-date">{$btr->general_from|escape}</span>

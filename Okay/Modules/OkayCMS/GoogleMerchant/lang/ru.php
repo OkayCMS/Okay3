@@ -1,0 +1,30 @@
+<?php
+
+$lang['okaycms__google_merchant__title'] = 'Выгрузка (GoogleMerchant)';
+$lang['okaycms__google_merchant__left_title'] = 'Выгрузка (GoogleMerchant)';
+$lang['okaycms__google_merchant__products'] = 'Товары для выгрузки';
+$lang['okaycms__google_merchant__products_remove'] = 'Товары которые не нужно выгружать';
+$lang['okaycms__google_merchant__select_all'] = 'Выбрать все';
+$lang['okaycms__google_merchant__categories'] = 'Категории';
+$lang['okaycms__google_merchant__select_none'] = 'Отменить все';
+$lang['okaycms__google_merchant__brands'] = 'Бренды';
+$lang['okaycms__google_merchant__generation_url'] = 'Ссылка по которой доступен файл выгрузки';
+$lang['okaycms__google_merchant__upload_non_exists_products_to_google'] = 'Выгружать товары, которых нет в наличии';
+$lang['okaycms__google_merchant__use_full_description_to_google'] = 'Передавать в выгрузку полное описание (если выключена передается краткое описание)';
+$lang['okaycms__google_merchant__products_for_upload'] = 'Товары для выгрузки';
+$lang['okaycms__google_merchant__products_not_for_upload'] = 'Товары не для выгрузки';
+$lang['okaycms__google_merchant__select_products'] = 'Выбрать товар';
+$lang['okaycms__google_merchant__add_products'] = 'Добавить товар';
+$lang['okaycms__google_merchant__params'] = 'Настройки выгрузки';
+$lang['okaycms__google_merchant__company'] = 'Полное наименование компании, владеющей магазином';
+$lang['okaycms__google_merchant__no_export_without_price'] = 'Не выгружать товары с ценой 0';
+$lang['okaycms__google_merchant__has_manufacturer_warranty'] = 'У товаров есть гарантия производителя';
+$lang['okaycms__google_merchant__pickup'] = 'Возможность самовывоза из пункта выдачи';
+$lang['okaycms__google_merchant__store'] = 'Возможность купить товар без предварительного заказа';
+$lang['okaycms__google_merchant__sales_max_length'] = 'Допустимая длина текста в элементе — 50 символов';
+$lang['okaycms__google_merchant__delivery_disallow'] = 'Возможность курьерской доставки';
+$lang['okaycms__google_merchant__adult'] = 'Товары для взрослых (adult)';
+$lang['okaycms__google_merchant__color'] = 'Цвет';
+$lang['okaycms__google_merchant__color_notify'] = 'Выберите свойство, которое будет отвечать за данный параметр';
+$lang['okaycms__google_merchant__upload_products'] = 'Выбор товаров для выгрузки';
+$lang['okaycms__google_merchant__use_variant_name_like_size'] = 'Передавать вариант как размер (для одежды)';

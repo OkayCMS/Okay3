@@ -1,7 +1,7 @@
 {if $translation->id}
-    {$meta_title = $translation->label scope=parent}
+    {$meta_title = $translation->label scope=global}
 {else}
-    {$meta_title = $btr->translation_new scope=parent}
+    {$meta_title = $btr->translation_new scope=global}
 {/if}
 
 {*Название страницы*}
@@ -42,7 +42,7 @@
                         {/if}
                     </span>
                     {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{url module=TranslationsAdmin id=null}">{$btr->general_back|escape}</a>
+                        <a class="btn btn_return float-xs-right" href="{url controller=TranslationsAdmin id=null}">{$btr->general_back|escape}</a>
                     {/if}
                 </div>
             </div>
@@ -60,7 +60,7 @@
                     {if $message_error == 'label_exists'}{$btr->translation_used|escape}{/if}
                     {if $message_error == 'label_is_class'}{$btr->translation_not_allowed|escape}{/if}
                     {if $smarty.get.return}
-                        <a class="button" href="{url module=TranslationsAdmin}">{$btr->general_back|escape}</a>
+                        <a class="button" href="{url controller=TranslationsAdmin}">{$btr->general_back|escape}</a>
                     {/if}
                 </div>
             </div>
@@ -81,6 +81,7 @@
                     {*Название элемента сайта*}
                     <div class="col-lg-12 col-md-12">
                         <div class="heading_label">
+
                             {$btr->translation_name|escape}
                         </div>
                         <div class="form-group">
@@ -91,7 +92,14 @@
                 <div class="row">
                     {foreach $languages as $lang}
                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 mb-h">
-                            <div class="heading_label">{$lang->name|escape}</div>
+                            <div class="heading_label mb-h">
+                                {if is_file("{$config->lang_images_dir}{$lang->label}.png")}
+                                <div class="translation_icon">
+                                <img src="{("{$lang->label}.png")|resize:32:32:false:$config->lang_resized_dir}" />
+                                </div>
+                                {/if}
+                                {$lang->name|escape}
+                            </div>
                             <div class="">
                                 <textarea name="lang_{$lang->label}" class="form-control okay_textarea" {if $locked_theme}readonly=""{/if}>{$translation->values[{$lang->id}]}</textarea>
                             </div>

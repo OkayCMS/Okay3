@@ -11,14 +11,17 @@
 'use strict';
 
 import H from '../parts/Globals.js';
+
+import U from '../parts/Utilities.js';
+var isArray = U.isArray,
+    isNumber = U.isNumber,
+    isObject = U.isObject;
+
 import drawPoint from '../mixins/draw-point.js';
 import polygon from '../mixins/polygon.js';
 import '../parts/Series.js';
 
 var extend = H.extend,
-    isArray = H.isArray,
-    isNumber = H.isNumber,
-    isObject = H.isObject,
     merge = H.merge,
     noop = H.noop,
     find = H.find,
@@ -380,12 +383,12 @@ function getRotation(orientations, index, from, to) {
         isNumber(index) &&
         isNumber(from) &&
         isNumber(to) &&
-        orientations > -1 &&
+        orientations > 0 &&
         index > -1 &&
         to > from
     ) {
         range = to - from;
-        intervals = range / (orientations - 1);
+        intervals = range / (orientations - 1 || 1);
         orientation = index % orientations;
         result = from + (orientation * intervals);
     }
@@ -603,13 +606,13 @@ function updateFieldBoundaries(field, rectangle) {
  * @extends      plotOptions.column
  * @excluding    allAreas, boostThreshold, clip, colorAxis, compare,
  *               compareBase, crisp, cropTreshold, dataGrouping, dataLabels,
- *               depth, edgeColor, findNearestPointBy, getExtremesFromAll,
- *               grouping, groupPadding, groupZPadding, joinBy, maxPointWidth,
- *               minPointLength, navigatorOptions, negativeColor, pointInterval,
- *               pointIntervalUnit, pointPadding, pointPlacement, pointRange,
- *               pointStart, pointWidth, pointStart, pointWidth, shadow,
- *               showCheckbox, showInNavigator, softThreshold, stacking,
- *               threshold, zoneAxis, zones
+ *               depth, dragDrop, edgeColor, findNearestPointBy,
+ *               getExtremesFromAll, grouping, groupPadding, groupZPadding,
+ *               joinBy, maxPointWidth, minPointLength, navigatorOptions,
+ *               negativeColor, pointInterval, pointIntervalUnit, pointPadding,
+ *               pointPlacement, pointRange, pointStart, pointWidth, pointStart,
+ *               pointWidth, shadow, showCheckbox, showInNavigator,
+ *               softThreshold, stacking, threshold, zoneAxis, zones
  * @product      highcharts
  * @since        6.0.0
  * @optionparent plotOptions.wordcloud
@@ -667,7 +670,7 @@ var wordCloudOptions = {
         from: 0,
         /**
          * The number of possible orientations for a word, within the range of
-         * `rotation.from` and `rotation.to`.
+         * `rotation.from` and `rotation.to`. Must be a number larger than 0.
          */
         orientations: 2,
         /**
@@ -696,7 +699,9 @@ var wordCloudOptions = {
         /** @ignore-option */
         fontFamily: 'sans-serif',
         /** @ignore-option */
-        fontWeight: '900'
+        fontWeight: '900',
+        /** @ignore-option */
+        whiteSpace: 'nowrap'
     },
     tooltip: {
         followPointer: true,
@@ -709,6 +714,7 @@ var wordCloudSeries = {
     animate: Series.prototype.animate,
     animateDrilldown: noop,
     animateDrillupFrom: noop,
+    setClip: noop,
     bindAxes: function () {
         var wordcloudAxis = {
             endOnTick: false,
@@ -1020,6 +1026,9 @@ var wordCloudPoint = {
         var point = this;
 
         return !point.isNull;
+    },
+    isValid: function isValid() {
+        return true;
     },
     weight: 1
 };

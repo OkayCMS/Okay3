@@ -15,8 +15,8 @@ $design = $DI->get(Design::class);
 /** @var OrderLabelsEntity $orderLabelsEntity */
 $orderLabelsEntity = $entityFactory->get(OrderLabelsEntity::class); 
 
-$design->set_templates_dir('backend/design/html');
-$design->set_compiled_dir('backend/design/compiled');
+$design->setTemplatesDir('backend/design/html');
+$design->setCompiledDir('backend/design/compiled');
 
 $result = [];
 /*Принимаем метки, с которыми нужно сделать действие*/

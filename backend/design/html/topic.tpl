@@ -1,8 +1,8 @@
 {* Title *}
 {if $topic->id}
-    {$meta_title = $topic->header|escape scope=parent}
+    {$meta_title = $topic->header|escape scope=global}
 {else}
-    {$meta_title = $btr->topic_new scope=parent}
+    {$meta_title = $btr->topic_new scope=global}
 {/if}
 
 {*Название страницы*}
@@ -17,7 +17,7 @@
                 {/if}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url module=SupportAdmin id=null}">
+                <a class="btn btn_small btn-info" href="{url controller=SupportAdmin id=null}">
                     {include file='svg_icon.tpl' svgId='return'}
                     <span>{$btr->general_back|escape}</span>
                 </a>
@@ -201,8 +201,8 @@
     </div>
     {/if}
 </form>
-{if $config->subfolder !='/'}
-    <script type="text/javascript" src="/{$config->subfolder}backend/design/js/tinymce_jq/tinymce.min.js"></script>
+{if $subfolder !='/'}
+    <script type="text/javascript" src="/{$subfolder}backend/design/js/tinymce_jq/tinymce.min.js"></script>
 {else}
     <script type="text/javascript" src="/backend/design/js/tinymce_jq/tinymce.min.js"></script>
 {/if}

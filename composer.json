@@ -17,8 +17,10 @@
         }
     ],
     "require": {
+        "ext-SimpleXML": "*",
+        "ext-json": "*",
         "gregwar/image": "2.*",
-        "smarty/smarty": "3.1.18",
+        "smarty/smarty": "~3.1",
         "mobiledetect/mobiledetectlib": "^2.8",
         "phpmailer/phpmailer": "~6.0",
         "sabberworm/php-css-parser": "*",
@@ -29,15 +31,12 @@
         "monolog/monolog": "^1.24",
         "aura/sqlquery": "^2.7",
         "aura/sql": "^3.0",
-        "haydenpierce/class-finder": "^0.3.3"
+        "haydenpierce/class-finder": "^0.3.3",
+        "okaycms/license": "^1.0"
     },
     "autoload": {
         "psr-4": {
-            "Okay\\Core\\": "Core/",
-            "Okay\\Controllers\\": "Controllers/",
-            "Okay\\Entities\\": "Entities/",
-            "Okay\\Logic\\": "Logic/",
-            "Okay\\Modules\\": "Modules/",
+            "Okay\\": "Okay/",
             "Okay\\Admin\\Controllers\\": "backend/Controllers/"
         }
     }

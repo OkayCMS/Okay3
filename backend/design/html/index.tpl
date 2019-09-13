@@ -21,7 +21,7 @@
     <script src="design/js/fancybox/jquery.fancybox.min.js"></script>
 
 
-    {if in_array($smarty.get.module, array("OrdersAdmin", "PostAdmin", "ReportStatsAdmin", "CouponsAdmin", "CategoryStatsAdmin"))}
+    {if in_array($smarty.get.controller, array("OrdersAdmin", "PostAdmin", "ReportStatsAdmin", "CouponsAdmin", "CategoryStatsAdmin"))}
         <script src="design/js/jquery/datepicker/jquery.ui.datepicker-{$manager->lang}.js"></script>
     {/if}
     <script src="design/js/toastr.min.js"></script>
@@ -54,11 +54,11 @@
                 <img src="design/images/logo_title.png" alt="OkayCMS"/>
             </a>
             {if $is_mobile === false && $is_tablet === false}
-                <span class="fn_switch_menu menu_switch fn_ajax_action {if $manager->menu_status}fn_active_class{/if} hint-left-middle-t-white-s-small-mobile  hint-anim" data-module="managers" data-action="menu_status" data-id="{$manager->id}" data-hint="{$btr->catalog_fixation}">
+                <span class="fn_switch_menu menu_switch fn_ajax_action {if $manager->menu_status}fn_active_class{/if} hint-left-middle-t-white-s-small-mobile  hint-anim" data-controller="managers" data-action="menu_status" data-id="{$manager->id}" data-hint="{$btr->catalog_fixation}">
                     <span class="menu_hamburger"></span>
                 </span>
             {else}
-                <span class="fn_switch_menu menu_switch" data-module="managers" data-action="menu_status" data-id="{$manager->id}">
+                <span class="fn_switch_menu menu_switch" data-controller="managers" data-action="menu_status" data-id="{$manager->id}">
                     <span class="menu_hamburger"></span>
                 </span>
             {/if}
@@ -77,7 +77,7 @@
                                     {if $items|count == 1}
                                         <input type="hidden" value="{$items|reset}" name="manager_menu[{$section|escape}][{$items|key}]" />
                                     {/if}
-                                    <a class="nav-link {if $items|count > 1}fn_item_switch nav-dropdown-toggle{/if}" href="{if $items|count > 1}javascript:;{else}index.php?module={$items|reset}{/if}">
+                                    <a class="nav-link {if $items|count > 1}fn_item_switch nav-dropdown-toggle{/if}" href="{if $items|count > 1}javascript:;{else}index.php?controller={$items|reset}{/if}">
                                         <span class="{$section} title">{$btr->getTranslation({$section})}</span>
                                         <span class="icon-thumbnail">
                                            {include file='svg_icon.tpl' svgId=$section}
@@ -91,7 +91,7 @@
                                             {foreach $items as $title=>$mod}
                                                 <li class="{if $title == $menu_selected}active{/if}">
                                                     <input type="hidden" name="manager_menu[{$section|escape}][{$title|escape}]" value="{$mod|escape}" />
-                                                    <a class="nav-link" href="index.php?module={$mod}">
+                                                    <a class="nav-link" href="index.php?controller={$mod}">
                                                         <span class="icon-thumbnail">
                                                             {$btr->getTranslation({$title})|first_letter}
                                                         </span>
@@ -149,7 +149,7 @@
                     {*Техподдержка*}
                     <div class="admin_techsupport">
                         <div class="techsupport_inner">
-                            <a {if $support_info->public_key} data-hint="{$support_info->balance|balance}"{else} data-hint="Not active" {/if}  class="hint-bottom-middle-t-info-s-small-mobile  hint-anim"  href="index.php?module=SupportAdmin">
+                            <a {if $support_info->public_key} data-hint="{$support_info->balance|balance}"{else} data-hint="Not active" {/if}  class="hint-bottom-middle-t-info-s-small-mobile  hint-anim"  href="index.php?controller=SupportAdmin">
                                 <span class="quickview_hidden">{$btr->index_support|escape}</span>
                                 {include file='svg_icon.tpl' svgId='techsupport'}
                                 {if $support_info->public_key}
@@ -178,7 +178,7 @@
                             <div class="notification_toggle">
                                 {if $new_orders_counter > 0}
                                     <div class="notif_item">
-                                        <a href="index.php?module=OrdersAdmin" class="l_notif">
+                                        <a href="index.php?controller=OrdersAdmin" class="l_notif">
                                             <span class="notif_icon boxed_notify">
                                                 {include file='svg_icon.tpl' svgId='left_orders'}
                                             </span>
@@ -189,7 +189,7 @@
                                 {/if}
                                 {if $new_comments_counter > 0}
                                     <div class="notif_item">
-                                        <a href="index.php?module=CommentsAdmin" class="l_notif">
+                                        <a href="index.php?controller=CommentsAdmin" class="l_notif">
                                             <span class="notif_icon boxed_warning">
                                                 {include file='svg_icon.tpl' svgId='left_comments'}
                                             </span>
@@ -200,7 +200,7 @@
                                 {/if}
                                 {if $new_feedbacks_counter > 0}
                                     <div class="notif_item">
-                                        <a href="index.php?module=FeedbacksAdmin" class="l_notif">
+                                        <a href="index.php?controller=FeedbacksAdmin" class="l_notif">
                                             <span class="notif_icon boxed_yellow">
                                                 {include file='svg_icon.tpl' svgId='email'}
                                             </span>
@@ -211,7 +211,7 @@
                                 {/if}
                                 {if $new_callbacks_counter > 0}
                                     <div class="notif_item">
-                                        <a href="index.php?module=CallbacksAdmin" class="l_notif">
+                                        <a href="index.php?controller=CallbacksAdmin" class="l_notif">
                                             <span class="notif_icon boxed_attention">
                                                 {include file='svg_icon.tpl' svgId='phone'}
                                             </span>
@@ -264,15 +264,15 @@
                     <div class="col-md-12 font_12 text_white">
                         <a href="https://okay-cms.com">OkayCMS </a> &copy; {$smarty.now|date_format:"%Y"} v.{$config->version} | {$btr->index_logged|escape}  {$manager->login|escape}
                         <div class="float-md-right">
-                            {if $license->valid}
-                            <a href='index.php?module=LicenseAdmin' class="text_success">{$btr->index_valid|escape} </a>
+                            {if $is_valid_license}
+                            <a href='index.php?controller=LicenseAdmin' class="text_success">{$btr->index_valid|escape} </a>
                             {else}
-                            <a href='index.php?module=LicenseAdmin' class="text_warning">{$btr->index_not_valid|escape}</a>
+                            <a href='index.php?controller=LicenseAdmin' class="text_warning">{$btr->index_not_valid|escape}</a>
                             {/if},
                             {if $support_info->public_key}
-                            <a class="text_success" href="index.php?module=SupportAdmin">{$btr->index_support_active|escape} ({$support_info->new_messages})</a>
+                            <a class="text_success" href="index.php?controller=SupportAdmin">{$btr->index_support_active|escape} ({$support_info->new_messages})</a>
                             {else}
-                            <a href="index.php?module=SupportAdmin">
+                            <a href="index.php?controller=SupportAdmin">
                                 <span class="text_warning">{$btr->index_support_not_active|escape}</span>
                             </a>
                             {/if}
@@ -286,9 +286,9 @@
                     <div class="action"></div>
                     <div class="additional_params"></div>
                 </div>
-                <button type="submit" class="{strip}{if $smarty.get.module == 'TemplatesAdmin'
-                        ||  $smarty.get.module == 'StylesAdmin'
-                        ||  $smarty.get.module == 'ScriptsAdmin'}
+                <button type="submit" class="{strip}{if $smarty.get.controller == 'TemplatesAdmin'
+                        ||  $smarty.get.controller == 'StylesAdmin'
+                        ||  $smarty.get.controller == 'ScriptsAdmin'}
                             fn_save{else}fast_save_button{/if}{/strip} btn btn_small btn_blue">
                     {include file='svg_icon.tpl' svgId='checked'}
                     <span>{$btr->general_apply|escape}</span>
@@ -395,6 +395,11 @@
                 }
             });
         }
+
+        $( function(){
+            $( ".fn_tooltips" ).tooltip();
+        });
+
 
         /* Catalog items toggle */
         if($('.fn_item_switch').size()>0){
@@ -508,7 +513,6 @@
                     handle: ".move_zone",  // Drag handle selector within list items
                     sort: true,  // sorting inside list
                     animation: 150,  // ms, animation speed moving items when sorting, `0` — without animation
-
                     ghostClass: "sortable-ghost",  // Class name for the drop placeholder
                     chosenClass: "sortable-chosen",  // Class name for the chosen item
                     dragClass: "sortable-drag",  // Class name for the dragging item
@@ -672,7 +676,7 @@
             /* Функция аяксового обновления полей
             * state - состояние объекта (включен/выключен)
             * id - id обновляемой сущности
-            * module - типо сущности
+            * controller - типо сущности
             * action - обновляемое поле (поле в БД)
             * класс "fn_ajax_block" у елемента - означает массовое обновление;
             * если нужно:
@@ -681,10 +685,10 @@
             * .fn_ajax_element: аттрибут "name" - поле БД; val() - значение.
             * */
             function ajax_action($this) {
-                var state, module, session_id, action, id, values = {};
+                var state, controller, session_id, action, id, values = {};
                 state = $this.hasClass("fn_active_class") ? 0:1;
                 id = parseInt($this.data('id'));
-                module = $this.data("module");
+                controller = $this.data("controller");
                 action = $this.data("action");
                 session_id = '{/literal}{$smarty.session.id}{literal}';
                 if (!$this.hasClass("fn_ajax_block")) {
@@ -708,7 +712,7 @@
                     dataType: 'json',
                     url: "ajax/update_object.php",
                     data: {
-                        object : module,
+                        object : controller,
                         id : id,
                         values: values,
                         session_id : session_id
@@ -716,8 +720,8 @@
                     success: function(data){
                         var msg = "";
                         if(data){
-                            toastr.success(msg, "Success");
-                            if (action == "processed" && module == "callback") {
+                            toastr.success(msg, "{/literal}{$btr->toastr_success|escape}{literal}");
+                            if (action == "processed" && controller == "callback") {
                                 $this.closest(".fn_row").find(".fn_callbacks_toggle").toggleClass("hidden");
                             } else {
                                 $this.toggleClass("fn_active_class");
@@ -726,7 +730,7 @@
                                 }
                             }
                         } else {
-                            toastr.error(msg, "Error");
+                            toastr.error(msg, "{/literal}{$btr->toastr_error|escape}{literal}");
                         }
                     }
                 });
@@ -766,11 +770,11 @@
             $('textarea[name="meta_description"]').change(function() { meta_description_touched = true; });
 
             $('#fn_meta_title_counter').text( '('+$('input[name="meta_title"]').val().length+')' );
-            $('#fn_meta_description_counter').text( '('+$('textarea[name="meta_description"]').val().length+')' );
+            $('#fn_meta_description_counter').text( '('+$('textarea[name="meta_description"]').val().replace(/\n/g, "\r\n").length+')' );
 
             $('input[name="name"]').keyup(function() { set_meta(); });
             $('input[name="meta_title"]').keyup(function() { $('#fn_meta_title_counter').text( '('+$('input[name="meta_title"]').val().length+')' ); });
-            $('textarea[name="meta_description"]').keyup(function() { $('#fn_meta_description_counter').text( '('+$('textarea[name="meta_description"]').val().length+')' ); });
+            $('textarea[name="meta_description"]').keyup(function() { $('#fn_meta_description_counter').text( '('+$('textarea[name="meta_description"]').val().replace(/\n/g, "\r\n").length+')' ); });
 
             if($(".fn_meta_brand").size()>0) {
                 $("select[name=brand_id]").on("change",function () {
@@ -830,11 +834,11 @@
 
         function generate_meta_description() {
             if(typeof(tinyMCE.get("fn_editor")) =='object') {
-                description = tinyMCE.get("fn_editor").getContent().replace(/(<([^>]+)>)/ig," ").replace(/(\&nbsp;)/ig," ").replace(/^\s+|\s+$/g, '').substr(0, 512);
+                description = tinyMCE.get("fn_editor").getContent().replace(/(<([^>]+)>)/ig," ").replace(/\n/g, "\r\n").replace(/(\&nbsp;)/ig," ").replace(/^\s+|\s+$/g, '').substr(0, 512);
                 $('#fn_meta_description_counter').text( '('+description.length+')');
                 return description;
             } else {
-                return $('.fn_editor_class').val().replace(/(<([^>]+)>)/ig," ").replace(/(\&nbsp;)/ig," ").replace(/^\s+|\s+$/g, '').substr(0, 512);
+                return $('.fn_editor_class').val().replace(/(<([^>]+)>)/ig," ").replace(/\n/g, "\r\n").replace(/(\&nbsp;)/ig," ").replace(/^\s+|\s+$/g, '').substr(0, 512);
             }
         }
     }

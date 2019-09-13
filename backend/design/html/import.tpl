@@ -1,4 +1,4 @@
-{$meta_title=$btr->import_products scope=parent}
+{$meta_title=$btr->import_products scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -95,7 +95,7 @@
                                                    data-column_name="{$column->name|escape}"
                                                    data-is_exist="{if $column->is_exist}1{else}0{/if}">
                                                     {if in_array($column->value, $columns_names)}
-                                                        {* {$btr->getTtranslation('import_field_'|cat:$column->value)} *}
+                                                         {$btr->getTranslation('import_field_'|cat:$column->value)} 
                                                     {elseif empty($column->value)}
                                                         {$btr->import_skip}
                                                     {elseif $column->is_nf_selected}
@@ -138,7 +138,7 @@
                             </div>
                         {elseif $import}
                             <div id='import_result' class="boxes_inline" style="display: none;">
-                                <a class="btn btn_small btn-info" href="index.php?module=ImportLogAdmin" target="_blank">{$btr->import_log|escape}</a>
+                                <a class="btn btn_small btn-info" href="index.php?controller=ImportLogAdmin" target="_blank">{$btr->import_log|escape}</a>
                             </div>
                             <div>
                                 <progress id="progressbar" class="progress progress-xs progress-info mt-1" style="display: none" value="0" max="100"></progress>
@@ -198,7 +198,7 @@
     </form>
 {/if}
 
-<script src="{$config->getRootUrl}/backend/design/js/piecon/piecon.js"></script>
+<script src="{$rootUrl}/backend/design/js/piecon/piecon.js"></script>
 <script>
     {literal}
     var new_feature_label = "{/literal}{$btr->import_new_feature}{literal}";

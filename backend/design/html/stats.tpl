@@ -1,9 +1,13 @@
-{$meta_title=$btr->stats_stats scope=parent}
+{$meta_title=$btr->stats_stats scope=global}
 
 {*Название страницы*}
 <div class="row">
     <div class="col-lg-6 col-md-6">
-        <div class="heading_page">{$btr->stats_stats|escape}</div>
+        <div class="heading_page">{$btr->stats_stats|escape}
+            <i class="fn_tooltips" title="{$btr->tooltip_stats_stats|escape}">
+                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+            </i>
+        </div>
     </div>
 </div>
 
@@ -23,8 +27,8 @@
 </script>
 {literal}
     <script src="design/js/highcharts/highcharts.js" type="text/javascript"></script>
-    <script src="design/js/highcharts/themes/grid.js" type="text/javascript"></script>
-    <script src="design/js/highcharts/modules/exporting.js" type="text/javascript"></script>
+    <script src="design/js/highcharts/themes/avocado.js" type="text/javascript"></script>
+    <script src="design/js/highcharts/controllers/exporting.js" type="text/javascript"></script>
 
 <script>
     var chart;

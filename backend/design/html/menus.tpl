@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->menus_menu scope=parent}
+{$meta_title=$btr->menus_menu scope=global}
 {*Название страницы*}
 <div class="row">
     <div class="col-lg-7 col-md-7">
@@ -8,7 +8,7 @@
                 {$btr->menus_menu|escape}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url module=MenuAdmin return=$smarty.server.REQUEST_URI}">
+                <a class="btn btn_small btn-info" href="{url controller=MenuAdmin return=$smarty.server.REQUEST_URI}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->menus_add|escape}</span>
                 </a>
@@ -54,7 +54,7 @@
                                     </div>
 
                                     <div class="okay_list_boding okay_list_features_name">
-                                        <a class="link" href="{url module=MenuAdmin id=$menu->id return=$smarty.server.REQUEST_URI}">
+                                        <a class="link" href="{url controller=MenuAdmin id=$menu->id return=$smarty.server.REQUEST_URI}">
                                             {$menu->name|escape}
                                         </a>
                                     </div>
@@ -69,7 +69,7 @@
                                         {*visible*}
                                         <div class="col-lg-4 col-md-3">
                                             <label class="switch switch-default">
-                                                <input class="switch-input fn_ajax_action {if $menu->visible}fn_active_class{/if}" data-module="menu" data-action="visible" data-id="{$menu->id}" name="visible" value="1" type="checkbox"  {if $menu->visible}checked=""{/if}/>
+                                                <input class="switch-input fn_ajax_action {if $menu->visible}fn_active_class{/if}" data-controller="menu" data-action="visible" data-id="{$menu->id}" name="visible" value="1" type="checkbox"  {if $menu->visible}checked=""{/if}/>
                                                 <span class="switch-label"></span>
                                                 <span class="switch-handle"></span>
                                             </label>

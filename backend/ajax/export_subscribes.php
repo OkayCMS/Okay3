@@ -4,6 +4,7 @@
 use Okay\Core\Database;
 use Okay\Core\Managers;
 use Okay\Core\Response;
+use Okay\Core\QueryFactory;
 use Okay\Entities\UsersEntity;
 use Okay\Entities\SubscribesEntity;
 
@@ -23,6 +24,9 @@ $filename        = 'subscribes.csv';
 /** @var Database $db */
 $db = $DI->get(Database::class);
 
+/** @var QueryFactory $queryFactory */
+$queryFactory = $DI->get(QueryFactory::class);
+
 /** @var Managers $managers */
 $managers = $DI->get(Managers::class);
 
@@ -41,7 +45,8 @@ if (!$managers->access('users', $managersEntity->get($_SESSION['admin']))) {
 
 // Excel ��������� ������ ��������� 1251
 setlocale(LC_ALL, 'ru_RU.1251');
-$db->customQuery('SET NAMES cp1251');
+$sqlQuery = $queryFactory->newSqlQuery()->setStatement('SET NAMES cp1251');
+$db->query($sqlQuery);
 
 $page = $request->get('page');
 if(empty($page) || $page==1) {

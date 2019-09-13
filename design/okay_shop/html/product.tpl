@@ -1,7 +1,7 @@
 {* Product page *}
 
 {* The canonical address of the page *}
-{$canonical="{url_generator route="product" url=$product->url absolute=1}" scope=parent}
+{$canonical="{url_generator route="product" url=$product->url absolute=1}" scope=global}
 
 <div class="fn_product block" itemscope itemtype="http://schema.org/Product">
     {* The product name *}
@@ -23,7 +23,7 @@
                     <div class="fn_gallery_image gallery_image product-page__image f_row justify-content-center">
                         <div class="product-page__img">
                             {if $product->image}
-                                <img class="fn_img fn_xzoom-fancy product_img xzoom4" xoriginal="{$product->image->filename|resize:1200:1000}" itemprop="image" src="{$product->image->filename|resize:800:550}" alt="{$product->name|escape}" title="{$product->name|escape}">
+                               <img class="fn_img fn_xzoom-fancy product_img xzoom4" xoriginal="{$product->image->filename|resize:1200:1000:w}" itemprop="image" src="{$product->image->filename|resize:800:550}" alt="{$product->name|escape}" title="{$product->name|escape}">
                             {else}
                                 <img class="fn_img" src="design/{get_theme}/images/no_image.png" width="340" height="340" alt="{$product->name|escape}"/>
                             {/if}
@@ -51,11 +51,15 @@
                     <div class="product-page__images xzoom-thumbs d-flex justify-content-center justify-content-sm-start flex-sm-column">
                         {* cut removes the first image, if you need start from the second - write cut:2 *}
                         {foreach $product->images as $i=>$image}
-                        <a href="{$image->filename|resize:1200:1000}" class="product-page__images-item">
+                        <a href="{$image->filename|resize:1200:1000:w}" class="product-page__images-item">
                             <img class="xzoom-gallery4" src="{$image->filename|resize:70:70}" xpreview="{$image->filename|resize:800:550}" alt="{$product->name|escape}" srcset="{$image->filename|resize:70:70:false:null:null:null:true}"/>
                         </a>
                         {/foreach}
                     </div>
+                    {else}
+                        <a href="{$product->image->filename|resize:1200:1000}" class="hidden">
+                            <img class="xzoom-gallery4" xpreview="{$product->image->filename|resize:800:550}" alt="{$product->name|escape}"/>
+                        </a>
                     {/if}
                 {else}
                 <div class="product-page__no_image d-flex align-items-center justify-content-center" title="{$product->name|escape}">
@@ -332,7 +336,7 @@
                         <ul class="features mobile_tab__content">
                             {foreach $product->features as $f}
                             <li class="features__item">
-                                <div class="features__name"><span>{$f->name|escape}:</span></div>
+                                <div class="features__name"><span>{$f->name|escape}:</span>{if $f->description}<span title="{$f->description}" style="margin-left: 10px; cursor: pointer; background: lightgreen; padding: 5px; border-radius: 5px;">i</span>{/if}</div>
                                 <div class="features__value">
                                     {foreach $f->values as $value}
                                         {if $category && $f->url_in_product && $f->in_filter && $value->to_index}

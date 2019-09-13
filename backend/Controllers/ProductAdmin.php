@@ -195,7 +195,6 @@ class ProductAdmin extends IndexAdmin
                     
                     /*Работы с вариантами товара*/
                     if (is_array($productVariants)) {
-                        $feed = $this->request->post('feed');
                         $variantsIds = [];
                         
                         foreach ($productVariants as $index=>&$variant) {
@@ -204,20 +203,6 @@ class ProductAdmin extends IndexAdmin
                             }
                             $variant->price = $variant->price > 0 ? str_replace(',', '.', $variant->price) : 0;
                             $variant->compare_price = $variant->compare_price > 0 ? str_replace(',', '.', $variant->compare_price) : 0;
-                            $variant->feed = (isset($feed[$variant->id]) ? 1 : 0);
-                            
-                            // Удалить файл
-                            if (!empty($_POST['delete_attachment'][$index])) {
-                                $variantsEntity->deleteAttachment($variant->id);
-                            }
-                            
-                            // Загрузить файлы
-                            if (!empty($_FILES['attachment']['tmp_name'][$index]) && !empty($_FILES['attachment']['name'][$index])) {
-                                $attachment_tmp_name = $_FILES['attachment']['tmp_name'][$index];
-                                $attachment_name = $_FILES['attachment']['name'][$index];
-                                move_uploaded_file($attachment_tmp_name, $this->config->root_dir.'/'.$this->config->downloads_dir . $attachment_name);
-                                $variant->attachment = $attachment_name;
-                            }
                             
                             if (!empty($variant->id)) {
                                 $variantsEntity->update($variant->id, $variant);
@@ -239,7 +224,7 @@ class ProductAdmin extends IndexAdmin
                             }
                         }
                         
-                        // Отсортировать  варианты
+                        // Отсортировать варианты
                         asort($variantsIds);
                         $i = 0;
                         foreach ($variantsIds as $variant_id) {
@@ -253,7 +238,7 @@ class ProductAdmin extends IndexAdmin
                     $currentImages = $imagesEntity->find(['product_id'=>$product->id]);
                     foreach ($currentImages as $image) {
                         if (!in_array($image->id, $images)) {
-                            $imagesEntity->delete($image->id); // todo здесь видимо нужно вызывать метод удаления изображения deleteImage
+                            $imagesEntity->delete($image->id);
                         }
                     }
                     
@@ -336,7 +321,7 @@ class ProductAdmin extends IndexAdmin
                                          * Проверим может есть занчение с таким транслитом,
                                          * дабы исключить дублирование значений "ТВ приставка" и "TV приставка" и подобных
                                          */
-                                        $translit = $translit->translitAlpha($value);
+                                        $valueTranslit = $translit->translitAlpha($value);
                                         
                                         // Ищем значение по транслиту в основной таблице, если мы создаем значение не на основном языке
                                         $select = $queryFactory->newSelect();
@@ -347,12 +332,12 @@ class ProductAdmin extends IndexAdmin
                                             ->limit(1)
                                             ->bindValues([
                                                 'feature_id' => $featureId,
-                                                'translit' => $translit,
+                                                'translit' => $valueTranslit,
                                             ]);
                                         $this->db->query($select);
                                         $valueId = $this->db->result('id');
                                         
-                                        if (empty($valueId) && ($fv = $featuresValuesEntity->find(['feature_id' => $featureId, 'translit' => $translit]))) {
+                                        if (empty($valueId) && ($fv = $featuresValuesEntity->find(['feature_id' => $featureId, 'translit' => $valueTranslit]))) {
                                             $fv = reset($fv);
                                             $valueId = $fv->id;
                                         }

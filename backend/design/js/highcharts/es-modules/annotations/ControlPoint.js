@@ -15,7 +15,7 @@ import eventEmitterMixin from './eventEmitterMixin.js';
  *        a control point
  * @param {Annotation.ControlPoint.Options} options an options object
  * @param {number} [index]
- **/
+ */
 function ControlPoint(chart, target, options, index) {
     this.chart = chart;
     this.target = target;
@@ -51,6 +51,14 @@ H.extend(
     ControlPoint.prototype,
     eventEmitterMixin
 );
+
+/**
+ * List of events for `anntation.options.events` that should not be
+ * added to `annotation.graphic` but to the `annotation`.
+ *
+ * @type {Array<string>}
+ */
+ControlPoint.prototype.nonDOMEvents = ['drag'];
 
 /**
  * Set the visibility.

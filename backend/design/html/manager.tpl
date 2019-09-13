@@ -1,7 +1,7 @@
 {if $m->login}
-    {$meta_title = $m->login scope=parent}
+    {$meta_title = $m->login scope=global}
 {else}
-    {$meta_title = $btr->manager_new scope=parent}
+    {$meta_title = $btr->manager_new scope=global}
 {/if}
 
 {*Название страницы*}
@@ -76,7 +76,11 @@
                 </div>
                 <div class="toggle_body_wrap on fn_card">
                     <div class="mb-1">
-                        <div class="heading_label" >{$btr->manager_login|escape}</div>
+                        <div class="heading_label" >{$btr->manager_login|escape}
+                            <i class="fn_tooltips" title="{$btr->tooltip_manager_login|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </div>
                         <div class="">
                             <input class="form-control" name="login" autocomplete="off" type="text" value="{$m->login|escape}"/>
                             <input name="id" type="hidden" value="{$m->id|escape}"/>
@@ -91,7 +95,11 @@
                     </div>
 
                     <div class="mb-1">
-                        <div class="heading_label" >{$btr->manager_pass|escape}</div>
+                        <div class="heading_label" >{$btr->manager_pass|escape}
+                            <i class="fn_tooltips" title="{$btr->tooltip_manager_pass|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </div>
                         <div class="">
                             <input class="form-control" autocomplete="off" name="password" type="password" value="" placeholder="xxxxxxxx" />
                         </div>
@@ -120,7 +128,6 @@
                         <select name="manager_lang" class="selectpicker">
                             {foreach $btr_languages as $name=>$label}
                                 <option value="{$label}" {if $m->lang==$label}selected{/if}>
-                                    <img src="../{$config->lang_images_dir}{$label}.png"/>
                                     {$name|escape}
                                 </option>
                             {/foreach}
@@ -170,6 +177,9 @@
             <div class="boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->manager_rights|escape}
+                    <i class="fn_tooltips" title="{$btr->tooltip_manager_rights|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>

@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title = $btr->pages_site scope=parent}
+{$meta_title = $btr->pages_site scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -9,7 +9,7 @@
                 {$btr->pages_site|escape}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url module=PageAdmin}">
+                <a class="btn btn_small btn-info" href="{url controller=PageAdmin}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->pages_add|escape}</span>
                 </a>
@@ -75,7 +75,7 @@
                                         </div>
 
                                         <div class="okay_list_boding okay_list_page_name">
-                                            <a href="{url module=PageAdmin id=$page->id return=$smarty.server.REQUEST_URI}">
+                                            <a href="{url controller=PageAdmin id=$page->id return=$smarty.server.REQUEST_URI}">
                                                 {$page->name|escape}
                                             </a>
                                         </div>
@@ -86,7 +86,7 @@
                                         <div class="okay_list_boding okay_list_status">
                                             {*visible*}
                                             <label class="switch switch-default ">
-                                                <input class="switch-input fn_ajax_action {if $page->visible}fn_active_class{/if}" data-module="page" data-action="visible" data-id="{$page->id}" name="visible" value="1" type="checkbox"  {if $page->visible}checked=""{/if}/>
+                                                <input class="switch-input fn_ajax_action {if $page->visible}fn_active_class{/if}" data-controller="page" data-action="visible" data-id="{$page->id}" name="visible" value="1" type="checkbox"  {if $page->visible}checked=""{/if}/>
                                                 <span class="switch-label"></span>
                                                 <span class="switch-handle"></span>
                                             </label>

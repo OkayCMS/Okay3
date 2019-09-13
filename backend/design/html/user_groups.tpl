@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->user_groups_groups scope=parent}
+{$meta_title=$btr->user_groups_groups scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -9,7 +9,7 @@
                 {$btr->user_groups_groups|escape} ({$groups|count})
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="index.php?module=UserGroupAdmin&return={$smarty.server.REQUEST_URI}">
+                <a class="btn btn_small btn-info" href="index.php?controller=UserGroupAdmin&return={$smarty.server.REQUEST_URI}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->user_groups_add|escape}</span>
                 </a>
@@ -48,7 +48,7 @@
                                             <label class="okay_ckeckbox" for="id_{$group->id}"></label>
                                         </div>
                                         <div class="okay_list_boding okay_list_usergroups_name">
-                                            <a href="{url module=UserGroupAdmin id=$group->id}">
+                                            <a href="{url controller=UserGroupAdmin id=$group->id}">
                                                 {$group->name|escape}
                                             </a>
                                         </div>

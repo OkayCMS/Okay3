@@ -71,7 +71,9 @@ okay.max_order_amount = {$settings->max_order_amount};
         {if $coupon_error}
         <div class="message_error">
             {if $coupon_error == 'invalid'}
-            {$lang->cart_coupon_error}
+                {$lang->cart_coupon_error}
+            {elseif $coupon_error == 'empty'}
+                {$lang->cart_empty_coupon_error}
             {/if}
         </div>
         {/if}

@@ -1,7 +1,7 @@
 {if $brand->id}
-    {$meta_title = $brand->name scope=parent}
+    {$meta_title = $brand->name scope=global}
 {else}
-    {$meta_title = $btr->brand_new scope=parent}
+    {$meta_title = $btr->brand_new scope=global}
 {/if}
 
 {*Название страницы*}
@@ -85,8 +85,11 @@
                 {*Название элемента сайта*}
                 <div class="row d_flex">
                     <div class="col-lg-10 col-md-9 col-sm-12">
-                        <div class="heading_label">
-                            {$btr->general_name|escape}
+                        <div class="heading_label heading_label--required">
+                            <span>{$btr->general_name|escape}</span>
+                            <i class="fn_tooltips" title="{$btr->tooltip_general_name_brand|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
                         </div>
                         <div class="form-group">
                             <input class="form-control" name="name" type="text" value="{$brand->name|escape}"/>
@@ -115,7 +118,12 @@
                         <div class="activity_of_switch">
                             <div class="activity_of_switch_item">
                                 <div class="okay_switch clearfix">
-                                    <label class="switch_label">{$btr->general_enable|escape}</label>
+                                    <label class="switch_label">
+                                        {$btr->general_enable|escape}
+                                        <i class="fn_tooltips" title="{$btr->tooltip_general_enable_brand|escape}">
+                                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                        </i>
+                                    </label>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="visible" value='1' type="checkbox" {if $brand->visible}checked=""{/if}/>
                                         <span class="switch-label"></span>
@@ -172,23 +180,34 @@
             <div class="boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->general_metatags|escape}
+                    <i class="fn_tooltips" title="{$btr->tooltip_general_metatags|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>
                 </div>
-
                 <div class="toggle_body_wrap on fn_card row">
                     <div class="col-lg-6 col-md-6">
-
-                        <div class="heading_label" >Meta-title <span id="fn_meta_title_counter"></span></div>
+                        <div class="heading_label" >Meta-title <span id="fn_meta_title_counter"></span>
+                            <i class="fn_tooltips" title="{$btr->tooltip_meta_title|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </div>
                         <input name="meta_title" class="form-control fn_meta_field mb-h" type="text" value="{$brand->meta_title|escape}" />
-                        <div class="heading_label" >Meta-keywords</div>
+                        <div class="heading_label" >Meta-keywords
+                            <i class="fn_tooltips" title="{$btr->tooltip_meta_keywords|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </div>
                         <input name="meta_keywords" class="form-control fn_meta_field mb-h" type="text" value="{$brand->meta_keywords|escape}" />
-
                     </div>
-
                     <div class="col-lg-6 col-md-6 pl-0">
-                        <div class="heading_label" >Meta-description <span id="fn_meta_description_counter"></span></div>
+                        <div class="heading_label" >Meta-description <span id="fn_meta_description_counter"></span>
+                            <i class="fn_tooltips" title="{$btr->tooltip_meta_description|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </div>
                         <textarea name="meta_description" class="form-control okay_textarea fn_meta_field">{$brand->meta_description|escape}</textarea>
                     </div>
                 </div>

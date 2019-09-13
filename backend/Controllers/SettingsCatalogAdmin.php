@@ -37,6 +37,9 @@ class SettingsCatalogAdmin extends IndexAdmin
                     $dataCleaner->clearAllCatalogImages();
                     $dataCleaner->clearCatalogData();
                 }
+                else {
+                    $this->design->assign('message_error', 'truncate_table_password_failed');
+                }
             }
             
             if ($this->request->post('is_preorder', 'integer')){

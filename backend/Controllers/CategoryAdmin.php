@@ -6,14 +6,12 @@ namespace Okay\Admin\Controllers;
 
 use Okay\Core\Image;
 use Okay\Entities\CategoriesEntity;
-use Okay\Entities\ImagesEntity;
 
 class CategoryAdmin extends IndexAdmin
 {
     
     public function fetch(
         CategoriesEntity $categoriesEntity,
-        ImagesEntity $imagesEntity,
         Image $imageCore
     ) {
         $category = new \stdClass;
@@ -23,7 +21,6 @@ class CategoryAdmin extends IndexAdmin
             $category->parent_id = $this->request->post('parent_id', 'integer');
             $category->name = $this->request->post('name');
             $category->name_h1 = $this->request->post('name_h1');
-            $category->yandex_name = $this->request->post('yandex_name');
             $category->visible = $this->request->post('visible', 'boolean');
             
             $category->url = trim($this->request->post('url', 'string'));

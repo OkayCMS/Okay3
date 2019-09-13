@@ -25,8 +25,8 @@ class FeaturesAliasesAdmin extends IndexAdmin
         QueryFactory $queryFactory
     ) {
 
-        $this->design->set_templates_dir('backend/design/html');
-        $this->design->set_compiled_dir('backend/design/compiled');
+        $this->design->setTemplatesDir('backend/design/html');
+        $this->design->setCompiledDir('backend/design/compiled');
 
         if ($this->request->post("ajax")){
             if ($this->request->post("action") == "get") {
@@ -164,7 +164,7 @@ class FeaturesAliasesAdmin extends IndexAdmin
                     // Удалим все алиасы значений свойств для текущего языка
                     if (!empty($feature->id)) {
                         $delete = $queryFactory->newDelete();
-                        $delete->from(FeaturesValuesAliasesValues::getTable())
+                        $delete->from(FeaturesValuesAliasesValuesEntity::getTable())
                             ->where('feature_id=:feature_id AND lang_id=:lang_id')
                             ->bindValues([
                                 'feature_id' => $feature->id,

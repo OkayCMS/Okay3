@@ -105,9 +105,32 @@
         color: #fff;
         font-weight: 600;
     }
-
-
+    .fn_tooltips{
+        display: -webkit-inline-box !important;
+        display: -webkit-inline-flex !important;
+        display: -ms-inline-flexbox !important;
+        display: inline-flex !important;
+        -webkit-box-pack: center !important;
+        -webkit-justify-content: center !important;
+        -ms-flex-pack: center !important;
+        justify-content: center !important;
+        -webkit-box-align: center !important;
+        -webkit-align-items: center !important;
+        -ms-flex-align: center !important;
+        align-items: center !important;
+        margin: 0;
+        width: 12px;
+        height: 12px;
+        color: #868686;
+        cursor: pointer;
+        position: relative;
+        top: -4px;
     }
+    .fn_tooltips svg{
+        width: 12px;
+        height: 12px;
+    }
+}
 @media only screen and (max-width : 991px) {
     .pr-0 {padding-right: 15px !important;}
     .pl-0{padding-left: 15px !important;}

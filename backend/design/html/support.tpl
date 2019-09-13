@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->support_support scope=parent}
+{$meta_title=$btr->support_support scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -13,7 +13,7 @@
                 {/if}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url module=TopicAdmin}">
+                <a class="btn btn_small btn-info" href="{url controller=TopicAdmin}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->support_add|escape}</span>
                 </a>
@@ -62,7 +62,7 @@
 
                                         <div class="okay_list_boding okay_list_support_name">
                                             <div class="mb-q">
-                                                <a href="{url module=TopicAdmin id=$topic->id page=null return=$smarty.server.REQUEST_URI}">{$topic->header|escape}</a>
+                                                <a href="{url controller=TopicAdmin id=$topic->id page=null return=$smarty.server.REQUEST_URI}">{$topic->header|escape}</a>
                                             </div>
                                             <div class="">
                                                 {$btr->support_last_answer|escape}

@@ -1,11 +1,12 @@
 'use strict';
 import H from '../../parts/Globals.js';
-import '../../parts/Utilities.js';
+
+import U from '../../parts/Utilities.js';
+var isNumber = U.isNumber;
 
 var Annotation = H.Annotation,
     ControlPoint = Annotation.ControlPoint,
-    merge = H.merge,
-    isNumber = H.isNumber;
+    merge = H.merge;
 
 /**
  * @class
@@ -22,9 +23,7 @@ H.extendAnnotation(Measure, null,
     /** @lends Annotation.Measure# */
     {
         /**
-         *
          * Init annotation object.
-         *
          */
         init: function () {
             Annotation.prototype.init.apply(this, arguments);
@@ -123,22 +122,16 @@ H.extendAnnotation(Measure, null,
         /**
          * Add label with calculated values (min, max, average, bins).
          *
-         * @param {Boolean} resize - the flag for resize shape
-         *
+         * @param {boolean} resize - the flag for resize shape
          */
         addValues: function (resize) {
-            var options = this.options.typeOptions,
-                formatter = options.label.formatter,
-                typeOptions = this.options.typeOptions,
-                chart = this.chart,
-                inverted = chart.options.chart.inverted,
-                xAxis = chart.xAxis[typeOptions.xAxis],
-                yAxis = chart.yAxis[typeOptions.yAxis];
+            var typeOptions = this.options.typeOptions,
+                formatter = typeOptions.label.formatter;
 
             // set xAxisMin, xAxisMax, yAxisMin, yAxisMax
             this.calculations.recalculate.call(this, resize);
 
-            if (!options.label.enabled) {
+            if (!typeOptions.label.enabled) {
                 return;
             }
 
@@ -159,6 +152,10 @@ H.extendAnnotation(Measure, null,
                     crop: true,
                     point: function (target) {
                         var annotation = target.annotation,
+                            chart = annotation.chart,
+                            inverted = chart.inverted,
+                            xAxis = chart.xAxis[typeOptions.xAxis],
+                            yAxis = chart.yAxis[typeOptions.yAxis],
                             top = chart.plotTop,
                             left = chart.plotLeft;
 
@@ -171,12 +168,11 @@ H.extendAnnotation(Measure, null,
                     },
                     text: (formatter && formatter.call(this)) ||
                         this.calculations.defaultFormatter.call(this)
-                }, options.label));
+                }, typeOptions.label));
             }
         },
         /**
-         * add shapes - crosshair, background (rect)
-         *
+         * Crosshair, background (rect)
          */
         addShapes: function () {
             this.addCrosshairs();
@@ -208,7 +204,7 @@ H.extendAnnotation(Measure, null,
                 point = this.options.typeOptions.point,
                 xAxis = chart.xAxis[options.xAxis],
                 yAxis = chart.yAxis[options.yAxis],
-                inverted = chart.options.chart.inverted,
+                inverted = chart.inverted,
                 xAxisMin = xAxis.toPixels(this.xAxisMin),
                 xAxisMax = xAxis.toPixels(this.xAxisMax),
                 yAxisMin = yAxis.toPixels(this.yAxisMin),
@@ -219,13 +215,18 @@ H.extendAnnotation(Measure, null,
                 },
                 pathH = [],
                 pathV = [],
-                crosshairOptionsX, crosshairOptionsY;
+                crosshairOptionsX,
+                crosshairOptionsY,
+                temp;
 
             if (inverted) {
-                xAxisMin = yAxis.toPixels(this.yAxisMin);
-                xAxisMax = yAxis.toPixels(this.yAxisMax);
-                yAxisMin = xAxis.toPixels(this.xAxisMin);
-                yAxisMax = xAxis.toPixels(this.xAxisMax);
+                temp = xAxisMin;
+                xAxisMin = yAxisMin;
+                yAxisMin = temp;
+
+                temp = xAxisMax;
+                xAxisMax = yAxisMax;
+                yAxisMax = temp;
             }
             // horizontal line
             if (options.crosshairX.enabled) {
@@ -356,6 +357,11 @@ H.extendAnnotation(Measure, null,
                 this.calculations.updateStartPoints.call(this, true, false);
             }
 
+            // #11174 - clipBox was not recalculate during resize / redraw
+            if (this.clipRect) {
+                this.clipRect.animate(this.getClipBox());
+            }
+
             this.addValues(resize);
             this.addCrosshairs();
             this.redrawItems(this.shapes, animation);
@@ -375,22 +381,23 @@ H.extendAnnotation(Measure, null,
             this.options.typeOptions.point.y = this.startYMin;
         },
         calculations: {
-            /*
-            * Set starting points
-            */
+            /**
+             * Set starting points
+             * @private
+             */
             init: function () {
                 var options = this.options.typeOptions,
                     chart = this.chart,
                     getPointPos = this.calculations.getPointPos,
-                    inverted = chart.options.chart.inverted,
+                    inverted = chart.inverted,
                     xAxis = chart.xAxis[options.xAxis],
                     yAxis = chart.yAxis[options.yAxis],
                     bck = options.background,
                     width = inverted ? bck.height : bck.width,
                     height = inverted ? bck.width : bck.height,
                     selectType = options.selectType,
-                    top = chart.plotTop,
-                    left = chart.plotLeft;
+                    top = inverted ? chart.plotLeft : chart.plotTop,
+                    left = inverted ? chart.plotTop : chart.plotLeft;
 
                 this.startXMin = options.point.x;
                 this.startYMin = options.point.y;
@@ -418,19 +425,19 @@ H.extendAnnotation(Measure, null,
                 // x / y selection type
                 if (selectType === 'x') {
                     this.startYMin = yAxis.toValue(top);
-                    this.startYMax = yAxis.toValue(top + chart.plotHeight);
+                    this.startYMax = yAxis.toValue(top + yAxis.len);
                 } else if (selectType === 'y') {
                     this.startXMin = xAxis.toValue(left);
-                    this.startXMax = xAxis.toValue(left + chart.plotWidth);
+                    this.startXMax = xAxis.toValue(left + xAxis.len);
                 }
 
             },
-            /*
-            * Set current xAxisMin, xAxisMax, yAxisMin, yAxisMax.
-            * Calculations of measure values (min, max, average, bins).
-            *
-            * @param {Boolean} resize - flag if shape is resized
-            */
+            /**
+             * Set current xAxisMin, xAxisMax, yAxisMin, yAxisMax.
+             * Calculations of measure values (min, max, average, bins).
+             * @private
+             * @param {Boolean} resize - flag if shape is resized
+             */
             recalculate: function (resize) {
                 var calc = this.calculations,
                     options = this.options.typeOptions,
@@ -455,27 +462,27 @@ H.extendAnnotation(Measure, null,
                 }
 
             },
-            /*
-            * Set current xAxisMin, xAxisMax, yAxisMin, yAxisMax.
-            * Calculations of measure values (min, max, average, bins).
-            *
-            * @param {Object} axis - x or y axis reference
-            * @param {Number} value - point's value (x or y)
-            * @param {Number} offset - amount of pixels
-            */
+            /**
+             * Set current xAxisMin, xAxisMax, yAxisMin, yAxisMax.
+             * Calculations of measure values (min, max, average, bins).
+             * @private
+             * @param {Object} axis - x or y axis reference
+             * @param {Number} value - point's value (x or y)
+             * @param {Number} offset - amount of pixels
+             */
             getPointPos: function (axis, value, offset) {
                 return axis.toValue(
                     axis.toPixels(value) + offset
                 );
             },
-            /*
-            * Update position of start points
-            * (startXMin, startXMax, startYMin, startYMax)
-            *
-            * @param {Boolean} redraw - flag if shape is redraw
-            * @param {Boolean} resize - flag if shape is resized
-            * @param {Boolean} cpIndex - index of controlPoint
-            */
+            /**
+             * Update position of start points
+             * (startXMin, startXMax, startYMin, startYMax)
+             * @private
+             * @param {Boolean} redraw - flag if shape is redraw
+             * @param {Boolean} resize - flag if shape is resized
+             * @param {Boolean} cpIndex - index of controlPoint
+             */
             updateStartPoints: function (redraw, resize, cpIndex, dx, dy) {
                 var options = this.options.typeOptions,
                     selectType = options.selectType,
@@ -518,19 +525,21 @@ H.extendAnnotation(Measure, null,
                     this.offsetY = 0;
                 }
             },
-            /*
-            * Default formatter of label's content
-            */
+            /**
+             * Default formatter of label's content
+             * @private
+             */
             defaultFormatter: function () {
                 return 'Min: ' + this.min +
                     '<br>Max: ' + this.max +
                     '<br>Average: ' + this.average +
                     '<br>Bins: ' + this.bins;
             },
-            /*
-            * Set values for xAxisMin, xAxisMax, yAxisMin, yAxisMax, also
-            * when chart is inverted
-            */
+            /**
+             * Set values for xAxisMin, xAxisMax, yAxisMin, yAxisMax, also
+             * when chart is inverted
+             * @private
+             */
             getExtremes: function (xAxisMin, xAxisMax, yAxisMin, yAxisMax) {
                 return {
                     xAxisMin: Math.min(xAxisMax, xAxisMin),
@@ -539,9 +548,10 @@ H.extendAnnotation(Measure, null,
                     yAxisMax: Math.max(yAxisMax, yAxisMin)
                 };
             },
-            /*
-            * Definitions of calculations (min, max, average, bins)
-            */
+            /**
+             * Definitions of calculations (min, max, average, bins)
+             * @private
+             */
             min: function () {
                 var min = Infinity,
                     series = this.chart.series,
@@ -729,7 +739,7 @@ H.extendAnnotation(Measure, null,
                  * values, see
                  * [this demonstration](https://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/highcharts/plotoptions/series-dashstyle-all/).
                  *
-                 * @type    {Highcharts.DashStyleType}
+                 * @type    {Highcharts.DashStyleValue}
                  * @default Dash
                  */
                 dashStyle: 'Dash',
@@ -760,7 +770,7 @@ H.extendAnnotation(Measure, null,
                  * The dash or dot style of the crosshair's line. For possible
                  * values, see [this demonstration](https://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/highcharts/plotoptions/series-dashstyle-all/).
                  *
-                 * @type      {Highcharts.DashStyleType}
+                 * @type      {Highcharts.DashStyleValue}
                  * @default   Dash
                  * @apioption annotations.measure.typeOptions.crosshairY.dashStyle
                  *
@@ -855,7 +865,7 @@ H.extendAnnotation(Measure, null,
                     typeOptions = options.typeOptions,
                     selectType = typeOptions.selectType,
                     controlPointOptions = options.controlPointOptions,
-                    inverted = chart.options.chart.inverted,
+                    inverted = chart.inverted,
                     xAxis = chart.xAxis[typeOptions.xAxis],
                     yAxis = chart.yAxis[typeOptions.yAxis],
                     targetX = target.xAxisMax,

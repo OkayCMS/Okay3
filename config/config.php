@@ -1,6 +1,6 @@
 ;<? exit(); ?>
 
-license = 9tsd9gwzfs bcicnizugw ohqmpyqjml lznmnruyui row877flsy qurqbuqavh jevhqhmkuk xwonzrmppn kvvrzztgph ouwmt8sh7h tpcxswzwrt pzruknuqjz jxijjvynun zwwum4yqm4 uin9ybvxv9 rnog8tgwug ifbsanejdj vkxrytkmuw lqruh5r7rk vfqwqvyisn tjvuusak6s ywfrwkamtm qtoszzuuvu his6t4inyg oyqasbqnzt okpntwtyru tutzoyaz7o wy7yjsroi7 gokly5irhl ugoevnorsg umvvywqwro zrtzarfnpw fwavlu8pih ouxfptcys7 yfjqgf
+license = 6krnbqvtld bcwcejpzgj nvwnxosqyt ovrztnqqr1 xutb9nhlsl ik7a6y9z zqwhhrtwdx gihygryqik sxknuyr6xn qus8rtylvl fzzrotobdm 9qjpshflqm xwhjoxhmyn rumsknsnnl rdpcqnplvm rnavvrbt6f qsqs8zhofs hymnurdttq mzyfvryc kwwbrqqozk povbqn8kpx dmvkswonpz 9trlkmtwvy vnevholswk k6zvmqlzxd nppptcvivx mtkyzxxztq rmdxpympvt i9pgr7tvko nmpsklravr mtudvsskxl wwumxjcmxz fwyvktgywo gibfedydq9 ezjrhtsrzg ovjiqevq vooqyktn zp7z4wo2lx y8ylkeghxr yjsevsjvsn zikgnljhoh puvlswwsxy xvf2dlzobk obyvhepz pbvapwoyhq xwozmqqmiz skntlxuutx rfqny5xpf6 i7pp9ewg8a bzbhrlelmn kitumtymls vywouvlqpk ycostvrmsp xegu9xpifu ogay9zweyp dvxnenvnfq qwirwpyuj1 lgupzbwot6 q8xe7uixwz hegzfiqg9i qzfkfntzdu hyxpyulqsy zsxjvqvvvs xjxnptvvjm 4tkwavel6n 9xrnjokzjr nyflrlttxx sty9weslnh rjtdztqrsg yhyi3i9lhz modrzqtpou a2xjj6mlks syx6pmmhsq pkwwsvopsw vnvnznmzov 9seonrdom4 9bvdtebnom l8erpzsjpf xpndqrqjuf nhwousuyyr ux7vewsut9 6u677ypnhe shswghomud woxnwiojru nwlwwuvrvs tywtcarl74 9dp7eom9jp bzovmvjehy vvfnxuxtql stvnpyolot yvv8pmx97h xm57ukciwn zbjwnugxzh cflvpnoovo uympwotxor pbpwzevzw7 rldr88ef8v fjdw
 
 [database]
 
@@ -23,7 +23,7 @@ db_driver = mysql
 db_prefix = ok_
 
 ;Кодировка базы данных
-db_charset = UTF8
+db_charset = UTF8MB4
 
 ;Режим SQL
 db_sql_mode = "STRICT_TRANS_TABLES,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
@@ -98,8 +98,3 @@ resized_banners_images_dir = files/resized/slides/
 ; Папка изображений языков
 lang_images_dir = files/originals/lang/
 lang_resized_dir = files/resized/lang/
-
-[files]
-
-;Директория хранения цифровых товаров
-downloads_dir = files/downloads/

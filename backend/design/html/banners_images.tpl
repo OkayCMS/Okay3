@@ -1,8 +1,8 @@
 {* Title *}
 {if $banner}
-    {$meta_title=$banner->name scope=parent}
+    {$meta_title=$banner->name scope=global}
 {else}
-    {$meta_title=$btr->banners_images_banners  scope=parent}
+    {$meta_title=$btr->banners_images_banners  scope=global}
 {/if}
 
 {*Название страницы*}
@@ -19,7 +19,7 @@
                {/if}
             </div>
             <div class="box_btn_heading">
-               <a class="btn btn_small btn-info" href="{url module=BannersImageAdmin return=$smarty.server.REQUEST_URI}">
+               <a class="btn btn_small btn-info" href="{url controller=BannersImageAdmin return=$smarty.server.REQUEST_URI}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->banners_images_add|escape}</span>
                 </a>
@@ -104,7 +104,7 @@
 
                                         <div class="okay_list_boding okay_list_brands_photo">
                                             {if $banners_image->image}
-                                                <a href="{url module=BannersImageAdmin id=$banners_image->id return=$smarty.server.REQUEST_URI}">
+                                                <a href="{url controller=BannersImageAdmin id=$banners_image->id return=$smarty.server.REQUEST_URI}">
                                                     <img src="{$banners_image->image|resize:200:200:false:$config->resized_banners_images_dir}" width="200px"/>
                                                 </a>
                                             {else}
@@ -113,7 +113,7 @@
                                         </div>
 
                                         <div class="okay_list_boding okay_list_bransimages_name">
-                                            <a class="link" href="{url module=BannersImageAdmin id=$banners_image->id return=$smarty.server.REQUEST_URI}">
+                                            <a class="link" href="{url controller=BannersImageAdmin id=$banners_image->id return=$smarty.server.REQUEST_URI}">
                                                 {$banners_image->name|escape}
                                             </a>
                                             <div class="okay_list_name_brand">
@@ -134,7 +134,7 @@
                                         <div class="okay_list_boding okay_list_status">
                                             {*visible*}
                                             <label class="switch switch-default">
-                                                <input class="switch-input fn_ajax_action {if $banners_image->visible}fn_active_class{/if}" data-module="banners_image" data-action="visible" data-id="{$banners_image->id}" name="visible" value="1" type="checkbox"  {if $banners_image->visible}checked=""{/if}/>
+                                                <input class="switch-input fn_ajax_action {if $banners_image->visible}fn_active_class{/if}" data-controller="banners_image" data-action="visible" data-id="{$banners_image->id}" name="visible" value="1" type="checkbox"  {if $banners_image->visible}checked=""{/if}/>
                                                 <span class="switch-label"></span>
                                                 <span class="switch-handle"></span>
                                             </label>

@@ -1,8 +1,8 @@
 {* Title *}
 {if $category}
-	{$meta_title=$category->name scope=parent}
+	{$meta_title=$category->name scope=global}
 {else}
-	{$meta_title=$btr->general_products scope=parent}
+	{$meta_title=$btr->general_products scope=global}
 {/if}
 
 {*Название страницы*}
@@ -23,7 +23,7 @@
                 <div class="box_heading heading_page">{$btr->products_no|escape}</div>
             {/if}
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url module=ProductAdmin return=$smarty.server.REQUEST_URI}">
+                <a class="btn btn_small btn-info" href="{url controller=ProductAdmin return=$smarty.server.REQUEST_URI}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->products_add|escape}</span>
                 </a>
@@ -33,7 +33,7 @@
     <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
         <div class="boxed_search">
             <form class="search" method="get">
-            <input type="hidden" name="module" value="ProductsAdmin">
+            <input type="hidden" name="controller" value="ProductsAdmin">
             <div class="input-group">
                 <input name="keyword" class="form-control" placeholder="{$btr->products_search|escape}" type="text" value="{$keyword|escape}" >
                 <span class="input-group-btn">
@@ -66,8 +66,6 @@
                                 <option value="{url keyword=null brand_id=null category_id=null page=null limit=null filter='visible'}" {if $filter == 'visible'}selected{/if}>{$btr->products_enable|escape}</option>
                                 <option value="{url keyword=null brand_id=null category_id=null page=null limit=null filter='hidden'}" {if $filter == 'hidden'}selected{/if}>{$btr->products_disable|escape}</option>
                                 <option value="{url keyword=null brand_id=null category_id=null page=null limit=null filter='outofstock'}" {if $filter == 'outofstock'}selected{/if}>{$btr->products_out_of_stock|escape}</option>
-                                <option value="{url keyword=null brand_id=null category_id=null page=null limit=null filter='in_feed'}" {if $filter == 'in_feed'}selected{/if}>{$btr->general_add_xml_short|escape}</option>
-                                <option value="{url keyword=null brand_id=null category_id=null page=null limit=null filter='out_feed'}" {if $filter == 'out_feed'}selected{/if}>{$btr->general_not_in_xml_short|escape}</option>
                                 <option value="{url keyword=null brand_id=null category_id=null page=null limit=null filter='without_images'}" {if $filter == 'without_images'}selected{/if}>{$btr->products_without_photos|escape}</option>
                             </select>
                         </div>
@@ -152,7 +150,7 @@
                                         </div>
                                         <div class="okay_list_boding okay_list_photo">
                                             {if $product->image}
-                                                <a href="{url module=ProductAdmin id=$product->id return=$smarty.server.REQUEST_URI}">
+                                                <a href="{url controller=ProductAdmin id=$product->id return=$smarty.server.REQUEST_URI}">
                                                     <img src="{$product->image->filename|escape|resize:55:55}"/>
                                                 </a>
                                             {else}
@@ -161,7 +159,7 @@
                                         </div>
                                         <div class="okay_list_boding okay_list_name">
 
-                                            <a class="link" href="{url module=ProductAdmin id=$product->id return=$smarty.server.REQUEST_URI}">
+                                            <a class="link" href="{url controller=ProductAdmin id=$product->id return=$smarty.server.REQUEST_URI}">
                                                 {$product->name|escape}
                                                 {if $product->variants[0]->name}
                                                     <span class="text_grey">({$product->variants[0]->name|escape})</span>
@@ -204,7 +202,7 @@
                                         {*visible*}
                                         <div class="okay_list_boding okay_list_status">
                                             <label class="switch switch-default ">
-                                                <input class="switch-input fn_ajax_action {if $product->visible}fn_active_class{/if}" data-module="product" data-action="visible" data-id="{$product->id}" name="visible" value="1" type="checkbox"  {if $product->visible}checked=""{/if}/>
+                                                <input class="switch-input fn_ajax_action {if $product->visible}fn_active_class{/if}" data-controller="product" data-action="visible" data-id="{$product->id}" name="visible" value="1" type="checkbox"  {if $product->visible}checked=""{/if}/>
                                                 <span class="switch-label"></span>
                                                 <span class="switch-handle"></span>
                                             </label>
@@ -212,13 +210,9 @@
                                         <div class=" okay_list_setting okay_list_products_setting">
                                             {*Меню кнопок для планшета*}
                                             <div class="">
-                                                {*feed*}
-                                                <button data-hint="{$btr->general_add_xml|escape}" type="button" class="setting_icon setting_icon_yandex fn_ajax_action {if $product->variants[0]->feed}fn_active_class{/if} hint-bottom-middle-t-info-s-small-mobile  hint-anim" data-module="variant" data-action="feed" data-id="{$product->variants[0]->id}">
-                                                   XML
-                                                </button>
 
                                                 {*featured*}
-                                                <button data-hint="{$btr->general_bestseller|escape}" type="button" class="setting_icon setting_icon_featured fn_ajax_action {if $product->featured}fn_active_class{/if} hint-bottom-middle-t-info-s-small-mobile  hint-anim" data-module="product" data-action="featured" data-id="{$product->id}" >
+                                                <button data-hint="{$btr->general_bestseller|escape}" type="button" class="setting_icon setting_icon_featured fn_ajax_action {if $product->featured}fn_active_class{/if} hint-bottom-middle-t-info-s-small-mobile  hint-anim" data-controller="product" data-action="featured" data-id="{$product->id}" >
                                                     {include file='svg_icon.tpl' svgId='icon_featured'}
                                                 </button>
 
@@ -273,10 +267,6 @@
                                                     </div>
                                                     <div class="okay_list_boding okay_list_status"></div>
                                                     <div class="okay_list_setting okay_list_products_setting">
-                                                        {*feed*}
-                                                        <button data-hint="{$btr->general_add_xml|escape}" type="button" class="setting_icon setting_icon_yandex fn_ajax_action {if $variant->feed}fn_active_class{/if} hint-bottom-middle-t-info-s-small-mobile  hint-anim" data-module="variant" data-action="feed" data-id="{$variant->id}">
-                                                           XML
-                                                        </button>
                                                     </div>
                                                     <div class="okay_list_boding okay_list_close"></div>
                                                 </div>
@@ -302,8 +292,6 @@
                                         <option value="disable">{$btr->general_do_disable|escape}</option>
                                         <option value="set_featured">{$btr->products_mark_bestseller|escape}</option>
                                         <option value="unset_featured">{$btr->products_unmark_bestseller|escape}</option>
-                                        <option value="set_feed">{$btr->general_add_xml_short|escape}</option>
-                                        <option value="unset_feed">{$btr->general_from_xml_short|escape}</option>
                                         <option value="duplicate">{$btr->products_create_dublicate|escape}</option>
                                         {if $pages_count>1}
                                             <option value="move_to_page">{$btr->products_move_to_page|escape}</option>

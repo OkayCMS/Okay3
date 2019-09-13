@@ -1,5 +1,5 @@
 {if $style_file}
-    {$meta_title = "`$btr->styles_styles` $style_file" scope=parent}
+    {$meta_title = "`$btr->styles_styles` $style_file" scope=global}
 {/if}
 
 {* Подключаем редактор кода *}
@@ -103,7 +103,7 @@ $(function() {
             <div class="design_tabs">
                 <div class="design_container">
                     {foreach $styles as $s}
-                        <a class="design_tab {if $style_file == $s}focus{/if}" href='{url module=StylesAdmin file=$s}'>{$s|escape}</a>
+                        <a class="design_tab {if $style_file == $s}focus{/if}" href='{url controller=StylesAdmin file=$s}'>{$s|escape}</a>
                     {/foreach}
                 </div>
             </div>

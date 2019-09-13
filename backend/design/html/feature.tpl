@@ -1,7 +1,7 @@
 {if $feature->id}
-    {$meta_title = $feature->name scope=parent}
+    {$meta_title = $feature->name scope=global}
 {else}
-    {$meta_title = $btr->feature_new scope=parent}
+    {$meta_title = $btr->feature_new scope=global}
 {/if}
 
 {*Название страницы*}
@@ -82,8 +82,11 @@
                 {*Название элемента сайта*}
                 <div class="row d_flex">
                     <div class="col-lg-10 col-md-9 col-sm-12">
-                        <div class="heading_label">
-                            {$btr->general_name|escape}
+                        <div class="heading_label heading_label--required">
+                            <span>{$btr->general_name|escape}</span>
+                            <i class="fn_tooltips" title="{$btr->tooltip_general_name_feature|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
                         </div>
                         <div class="form-group">
                             <input class="form-control" name="name" type="text" value="{$feature->name|escape}"/>
@@ -107,7 +110,9 @@
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 mt-q">
-                                <div class="heading_label boxes_inline">{$btr->feature_url_in_product|escape}</div>
+                                <div class="heading_label boxes_inline">
+                                    {$btr->feature_url_in_product|escape}
+                                </div>
                                 <div class="boxes_inline">
                                     <div class="okay_switch clearfix">
                                         <label class="switch switch-default">
@@ -124,19 +129,13 @@
                         <div class="activity_of_switch">
                             <div class="activity_of_switch_item"> {* row block *}
                                 <div class="okay_switch clearfix">
-                                    <label class="switch_label">{$btr->feature_filter|escape}</label>
+                                    <label class="switch_label">{$btr->feature_filter|escape}
+                                        <i class="fn_tooltips" title="{$btr->tooltip_feature_url_in_product|escape}">
+                                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                        </i>
+                                    </label>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="in_filter" value='1' type="checkbox" id="visible_checkbox" {if $feature->in_filter}checked=""{/if}/>
-                                        <span class="switch-label"></span>
-                                        <span class="switch-handle"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="activity_of_switch_item"> {* row block *}
-                                <div class="okay_switch clearfix">
-                                    <label class="switch_label">{$btr->feature_xml|escape}</label>
-                                    <label class="switch switch-default">
-                                        <input class="switch-input" name="yandex" value='1' type="checkbox" id="visible_checkbox" {if $feature->yandex}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>
@@ -155,6 +154,9 @@
             <div class="boxed fn_toggle_wrap min_height_210px">
                 <div class="heading_box">
                     {$btr->feature_in_categories|escape}
+                    <i class="fn_tooltips" title="{$btr->tooltip_feature_in_categories|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>
@@ -193,16 +195,30 @@
             <div class="boxed match fn_toggle_wrap min_height_210px">
                 <div class="heading_box">
                     {$btr->general_metatags|escape}
+                    <i class="fn_tooltips" title="{$btr->tooltip_general_metatags|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="icon-arrow-down"></i></a>
                     </div>
                 </div>
                 <div class="toggle_body_wrap on fn_card">
-                    <div class="heading_label" >{$btr->feature_id|escape}</div>
+                    <div class="heading_label" >{$btr->feature_id|escape}
+                        <i class="fn_tooltips" title="{$btr->tooltip_feature_id|escape}">
+                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                        </i>
+                    </div>
                     <input name="auto_name_id" class="form-control  mb-1" type="text" value="{$feature->auto_name_id|escape}"/>
 
-                    <div class="heading_label" >{$btr->feature_value_id|escape}</div>
+                    <div class="heading_label" >{$btr->feature_value_id|escape}
+                        <i class="fn_tooltips" title="{$btr->tooltip_feature_value_id|escape}">
+                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                        </i>
+                    </div>
                     <input name="auto_value_id" class="form-control mb-t" type="text" value="{$feature->auto_value_id|escape}"/>
+
+                    <div class="heading_label" >{$btr->feature_description|escape}</div>
+                    <textarea class="form-control okay_textarea" name="description">{$feature->description}</textarea>
                 </div>
             </div>
         </div>
@@ -214,6 +230,9 @@
             <div class="boxed fn_toggle_wrap min_height_210px">
                 <div class="heading_box">
                     {$btr->feature_feature_values|escape} ({$feature_values_count})
+                    <i class="fn_tooltips" title="{$btr->tooltip_feature_feature_values|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>
@@ -292,7 +311,13 @@
                                         </div>
                                         <div class="okay_list_boding feature_value_products_num">
                                             <div class="heading_label visible_md">{$btr->feature_value_products_num}</div>
-                                            <a href="index.php?module=ProductsAdmin&features[{$feature->id}]={$fv->translit|escape}" class="form-control" target="_blank">{$fv->count|escape}</a>
+                                            <a href="index.php?controller=ProductsAdmin&features[{$feature->id}]={$fv->translit|escape}" class="form-control" target="_blank">
+                                                {if isset($products_counts[$fv->id]->count)}
+                                                    {$products_counts[$fv->id]->count}
+                                                {else}
+                                                    0
+                                                {/if}
+                                            </a>
                                         </div>
                                         <div class="okay_list_boding feature_value_index">
                                             <div class="heading_label visible_md">{$btr->feature_value_index}</div>
@@ -385,6 +410,9 @@
     <div class="boxed fn_toggle_wrap">
         <div class="heading_box">
             {$btr->feature_union_values|escape}
+            <i class="fn_tooltips" title="{$btr->tooltip_feature_union_values|escape}">
+                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+            </i>
             <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                 <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
             </div>

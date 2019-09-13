@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->general_languages scope=parent}
+{$meta_title=$btr->general_languages scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -9,7 +9,7 @@
                 {$btr->languages_site|escape}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info add" href="{url module=LanguageAdmin}">
+                <a class="btn btn_small btn-info add" href="{url controller=LanguageAdmin}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->languages_add|escape}</span>
                 </a>
@@ -51,14 +51,14 @@
                                     <label class="okay_ckeckbox" for="id_{$language->id}"></label>
                                 </div>
                                 <div class="okay_list_boding okay_list_photo">
-                                    <a href="{url module=LanguageAdmin id=$language->id return=$smarty.server.REQUEST_URI}">
+                                    <a href="{url controller=LanguageAdmin id=$language->id return=$smarty.server.REQUEST_URI}">
                                         {if is_file("{$config->lang_images_dir}{$language->label}.png")}
                                             <img src="{("{$language->label}.png")|resize:55:55:false:$config->lang_resized_dir}" />
                                         {/if}
                                     </a>
                                 </div>
                                 <div class="okay_list_boding okay_list_languages_name">
-                                    <a href="{url module=LanguageAdmin id=$language->id return=$smarty.server.REQUEST_URI}">
+                                    <a href="{url controller=LanguageAdmin id=$language->id return=$smarty.server.REQUEST_URI}">
                                         {$language->name|escape} [{$language->label|escape}]
                                     </a>
                                 </div>
@@ -66,7 +66,7 @@
                                 <div class="okay_list_boding okay_list_status">
                                     {*visible*}
                                     <label class="switch switch-default">
-                                        <input class="switch-input fn_ajax_action {if $language->enabled}fn_active_class{/if}" data-module="language" data-action="enabled" data-id="{$language->id}" name="enabled" value="1" type="checkbox"  {if $language->enabled}checked=""{/if}/>
+                                        <input class="switch-input fn_ajax_action {if $language->enabled}fn_active_class{/if}" data-controller="language" data-action="enabled" data-id="{$language->id}" name="enabled" value="1" type="checkbox"  {if $language->enabled}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>

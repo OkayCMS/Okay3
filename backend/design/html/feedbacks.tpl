@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->general_feedback scope=parent}
+{$meta_title=$btr->general_feedback scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -18,7 +18,7 @@
     <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
         <div class="boxed_search">
             <form class="search" method="get">
-                <input type="hidden" name="module" value="FeedbacksAdmin">
+                <input type="hidden" name="controller" value="FeedbacksAdmin">
                 <div class="input-group">
                     <input name="keyword" class="form-control" placeholder="{$btr->feedbacks_search|escape}" type="text" value="{$keyword|escape}" >
                     <span class="input-group-btn">
@@ -112,7 +112,7 @@
                                                 
                                                 <div class="hidden-md-up mt-q">
                                                     {if !$feedback->processed}
-                                                    <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action {if $feedback->processed}fn_active_class{/if}" data-module="feedback" data-action="processed" data-id="{$feedback->id}" onclick="$(this).hide();">
+                                                    <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action {if $feedback->processed}fn_active_class{/if}" data-controller="feedback" data-action="processed" data-id="{$feedback->id}" onclick="$(this).hide();">
                                                         {$btr->general_process|escape}
                                                     </button>
                                                     {/if}
@@ -127,7 +127,7 @@
 
                                             <div class="okay_list_boding okay_list_comments_btn">
                                                 {if !$feedback->processed}
-                                                    <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action {if $feedback->processed}fn_active_class{/if}" data-module="feedback" data-action="processed" data-id="{$feedback->id}" onclick="$(this).hide();">
+                                                    <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action {if $feedback->processed}fn_active_class{/if}" data-controller="feedback" data-action="processed" data-id="{$feedback->id}" onclick="$(this).hide();">
                                                         {$btr->general_process|escape}
                                                     </button>
                                                 {/if}

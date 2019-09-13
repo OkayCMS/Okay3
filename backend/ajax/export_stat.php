@@ -4,6 +4,7 @@
 use Okay\Core\Database;
 use Okay\Core\Managers;
 use Okay\Core\Response;
+use Okay\Core\QueryFactory;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\ManagersEntity;
 use Okay\Entities\CategoriesEntity;
@@ -14,11 +15,10 @@ require_once 'configure.php';
 $totalPrice  = 0;
 $totalAmount = 0;
 
-/*пїЅпїЅпїЅпїЅ(пїЅпїЅпїЅпїЅпїЅпїЅпїЅ) пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ*/
 $columnsNames = [
-    'name'   => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
-    'amount' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
-    'price'  => 'пїЅпїЅпїЅпїЅ',
+    'name'   => 'Имя',
+    'amount' => 'Количество',
+    'price'  => 'Цена',
 ];
 
 $columnDelimiter = ';';
@@ -27,6 +27,9 @@ $filename        = 'export_stat.csv';
 
 /** @var Database $db */
 $db = $DI->get(Database::class);
+
+/** @var QueryFactory $queryFactory */
+$queryFactory = $DI->get(QueryFactory::class);
 
 /** @var Managers $managers */
 $managers = $DI->get(Managers::class);
@@ -51,24 +54,25 @@ if (!$managers->access('stats', $managersEntity->get($_SESSION['admin']))) {
     exit();
 }
 
-// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 1251
+// Эксель кушает только 1251
 setlocale(LC_ALL, 'ru_RU.1251');
-$db->customQuery('SET NAMES cp1251');
+$sqlQuery = $queryFactory->newSqlQuery()->setStatement('SET NAMES cp1251');
+$db->query($sqlQuery);
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// Страница, которую экспортируем
 $page = $request->get('page');
 if (empty($page) || $page==1) {
     $page = 1;
-    // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    // Если начали сначала - удалим старый файл экспорта
     if (is_writable($exportFilesDir.$filename)) {
         unlink($exportFilesDir.$filename);
     }
 }
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// Открываем файл экспорта на добавление
 $f = fopen($exportFilesDir.$filename, 'ab');
 
-// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// Если начали сначала - добавим в первую строку названия колонок
 if ($page == 1) {
     fputcsv($f, $columnsNames, $columnDelimiter);
 }
@@ -115,7 +119,7 @@ foreach ($categories_list as $c) {
     fputcsv($f, $c, $columnDelimiter);
 }
 
-$total = ['name' => 'пїЅпїЅпїЅпїЅпїЅ',
+$total = ['name' => 'Имя',
     'amount' => $totalAmount,
     'price'=>$totalPrice
 ];

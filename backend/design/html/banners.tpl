@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->banners_groups scope=parent}
+{$meta_title=$btr->banners_groups scope=global}
 {*Название страницы*}
 <div class="row">
     <div class="col-lg-7 col-md-7">
@@ -8,7 +8,7 @@
                 {$btr->banners_groups|escape}
             </div>
             <div class="box_btn_heading">
-                    <a class="btn btn_small btn-info" href="{url module=BannerAdmin return=$smarty.server.REQUEST_URI}">
+                    <a class="btn btn_small btn-info" href="{url controller=BannerAdmin return=$smarty.server.REQUEST_URI}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->banners_add|escape}</span>
                 </a>
@@ -54,7 +54,7 @@
                                     </div>
 
                                     <div class="okay_list_boding okay_list_features_name">
-                                        <a class="link" href="{url module=BannerAdmin id=$banner->id return=$smarty.server.REQUEST_URI}">
+                                        <a class="link" href="{url controller=BannerAdmin id=$banner->id return=$smarty.server.REQUEST_URI}">
                                             {$banner->name|escape}
                                         </a>
                                     </div>
@@ -95,7 +95,7 @@
                                         {*visible*}
                                         <div class="col-lg-4 col-md-3">
                                             <label class="switch switch-default">
-                                                <input class="switch-input fn_ajax_action {if $banner->visible}fn_active_class{/if}" data-module="banner" data-action="visible" data-id="{$banner->id}" name="visible" value="1" type="checkbox"  {if $banner->visible}checked=""{/if}/>
+                                                <input class="switch-input fn_ajax_action {if $banner->visible}fn_active_class{/if}" data-controller="banner" data-action="visible" data-id="{$banner->id}" name="visible" value="1" type="checkbox"  {if $banner->visible}checked=""{/if}/>
                                                 <span class="switch-label"></span>
                                                 <span class="switch-handle"></span>
                                             </label>

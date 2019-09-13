@@ -1,15 +1,19 @@
-/**
- * (c) 2010-2019 Torstein Honsi
+/* *
  *
- * License: www.highcharts.com/license
+ *  (c) 2010-2019 Torstein Honsi
  *
- * Sand-Signika theme for Highcharts JS
- * @author Torstein Honsi
- */
+ *  License: www.highcharts.com/license
+ *
+ *  Sand-Signika theme for Highcharts JS
+ *
+ * */
 
 'use strict';
-import Highcharts from '../parts/Globals.js';
+
 /* global document */
+
+import Highcharts from '../parts/Globals.js';
+
 // Load the fonts
 Highcharts.createElement('link', {
     href: 'https://fonts.googleapis.com/css?family=Signika:400,700',
@@ -48,7 +52,13 @@ Highcharts.theme = {
     tooltip: {
         borderWidth: 0
     },
+    labels: {
+        style: {
+            color: '#6e6e70'
+        }
+    },
     legend: {
+        backgroundColor: '#E0E0E8',
         itemStyle: {
             fontWeight: 'bold',
             fontSize: '13px'
@@ -100,10 +110,7 @@ Highcharts.theme = {
     },
     scrollbar: {
         trackBorderColor: '#C0C0C8'
-    },
-
-    // General
-    background2: '#E0E0E8'
+    }
 
 };
 

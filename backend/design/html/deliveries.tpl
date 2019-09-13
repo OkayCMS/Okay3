@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->general_shipping scope=parent}
+{$meta_title=$btr->general_shipping scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -9,7 +9,7 @@
                 {$btr->general_shipping|escape}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url module=DeliveryAdmin}">
+                <a class="btn btn_small btn-info" href="{url controller=DeliveryAdmin}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->deliveries_add|escape}</span>
                 </a>
@@ -56,7 +56,7 @@
 
                                 <div class="okay_list_boding okay_list_delivery_photo">
                                     {if $delivery->image}
-                                        <a href="{url module=DeliveryAdmin id=$delivery->id return=$smarty.server.REQUEST_URI}">
+                                        <a href="{url controller=DeliveryAdmin id=$delivery->id return=$smarty.server.REQUEST_URI}">
                                             <img src="{$delivery->image|escape|resize:75:75:false:$config->resized_deliveries_dir}"/>
                                         </a>
                                     {else}
@@ -65,7 +65,7 @@
                                 </div>
 
                                 <div class="okay_list_boding okay_list_delivery_name">
-                                    <a href="{url module=DeliveryAdmin id=$delivery->id return=$smarty.server.REQUEST_URI}">
+                                    <a href="{url controller=DeliveryAdmin id=$delivery->id return=$smarty.server.REQUEST_URI}">
                                         {$delivery->name|escape}
                                     </a>
                                     <div class="hidden-lg-up mt-q">
@@ -100,7 +100,7 @@
                                 <div class="okay_list_boding okay_list_status">
                                     {*visible*}
                                     <label class="switch switch-default">
-                                        <input class="switch-input fn_ajax_action {if $delivery->enabled}fn_active_class{/if}" data-module="delivery" data-action="enabled" data-id="{$delivery->id}" name="enabled" value="1" type="checkbox"  {if $delivery->enabled}checked=""{/if}/>
+                                        <input class="switch-input fn_ajax_action {if $delivery->enabled}fn_active_class{/if}" data-controller="delivery" data-action="enabled" data-id="{$delivery->id}" name="enabled" value="1" type="checkbox"  {if $delivery->enabled}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>

@@ -1,4 +1,4 @@
-{$meta_title = $btr->license_lecense scope=parent}
+{$meta_title = $btr->license_lecense scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -25,9 +25,9 @@
         <div class="col-lg-12 col-md-12">
             <div class="boxed fn_toggle_wrap">
                 <div class="heading_box">
-                    {if $license->valid}
+                    {if $is_valid_license}
                         <div class="text_success">
-                            {$btr->index_valid|escape} {if $license->expiration != '*'}{$btr->license_to|escape} {$license->expiration}{/if} {$btr->license_on|escape} {foreach $license->domains as $d}{$d}{if !$d@last}, {/if}{/foreach}
+                            {$btr->index_valid|escape} {if $license_expiration != '*'}{$btr->license_to|escape} {$license_expiration|date}{/if} {$btr->license_on|escape} {foreach $license_domains as $d}{$d}{if !$d@last}, {/if}{/foreach}
                         </div>
                     {else}
                         <div class="text_warning">

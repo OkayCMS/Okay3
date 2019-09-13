@@ -7,6 +7,7 @@ use Okay\Core\Design;
 use Okay\Core\BackendTranslations;
 use Okay\Entities\LanguagesEntity;
 use Okay\Entities\ManagersEntity;
+use OkayLicense\License;
 
 chdir('../../../../');
 
@@ -17,7 +18,11 @@ if (!empty($_SERVER['HTTP_USER_AGENT'])){
 session_start();
 require_once('vendor/autoload.php');
 
-$DI = include 'Core/config/container.php';
+$DI = include 'Okay/Core/config/container.php';
+
+/** @var License $license */
+$license = $DI->get(License::class);
+$license->check();
 
 // Кеширование нам не нужно
 /** @var Response $response */
@@ -36,8 +41,8 @@ if (empty($manager->id)) {
     exit;
 }
 
-$design->set_templates_dir('backend/design/js/admintooltip');
-$design->set_compiled_dir('backend/design/compiled');
+$design->setTemplatesDir('backend/design/js/admintooltip');
+$design->setCompiledDir('backend/design/compiled');
 
 // Перевод админки
 $backendTranslations = $DI->get(BackendTranslations::class);

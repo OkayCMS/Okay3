@@ -1,3 +1,6 @@
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: https://codemirror.net/LICENSE
+
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
     mod(require("../../lib/codemirror"));
@@ -11,12 +14,12 @@
 CodeMirror.defineMode("solr", function() {
   "use strict";
 
-  var isStringChar = /[^\s\|\!\+\-\*\?\~\^\&\:\(\)\[\]\{\}\^\"\\]/;
+  var isStringChar = /[^\s\|\!\+\-\*\?\~\^\&\:\(\)\[\]\{\}\"\\]/;
   var isOperatorChar = /[\|\!\+\-\*\?\~\^\&]/;
   var isOperatorString = /^(OR|AND|NOT|TO)$/i;
 
   function isNumber(word) {
-    return parseFloat(word, 10).toString() === word;
+    return parseFloat(word).toString() === word;
   }
 
   function tokenString(quote) {

@@ -9,6 +9,7 @@ use Okay\Entities\VariantsEntity;
 use Okay\Entities\FeaturesEntity;
 use Okay\Entities\ImagesEntity;
 use Okay\Entities\BrandsEntity;
+use Okay\Core\QueryFactory;
 use Okay\Core\Managers;
 use Okay\Core\Response;
 use Okay\Core\Database;
@@ -47,6 +48,9 @@ $columnsNames = [
 
 /** @var Database $db */
 $db = $DI->get(Database::class);
+
+/** @var QueryFactory $queryFactory */
+$queryFactory = $DI->get(QueryFactory::class);
 
 /** @var Managers $managers */
 $managers = $DI->get(Managers::class);
@@ -87,11 +91,12 @@ session_write_close();
 unset($_SESSION['lang_id']);
 unset($_SESSION['admin_lang_id']);
 
-// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 1251
+// Эксель кушает только 1251
 setlocale(LC_ALL, 'ru_RU.1251');
-$db->customQuery('SET NAMES cp1251');
+$sqlQuery = $queryFactory->newSqlQuery()->setStatement('SET NAMES cp1251');
+$db->query($sqlQuery);
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// Страница, которую экспортируем
 $page = $request->get('page');
 if(empty($page) || $page==1) {
     $page = 1;
@@ -100,7 +105,7 @@ if(empty($page) || $page==1) {
     }
 }
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// Открываем файл экспорта на добавление
 $f = fopen($exportFilesDir.$filename, 'ab');
 
 $filter = ['page'=>$page, 'limit'=>$productsCount];
@@ -112,14 +117,14 @@ if ($brandId = $request->get('brand_id', 'integer')) {
     $filter['brand_id'] = $brandId;
 }
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// Экспортируем свойства
 $featuresFilter['limit'] = $featuresEntity->count($featuresFilter);
 $features = $featuresEntity->find($featuresFilter);
 foreach($features as $feature) {
     $columnsNames[$feature->name] = $feature->name;
 }
 
-// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// Если начали сначала - добавим в первую строку названия колонок
 if($page == 1) {
     fputcsv($f, $columnsNames, $columnDelimiter);
 }
@@ -176,10 +181,10 @@ foreach($products as $pId=>&$product) {
     $product['category'] = implode(',, ', $categories);
 }
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// Изображения товаров
 $images = $imagesEntity->find(['product_id'=>array_keys($products)]);
 foreach($images as $image) {
-    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    // Добавляем изображения к товару чезер запятую
     if(empty($products[$image->product_id]['images'])) {
         $products[$image->product_id]['images'] = $image->filename;
     } else {

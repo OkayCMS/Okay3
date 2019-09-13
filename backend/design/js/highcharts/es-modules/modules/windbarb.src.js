@@ -9,10 +9,50 @@
 'use strict';
 
 import H from '../parts/Globals.js';
+
+import U from '../parts/Utilities.js';
+var isNumber = U.isNumber;
+
 import onSeriesMixin from '../mixins/on-series.js';
 
 var noop = H.noop,
+    pick = H.pick,
     seriesType = H.seriesType;
+
+// Once off, register the windbarb approximation for data grouping.This can be
+// called anywhere (not necessarily in the translate function), but must happen
+// after the data grouping module is loaded and before the wind barb series uses
+// it.
+function registerApproximation() {
+    if (H.approximations && !H.approximations.windbarb) {
+        H.approximations.windbarb = function (values, directions) {
+            var vectorX = 0,
+                vectorY = 0,
+                i,
+                len = values.length;
+
+            for (i = 0; i < len; i++) {
+                vectorX += values[i] * Math.cos(
+                    directions[i] * H.deg2rad
+                );
+                vectorY += values[i] * Math.sin(
+                    directions[i] * H.deg2rad
+                );
+            }
+
+            return [
+                // Wind speed
+                values.reduce(function (sum, value) {
+                    return sum + value;
+                }, 0) / values.length,
+                // Wind direction
+                Math.atan2(vectorY, vectorX) / H.deg2rad
+            ];
+        };
+    }
+}
+
+registerApproximation();
 
 /**
  * @private
@@ -24,36 +64,71 @@ var noop = H.noop,
 seriesType('windbarb', 'column'
 
     /**
- * Wind barbs are a convenient way to represent wind speed and direction in one
- * graphical form. Wind direction is given by the stem direction, and wind speed
- * by the number and shape of barbs.
- *
- * @sample {highcharts|highstock} highcharts/demo/windbarb-series/
- *         Wind barb series
- *
- * @extends      plotOptions.column
- * @excluding    boostThreshold, marker, connectEnds, connectNulls,
- *               cropThreshold, dashStyle, gapSize, gapUnit, dataGrouping,
- *               linecap, shadow, stacking, step
- * @since        6.0.0
- * @product      highcharts highstock
- * @optionparent plotOptions.windbarb
- */
-    , {
-    /**
-     * The line width of the wind barb symbols.
+     * Wind barbs are a convenient way to represent wind speed and direction in
+     * one graphical form. Wind direction is given by the stem direction, and
+     * wind speed by the number and shape of barbs.
+     *
+     * @sample {highcharts|highstock} highcharts/demo/windbarb-series/
+     *         Wind barb series
+     *
+     * @extends      plotOptions.column
+     * @excluding    boostThreshold, marker, connectEnds, connectNulls,
+     *               cropThreshold, dashStyle, dragDrop, gapSize, gapUnit,
+     *               linecap, shadow, stacking, step
+     * @since        6.0.0
+     * @product      highcharts highstock
+     * @optionparent plotOptions.windbarb
      */
+    , {
+        /**
+         * Data grouping options for the wind barbs. In Highcharts, this
+         * requires the `modules/datagrouping.js` module to be loaded. In
+         * Highstock, data grouping is included.
+         *
+         * @sample  highcharts/plotoptions/windbarb-datagrouping
+         *          Wind barb with data grouping
+         *
+         * @since   7.1.0
+         * @product highcharts highstock
+         */
+        dataGrouping: {
+            /**
+             * Whether to enable data grouping.
+             *
+             * @product highcharts highstock
+             */
+            enabled: true,
+            /**
+             * Approximation function for the data grouping. The default
+             * returns an average of wind speed and a vector average direction
+             * weighted by wind speed.
+             *
+             * @product highcharts highstock
+             *
+             * @type {String|Function}
+             */
+            approximation: 'windbarb',
+            /**
+             * The approximate data group width.
+             *
+             * @product highcharts highstock
+             */
+            groupPixelWidth: 30
+        },
+        /**
+         * The line width of the wind barb symbols.
+         */
         lineWidth: 2,
         /**
-     * The id of another series in the chart that the wind barbs are projected
-     * on. When `null`, the wind symbols are drawn on the X axis, but offset up
-     * or down by the `yOffset` setting.
-     *
-     * @sample {highcharts|highstock} highcharts/plotoptions/windbarb-onseries
-     *         Projected on area series
-     *
-     * @type {string|null}
-     */
+         * The id of another series in the chart that the wind barbs are
+         * projected on. When `null`, the wind symbols are drawn on the X axis,
+         * but offset up or down by the `yOffset` setting.
+         *
+         * @sample {highcharts|highstock} highcharts/plotoptions/windbarb-onseries
+         *         Projected on area series
+         *
+         * @type {string|null}
+         */
         onSeries: null,
         states: {
             hover: {
@@ -61,32 +136,36 @@ seriesType('windbarb', 'column'
             }
         },
         tooltip: {
-        /**
-         * The default point format for the wind barb tooltip. Note the
-         * `point.beaufort` property that refers to the Beaufort wind scale. The
-         * names can be internationalized by modifying
-         * `Highcharts.seriesTypes.windbarb.prototype.beaufortNames`.
-         */
+            /**
+             * The default point format for the wind barb tooltip. Note the
+             * `point.beaufort` property that refers to the Beaufort wind scale.
+             * The names can be internationalized by modifying
+             * `Highcharts.seriesTypes.windbarb.prototype.beaufortNames`.
+             */
             pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.value}</b> ({point.beaufort})<br/>'
         },
         /**
-     * Pixel length of the stems.
-     */
+         * Pixel length of the stems.
+         */
         vectorLength: 20,
         /**
-     * Vertical offset from the cartesian position, in pixels. The default value
-     * makes sure the symbols don't overlap the X axis when `onSeries` is
-     * `null`, and that they don't overlap the linked series when `onSeries` is
-     * given.
-     */
+         * @default   value
+         */
+        colorKey: 'value',
+        /**
+         * Vertical offset from the cartesian position, in pixels. The default
+         * value makes sure the symbols don't overlap the X axis when `onSeries`
+         * is `null`, and that they don't overlap the linked series when
+         * `onSeries` is given.
+         */
         yOffset: -20,
         /**
-     * Horizontal offset from the cartesian position, in pixels. When the chart
-     * is inverted, this option allows translation like
-     * [yOffset](#plotOptions.windbarb.yOffset) in non inverted charts.
-     *
-     * @since 6.1.0
-     */
+         * Horizontal offset from the cartesian position, in pixels. When the
+         * chart is inverted, this option allows translation like
+         * [yOffset](#plotOptions.windbarb.yOffset) in non inverted charts.
+         *
+         * @since 6.1.0
+         */
         xOffset: 0
     }, {
         pointArrayMap: ['value', 'direction'],
@@ -98,6 +177,11 @@ seriesType('windbarb', 'column'
         beaufortFloor: [0, 0.3, 1.6, 3.4, 5.5, 8.0, 10.8, 13.9, 17.2, 20.8,
             24.5, 28.5, 32.7],
         trackerGroups: ['markerGroup'],
+
+        init: function (chart, options) {
+            registerApproximation();
+            H.Series.prototype.init.call(this, chart, options);
+        },
 
         // Get presentational attributes.
         pointAttribs: function (point, state) {
@@ -247,13 +331,20 @@ seriesType('windbarb', 'column'
 
                 // Check if it's inside the plot area, but only for the X
                 // dimension.
-                if (chart.isInsidePlot(plotX, 0, false)) {
-
+                if (
+                    this.options.clip === false ||
+                    chart.isInsidePlot(plotX, 0, false)
+                ) {
                     // Create the graphic the first time
                     if (!point.graphic) {
                         point.graphic = this.chart.renderer
                             .path()
-                            .add(this.markerGroup);
+                            .add(this.markerGroup)
+                            .addClass(
+                                'highcharts-point ' +
+                                'highcharts-color-' +
+                                pick(point.colorIndex, point.series.colorIndex)
+                            );
                     }
 
                     // Position the graphic
@@ -263,8 +354,12 @@ seriesType('windbarb', 'column'
                             translateX: plotX + this.options.xOffset,
                             translateY: plotY + this.options.yOffset,
                             rotation: point.direction
-                        })
-                        .attr(this.pointAttribs(point));
+                        });
+
+                    if (!this.chart.styledMode) {
+                        point.graphic
+                            .attr(this.pointAttribs(point));
+                    }
 
                 } else if (point.graphic) {
                     point.graphic = point.graphic.destroy();
@@ -280,7 +375,7 @@ seriesType('windbarb', 'column'
             }, this);
         },
 
-        // Fade in the arrows on initiating series.
+        // Fade in the arrows on initializing series.
         animate: function (init) {
             if (init) {
                 this.markerGroup.attr({
@@ -296,10 +391,13 @@ seriesType('windbarb', 'column'
         },
 
         // Don't invert the marker group (#4960)
-        invertGroups: noop
+        invertGroups: noop,
+
+        // No data extremes for the Y axis
+        getExtremes: noop
     }, {
         isValid: function () {
-            return H.isNumber(this.value) && this.value >= 0;
+            return isNumber(this.value) && this.value >= 0;
         }
     });
 

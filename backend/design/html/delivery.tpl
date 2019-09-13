@@ -1,7 +1,7 @@
 {if $delivery->id}
-    {$meta_title = $delivery->name scope=parent}
+    {$meta_title = $delivery->name scope=global}
 {else}
-    {$meta_title = $btr->delivery_new scope=parent}
+    {$meta_title = $btr->delivery_new scope=global}
 {/if}
 
 {*Название страницы*}
@@ -73,6 +73,9 @@
                         {*Название элемента сайта*}
                         <div class="heading_label">
                             {$btr->general_name|escape}
+                            <i class="fn_tooltips" title="{$btr->tooltip_general_name_delivery|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
                         </div>
                         <div class="form-group">
                             <input class="form-control mb-h" name="name" type="text" value="{$delivery->name|escape}"/>
@@ -198,6 +201,9 @@
             <div class="boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->delivery_payments|escape}
+                    <i class="fn_tooltips" title="{$btr->tooltip_delivery_payments|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>

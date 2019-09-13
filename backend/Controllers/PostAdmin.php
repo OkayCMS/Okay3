@@ -64,10 +64,10 @@ class PostAdmin extends IndexAdmin
                 
                 // Удаление изображения
                 if ($this->request->post('delete_image')) {
-                    $imagesEntity->deleteImage(
+                    $imageCore->deleteImage(
                         $post->id,
                         'image',
-                        'blog',
+                        BlogEntity::class,
                         $this->config->original_blog_dir,
                         $this->config->resized_blog_dir
                     );
@@ -76,10 +76,10 @@ class PostAdmin extends IndexAdmin
                 // Загрузка изображения
                 $image = $this->request->files('image');
                 if (!empty($image['name']) && ($filename = $imageCore->uploadImage($image['tmp_name'], $image['name'], $this->config->original_blog_dir))) {
-                    $imagesEntity->deleteImage(
+                    $imageCore->deleteImage(
                         $post->id,
                         'image',
-                        'blog',
+                        BlogEntity::class,
                         $this->config->original_blog_dir,
                         $this->config->resized_blog_dir
                     );

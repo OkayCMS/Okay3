@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->brands_brands scope=parent}
+{$meta_title=$btr->brands_brands scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -9,7 +9,7 @@
                 {$btr->brands_brands|escape} - {$brands_count}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url module=BrandAdmin return=$smarty.server.REQUEST_URI}">
+                <a class="btn btn_small btn-info" href="{url controller=BrandAdmin return=$smarty.server.REQUEST_URI}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->brands_add_brand|escape}</span>
                 </a>
@@ -83,7 +83,7 @@
 
                                 <div class="okay_list_boding okay_list_photo">
                                     {if $brand->image}
-                                        <a href="{url module=BrandAdmin id=$brand->id return=$smarty.server.REQUEST_URI}">
+                                        <a href="{url controller=BrandAdmin id=$brand->id return=$smarty.server.REQUEST_URI}">
                                             <img src="{$brand->image|resize:55:55:false:$config->resized_brands_dir}" alt="" /></a>
                                     {else}
                                         <img height="55" width="55" src="design/images/no_image.png"/>
@@ -91,7 +91,7 @@
                                 </div>
 
                                 <div class="okay_list_boding okay_list_brands_name">
-                                    <a href="{url module=BrandAdmin id=$brand->id return=$smarty.server.REQUEST_URI}">
+                                    <a href="{url controller=BrandAdmin id=$brand->id return=$smarty.server.REQUEST_URI}">
                                         {$brand->name|escape}
                                     </a>
                                 </div>
@@ -99,7 +99,7 @@
                                 <div class="okay_list_boding okay_list_status">
                                     {*visible*}
                                      <label class="switch switch-default ">
-                                        <input class="switch-input fn_ajax_action {if $brand->visible}fn_active_class{/if}" data-module="brands" data-action="visible" data-id="{$brand->id}" name="visible" value="1" type="checkbox"  {if $brand->visible}checked=""{/if}/>
+                                        <input class="switch-input fn_ajax_action {if $brand->visible}fn_active_class{/if}" data-controller="brands" data-action="visible" data-id="{$brand->id}" name="visible" value="1" type="checkbox"  {if $brand->visible}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>
@@ -132,8 +132,6 @@
                         </div>
                         <div class="okay_list_option">
                             <select name="action" class="selectpicker brands_action">
-                                <option value="in_feed">{$btr->brands_in_xml|escape}</option>
-                                <option value="out_feed">{$btr->brands_out_xml|escape}</option>
                                 <option value="delete">{$btr->general_delete|escape}</option>
                                 {if $pages_count>1}
                                     <option value="move_to_page">{$btr->products_move_to_page|escape}</option>

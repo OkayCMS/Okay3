@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->general_orders scope=parent}
+{$meta_title=$btr->general_orders scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -18,7 +18,7 @@
                 {/if}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url module=OrderAdmin}">
+                <a class="btn btn_small btn-info" href="{url controller=OrderAdmin}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->orders_add|escape}</span>
                 </a>
@@ -28,7 +28,7 @@
     <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
         <div class="boxed_search">
             <form class="search" method="get">
-                <input type="hidden" name="module" value="OrdersAdmin">
+                <input type="hidden" name="controller" value="OrdersAdmin">
                 <div class="input-group">
                     <input name="keyword" class="form-control" placeholder="{$btr->general_search|escape}" type="text" value="{$keyword|escape}" >
                     <span class="input-group-btn">
@@ -80,7 +80,7 @@
                         <div class="date">
                             {*Блок фильтров*}
                             <form class="date_filter row" method="get">
-                                <input type="hidden" name="module" value="OrdersAdmin">
+                                <input type="hidden" name="controller" value="OrdersAdmin">
                                 <input type="hidden" name="status" value="{$status}">
 
                                 <div class="col-md-5 col-lg-5 pr-0 pl-0">
@@ -122,9 +122,9 @@
                         <div class="col-md-6 col-lg-4 col-sm-12">
                             <select name="status" class="selectpicker"  onchange="location = this.value;">
                                 {foreach $all_status as $order_status}
-                                    <option value="{url module=OrdersAdmin status=$order_status->id keyword=null id=null page=null label=null from_date=null to_date=null}" {if $status == $order_status->id}selected=""{/if} >{$order_status->name|escape}</option>
+                                    <option value="{url controller=OrdersAdmin status=$order_status->id keyword=null id=null page=null label=null from_date=null to_date=null}" {if $status == $order_status->id}selected=""{/if} >{$order_status->name|escape}</option>
                                 {/foreach}
-                                <option value="{url module=OrdersAdmin status=null keyword=null id=null page=null label=null from_date=null to_date=null}" {if !$status}selected{/if}>{$btr->general_all|escape}</option>
+                                <option value="{url controller=OrdersAdmin status=null keyword=null id=null page=null label=null from_date=null to_date=null}" {if !$status}selected{/if}>{$btr->general_all|escape}</option>
                             </select>
                         </div>
                     {/if}
@@ -177,7 +177,7 @@
                                     </div>
 
                                     <div class="okay_list_boding okay_list_order_number">
-                                        <a href="{url module=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}">{$btr->orders_order|escape} {$order->id}</a>
+                                        <a href="{url controller=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}">{$btr->orders_order|escape} {$order->id}</a>
                                         {if $order->paid}
                                             <div class="order_paid">
                                                 <span class="tag tag-success">{$btr->general_paid|escape}</span>
@@ -186,7 +186,7 @@
                                     </div>
 
                                     <div class="okay_list_boding okay_list_orders_name">
-                                        <a href="{url module=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}" class="text_dark text_bold">{$order->name|escape}</a>
+                                        <a href="{url controller=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}" class="text_dark text_bold">{$order->name|escape}</a>
                                         {if $order->note}
                                             <div class="note">{$order->note|escape}</div>
                                         {/if}

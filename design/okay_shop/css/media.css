@@ -212,16 +212,16 @@
     .product_preview__name a:hover {
         color: var(--okay-basic-company);
     }
-    /*.product_item:hover .product_preview__button{*/
-        /*background:var(--okay-button-color);*/
-        /*border-color: var(--okay-button-color);*/
-        /*color: var(--okay-button-text);*/
-    /*}*/
-    .product_item:hover .product_preview__button--pre_order{
+    .product_preview__button--pre_order:hover{
         background: rgb(127, 127, 127);
         border-color: rgb(127, 127, 127);
         color: #fff;
-        height: 34px;
+    }
+    .product-page__button--preloader:hover,
+    .product-page__button--preloader:focus{
+        background: #7f7f7f;
+        border-color: #7f7f7f;
+        color: #fff;
     }
     .product_preview__button:not('.button--blick'):hover{
         opacity: 0.8;
@@ -339,9 +339,6 @@
     }
     .main{
         padding-top: 60px;
-    }
-    .product_preview__buttons .product_preview__button{
-        color: var(--okay-button-color);
     }
     .sidebar{
         position: fixed;
@@ -639,18 +636,6 @@
         width: 100%;
         height: 60px;
     }
-    .product_preview__button {
-        background: var(--okay-button-color);
-        border-color: var(--okay-button-color);
-        color: var(--okay-button-text);
-        padding: 0px 10px;
-    }
-    .product_preview__button .product_preview__button_text {
-        visibility: visible;
-        overflow: visible;
-        opacity: 1;
-        width: auto;
-    }
 }
 @media only screen and (max-width : 767px) {
     .search {
@@ -825,17 +810,14 @@
         border-bottom: 1px solid;
         border-color: #dbdbdb;
     }
-
     .advantages__preview {
         padding: 20px 5px;
     }
-
     .advantages__icon svg {
         width: 60px;
         height: 60px;
         color: #00afee;
     }
-
     .advantages__title {
         font-size: 14px;
         line-height: 1.2;
@@ -1148,6 +1130,30 @@
         display: block;
         z-index: 1;
         background: #fff;
+    }
+    .product_preview__button--pre_order{
+        padding: 0;
+        height: 24px!important;
+        line-height: 1px;
+    }
+    .product_preview__button--pre_order .product_preview__button_text {
+        padding: 0px 5px;
+        font-size: 10px;
+        font-weight: 500;
+        line-height: 1;
+        display: block;
+    }
+    .product_preview__button--buy{
+        color: var(--okay-button-color);
+        background: transparent;
+        border-color: transparent;
+        padding: 0;
+    }
+    .product_preview__button--buy .product_preview__button_text{
+        display: none;
+    }
+    .product_preview__button--buy .mdi::before {
+        font-size: 24px;
     }
     body,
     .boxed__description{

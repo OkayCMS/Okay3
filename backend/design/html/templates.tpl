@@ -1,5 +1,5 @@
 {if $template_file}
-    {$meta_title = "`$btr->general_template` $template_file" scope=parent}
+    {$meta_title = "`$btr->general_template` $template_file" scope=global}
 {/if}
 
 {*Название страницы*}
@@ -50,12 +50,12 @@
         <div class="boxed match fn_toggle_wrap tabs">
             <div class="design_tabs">
                 <div class="design_navigation">
-                    <a class="design_navigation_link {if $current_dir == "html"}focus{/if}" href='{url module=TemplatesAdmin  file=null email=null}'>{$btr->general_template|escape}</a>
-                    <a class="design_navigation_link {if $current_dir == "email"}focus{/if}" href='{url module=TemplatesAdmin file=null email=1}'>{$btr->general_templates_email|escape}</a>
+                    <a class="design_navigation_link {if $current_dir == "html"}focus{/if}" href='{url controller=TemplatesAdmin  file=null email=null}'>{$btr->general_template|escape}</a>
+                    <a class="design_navigation_link {if $current_dir == "email"}focus{/if}" href='{url controller=TemplatesAdmin file=null email=1}'>{$btr->general_templates_email|escape}</a>
                 </div>
                 <div class="design_container">
                     {foreach $templates as $t}
-                        <a class="design_tab {if $template_file == $t}focus{/if}" href='{url module=TemplatesAdmin file=$t}'>{$t|escape}</a>
+                        <a class="design_tab {if $template_file == $t}focus{/if}" href='{url controller=TemplatesAdmin file=$t}'>{$t|escape}</a>
                     {/foreach}
                 </div>
             </div>

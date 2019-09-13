@@ -1,7 +1,7 @@
 {if $product->id}
-    {$meta_title = $product->name scope=parent}
+    {$meta_title = $product->name scope=global}
 {else}
-    {$meta_title = $btr->product_new scope=parent}
+    {$meta_title = $btr->product_new scope=global}
 {/if}
 
 {*Название страницы*}
@@ -89,8 +89,11 @@
                 {*Название элемента сайта*}
                 <div class="row d_flex">
                     <div class="col-lg-10 col-md-9 col-sm-12">
-                        <div class="heading_label">
-                            {$btr->general_name|escape}
+                        <div class="heading_label heading_label--required">
+                            <span>{$btr->general_name|escape}</span>
+                            <i class="fn_tooltips" title="{$btr->tooltip_general_name|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
                         </div>
                         <div class="form-group">
                             <input class="form-control" name="name" type="text" value="{$product->name|escape}"/>
@@ -119,7 +122,12 @@
                         <div class="activity_of_switch">
                             <div class="activity_of_switch_item"> {* row block *}
                                 <div class="okay_switch clearfix">
-                                    <label class="switch_label">{$btr->general_enable|escape}</label>
+                                    <label class="switch_label">
+                                        {$btr->general_enable|escape}
+                                        <i class="fn_tooltips" title="{$btr->tooltip_general_enable|escape}">
+                                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                        </i>
+                                    </label>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="visible" value='1' type="checkbox" id="visible_checkbox" {if $product->visible}checked=""{/if}/>
                                         <span class="switch-label"></span>
@@ -129,7 +137,12 @@
                             </div>
                             <div class="activity_of_switch_item"> {* row block *}
                                 <div class="okay_switch clearfix">
-                                    <label class="switch_label">{$btr->general_bestseller|escape}</label>
+                                    <label class="switch_label">
+                                        {$btr->general_bestseller|escape}
+                                        <i class="fn_tooltips" title="{$btr->tooltip_general_bestseller|escape}">
+                                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                        </i>
+                                    </label>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="featured" value="1" type="checkbox" id="featured_checkbox" {if $product->featured}checked=""{/if}/>
                                         <span class="switch-label"></span>
@@ -192,6 +205,9 @@
             <div class="boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_label">
                     {$btr->general_brand|escape}
+                    <i class="fn_tooltips" title="{$btr->tooltip_general_brand|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="icon-arrow-down"></i></a>
                     </div>
@@ -204,7 +220,12 @@
                                 <option value="{$brand->id}" {if $product->brand_id == $brand->id}selected=""{/if} data-brand_name="{$brand->name|escape}">{$brand->name|escape}</option>
                             {/foreach}
                         </select>
-                        <div class="heading_label">{$btr->general_category|escape}</div>
+                        <div class="heading_label heading_label--required">
+                            <span>{$btr->general_category|escape}</span>
+                            <i class="fn_tooltips" title="{$btr->tooltip_general_category|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </div>
                         <div id="product_cats">
                             {assign var ='first_category' value=reset($product_categories)}
                             <select class="selectpicker  mb-1 fn_product_category fn_meta_categories" data-live-search="true">
@@ -244,6 +265,9 @@
             <div class="boxed fn_toggle_wrap match_matchHeight_true">
                 <div class="heading_box">
                     {$btr->general_options|escape}
+                    <i class="fn_tooltips" title="{$btr->tooltip_general_options|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>
@@ -262,7 +286,12 @@
                                             </div>
                                         </div>
                                         <div class="okay_list_boding variants_item_sku">
-                                            <div class="heading_label">{$btr->general_sku|escape}</div>
+                                            <div class="heading_label">
+                                                {$btr->general_sku|escape}
+                                                <i class="fn_tooltips" title="{$btr->tooltip_general_sku|escape}">
+                                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                                </i>
+                                            </div>
                                             <input class="variant_input" name="variants[sku][]" type="text" value="{$variant->sku|escape}"/>
                                         </div>
                                         <div class="okay_list_boding variants_item_name">
@@ -287,7 +316,12 @@
                                             </select>
                                         </div>
                                         <div class="okay_list_boding variants_item_weight">
-                                            <div class="heading_label">{$btr->general_weight|escape}</div>
+                                            <div class="heading_label">
+                                                {$btr->general_weight|escape}
+                                                <i class="fn_tooltips" title="{$btr->tooltip_general_weight|escape}">
+                                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                                </i>
+                                            </div>
                                             <input class="variant_input" name="variants[weight][]" type="text" value="{$variant->weight|escape}"/>
                                         </div>
                                         <div class="okay_list_boding variants_item_amount">
@@ -298,36 +332,12 @@
                                             <div class="heading_label">{$btr->products_variant_units|escape}</div>
                                             <input class="variant_input" name="variants[units][]" type="text" value="{$variant->units|escape}"/>
                                         </div>
-                                    </div>
-                                    <div class="okay_list_row">
-                                        <div class="okay_list_boding variants_item_drag"></div>
-                                        <div class="okay_list_boding variants_item_yandex">
-                                            <div class="okay_switch clearfix">
-                                                <div class="heading_label">{$btr->general_add_xml_short|escape}</div>
-                                                <label class="switch switch-default switch-pill switch-primary-outline-alt">
-                                                    <input class="switch-input" name="feed[{$variant->id|escape}]" value="1" type="checkbox" {if $variant->feed}checked=""{/if}/>
-                                                    <span class="switch-label"></span>
-                                                    <span class="switch-handle"></span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="okay_list_boding variants_item_file fn_file_wrap">
-                                            <div class="heading_label">{$btr->general_digital_product|escape}</div>
-                                            <input type="file" name="attachment[]" />
-                                            <input type="hidden" name="delete_attachment[]" />
-                                            {if $variant->attachment}
-                                                <span class=fn_attachment_name>{$variant->attachment|truncate:25:'...':false:true}</span>
-                                                <button data-hint="{$btr->general_delete_file|escape}" type="button" class="btn_close delete_grey fn_remove_attach hint-top-middle-t-info-s-small-mobile  hint-anim">
-                                                    {include file='svg_icon.tpl' svgId='delete'}
-                                                </button>
-                                            {/if}
-                                        </div>
                                         {if !$variant@first}
-                                            <div class="okay_list_boding okay_list_close remove_variant">
-                                                <button data-hint="{$btr->general_delete_product|escape}" type="button" class="btn_close fn_remove_variant hint-bottom-right-t-info-s-small-mobile  hint-anim">
-                                                    {include file='svg_icon.tpl' svgId='delete'}
-                                                </button>
-                                             </div>
+                                        <div class="okay_list_boding okay_list_close remove_variant">
+                                            <button data-hint="{$btr->general_delete_product|escape}" type="button" class="btn_close fn_remove_variant hint-bottom-right-t-info-s-small-mobile  hint-anim">
+                                                {include file='svg_icon.tpl' svgId='delete'}
+                                            </button>
+                                        </div>
                                         {/if}
                                     </div>
                                 </div>
@@ -341,7 +351,12 @@
                                         </div>
                                     </div>
                                     <div class="okay_list_boding variants_item_sku">
-                                        <div class="heading_label">{$btr->general_sku|escape}</div>
+                                        <div class="heading_label">
+                                            {$btr->general_sku|escape}
+                                            <i class="fn_tooltips" title="{$btr->tooltip_general_sku|escape}">
+                                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                            </i>
+                                        </div>
                                         <input class="variant_input" name="variants[sku][]" type="text" value=""/>
                                     </div>
                                     <div class="okay_list_boding variants_item_name">
@@ -377,20 +392,11 @@
                                         <div class="heading_label">{$btr->products_variant_units|escape}</div>
                                         <input class="variant_input" name="variants[units][]" type="text" value=""/>
                                     </div>
-                                </div>
-                                <div class="okay_list_row">
-                                    <div class="okay_list_boding variants_item_drag"></div>
-                                    <div class="okay_list_boding variants_item_file">
-                                        <div class="heading_label">{$btr->general_digital_product|escape}</div>
-                                        <input type="file" name="attachment[]" />
-                                        <input type="hidden" name="delete_attachment[]" />
-                                        <span class=fn_attachment_name></span>
-                                    </div>
                                     <div class="okay_list_boding okay_list_close remove_variant">
                                         <button data-hint="{$btr->general_delete_product|escape}" type="button" class="btn_close fn_remove_variant hint-bottom-right-t-info-s-small-mobile  hint-anim">
                                             {include file='svg_icon.tpl' svgId='delete'}
                                         </button>
-                                     </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -412,6 +418,9 @@
             <div class="boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->product_promotions|escape}
+                    <i class="fn_tooltips" title="{$btr->tooltip_product_promotions|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>
@@ -492,6 +501,9 @@
             <div class="boxed fn_toggle_wrap min_height_210px">
             <div class="heading_box">
                 {$btr->product_features|escape}
+                <i class="fn_tooltips" title="{$btr->tooltip_product_features|escape}">
+                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                </i>
                 <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                     <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                 </div>
@@ -506,7 +518,7 @@
                                     <div class="feature_name{if !$feature_value@first} additional_values{/if}">
                                         {if $feature_value@first}
                                             <span title="{$feature->name|escape}">
-                                                <a href="index.php?module=FeatureAdmin&id={$feature->id}" target="_blank">
+                                                <a href="index.php?controller=FeatureAdmin&id={$feature->id}" target="_blank">
                                                     {$feature->name|escape}
                                                 </a>
                                             </span>
@@ -529,7 +541,7 @@
                                 <div class="feature_row clearfix">
                                     <div class="feature_name">
                                         <span title="{$feature->name|escape}">
-                                            <a href="index.php?module=FeatureAdmin&id={$feature->id}" target="_blank">
+                                            <a href="index.php?controller=FeatureAdmin&id={$feature->id}" target="_blank">
                                                 {$feature->name|escape}
                                             </a>
                                         </span>
@@ -613,7 +625,7 @@
                                         </div>
                                         <div class="okay_list_boding okay_list_related_photo">
                                             <input type="hidden" name=related_products[] value='{$related_product->id}'>
-                                            <a href="{url module=ProductAdmin id=$related_product->id}">
+                                            <a href="{url controller=ProductAdmin id=$related_product->id}">
                                                 {if $related_product->images[0]}
                                                     <img class="product_icon" src='{$related_product->images[0]->filename|resize:40:40}'>
                                                 {else}
@@ -622,7 +634,7 @@
                                             </a>
                                         </div>
                                         <div class="okay_list_boding okay_list_related_name">
-                                            <a class="link" href="{url module=ProductAdmin id=$related_product->id}">{$related_product->name|escape}</a>
+                                            <a class="link" href="{url controller=ProductAdmin id=$related_product->id}">{$related_product->name|escape}</a>
                                         </div>
                                         <div class="okay_list_boding okay_list_close">
                                             <button data-hint="{$btr->general_delete_product|escape}" type="button" class="btn_close fn_remove_item hint-bottom-right-t-info-s-small-mobile  hint-anim">
@@ -669,20 +681,35 @@
             <div class="boxed match fn_toggle_wrap">
                 <div class="heading_box">
                     {$btr->general_metatags|escape}
+                    <i class="fn_tooltips" title="{$btr->tooltip_general_metatags|escape}">
+                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                    </i>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>
                 </div>
                 <div class="toggle_body_wrap on fn_card row">
                     <div class="col-lg-6 col-md-6">
-                        <div class="heading_label" >Meta-title <span id="fn_meta_title_counter"></span></div>
+                        <div class="heading_label" >Meta-title <span id="fn_meta_title_counter"></span>
+                            <i class="fn_tooltips" title="{$btr->tooltip_meta_title|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </div>
                         <input name="meta_title" class="form-control fn_meta_field mb-h" type="text" value="{$product->meta_title|escape}" />
-                        <div class="heading_label" >Meta-keywords</div>
+                        <div class="heading_label" >Meta-keywords
+                            <i class="fn_tooltips" title="{$btr->tooltip_meta_keywords|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </div>
                         <input name="meta_keywords" class="form-control fn_meta_field mb-h" type="text" value="{$product->meta_keywords|escape}" />
                     </div>
 
                     <div class="col-lg-6 col-md-6 pl-0">
-                        <div class="heading_label" >Meta-description <span id="fn_meta_description_counter"></span></div>
+                        <div class="heading_label" >Meta-description <span id="fn_meta_description_counter"></span>
+                            <i class="fn_tooltips" title="{$btr->tooltip_meta_description|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </div>
                         <textarea name="meta_description" class="form-control okay_textarea fn_meta_field">{$product->meta_description|escape}</textarea>
                     </div>
                 </div>
@@ -696,8 +723,16 @@
             <div class="boxed match fn_toggle_wrap tabs">
                 <div class="heading_tabs">
                     <div class="tab_navigation">
-                        <a href="#tab1" class="heading_box tab_navigation_link">{$btr->general_short_description|escape}</a>
-                        <a href="#tab2" class="heading_box tab_navigation_link">{$btr->general_full_description|escape}</a>
+                        <a href="#tab1" class="heading_box tab_navigation_link">
+                            {$btr->general_short_description|escape}
+
+                        </a>
+                        <a href="#tab2" class="heading_box tab_navigation_link">
+                            {$btr->general_full_description|escape}
+                            <i class="fn_tooltips" title="{$btr->tooltip_general_full_description|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </a>
                     </div>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="icon-arrow-down"></i></a>
@@ -824,15 +859,6 @@
             $(this).closest(".variants_list_item ").remove();
         });
 
-        // Удалить файл к варианту
-        $(document).on("click", ".fn_remove_attach", function () {
-            closest = $(this).closest(".fn_file_wrap");
-            closest.find(".fn_attachment_name").hide("slow");
-            $(this).hide("slow");
-            closest.find("input[name*=delete_attachment]").val("1");
-            return false;
-        });
-
         // Добавление варианта
         var variant = $(".fn_new_row_variant").clone(false);
         $(".fn_new_row_variant").remove();
@@ -914,7 +940,7 @@
                             var new_line = new_feature_category.clone(true);
                             new_line.addClass('fn_feature_block_'+feature.id);
                             new_line.find(".fn_feature_name").attr('title', feature.name);
-                            new_line.find(".fn_feature_name a").text(feature.name).attr('href', "index.php?module=FeatureAdmin&id="+feature.id);
+                            new_line.find(".fn_feature_name a").text(feature.name).attr('href', "index.php?controller=FeatureAdmin&id="+feature.id);
                             var value = new_line.find(".fn_auto_option"),
                                 id_input = new_line.find(".fn_value_id_input");
                             value.data('id', feature.id);
@@ -1037,7 +1063,7 @@
                     $("input#related_products").val('').focus().blur();
                     new_item = new_related_product.clone().appendTo('.related_products');
                     new_item.find('a.related_product_name').html(suggestion.data.name);
-                    new_item.find('a.related_product_name').attr('href', 'index.php?module=ProductAdmin&id='+suggestion.data.id);
+                    new_item.find('a.related_product_name').attr('href', 'index.php?controller=ProductAdmin&id='+suggestion.data.id);
                     new_item.find('input[name*="related_products"]').val(suggestion.data.id);
                     if(suggestion.data.image)
                         new_item.find('img.product_icon').attr("src", suggestion.data.image);

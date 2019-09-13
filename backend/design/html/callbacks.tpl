@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->callbacks_order scope=parent}
+{$meta_title=$btr->callbacks_order scope=global}
 
 {*Название страницы*}
 <div class="row">
@@ -14,7 +14,7 @@
     <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
         <div class="boxed_search">
             <form class="search" method="get">
-                <input type="hidden" name="module" value="CallbacksAdmin">
+                <input type="hidden" name="controller" value="CallbacksAdmin">
                 <div class="input-group">
                     <input name="keyword" class="form-control" placeholder="{$btr->callbacks_search|escape}" type="text" value="{$keyword|escape}" >
                     <span class="input-group-btn">
@@ -106,14 +106,14 @@
                                                 {$btr->general_from_page|escape} <a href="{$callback->url|escape}" target="_blank">{$callback->url|escape}</a>
                                             </div>
                                             <div class="hidden-md-up mt-q">
-                                                <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action fn_callbacks_toggle {if $callback->processed}hidden{/if}" data-module="callback" data-action="processed" data-id="{$callback->id}">
+                                                <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action fn_callbacks_toggle {if $callback->processed}hidden{/if}" data-controller="callback" data-action="processed" data-id="{$callback->id}">
                                                     {$btr->general_process|escape}
                                                 </button>
-                                                <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action fn_callbacks_toggle fn_active_class {if !$callback->processed}hidden{/if}" data-module="callback" data-action="processed" data-id="{$callback->id}">
+                                                <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action fn_callbacks_toggle fn_active_class {if !$callback->processed}hidden{/if}" data-controller="callback" data-action="processed" data-id="{$callback->id}">
                                                     {$btr->general_unprocess|escape}
                                                 </button>
                                              </div>
-                                            <div class="mb-q fn_ajax_block admin_note" data-id="{$callback->id}" data-module="callback">
+                                            <div class="mb-q fn_ajax_block admin_note" data-id="{$callback->id}" data-controller="callback">
                                                 <span class="text_dark text_bold">{$btr->callbacks_admin_notes|escape}</span>
                                                 <span class="fn_an_text">{$callback->admin_notes|escape|nl2br}</span>
                                                 <div>
@@ -127,10 +127,10 @@
                                         </div>
 
                                         <div class="okay_list_boding okay_list_comments_btn">
-                                            <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action fn_callbacks_toggle {if $callback->processed}hidden{/if}" data-module="callback" data-action="processed" data-id="{$callback->id}">
+                                            <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action fn_callbacks_toggle {if $callback->processed}hidden{/if}" data-controller="callback" data-action="processed" data-id="{$callback->id}">
                                                 {$btr->general_process|escape}
                                             </button>
-                                            <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action fn_callbacks_toggle fn_active_class {if !$callback->processed}hidden{/if}" data-module="callback" data-action="processed" data-id="{$callback->id}">
+                                            <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action fn_callbacks_toggle fn_active_class {if !$callback->processed}hidden{/if}" data-controller="callback" data-action="processed" data-id="{$callback->id}">
                                                 {$btr->general_unprocess|escape}
                                             </button>
                                         </div>

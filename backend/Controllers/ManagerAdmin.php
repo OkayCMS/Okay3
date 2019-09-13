@@ -18,7 +18,7 @@ class ManagerAdmin extends IndexAdmin
             if ($this->request->post('reset_menu')) {
                 $id = $this->request->post('id', 'integer');
                 $managersEntity->update($id, ['menu'=>'']);
-                $this->response->redirectTo($this->request->getRootUrl() . '/backend/index.php?module=ManagerAdmin&id='.$id);
+                $this->response->redirectTo($this->request->getRootUrl() . '/backend/index.php?controller=ManagerAdmin&id='.$id);
             }
             
             $manager->id = $this->request->post('id', 'integer');
@@ -61,7 +61,7 @@ class ManagerAdmin extends IndexAdmin
                         $managersEntity->update($manager->id, $manager);
                         $this->design->assign('message_success', 'updated');
                         if ($manager->lang != $m->lang) {
-                            $this->response->redirectTo($this->request->getRootUrl() . '/backend/index.php?module=ManagerAdmin&id=' . $manager->id);
+                            $this->response->redirectTo($this->request->getRootUrl() . '/backend/index.php?controller=ManagerAdmin&id=' . $manager->id);
                         }
                     }
                     $manager = $managersEntity->get($manager->login);

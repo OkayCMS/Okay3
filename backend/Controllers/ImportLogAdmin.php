@@ -5,6 +5,7 @@ namespace Okay\Admin\Controllers;
 
 
 use Okay\Core\Request;
+use Okay\Core\QueryFactory;
 use Okay\Core\EntityFactory;
 use Okay\Entities\ImagesEntity;
 use Okay\Entities\ProductsEntity;
@@ -23,6 +24,11 @@ class ImportLogAdmin extends IndexAdmin
     protected $entityFactory;
 
     /**
+     * @var QueryFactory
+     */
+    protected $queryFactory;
+
+    /**
      * @var ImagesEntity
      */
     protected $imagesEntity;
@@ -32,12 +38,14 @@ class ImportLogAdmin extends IndexAdmin
      */
     protected $productsEntity;
 
-    /*Лог импорта товаров*/
+
     public function fetch(
         Request $request,
+        QueryFactory $queryFactory,
         EntityFactory $entityFactory
     ) {
         $this->request        = $request;
+        $this->queryFactory  = $queryFactory;
         $this->entityFactory  = $entityFactory;
         $this->imagesEntity   = $entityFactory->get(ImagesEntity::class);
         $this->productsEntity = $entityFactory->get(ProductsEntity::class);
@@ -168,7 +176,9 @@ class ImportLogAdmin extends IndexAdmin
             $sql_limit
         ";
 
-        $this->db->customQuery($query);
+        $sql = $this->queryFactory->newSqlQuery();
+        $sql->setStatement($query);
+        $this->db->query($sql);
 
         if ($is_count) {
             return $this->db->result('cnt');

@@ -13,4 +13,4 @@
 
 <a title="{$btr->admintooltip_go_to_admin}" href="backend/" class="top_admin_bookmark"></a>
 
-<script src="backend/design/js/admintooltip/admintooltip.js"{if $config->scripts_defer == true} defer{/if}></script>
+<script src="backend/design/js/admintooltip/admintooltip.js"{if $scripts_defer == true} defer{/if}></script>

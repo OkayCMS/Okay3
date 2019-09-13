@@ -1,5 +1,5 @@
 {* Title *}
-{$meta_title=$btr->import_log_products scope=parent}
+{$meta_title=$btr->import_log_products scope=global}
 
 
 {*Название страницы*}
@@ -22,7 +22,7 @@
     <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
         <div class="boxed_search">
             <form class="search" method="get">
-            <input type="hidden" name="module" value="ImportLogAdmin">
+            <input type="hidden" name="controller" value="ImportLogAdmin">
             <div class="input-group">
                 <input name="keyword" class="form-control" placeholder="{$btr->general_search|escape}" type="text" value="{$keyword|escape}" >
                 <span class="input-group-btn">
@@ -91,7 +91,7 @@
                                         <div class="okay_list_boding okay_list_check">{$log@iteration}</div>
                                         <div class="okay_list_boding okay_list_photo">
                                             {if $log->product->image}
-                                                <a href="{url module=ProductAdmin id=$log->product_id return=$smarty.server.REQUEST_URI}" target="_blank">
+                                                <a href="{url controller=ProductAdmin id=$log->product_id return=$smarty.server.REQUEST_URI}" target="_blank">
                                                     <img src="{$log->product->image->filename|escape|resize:55:55}"/>
                                                 </a>
                                             {else}
@@ -100,7 +100,7 @@
                                         </div>
 
                                         <div class="okay_list_boding okay_list_log_name">
-                                            <a class="link" href="{url module=ProductAdmin id=$log->product_id return=$smarty.server.REQUEST_URI}" target="_blank">{$log->product_name|escape}</a>
+                                            <a class="link" href="{url controller=ProductAdmin id=$log->product_id return=$smarty.server.REQUEST_URI}" target="_blank">{$log->product_name|escape}</a>
                                             {if $log->variant_name}
                                                 <span class="text_grey">({$log->variant_name|escape})</span>
                                             {/if}

@@ -1,5 +1,5 @@
 {if $script_file}
-    {$meta_title = "`$btr->scripts_scripts` $script_file" scope=parent}
+    {$meta_title = "`$btr->scripts_scripts` $script_file" scope=global}
 {/if}
 
 {* Подключаем редактор кода *}
@@ -116,7 +116,7 @@
             <div class="design_tabs">
                 <div class="design_container">
                     {foreach $scripts as $s}
-                        <a class="design_tab {if $script_file == $s}focus{/if}" href='{url module=ScriptsAdmin file=$s}'>{$s|escape}</a>
+                        <a class="design_tab {if $script_file == $s}focus{/if}" href='{url controller=ScriptsAdmin file=$s}'>{$s|escape}</a>
                     {/foreach}
                 </div>
             </div>

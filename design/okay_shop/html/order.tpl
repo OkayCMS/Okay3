@@ -1,7 +1,7 @@
 {* Order page *}
 
 {* The page title *}
-{$meta_title = "`$lang->email_order_title` `$order->id`" scope=parent}
+{$meta_title = "`$lang->email_order_title` `$order->id`" scope=global}
 
 <div class="block">
     <div class="block__header block__header--boxed block__header--border">
@@ -25,15 +25,13 @@
                                 <div class="purchase__item d-flex align-items-start">
                                     {* Product image *}
                                     <div class="purchase__image d-flex">
-                                        <a href="{url_generator route="product" url=$purchase->product->url}">
+                                        <a href="{url_generator route='product' url=$purchase->product->url}">
                                             {if $purchase->product->image}
-                                            <picture>
-                                                <source media="(min-width: 1024px)" data-srcset="{{$purchase->product->image->filename|resize:100:100}}" />
-                                                <source media="(min-width: 577px)" data-srcset="{{$purchase->product->image->filename|resize:100:100}}" />
-                                                <img class="lazy" alt="{$purchase->product->name|escape}" data-src="{$purchase->product->image->filename|resize:70:70}">
-                                            </picture>
+                                                 <img class="" alt="{$purchase->product->name|escape}" src="{$purchase->product->image->filename|resize:70:70}">
                                             {else}
-                                            <img width="50" height="50" src="design/{get_theme}/images/no_image.png" alt="{$purchase->product->name|escape}" title="{$purchase->product->name|escape}">
+                                                <div class="purchase__no_image d-flex align-items-start">
+                                                    {include file="svg.tpl" svgId="no_image"}
+                                                </div>
                                             {/if}
                                         </a>
                                      </div>
@@ -43,9 +41,7 @@
                                             <a class="purchase__name_link" href="{url_generator route="product" url=$purchase->product->url}">{$purchase->product->name|escape}</a>
                                             <i>{$purchase->variant->name|escape}</i>
                                             {if $purchase->variant->stock == 0}<span class="preorder_label">{$lang->product_pre_order}</span>{/if}
-                                            {if $order->paid && $purchase->variant->attachment}
-                                            <a class="button button--small button--basic button--blick" href="{url_generator route="order_download" url=$order->url file=$purchase->variant->attachment}" data-language="order_download_file">{$lang->order_download_file}</a>
-                                            {/if}
+                                            
                                         </div>
                                         <div class="purchase__group">
                                             {* Price per unit *}

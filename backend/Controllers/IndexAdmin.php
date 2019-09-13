@@ -8,6 +8,7 @@ use Okay\Core\Config;
 use Okay\Core\Database;
 use Okay\Core\Managers;
 use Okay\Core\Design;
+use Okay\Core\Support;
 use Okay\Core\EntityFactory;
 use Okay\Core\Languages;
 use Okay\Core\Request;
@@ -24,11 +25,14 @@ use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\FeedbacksEntity;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\OrderStatusEntity;
+use OkayLicense\License;
+use Okay\Entities\SupportInfoEntity;
 
 class IndexAdmin
 {
 
     protected $manager;
+    protected $backendController;
     
     /**
      * @var EntityFactory
@@ -78,13 +82,24 @@ class IndexAdmin
      * @var Managers
      */
     protected $managers;
-    
+
+    /**
+     * @var SupportInfoEntity
+     */
+    protected $supportInfoEntity;
+
+    /**
+     * @var Support
+     */
+    protected $support;
+
     public function onInit(
         Design $design,
         Request $request,
         Response $response,
         Settings $settings,
         Config $config,
+        License $license,
         Languages $languages,
         EntityFactory $entityFactory,
         ManagerMenu $managerMenu,
@@ -93,7 +108,9 @@ class IndexAdmin
         Translit $translit,
         LanguagesEntity $languagesEntity,
         Managers $managers,
-        ManagersEntity $managersEntity
+        ManagersEntity $managersEntity,
+        Support $support,
+        SupportInfoEntity $supportInfoEntity
     ) {
         $this->design        = $design;
         $this->request       = $request;
@@ -104,14 +121,11 @@ class IndexAdmin
         $this->entityFactory = $entityFactory;
         $this->db            = $db;
         $this->managers      = $managers;
+        $this->support       = $support;
+        $this->supportInfoEntity = $supportInfoEntity;
         
-        $design->set_templates_dir('backend/design/html');
-        $design->set_compiled_dir('backend/design/compiled');
-        
-        $is_mobile = $design->is_mobile();
-        $is_tablet = $design->is_tablet();
-        $design->assign('is_mobile', $is_mobile);
-        $design->assign('is_tablet', $is_tablet);
+        $design->assign('is_mobile', $design->isMobile());
+        $design->assign('is_tablet', $design->isTablet());
 
         $design->assign('settings',  $this->settings);
         $design->assign('config',    $this->config);
@@ -120,11 +134,24 @@ class IndexAdmin
         
         $design->assign('manager', $this->manager);
 
-        if ($this->module != "AuthAdmin") {
+        $supportInfo = $supportInfoEntity->getInfo();
+        $this->design->assign('support_info', $supportInfo);
+
+        $isNotLocalServer = !in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '0:0:0:0:0:0:0:1']);
+        if (empty($supportInfo->public_key) && !empty($supportInfo->is_auto) && $isNotLocalServer) {
+            $supportInfoEntity->updateInfo(['is_auto' => 0]);
+            if ($support->getNewKeys() !== false) {
+                $this->response->addHeader("Refresh:0");
+                $this->response->sendHeaders();
+                exit();
+            }
+        }
+
+        if ($this->backendController != "AuthAdmin") {
             $menu = $managerMenu->getMenu($this->manager);
-            $activeModuleName = $managerMenu->getActiveModuleName($this->manager, $this->module);
+            $activeControllerName = $managerMenu->getActiveControllerName($this->manager, $this->backendController);
             $design->assign('left_menu', $menu);
-            $design->assign('menu_selected', $activeModuleName);
+            $design->assign('menu_selected', $activeControllerName);
         }
 
         $design->assign('translit_pairs', $translit->getTranslitPairs());
@@ -157,7 +184,6 @@ class IndexAdmin
 
         $langId = $languages->getLangId();
         $design->assign('lang_id', $langId);
-        $design->assign('lang_link', $languages->getLangLink());
         
         if (!empty($this->manager)) {
             // Перевод админки
@@ -172,12 +198,13 @@ class IndexAdmin
         }
 
         $design->assign('btr', $backendTranslations);
+        $design->assign('is_valid_license', $license->check());
 
         if ($request->method('post') && !empty($this->manager->id)) {
             $managersEntity->updateLastActivityDate($this->manager->id);
         }
 
-        if ($this->module === 'AuthAdmin' || $this->managers->access($this->managers->getPermissionByModule($this->module), $this->manager)) {
+        if ($this->backendController === 'AuthAdmin' || $this->managers->access($this->managers->getPermissionByController($this->backendController), $this->manager)) {
             return true;
         }
 
@@ -221,9 +248,9 @@ class IndexAdmin
         $this->design->assign("all_counter", $newOrdersCounter+$newCommentsCounter+$newFeedbacksCounter+$newCallbacksCounter);
     }
 
-    public function __construct($manager, $module)
+    public function __construct($manager, $backendController)
     {
         $this->manager = $manager;
-        $this->module  = $module;
-    }    
+        $this->backendController  = $backendController;
+    }
 }
