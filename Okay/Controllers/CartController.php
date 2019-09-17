@@ -168,7 +168,7 @@ class CartController extends AbstractController
             $delivery->payment_methods = $paymentsEntity->find(['delivery_id'=>$delivery->id, 'enabled'=>1]);
         }
 
-        $this->design->assign('all_currencies', $currenciesEntity->find());
+        $this->design->assign('all_currencies', $currenciesEntity->mappedBy('id')->find());
         $this->design->assign('deliveries', $deliveries);
         
         // Данные пользователя

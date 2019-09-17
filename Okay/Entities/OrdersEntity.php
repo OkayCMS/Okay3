@@ -124,10 +124,10 @@ class OrdersEntity extends Entity
     /*Закрытие заказа(списание количества)*/
     public function close($orderId)
     {
-        /** @var Variants $variantsEntity */
+        /** @var VariantsEntity $variantsEntity */
         $variantsEntity = $this->entity->get(VariantsEntity::class);
         
-        /** @var Purchases $purchasesEntity */
+        /** @var PurchasesEntity $purchasesEntity */
         $purchasesEntity = $this->entity->get(PurchasesEntity::class);
         
         $order = $this->get(intval($orderId));
@@ -167,10 +167,10 @@ class OrdersEntity extends Entity
     /*Открытие заказа (возвращение количества)*/
     public function open($orderId)
     {
-        /** @var Variants $variantsEntity */
+        /** @var VariantsEntity $variantsEntity */
         $variantsEntity = $this->entity->get(VariantsEntity::class);
 
-        /** @var Purchases $purchasesEntity */
+        /** @var PurchasesEntity $purchasesEntity */
         $purchasesEntity = $this->entity->get(PurchasesEntity::class);
         
         $order = $this->get(intval($orderId));
@@ -283,8 +283,8 @@ class OrdersEntity extends Entity
 
     protected function filter__to_date($toDate)
     {
-        $this->select->where('o.date <= :from_date')
-            ->bindValue('from_date', date('Y-m-d', strtotime($toDate)));
+        $this->select->where('o.date <= :to_date')
+            ->bindValue('to_date', date('Y-m-d', strtotime($toDate)));
     }
     
     protected function filter__keyword($keywords)

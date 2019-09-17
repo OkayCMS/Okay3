@@ -48,6 +48,7 @@ class VariantsEntity extends Entity
         if (empty($id)) {
             return null;
         }
+
         $this->select->join('left', '__currencies AS c', 'c.id=v.currency_id');
 
         $variant = parent::get($id);
@@ -68,6 +69,22 @@ class VariantsEntity extends Entity
         return $variants;
     }
 
+    public function pricesToMainCurrencyByCurrencyId($id)
+    {
+        /** @var CurrenciesEntity $currenciesEntity */
+        $currenciesEntity = $this->entity->get(CurrenciesEntity::class);
+
+        $currency         = $currenciesEntity->get((int) $id);
+        $mainCurrency     = $currenciesEntity->getMainCurrency();
+        $mainCurrencyCoef = $this->getMainCurrencyCoef($currency);
+
+        $sql = $this->queryFactory->newSqlQuery();
+        $sql->setStatement("UPDATE ".self::getTable()." SET price=price*{$mainCurrencyCoef}, compare_price=compare_price*{$mainCurrencyCoef}, currency_id=:main_currency_id WHERE currency_id=:currency_id")
+            ->bindValue('currency_id', $id)
+            ->bindValue('main_currency_id', $mainCurrency->id);
+        $this->db->query($sql);
+    }
+
     protected function resetInfo($variant)
     {
         if (property_exists($variant, 'compare_price') && $variant->compare_price == 0) {
@@ -77,6 +94,7 @@ class VariantsEntity extends Entity
         if (property_exists($variant, 'stock') && $variant->stock === null) {
             $variant->stock = $this->settings->max_order_amount;
         }
+
         return $variant;
     }
     
@@ -94,5 +112,10 @@ class VariantsEntity extends Entity
     protected function filter__has_price()
     {
         $this->select->where("price > 0");
+    }
+
+    private function getMainCurrencyCoef($currency)
+    {
+        return $currency->rate_to / $currency->rate_from;
     }
 }

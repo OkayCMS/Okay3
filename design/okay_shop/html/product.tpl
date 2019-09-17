@@ -197,9 +197,9 @@
                             <div class="details_boxed__buttons">
                                 {if !$settings->is_preorder}
                                 {* No stock *}
-                                <div class="fn_not_preorder {if $product->variant->stock > 0} hidden{/if}">
-                                    <button class="product-page__button product-page__button--disabled" type="button" data-language="product_out_of_stock">{$lang->product_out_of_stock}</button>
-                                </div>
+                                <p class="fn_not_preorder {if $product->variant->stock > 0} hidden{/if}">
+                                    <span class="product-page__button product-page__out_stock" data-language="product_out_of_stock">{$lang->product_out_of_stock}</span>
+                                </p>
                                 {else}
                                 {* Preorder *}
                                 <div class="fn_is_preorder {if $product->variant->stock > 0} hidden{/if}">

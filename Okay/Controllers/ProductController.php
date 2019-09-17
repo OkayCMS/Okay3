@@ -150,7 +150,6 @@ class ProductController extends AbstractController
             'type' => 'product',
             'object_id' => $product->id,
             'approved' => 1,
-            'ip' => $_SERVER['REMOTE_ADDR'],
         ];
         foreach ($commentsEntity->find($childrenFilter) as $c) {
             $children[$c->parent_id][] = $c;

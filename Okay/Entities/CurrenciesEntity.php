@@ -47,24 +47,40 @@ class CurrenciesEntity extends Entity {
         
         return $this->mainCurrency;
     }
-    
-    /*public function get($id)
-    {
-        $filter['limit'] = 1;
 
-        if (is_int($id)) {
-            $filter['id'] = $id;
-        } else {
-            $filter['code'] = $id;
+    public function delete($ids)
+    {
+        /** @var PaymentsEntity $paymentsEntity */
+        $paymentsEntity = $this->entity->get(PaymentsEntity::class);
+
+        /** @var VariantsEntity $variantsEntity */
+        $variantsEntity = $this->entity->get(VariantsEntity::class);
+
+        $mainCurrency      = $this->getMainCurrency();
+        $paymentMethodsIds = $paymentsEntity->cols(['id'])->find(['currency_id' => $ids]);
+        $paymentsEntity->update($paymentMethodsIds, ['currency_id' => $mainCurrency->id]);
+
+        if ($this->isSingleId($ids)) {
+            $id = $ids;
+            $variantsEntity->pricesToMainCurrencyByCurrencyId($id);
+            return parent::delete($id);
         }
 
-        $this->buildFilter($filter);
-        $this->select->cols($this->getAllFields());
+        foreach ($ids as $id) {
+            $variantsEntity->pricesToMainCurrencyByCurrencyId($id);
+        }
 
-        $this->db->query($this->select);
-        // Почистим после себя состояние
-        $this->flush();
-        return $this->db->result();
-    }*/
+        return parent::delete($ids);
+    }
 
+    private function isSingleId($ids)
+    {
+        return !is_array($ids);
+    }
+
+    public function filter__not_in_ids($ids)
+    {
+        $this->select->where('id NOT IN(:id)')
+            ->bindValue('id', $ids);
+    }
 }

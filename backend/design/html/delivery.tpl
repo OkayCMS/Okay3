@@ -284,13 +284,13 @@
                break;
             case 'free':
                 $(".fn_delivery_option").addClass("hidden");
-                $(".fn_delivery_option").find("input").val(0);
+                // $(".fn_delivery_option").find("input").val(0);
                 $("input[name=separate_payment]").removeAttr("checked");
                 $(this).addClass("active");
                 break;
             case 'delivery':
                 $(".fn_delivery_option").addClass("hidden");
-                $(".fn_delivery_option").find("input").val(0);
+                // $(".fn_delivery_option").find("input").val(0);
                 $("input[name=separate_payment]").trigger("click");
                 $(this).addClass("active");
                 break;

@@ -52,12 +52,9 @@ class CurrencyAdmin extends IndexAdmin
             }
             
             // Удалить непереданные валюты
-            $delete = $queryFactory->newDelete();
-            $delete->from('__currencies')
-                ->where('id NOT IN(:id)')
-                ->bindValue('id', $currenciesIds);
-            $this->db->query($delete);
-            
+            $currenciesIdsToDelete = $currenciesEntity->find(['not_in_ids' => $currenciesIds]);
+            $currenciesEntity->delete($currenciesIdsToDelete);
+
             // Пересчитать курсы
             $oldCurrency = $currenciesEntity->getMainCurrency();
             $newCurrency = reset($currencies);

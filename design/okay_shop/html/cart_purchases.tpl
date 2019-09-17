@@ -4,7 +4,7 @@ okay.max_order_amount = {$settings->max_order_amount};
 
 </script>
 
-<div class="fn_cart_sticky block--cart_purchases block--boxed block--border" data-margin-top="15" data-sticky-for="1024" data-sticky-class="is-sticky">
+<div class="fn_cart_sticky block--cart_purchases block--boxed block--border" data-margin-top="75" data-sticky-for="1024" data-sticky-class="is-sticky">
 <div class="h6" data-language="cart_purchase_title">{$lang->cart_purchase_title}</div>
 
 <div class="purchase ">

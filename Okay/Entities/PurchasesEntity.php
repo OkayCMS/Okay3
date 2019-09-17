@@ -179,6 +179,12 @@ class PurchasesEntity extends Entity
                 ]);
             $this->db->query($update);
         }
+
+        /** @var OrdersEntity $ordersEntity */
+        $ordersEntity = $this->entity->get(OrdersEntity::class);
+        $ordersEntity->update($order->id, [
+            'total_price' => $order->total_price + $purchase->price
+        ]);
         
         return parent::add($purchase);
     }

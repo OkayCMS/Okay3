@@ -542,7 +542,7 @@ CREATE TABLE `ok_comments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_comments` (`id`, `parent_id`, `date`, `ip`, `object_id`, `name`, `email`, `text`, `type`, `approved`, `lang_id`) VALUES
-(1,	0,	'2019-07-09 16:52:38',	'89.238.191.213',	1,	'апр',	'',	'чсмпр',	'product',	0,	1);
+(1,	0,	'2019-07-09 16:52:38',	'89.238.191.213',	1,	'Андрей',	'',	'Отличный товар. Приобрели около года назад. Ни разу не пожалели о покупке.',	'product',	0,	1);
 
 DROP TABLE IF EXISTS `ok_coupons`;
 CREATE TABLE `ok_coupons` (
@@ -576,10 +576,9 @@ CREATE TABLE `ok_currencies` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_currencies` (`id`, `name`, `sign`, `code`, `rate_from`, `rate_to`, `cents`, `position`, `enabled`) VALUES
-(1,	'доллары',	'$',	'USD',	0.90,	55.33,	2,	2,	1),
+(1,	'доллары',	'$',	'USD',	1.00,	65.00,	2,	2,	1),
 (2,	'рубли',	'руб',	'RUR',	7.50,	7.50,	0,	1,	1),
-(3,	'вебмани',	'wmz',	'WMZ',	0.15,	7.50,	2,	3,	0),
-(4,	'гривны',	'грн',	'UAH',	0.45,	1.00,	2,	4,	1);
+(4,	'гривны',	'грн',	'UAH',	1.00,	3.30,	2,	4,	1);
 
 DROP TABLE IF EXISTS `ok_deliveries`;
 CREATE TABLE `ok_deliveries` (
@@ -5882,7 +5881,7 @@ CREATE TABLE `ok_managers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_managers` (`id`, `lang`, `login`, `password`, `permissions`, `cnt_try`, `last_try`, `comment`, `menu_status`, `menu`, `last_activity`) VALUES
-(1,	'ru',	'admin',	'$apr1$8m1u0cp4$MYUZf5fVcidsoTaFb0P9P1',	NULL,	0,	NULL,	'',	1,	NULL,	'2019-09-05 11:51:10');
+(1,	'ru',	'admin',	'$apr1$8m1u0cp4$MYUZf5fVcidsoTaFb0P9P1',	NULL,	0,	NULL,	'',	1,	NULL,	'2019-09-17 12:41:34');
 
 DROP TABLE IF EXISTS `ok_menu`;
 CREATE TABLE `ok_menu` (
@@ -9041,4 +9040,4 @@ INSERT INTO `ok_variants` (`id`, `product_id`, `sku`, `name`, `weight`, `price`,
 (288,	48,	'',	'синий',	NULL,	5100.00,	0.00,	NULL,	288,	'',	4,	''),
 (289,	48,	'',	'красный',	NULL,	5200.00,	0.00,	NULL,	289,	'',	4,	'');
 
--- 2019-09-16 14:43:45
+-- 2019-09-17 12:42:06

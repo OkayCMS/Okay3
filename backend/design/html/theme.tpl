@@ -171,11 +171,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="card-header">
-                <div class="h5">{$btr->theme_perform|escape}</div>
+                <div class="heading_modal">{$btr->theme_perform|escape}</div>
             </div>
             <div class="modal-body">
-                <button type="submit" class="btn btn-sm btn-success fn_submit_delete"><i class="fa fa-dot-circle-o"></i> Submit</button>
-                <button type="button" class="btn btn-default fn_dismiss_delete" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn_small btn_blue fn_submit_delete">{$btr->theme_perform_yes|escape}</button>
+                <button type="button" class="btn btn_small btn_blue fn_dismiss_delete" data-dismiss="modal">{$btr->theme_perform_no|escape}</button>
             </div>
         </div>
     </div>

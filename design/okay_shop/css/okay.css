@@ -3075,7 +3075,7 @@ header{
 }
 .product_preview__name a {
     color: var(--okay-body-text);
-	background: #fff;
+    background: rgba(255,255,255,0.9);
 	line-height: 1.2;
 	font-size: 14px;
 	transition: .3s;
@@ -3083,6 +3083,7 @@ header{
 	position: relative;
 	font-weight: 400;
 	padding-bottom: 5px;
+    min-height: 60px;
 	text-decoration: none;
 }
 .product_preview__prices {
@@ -3210,7 +3211,7 @@ header{
     visibility: hidden;
     opacity: 0;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     width: 0;
     overflow: hidden;
 }
@@ -3251,7 +3252,7 @@ header{
     color: rgb(156, 156, 156);
     height: 34px;
     margin: 0;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
 }
 .product_preview__button--pre_order .product_preview__button_text{
@@ -3259,7 +3260,7 @@ header{
     visibility: visible;
     opacity: 1;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     width: auto;
 }
 .product_preview__button i{
@@ -4020,8 +4021,24 @@ header{
 .product-page__button:focus{
     opacity: 0.8;
 }
-.product-page__button--disabled{
-    
+.product-page__out_stock{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid #dbdbdb;
+    color: #9c9c9c;
+    white-space: nowrap;
+    cursor: not-allowed;
 }
 .product-page__button--preloader{
     cursor: pointer;
@@ -4031,8 +4048,10 @@ header{
     white-space: nowrap;
     transition: all 0.2s;
 }
+.details_boxed__buttons .fn_not_preorder,
 .details_boxed__buttons .fn_is_preorder  {
     padding-right: 10px;
+    margin-bottom: 0;
 }
 .details_boxed__other{
     display: -webkit-box;
@@ -4490,10 +4509,15 @@ footer {
     background: var(--okay-basic-company);
 }
 .footer__title_arrow{
-    position: relative;
+    position: absolute;
     top: 1px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all .2s ease;
+    width: 100%;
+    text-align: right;
+    cursor: pointer;
+    left: 0;
+    padding-right: 15px;
 }
 .footer__title_arrow svg{
     height: 14px;
