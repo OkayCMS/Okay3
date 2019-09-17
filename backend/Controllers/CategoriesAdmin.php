@@ -49,7 +49,9 @@ class CategoriesAdmin extends IndexAdmin
         }
         /*Выборка дерева категорий*/
         $categories = $categoriesEntity->getCategoriesTree();
-        
+        $categoriesCount = $categoriesEntity->count();
+
+        $this->design->assign('categoriesCount', $categoriesCount);
         $this->design->assign('categories', $categories);
         $this->response->setContent($this->design->fetch('categories.tpl'));
     }

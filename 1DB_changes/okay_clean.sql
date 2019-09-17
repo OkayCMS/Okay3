@@ -1,14 +1,20 @@
-SET NAMES utf8mb4;
+-- Adminer 4.7.1 MySQL dump
+
+SET NAMES utf8;
 SET time_zone = '+00:00';
+SET foreign_key_checks = 0;
+SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
+
+SET NAMES utf8mb4;
 
 DROP TABLE IF EXISTS `ok_banners`;
 CREATE TABLE `ok_banners` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT 0,
-  `visible` tinyint(1) NOT NULL DEFAULT 1,
-  `show_all_pages` tinyint(1) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
+  `show_all_pages` tinyint(1) NOT NULL DEFAULT '0',
   `categories` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
   `pages` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
   `brands` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
@@ -16,9 +22,9 @@ CREATE TABLE `ok_banners` (
   KEY `position` (`position`),
   KEY `visible` (`visible`),
   KEY `show_all_pages` (`show_all_pages`),
-  KEY `category` (`categories`),
-  KEY `pages` (`pages`),
-  KEY `brands` (`brands`)
+  KEY `category` (`categories`(100)),
+  KEY `pages` (`pages`(100)),
+  KEY `brands` (`brands`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_banners` (`id`, `group_id`, `name`, `position`, `visible`, `show_all_pages`, `categories`, `pages`, `brands`) VALUES
@@ -27,15 +33,15 @@ INSERT INTO `ok_banners` (`id`, `group_id`, `name`, `position`, `visible`, `show
 DROP TABLE IF EXISTS `ok_banners_images`;
 CREATE TABLE `ok_banners_images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `banner_id` int(11) NOT NULL DEFAULT 0,
+  `banner_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `alt` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `description` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT 0,
-  `visible` tinyint(1) NOT NULL DEFAULT 1,
+  `position` int(11) NOT NULL DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `position` (`position`),
   KEY `visible` (`visible`)
@@ -56,18 +62,18 @@ CREATE TABLE `ok_blog` (
   `meta_description` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `annotation` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `visible` tinyint(1) NOT NULL DEFAULT 0,
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   `date` timestamp NULL DEFAULT NULL,
   `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `last_modify` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `type_post` enum('blog','news') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'blog',
   PRIMARY KEY (`id`),
   KEY `enabled` (`visible`),
-  KEY `url` (`url`)
+  KEY `url` (`url`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_blog` (`id`, `name`, `url`, `meta_title`, `meta_keywords`, `meta_description`, `annotation`, `description`, `visible`, `date`, `image`, `last_modify`, `type_post`) VALUES
-(1,	'Основные изменения в OkayCMS 2.0',	'osnovnye-izmeneniya-v-okaycms-20',	'Основные изменения в OkayCMS 2.0',	'Основные изменения в OkayCMS 2.0',	'1.        Административная панель.        Абсолютно новый дизайн, структура и верстка согласно современным подходам. Теперь админ-панель более дружелюбная, понятная и удобная для пользователя. Предусмотрено место для размещения нового функционала, доработок и модулей. Главный козырь новой админки &ndash; ее адаптивность. Вносить корректировки, обрабатывать заказы, отвечать на запросы теперь удобно с любого устройства.    \r\n   2.        Техническая поддержка OkayCMS.        В админ-панель внедрен функционал ',	'<p>1. Административная панель. Абсолютно новый дизайн, структура и верстка согласно современным подходам. Теперь админ-панель более дружелюбная, понятная и удобная для пользователя. Предусмотрено место для размещения нового функционала, доработок и модулей. Главный козырь новой админки &ndash; ее адаптивность. Вносить корректировки, обрабатывать заказы, отвечать на запросы теперь удобно с любого устройства.</p>',	'<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span style=\"color: #000000;\"><span lang=\"ru-RU\">1. </span></span><span style=\"color: #4f81bd;\"><span style=\"font-family: Cambria,serif;\"><span style=\"font-size: medium;\"><strong><span style=\"color: #000000;\">Административная панель. </span></strong></span></span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\">Абсолютно новый дизайн, структура и верстка согласно современным подходам. Теперь админ-панель более дружелюбная, понятная и удобная для пользователя. Предусмотрено место для размещения нового функционала, доработок и модулей. Главный козырь новой админки &ndash; ее адаптивность. Вносить корректировки, обрабатывать заказы, отвечать на запросы теперь удобно с любого устройства. </span></span></p>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span style=\"color: #000000;\"><span lang=\"ru-RU\">2. </span></span><span style=\"color: #4f81bd;\"><span style=\"font-family: Cambria,serif;\"><span style=\"font-size: medium;\"><strong><span style=\"color: #000000;\">Техническая поддержка OkayCMS. </span></strong></span></span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\">В админ-панель внедрен функционал для связи с техподдержкой </span></span><span style=\"color: #000000;\"><span lang=\"en-US\">OkayCMS</span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\">. Теперь вам не нужно звонить, писать на почту или скайп. Задать вопросы, получить консультацию, помощь в установке </span></span><span style=\"color: #000000;\"><span lang=\"en-US\">CMS</span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\">, шаблона или дополнения можно прямо из административной панели, отправив запрос в техподдержку. Это поможет нам быстрее отвечать на ваши вопросы, а история переписок по всем темам всегда будут храниться в одном месте - у вас в админке. <a href=\"https://okay-cms.com/support\">Подробнее о техподдержке</a>. </span></span></p>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span style=\"color: #000000;\"><span lang=\"ru-RU\">В 2.0 пользователь лицензионной </span><span lang=\"en-US\">OkayCMS</span> <span lang=\"en-US\">Pro</span><span lang=\"ru-RU\"> получит 10 часов бесплатной техподдержки, пользователь </span><span lang=\"en-US\">OkayCMS</span> <span lang=\"en-US\">Lite</span><span lang=\"ru-RU\"> &ndash; 30 минут с возможностью докупить часы техподдержки. </span></span></p>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span style=\"color: #000000;\"><span lang=\"ru-RU\">3. </span></span><span style=\"color: #4f81bd;\"><span style=\"font-family: Cambria,serif;\"><span style=\"font-size: medium;\"><strong><span style=\"color: #000000;\">Мультиязычнсть сайта. </span></strong></span></span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\">Переделана мультиязычность клиентской части и добавлена мультиязычность админ-панели. Теперь переводы статических фраз хранятся не в базе данных, а в файлах. Для клиентской части это упрощает установку новых тем и возможность переключения между ними. Для обеих частей (как админки, так и клиентской) это облегчает перевод сайта на другие языки. Теперь сделать сайт для клиента полностью на иностранном языке не составляет проблемы. Для этого необходимо перевести фразы всего в двух файлах. На момент релиза в </span></span><span style=\"color: #000000;\"><span lang=\"en-US\">OkayCMS</span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\"> 2.0 добавлено два языка для административной панели - русский и английский, но в ближайшее время их количество увеличится.</span></span></p>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span style=\"color: #000000;\"><span lang=\"ru-RU\">4. </span></span><span style=\"color: #4f81bd;\"><span style=\"font-family: Cambria,serif;\"><span style=\"font-size: medium;\"><strong><span style=\"color: #000000;\">Новый дефолтный шаблон.</span></strong></span></span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\"> Код шаблона теперь чище и приятнее для разработчиков, детальнее прокомментирован. Сам шаблон теперь позволяет добавлять большое количество категорий.</span></span></p>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span style=\"color: #000000;\"><span lang=\"ru-RU\">5. </span></span><span style=\"color: #4f81bd;\"><span style=\"font-family: Cambria,serif;\"><span style=\"font-size: medium;\"><strong><span style=\"color: #000000;\">PHP 7.</span></strong></span></span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\"> Полная поддержка PHP 7, которая позволит позволит сайтам на OkayCMS работать быстрее.</span></span></p>',	1,	'2017-05-13 21:00:00',	'okaycms2.0_1.jpg',	'2019-09-11 14:57:28',	'news'),
+(1,	'Основные изменения в OkayCMS 2.0',	'osnovnye-izmeneniya-v-okaycms-20',	'Основные изменения в OkayCMS 2.0',	'Основные изменения в OkayCMS 2.0',	'1.        Административная панель.        Абсолютно новый дизайн, структура и верстка согласно современным подходам. Теперь админ-панель более дружелюбная, понятная и удобная для пользователя. Предусмотрено место для размещения нового функционала, доработок и модулей. Главный козырь новой админки &ndash; ее адаптивность. Вносить корректировки, обрабатывать заказы, отвечать на запросы теперь удобно с любого устройства.    \r\n   2.        Техническая поддержка OkayCMS.        В админ-панель внедрен функционал ',	'<p>1. Административная панель. Абсолютно новый дизайн, структура и верстка согласно современным подходам. Теперь админ-панель более дружелюбная, понятная и удобная для пользователя. Предусмотрено место для размещения нового функционала, доработок и модулей. Главный козырь новой админки &ndash; ее адаптивность. Вносить корректировки, обрабатывать заказы, отвечать на запросы теперь удобно с любого устройства.</p>',	'<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span style=\"color: #000000;\"><span lang=\"ru-RU\">1. </span></span><span style=\"color: #4f81bd;\"><span style=\"font-family: Cambria,serif;\"><span style=\"font-size: medium;\"><strong><span style=\"color: #000000;\">Административная панель. </span></strong></span></span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\">Абсолютно новый дизайн, структура и верстка согласно современным подходам. Теперь админ-панель более дружелюбная, понятная и удобная для пользователя. Предусмотрено место для размещения нового функционала, доработок и модулей. Главный козырь новой админки &ndash; ее адаптивность. Вносить корректировки, обрабатывать заказы, отвечать на запросы теперь удобно с любого устройства. </span></span></p>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span style=\"color: #000000;\"><span lang=\"ru-RU\">2. </span></span><span style=\"color: #4f81bd;\"><span style=\"font-family: Cambria,serif;\"><span style=\"font-size: medium;\"><strong><span style=\"color: #000000;\">Техническая поддержка OkayCMS. </span></strong></span></span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\">В админ-панель внедрен функционал для связи с техподдержкой </span></span><span style=\"color: #000000;\"><span lang=\"en-US\">OkayCMS</span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\">. Теперь вам не нужно звонить, писать на почту или скайп. Задать вопросы, получить консультацию, помощь в установке </span></span><span style=\"color: #000000;\"><span lang=\"en-US\">CMS</span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\">, шаблона или дополнения можно прямо из административной панели, отправив запрос в техподдержку. Это поможет нам быстрее отвечать на ваши вопросы, а история переписок по всем темам всегда будут храниться в одном месте - у вас в админке. <a href=\"https://okay-cms.com/support\">Подробнее о техподдержке</a>. </span></span></p>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span style=\"color: #000000;\"><span lang=\"ru-RU\">В 2.0 пользователь лицензионной </span><span lang=\"en-US\">OkayCMS</span> <span lang=\"en-US\">Pro</span><span lang=\"ru-RU\"> получит 10 часов бесплатной техподдержки, пользователь </span><span lang=\"en-US\">OkayCMS</span> <span lang=\"en-US\">Lite</span><span lang=\"ru-RU\"> &ndash; 30 минут с возможностью докупить часы техподдержки. </span></span></p>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span style=\"color: #000000;\"><span lang=\"ru-RU\">3. </span></span><span style=\"color: #4f81bd;\"><span style=\"font-family: Cambria,serif;\"><span style=\"font-size: medium;\"><strong><span style=\"color: #000000;\">Мультиязычнсть сайта. </span></strong></span></span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\">Переделана мультиязычность клиентской части и добавлена мультиязычность админ-панели. Теперь переводы статических фраз хранятся не в базе данных, а в файлах. Для клиентской части это упрощает установку новых тем и возможность переключения между ними. Для обеих частей (как админки, так и клиентской) это облегчает перевод сайта на другие языки. Теперь сделать сайт для клиента полностью на иностранном языке не составляет проблемы. Для этого необходимо перевести фразы всего в двух файлах. На момент релиза в </span></span><span style=\"color: #000000;\"><span lang=\"en-US\">OkayCMS</span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\"> 2.0 добавлено два языка для административной панели - русский и английский, но в ближайшее время их количество увеличится.</span></span></p>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span style=\"color: #000000;\"><span lang=\"ru-RU\">4. </span></span><span style=\"color: #4f81bd;\"><span style=\"font-family: Cambria,serif;\"><span style=\"font-size: medium;\"><strong><span style=\"color: #000000;\">Новый дефолтный шаблон.</span></strong></span></span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\"> Код шаблона теперь чище и приятнее для разработчиков, детальнее прокомментирован. Сам шаблон теперь позволяет добавлять большое количество категорий.</span></span></p>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span style=\"color: #000000;\"><span lang=\"ru-RU\">5. </span></span><span style=\"color: #4f81bd;\"><span style=\"font-family: Cambria,serif;\"><span style=\"font-size: medium;\"><strong><span style=\"color: #000000;\">PHP 7.</span></strong></span></span></span><span style=\"color: #000000;\"><span lang=\"ru-RU\"> Полная поддержка PHP 7, которая позволит позволит сайтам на OkayCMS работать быстрее.</span></span></p>',	1,	'2017-05-13 21:00:00',	'okaycms2.0.jpg',	'2019-09-11 14:57:28',	'news'),
 (2,	'Как работает техподдержка OkayCMS 2.0',	'kak-rabotaet-tehpodderzhka-okaycms-20',	'Как работает техподдержка OkayCMS 2.0',	'Как работает техподдержка OkayCMS 2.0',	'Приобретая лицензию OkayCMS Pro 2.0, вы получаете 10 часов комплексной поддержки и консультаций по работе с OkayCMS. Предлагаем более подробно ознакомиться с видами консультаций и регламентом работы службы поддержки.  \r\n  Специалисты технической поддержки выполняют следующие работы:  \r\n \r\n \r\n  дают консультации о системных требованиях для оптимальной работы системы;  \r\n \r\n \r\n  дают консультации по работе c OkayCMS для администратора магазина;  \r\n \r\n \r\n  предоставляют консультации по внедрению дополнительног',	'<p>Приобретая лицензию OkayCMS Pro 2.0, вы получаете 10 часов комплексной поддержки и консультаций по работе с OkayCMS. Предлагаем более подробно ознакомиться с видами консультаций и регламентом работы службы поддержки.</p>',	'<p><span lang=\"ru-RU\">Приобретая лицензию OkayCMS Pro 2.0, вы получаете 10 часов комплексной поддержки и консультаций по работе с OkayCMS. Предлагаем более подробно ознакомиться с видами консультаций и регламентом работы службы поддержки.</span></p>\r\n<h2 class=\"western\"><span lang=\"ru-RU\">Специалисты технической поддержки выполняют следующие работы:</span></h2>\r\n<ul>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">дают консультации о системных требованиях для оптимальной работы системы;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">дают консультации&nbsp;по работе c OkayCMS для администратора магазина;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">предоставляют консультации по внедрению дополнительного функционала в OkayCMS;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">оказывают помощь в установке OkayCMS на хостинг;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">проводят установку шаблонов и дополнений из</span><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span><a href=\"https://okay-cms.com/catalog/dopolneniya\"><span style=\"color: #38c0f3;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">MarketPlace OkayCMS</span></span></span></span></a><span lang=\"ru-RU\">;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">проводят обновление OkayCMS до последней актуальной версии.</span></p>\r\n</li>\r\n</ul>\r\n<h2 class=\"western\"><span lang=\"ru-RU\">Регламент работы:</span></h2>\r\n<ol>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">В административной панели вашего сайта на OkayCMS в разделе \"Техническая поддержка\" создайте новое обращение.</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">Подробно опишите проблему и сформулируйте название обращения. После этого подайте обращение на рассмотрение.&nbsp;</span><strong><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">Внимание! Одно обращение в службу поддержки должно содержать одну проблему, не пишите несколько проблем в одном обращении.</span></span></span></span></strong></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">Следите за </span><span lang=\"en-US\">E</span><span lang=\"ru-RU\">mail-уведомлениями о прогрессе решения вашего вопроса в течении одного рабочего дня. Ответ так же будет отображен в админ-панели вашего сайта.</span></p>\r\n</li>\r\n</ol>\r\n<h2 class=\"western\"><span lang=\"ru-RU\">Что может повлиять на время решения вашего запроса?</span></h2>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">Для ускорения реакции на ваше обращение мы советуем следовать простым правилам:</span></p>\r\n<ul>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">подробно описывайте проблему, шаги к ее воспроизведению;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">укажите реквизиты доступа в административную часть вашего сайта;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">укажите актуальные доступы к FTP и СУБД (PHPMyAdmin), если для решения проблемы необходимо вмешательство в исходный код;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">предоставьте информацию о версии продукта.</span></p>\r\n</li>\r\n</ul>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">Дополнительно службой поддержки может быть затребована информация о настройках ПО, а также информация для доступа к серверу по FTP, SSH или административной панели хостинг-провайдера.</span></p>\r\n<h2 class=\"western\"><span lang=\"ru-RU\">Обработка обращения прекращается в случае:</span></h2>\r\n<ul>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">если пользователь не может дать затребованную агентом поддержки информацию для решения вопроса;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">клиент не может предоставить доступы к сайту (FTP, SSH, панель управления хостингом и т. д.);</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">проблема не может быть воспроизведена;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">обращение содержит несколько связанных между собой проблем;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">хостинг не соответствует системным требованиям;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">вопрос задан неконкретно или диалог ведется в неконструктивной форме;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">вопрос выходит за рамки технической поддержки;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">если в течение 30 календарных дней ответ от пользователя не был получен, обращение считается обработанным автоматически.</span></p>\r\n</li>\r\n</ul>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"color: #767679;\">&nbsp;</span></p>\r\n<h2 class=\"western\"><span lang=\"ru-RU\">Услуги, которые не покрывает поддержка OkayCMS*:</span></h2>\r\n<ul>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">перенос данных с других систем;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">разработка дополнительного функционала;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">услуги по веб-разработке. Для этого обратитесь к нашим партнерам;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">web-дизайн;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">поддержка посторонних решений;</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">работы по настройке сервера.&nbsp;</span></p>\r\n</li>\r\n</ul>\r\n<h2 class=\"western\"><span lang=\"ru-RU\">Если часы техподдержки закончились?</span></h2>\r\n<ol>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">Перейдите на сайт </span><span lang=\"en-US\">okay</span><span lang=\"ru-RU\">-</span><span lang=\"en-US\">cms</span><span lang=\"ru-RU\">.</span><span lang=\"en-US\">com</span><span lang=\"ru-RU\">/</span><span lang=\"en-US\">support</span><span lang=\"ru-RU\"> в раздел Техническая поддержка.</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">Приобретите необходимое количество часов техподдержки.</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">Ожидайте обновления техподдержки в админ-панели своего сайта.</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">После обновления отправьте свой запрос в техподдержку.</span></p>\r\n</li>\r\n</ol>',	1,	'2017-05-13 21:00:00',	'background-bags-bows-1050244.jpg',	'2019-07-07 20:01:14',	'news'),
 (3,	'Как установить OkayCMS 2.0 на сайт',	'kak-ustanovit-okaycms-20-na-sajt',	'Как установить OkayCMS 2.0 на сайт',	'Как установить OkayCMS 2.0 на сайт',	'Шаг 1.    Файлы    для установки OkayCMS  \r\n    \r\n \r\n \r\n  Зайдите на официальный сайт OkayCMS.   \r\n \r\n \r\n  Кликните по кнопке          Скачать CMS в шапке сайта. \r\n \r\n \r\n  Сохраните файл к себе на компьютер. Сохраненный файл-архив имеет вид OkayCMS_1.0.1.zip (цифры в названии файла после слова OkayCMS могут отличаться, это зависит от скачиваемой вами версии).  \r\n \r\n \r\n  Разархивируйте файл OkayCMS_1.0.1.zip. (Кликните правой кнопкой мыши на файле и выберите пункт Извлечь в OkayCMS_1.0.1.)           \r\n \r\n \r\n',	'<p>Шаг 1. Файлы для установки OkayCMS Зайдите на официальный сайт OkayCMS. Кликните по кнопке Скачать CMS в шапке сайта. Сохраните файл к себе на компьютер. Сохраненный файл-архив имеет вид OkayCMS_1.0.1.zip (цифры в названии файла после слова OkayCMS могут отличаться, это зависит от скачиваемой вами версии).</p>',	'<h2 class=\"western\"><strong>Шаг 1. </strong><strong><span lang=\"ru-RU\">Файлы</span></strong><strong> для установки OkayCMS</strong></h2>\r\n<p lang=\"ru-RU\" style=\"margin-bottom: 0.35cm; line-height: 115%;\"><br /><br /></p>\r\n<ol>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">Зайдите на официальный сайт OkayCMS. </span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">Кликните по кнопке</span><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span>Скачать CMS в шапке сайта.</p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">Сохраните файл к себе на компьютер. Сохраненный файл-архив имеет вид OkayCMS_1.0.1.zip (цифры в названии файла после слова OkayCMS могут отличаться, это зависит от скачиваемой вами версии).</span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">Разархивируйте файл OkayCMS_1.0.1.zip. (Кликните правой кнопкой мыши на файле и выберите пункт Извлечь в OkayCMS_1.0.1.)</span><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">После распаковки архива появится папка OkayCMS_1.0.1, внутри которой будут 2 файла:&nbsp;install.php&nbsp;и&nbsp;okaycms.zip. Эти файлы необходимо загрузить на сервер вашего хостинг-провайдера в корень вашего сайта.</span></p>\r\n</li>\r\n</ol>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">ВНИМАНИЕ! В корень сайта необходимо поместить 2 файла, которые были извлечены из архива OkayCMS_1.0.1.zip, а не сам архив.</span></p>\r\n<h2 class=\"western\"><strong>Шаг 2. Создание базы данных</strong></h2>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"color: #767679;\">&nbsp;</span></p>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">ВНИМАНИЕ! Далее вы будете работать с панелью управления хостинга. Существует большое количество хостинг-провайдеров. Однако</span><span lang=\"ru-RU\">&nbsp;</span><span lang=\"ru-RU\">принцип проводимых действий везде одинаковый.</span></span></span></p>\r\n<p lang=\"ru-RU\" style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><br /><br /></p>\r\n<ol>\r\n<li>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">Зайдите в панель управления вашего хостинга и выберите пункт</span><span lang=\"ru-RU\">&nbsp;</span><span lang=\"ru-RU\">Базы данных.</span></span></span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">Найдите и кликните</span><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span><strong><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">Создать базу данных</span></span></span></span></strong><span lang=\"ru-RU\">. В появившемся окне введите</span><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span><strong><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">имя базы данных, используя английскую раскладку</span></span></span></span></strong><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span><span lang=\"ru-RU\">клавиатуры. Запишите его, оно вам пригодится далее.</span></span></span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">Выберите кодировку</span><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span><strong><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">utf8_general_ci</span></span></span></span></strong><span lang=\"ru-RU\">. (Иногда вместо слова Кодировка может быть слово Сравнение)</span></span></span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">Введите имя пользователя, если оно не сгенерировалось автоматически. Так же запишите это имя, оно будет использоваться далее. </span></span></span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">Кликните кнопку</span><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span><strong><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">Создать.</span></span></span></span></strong></span></span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">Появится сообщение: база данных успешно создана.</span></span></span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">Для доступа используйте логин ****** и пароль *******</span></span></span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">Запишите пароль к базе данных.</span></span></span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">Возможно, на некоторых хостингах пароль вам придется придумать самостоятельно.</span></span></span></p>\r\n</li>\r\n</ol>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\">&nbsp;</p>\r\n<h2 class=\"western\"><strong>Шаг 3. Загрузка дистрибутива на хостинг</strong></h2>\r\n<p lang=\"ru-RU\" style=\"margin-bottom: 0.35cm; line-height: 115%;\"><br /><br /></p>\r\n<ol>\r\n<li>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">Для загрузки файлов на хостинг понадобится FTP-менеджер, например</span><span lang=\"ru-RU\">&nbsp;</span><span lang=\"ru-RU\">FileZilla,</span><span lang=\"ru-RU\">&nbsp;</span><span lang=\"ru-RU\">Total Commander. </span></span></span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">Запустите FTP-менеджер FileZilla. Для соединения с сервером введите данные, предоставленные вашим хостинг-провайдером и нажмите кнопку Соединение</span></span></span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">В одной из двух частей окна вашего файл-менеджера найдите папку OkayCMS, которую вы создали в Шаге1, зайдите в нее и закачайте файлы</span><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span><strong><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">install.php</span></span></span></span></strong><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span><span lang=\"ru-RU\">и</span><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span><strong><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">okaycms_source.zip</span></span></span></span></strong><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span><span lang=\"ru-RU\">на сервер в корень сайта. (Кликните правой кнопкой мыши на файле и выберите</span><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span><strong><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">Закачать на сервер</span></span></span></span></strong><span style=\"color: #767679;\"><span style=\"font-family: Open Sans,serif;\"><span style=\"font-size: small;\"><span lang=\"ru-RU\">&nbsp;</span></span></span></span><span lang=\"ru-RU\">или просто перетащите файлы мышкой с левой в другую часть окна).</span></span></span></p>\r\n</li>\r\n<li>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"font-family: Times New Roman,serif;\"><span style=\"font-size: medium;\"><span lang=\"ru-RU\">На этом работа с FTP-менеджером FileZilla закончена.</span></span></span></p>\r\n</li>\r\n</ol>\r\n<p style=\"margin-top: 0.49cm; margin-bottom: 0.49cm; background: #ffffff; line-height: 115%;\"><span style=\"color: #767679;\">&nbsp;</span></p>\r\n<h2 class=\"western\"><a name=\"_GoBack\"></a><strong><span lang=\"ru-RU\">Шаг 4. Завершающий этап установки</span></strong></h2>\r\n<p style=\"margin-bottom: 0.35cm; line-height: 115%;\"><span lang=\"ru-RU\">Далее читайте Инструкцию в <a href=\"https://okay-cms.com/article/kak-ustanovit-okaycms-na-sajt\">блоге OkayCMS</a>.</span></p>',	1,	'2017-05-13 21:00:00',	'install_okaycms.png',	'2019-06-13 14:46:35',	'blog'),
 (4,	'Город Нью-Йорк (New York City)',	'gorod-nyu-jork-new-york-city',	'Город Нью-Йорк (New York City)',	'Город Нью-Йорк (New York City)',	'Почти год мы работали над улучшением OkayCMS. Куда еще лучше? спроосите вы, а вот мы нашли. Технологии все время развиваются, и мы не хотим отставать. Наша цель вести свою систему к простоте и функциональности, своевременно удовлетворять запросы пользователей. Поэтому обновление принесло в OkayCMS новые полезные штуки и унесло неиспользуемый функционал и какие-то недочеты, которые в том числе и вы нам помогали искать. Что же в итоге получилось, узнаете из текста. ',	'<p>Нью-Йорк &mdash; пожалуй, самый известный город в мире, в котором сосредоточены финансовые учреждения, многочисленные исторические и культурные достопримечательности, музеи, магазины, театры и многое другое. Это шумный и яркий город небоскребов и свободы, который многим знаком по обилию кинофильмов и фото, где действие разворачивается на его улицах. Здесь столько возможностей, сколько можно вообразить. От Таймс-сквер до самого темного уголка Бронкса &mdash; царство крайностей. От русского анклава в Бруклине на Брайтон-Бич до филиала Южной Америки в Квинсе &mdash; сообщества из любой страны мира.</p>',	'<p><strong>Нью-Йорк</strong> &mdash; пожалуй, самый известный город в мире, в котором сосредоточены финансовые учреждения, многочисленные исторические и культурные достопримечательности, музеи, магазины, театры и многое другое. Это шумный и яркий город небоскребов и свободы, который многим знаком по обилию кинофильмов и фото, где действие разворачивается на его улицах. Здесь столько возможностей, сколько можно вообразить. От Таймс-сквер до самого темного уголка Бронкса &mdash; царство крайностей. От русского анклава в Бруклине на Брайтон-Бич до филиала Южной Америки в Квинсе &mdash; сообщества из любой страны мира.</p>\r\n<p class=\"video\" style=\"text-align: center;\"><iframe src=\"https://www.youtube.com/embed/TmDKbUrSYxQ\" width=\"560\" height=\"315\" frameborder=\"0\" allowfullscreen=\"allowfullscreen\"></iframe></p>\r\n<h3 style=\"text-align: center;\">Основные моменты</h3>\r\n<p>Две главные достопримечательности, давно ставшие символами Нью-Йорка &ndash; это его легендарные небоскребы (например, Эмпайр Стейт Билдинг) и Статуя Свободы. Величественные здания можно осмотреть и при пешей прогулке, а вот до другого объекта можно добраться только на пароме с Нижнего Манхеттена.</p>\r\n<div class=\"table\">\r\n<div class=\"table__row\">\r\n<div class=\"table__cell\">Практически все самые известные достопримечательности сосредоточены на Манхеттене. Здесь находятся известные на весь мир Уолт-стрит, где кипит финансовая жизнь всей Америки, Бродвей с многочисленными театрами, Центральный вокзал, самая дорогая улица &ndash; Пятая Авеню с шикарными магазинами и ресторанами, Рокфеллер-центр, около которого каждое Рождество устанавливают огромную ель, Музейная миля со всемирно известными музеями. Но самым посещаемым местом является Таймс Сквер. Здесь всегда многолюдно и в разгар рабочего дня, и ночью, когда включается впечатляющая неоновая подсветка.</div>\r\n<div class=\"table__cell\"><img src=\"../files/uploads/architecture-buildings-car-1634275.jpg\" width=\"800\" height=\"533\" /></div>\r\n</div>\r\n</div>\r\n<p>Непременно стоит заглянуть и в другие районы города. Хотя бы для того, чтобы почувствовать их атмосферу, в каждом из них можно найти много интересного. Так, например, Бронксе имеется зоопарк и ботанический сад.</p>\r\n<p>В каждом округе Нью-Йорка есть свои парки и скверы, но самым известным, несомненно, является огромный Центральный парк в сердце Манхеттена. Это искусственно созданный уголок природы посреди серого бетонного мегаполиса.</p>\r\n<p>Нью-Йорк уже давно приобрел славу одного из самых дорогих городов в мире. Поэтому проживание, еда, покупки и передвижение по городу обойдется в немалую сумму. Но все же здесь стоит побывать хотя бы раз в жизни. Кто-то влюбляется в Нью-Йорк с первого взгляда, кто-то начинает ненавидеть этот мегаполис с безумным ритмом жизни. В любом случае равнодушно относиться к этому городу невозможно.</p>\r\n<h3 style=\"text-align: center;\">Достопримечательности Нью-Йорка</h3>\r\n<div class=\"table\">\r\n<div class=\"table__row\">\r\n<div class=\"table__cell table__cell--col-3\">\r\n<figure><img src=\"../files/uploads/okay_mankhetten.jpg\" alt=\"Манхеттен\" width=\"380\" height=\"380\" />\r\n<figcaption>Манхэттен &ndash; самый маленький и при этом наиболее популярный среди туристов район...</figcaption>\r\n</figure>\r\n</div>\r\n<div class=\"table__cell table__cell--col-3\">\r\n<figure><img src=\"../files/uploads/okay_statuya_svobody.JPG\" alt=\"Статуя Свободы\" width=\"380\" height=\"380\" />\r\n<figcaption>Статуя Свободы &mdash; одна из самых знаменитых скульптур в мире, это символ Нью-Йорка ...</figcaption>\r\n</figure>\r\n</div>\r\n<div class=\"table__cell table__cell--col-3\">\r\n<figure><img src=\"../files/uploads/okay_bruklin.jpg\" alt=\"Бруклин\" width=\"380\" height=\"380\" />\r\n<figcaption>Бруклин &mdash; второй по популярности район в Нью-Йорке после Манхэттена, в котором проживает 2,5...</figcaption>\r\n</figure>\r\n</div>\r\n<div class=\"table__cell table__cell--col-3\">\r\n<figure><img src=\"../files/uploads/okay_pyatoe_avenyu.jpg\" alt=\"Пятая авеню\" width=\"380\" height=\"380\" />\r\n<figcaption>Пятая авеню &mdash; улица в самом центре Манхеттен, которая также представляет собой яркий символ...</figcaption>\r\n</figure>\r\n</div>\r\n<div class=\"table__cell table__cell--col-3\">\r\n<figure><img src=\"../files/uploads/okay_broadway.jpg\" alt=\"Бродвей\" width=\"380\" height=\"380\" />\r\n<figcaption>Бродвей &ndash; это не только главная улица Нью-Йорка, а возможно и всех Соединенных Штатов, это еще и...</figcaption>\r\n</figure>\r\n</div>\r\n<div class=\"table__cell table__cell--col-3\">\r\n<figure><img src=\"../files/uploads/okay_uoll_strit.jpg\" alt=\"Уолл Стрит\" width=\"380\" height=\"380\" />\r\n<figcaption>Уолл-стрит &mdash; небольшая узкая улица в нижней части Манхэттена, ведущая от Бродвея к побережью...</figcaption>\r\n</figure>\r\n</div>\r\n</div>\r\n</div>\r\n<h3 style=\"text-align: center;\">Музеи Нью-Йорка</h3>\r\n<div class=\"table\">\r\n<div class=\"table__row\">\r\n<div class=\"table__cell\"><img src=\"../files/uploads/okay_museum.jpg\" alt=\"Музеи нью Йорка\" width=\"1024\" height=\"500\" /></div>\r\n<div class=\"table__cell\">\r\n<p>Пожалуй, вся оставшаяся жизнь ушла бы у вас на посещение 120 музеев Нью-Йорка. Ниже приводится далеко не полный их перечень.</p>\r\n<ol>\r\n<li>Художественный музей Метрополитен.</li>\r\n<li>Музей современного искусства.</li>\r\n<li>Музей Гуггенхайма.</li>\r\n<li>Музей американского искусства Уитни.</li>\r\n<li>Американский музей естествознания.</li>\r\n<li>Музей города Нью-Йорка.</li>\r\n<li>Национальный музей американских индейцев.</li>\r\n</ol>\r\n</div>\r\n</div>\r\n</div>\r\n<h3 style=\"text-align: center;\">Остров Манхэттен</h3>\r\n<p>Этот остров длиной 21 км и шириной 3 км содержит почти все, что бы вам хотелось посмотреть. Четыре других городских района: Бруклин, Куинс, Стейтен-Айленд и Бронкс (все большей частью жилые) &mdash; по-своему неповторимы, но для местных жителей и приезжих Нью-Йорк &mdash; это Манхэттен.</p>\r\n<p><strong>Мидтаун.</strong> Вполне возможно, что ваша гостиница окажется в Мидтауне, откуда легко добраться пешком до любого лежащего окрест места. Нью-Йорк отличает еще то, что он замечательно подходит для пеших прогулок по своим широким тротуарам. В любом случае начинать надо от центра.</p>\r\n<p><strong>Рокфеллеровский центр</strong>. Это скопление вознесшихся вверх башен из индианского известняка между Пятой и Шестой авеню, от 48-й до 51-й улицы составляет сердцевину Нью-Йорка. Джон Д. Рокфеллер-младший арендовал данный участок земли у Колумбийского университета в 1928 г., чтобы спасти его от дурной славы притона для питейных заведений в пору действия сухого закона. Они вскоре исчезли, уступив место первым небоскребам, где размещались правления компаний и центр радиовещания, которые соединялись с подземным залом, где находилось свыше 200 магазинов и ресторанов.</p>\r\n<p><strong>Пятая авеню</strong>. Этот проспект, по меньшей мере отрезок между 34-й улицей и Центральным парком, стал олицетворением роскоши, которой можно вкусить или полюбоваться. Если ваши средства не позволяют остановиться в гостинице &laquo;Плаза&raquo;, можно насладиться не столь вызывающей роскошью усеянных бриллиантами витрин ювелирных магазинов Тиффани, либо Картье, либо Ван-Клефа и Арпельса. Они просто восхитительны, особенно под Рождество.</p>\r\n<blockquote>\r\n<p>Порой я устаю от прогулок по прекрасным улицам Лос-Анджелеса. Я понимаю, что это звучит ненормально, но у меня возникает желание съездить в Нью-Йорк и понаблюдать за страданиями людей.</p>\r\n<cite>Донна Саммер</cite></blockquote>\r\n<p><span style=\"font-size: 10pt;\">*Материалы для оформления этой статьи были частично взяты с ресурса <em>wikiway.com</em></span></p>',	1,	'2018-06-25 21:00:00',	'coffee-dark-design-1581687.jpg',	'2019-07-08 12:24:54',	'news'),
@@ -81,19 +87,19 @@ CREATE TABLE `ok_brands` (
   `meta_title` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_description` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `annotation` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `annotation` mediumtext COLLATE utf8mb4_unicode_ci,
+  `description` mediumtext COLLATE utf8mb4_unicode_ci,
   `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `last_modify` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `position` int(11) NOT NULL DEFAULT 0,
-  `visible` tinyint(1) NOT NULL DEFAULT 0,
-  `to_rozetka` tinyint(1) DEFAULT 0,
-  `to__okaycms__yandex_xml_vendor_model` tinyint(1) DEFAULT 0,
-  `to__okaycms__yandex_xml` tinyint(1) DEFAULT 0,
-  `to__okaycms__google_merchant` tinyint(1) DEFAULT 0,
+  `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `position` int(11) NOT NULL DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
+  `to_rozetka` tinyint(1) DEFAULT '0',
+  `to__okaycms__yandex_xml_vendor_model` tinyint(1) DEFAULT '0',
+  `to__okaycms__yandex_xml` tinyint(1) DEFAULT '0',
+  `to__okaycms__google_merchant` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `name` (`name`),
-  KEY `url` (`url`)
+  KEY `url` (`url`(100)),
+  KEY `name` (`name`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_brands` (`id`, `name`, `url`, `meta_title`, `meta_keywords`, `meta_description`, `annotation`, `description`, `image`, `last_modify`, `position`, `visible`, `to_rozetka`, `to__okaycms__yandex_xml_vendor_model`, `to__okaycms__yandex_xml`, `to__okaycms__google_merchant`) VALUES
@@ -116,11 +122,11 @@ INSERT INTO `ok_brands` (`id`, `name`, `url`, `meta_title`, `meta_keywords`, `me
 DROP TABLE IF EXISTS `ok_callbacks`;
 CREATE TABLE `ok_callbacks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `phone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `message` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `processed` tinyint(1) NOT NULL DEFAULT 0,
+  `message` mediumtext COLLATE utf8mb4_unicode_ci,
+  `processed` tinyint(1) NOT NULL DEFAULT '0',
   `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `admin_notes` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
@@ -132,37 +138,37 @@ INSERT INTO `ok_callbacks` (`id`, `date`, `name`, `phone`, `message`, `processed
 DROP TABLE IF EXISTS `ok_categories`;
 CREATE TABLE `ok_categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parent_id` int(11) NOT NULL DEFAULT 0,
+  `parent_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `name_h1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_title` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_description` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `annotation` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `annotation` mediumtext COLLATE utf8mb4_unicode_ci,
+  `description` mediumtext COLLATE utf8mb4_unicode_ci,
   `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT 0,
-  `visible` tinyint(1) NOT NULL DEFAULT 1,
+  `position` int(11) NOT NULL DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
   `external_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `level_depth` tinyint(1) NOT NULL DEFAULT 1,
+  `level_depth` tinyint(1) NOT NULL DEFAULT '1',
   `auto_meta_title` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `auto_meta_keywords` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `auto_meta_desc` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `auto_description` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `last_modify` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `auto_description` mediumtext COLLATE utf8mb4_unicode_ci,
+  `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created` timestamp NULL DEFAULT NULL,
-  `to_rozetka` tinyint(1) DEFAULT 0,
-  `to__okaycms__yandex_xml_vendor_model` tinyint(1) DEFAULT 0,
-  `to__okaycms__yandex_xml` tinyint(1) DEFAULT 0,
-  `to__okaycms__google_merchant` tinyint(1) DEFAULT 0,
+  `to_rozetka` tinyint(1) DEFAULT '0',
+  `to__okaycms__yandex_xml_vendor_model` tinyint(1) DEFAULT '0',
+  `to__okaycms__yandex_xml` tinyint(1) DEFAULT '0',
+  `to__okaycms__google_merchant` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `url` (`url`),
   KEY `parent_id` (`parent_id`),
   KEY `position` (`position`),
   KEY `visible` (`visible`),
   KEY `external_id` (`external_id`),
-  KEY `created` (`created`)
+  KEY `created` (`created`),
+  KEY `url` (`url`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_categories` (`id`, `parent_id`, `name`, `name_h1`, `meta_title`, `meta_keywords`, `meta_description`, `annotation`, `description`, `url`, `image`, `position`, `visible`, `external_id`, `level_depth`, `auto_meta_title`, `auto_meta_keywords`, `auto_meta_desc`, `auto_description`, `last_modify`, `created`, `to_rozetka`, `to__okaycms__yandex_xml_vendor_model`, `to__okaycms__yandex_xml`, `to__okaycms__google_merchant`) VALUES
@@ -519,16 +525,16 @@ INSERT INTO `ok_categories_features` (`category_id`, `feature_id`) VALUES
 DROP TABLE IF EXISTS `ok_comments`;
 CREATE TABLE `ok_comments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parent_id` int(11) NOT NULL DEFAULT 0,
-  `date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `parent_id` int(11) NOT NULL DEFAULT '0',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ip` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `object_id` int(11) NOT NULL DEFAULT 0,
+  `object_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `text` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `type` enum('product','blog','news') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'product',
-  `approved` int(1) NOT NULL DEFAULT 0,
-  `lang_id` int(11) NOT NULL DEFAULT 0,
+  `approved` int(1) NOT NULL DEFAULT '0',
+  `lang_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `product_id` (`object_id`),
   KEY `type` (`type`),
@@ -544,10 +550,10 @@ CREATE TABLE `ok_coupons` (
   `code` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `expire` timestamp NULL DEFAULT NULL,
   `type` enum('absolute','percentage') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'absolute',
-  `value` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `value` decimal(10,2) NOT NULL DEFAULT '0.00',
   `min_order_price` decimal(10,2) DEFAULT NULL,
-  `single` tinyint(1) NOT NULL DEFAULT 0,
-  `usages` int(11) NOT NULL DEFAULT 0,
+  `single` tinyint(1) NOT NULL DEFAULT '0',
+  `usages` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -560,11 +566,11 @@ CREATE TABLE `ok_currencies` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `sign` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `code` char(3) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `rate_from` decimal(10,2) NOT NULL DEFAULT 1.00,
-  `rate_to` decimal(10,2) NOT NULL DEFAULT 1.00,
-  `cents` int(1) NOT NULL DEFAULT 2,
-  `position` int(11) NOT NULL DEFAULT 0,
-  `enabled` tinyint(1) NOT NULL DEFAULT 1,
+  `rate_from` decimal(10,2) NOT NULL DEFAULT '1.00',
+  `rate_to` decimal(10,2) NOT NULL DEFAULT '1.00',
+  `cents` int(1) NOT NULL DEFAULT '2',
+  `position` int(11) NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `position` (`position`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -580,11 +586,11 @@ CREATE TABLE `ok_deliveries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `description` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `free_from` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `price` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `enabled` tinyint(1) NOT NULL DEFAULT 0,
-  `position` int(11) NOT NULL DEFAULT 0,
-  `separate_payment` tinyint(1) DEFAULT 0,
+  `free_from` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT '0',
+  `separate_payment` tinyint(1) DEFAULT '0',
   `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `position` (`position`)
@@ -628,147 +634,145 @@ DROP TABLE IF EXISTS `ok_features`;
 CREATE TABLE `ok_features` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT 0,
-  `in_filter` tinyint(1) DEFAULT 0,
-  `yandex` tinyint(1) NOT NULL DEFAULT 1,
+  `position` int(11) NOT NULL DEFAULT '0',
+  `in_filter` tinyint(1) DEFAULT '0',
   `auto_name_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `auto_value_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `external_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `url_in_product` tinyint(1) DEFAULT 0,
-  `to_index_new_value` tinyint(1) DEFAULT 0,
-  `description` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `url_in_product` tinyint(1) DEFAULT '0',
+  `to_index_new_value` tinyint(1) DEFAULT '0',
+  `description` mediumtext COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `position` (`position`),
-  KEY `in_filter` (`in_filter`),
-  KEY `yandex` (`yandex`)
+  KEY `in_filter` (`in_filter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `ok_features` (`id`, `name`, `position`, `in_filter`, `yandex`, `auto_name_id`, `auto_value_id`, `url`, `external_id`, `url_in_product`, `to_index_new_value`, `description`) VALUES
-(1,	'Вес',	1,	1,	1,	'',	'',	'ves',	'',	NULL,	1,	NULL),
-(2,	'Высота',	2,	1,	1,	'',	'',	'vysota',	'',	0,	0,	NULL),
-(3,	'Диаметр',	3,	1,	1,	'',	'',	'diametr',	'',	0,	0,	NULL),
-(4,	'Ткань',	4,	1,	1,	'',	'',	'tkan',	'',	NULL,	0,	NULL),
-(5,	'Предназначение',	5,	1,	1,	'',	'',	'prednaznachenie',	'',	0,	0,	NULL),
-(6,	'Наполнитель',	6,	1,	1,	'',	'',	'napolnitel',	'',	0,	0,	NULL),
-(7,	'Количество наполнителя',	7,	1,	1,	'',	'',	'kolichestvonapolnitelya',	'',	0,	0,	NULL),
-(8,	'Объемный вес для транспортных компаний',	8,	1,	1,	'',	'',	'obemnyjvesdlyatransportnyhkompanij',	'',	0,	0,	NULL),
-(9,	'Производство ',	9,	1,	1,	'',	'',	'proizvodstvo',	'',	0,	0,	NULL),
-(10,	'Серия',	10,	1,	1,	'',	'',	'seriya',	'',	0,	0,	NULL),
-(11,	'Диагональ',	11,	1,	1,	'',	'',	'diagonal',	'',	0,	0,	NULL),
-(12,	'Тип экрана',	12,	1,	1,	'',	'',	'tipekrana',	'',	0,	0,	NULL),
-(13,	'Разрешение экрана',	13,	1,	1,	'',	'',	'razreshenieekrana',	'',	0,	0,	NULL),
-(14,	'Система',	14,	1,	1,	'',	'',	'sistema',	'',	0,	0,	NULL),
-(15,	'Количество ядер',	15,	1,	1,	'',	'',	'kolichestvoyader',	'',	0,	0,	NULL),
-(16,	'Процессор',	16,	1,	1,	'',	'',	'protsessor',	'',	0,	0,	NULL),
-(17,	'Частота процессора',	17,	1,	1,	'',	'',	'chastotaprotsessora',	'',	0,	0,	NULL),
-(18,	'Оперативная память',	18,	1,	1,	'',	'',	'operativnayapamyat',	'',	0,	0,	NULL),
-(19,	'Встроенная память',	19,	1,	1,	'',	'',	'vstroennayapamyat',	'',	0,	0,	NULL),
-(20,	'Поддержка SD карт',	20,	1,	1,	'',	'',	'podderzhkasdkart',	'',	0,	0,	NULL),
-(21,	'Sim-карт',	21,	1,	1,	'',	'',	'simkart',	'',	0,	0,	NULL),
-(22,	'Размеры SIM',	22,	1,	1,	'',	'',	'razmerysim',	'',	0,	0,	NULL),
-(23,	'GSM (2G)',	23,	1,	1,	'',	'',	'gsm2g',	'',	0,	0,	NULL),
-(24,	'3G',	24,	1,	1,	'',	'',	'3g',	'',	0,	0,	NULL),
-(25,	'LTE (4G)',	25,	1,	1,	'',	'',	'lte4g',	'',	0,	0,	NULL),
-(26,	'WCDMA',	26,	1,	1,	'',	'',	'wcdma',	'',	0,	0,	NULL),
-(27,	'Основная камера',	27,	1,	1,	'',	'',	'osnovnayakamera',	'',	0,	0,	NULL),
-(28,	'Фронтальная камера',	28,	1,	1,	'',	'',	'frontalnayakamera',	'',	0,	0,	NULL),
-(29,	'Вспышка',	29,	1,	1,	'',	'',	'vspyshka',	'',	0,	0,	NULL),
-(30,	'Bluetooth',	30,	1,	1,	'',	'',	'bluetooth',	'',	0,	0,	NULL),
-(31,	'GPS',	31,	1,	1,	'',	'',	'gps',	'',	0,	0,	NULL),
-(32,	'A-GPS',	32,	1,	1,	'',	'',	'agps',	'',	0,	0,	NULL),
-(33,	'Wi-Fi',	33,	1,	1,	'',	'',	'wifi',	'',	0,	0,	NULL),
-(34,	'ИК порт',	34,	1,	1,	'',	'',	'ikport',	'',	0,	0,	NULL),
-(35,	'Разъемы',	35,	1,	1,	'',	'',	'razemy',	'',	0,	0,	NULL),
-(36,	'Аккумулятор',	36,	1,	1,	'',	'',	'akkumulyator',	'',	0,	0,	NULL),
-(37,	'Размеры',	37,	1,	1,	'',	'',	'razmery',	'',	0,	0,	NULL),
-(38,	'Цвет',	38,	1,	1,	'',	'',	'tsvet',	'',	0,	0,	NULL),
-(39,	'Wi-Fi Hotspot',	39,	1,	1,	'',	'',	'wifihotspot',	'',	0,	0,	NULL),
-(40,	'Сканер отпечатков пальцев',	40,	1,	1,	'',	'',	'skanerotpechatkovpaltsev',	'',	0,	0,	NULL),
-(41,	'3G (UMTS)',	41,	1,	1,	'',	'',	'3gumts',	'',	0,	0,	NULL),
-(42,	'Возраст',	42,	1,	1,	'',	'',	'vozrast',	'',	0,	0,	NULL),
-(43,	'Пол',	43,	1,	1,	'',	'',	'pol',	'',	0,	0,	NULL),
-(44,	'Комплектация',	44,	1,	1,	'',	'',	'komplektatsiya',	'',	0,	0,	NULL),
-(45,	'Материал',	45,	1,	1,	'',	'',	'material',	'',	0,	0,	NULL),
-(46,	'Размеры упаковки',	46,	1,	1,	'',	'',	'razmeryupakovki',	'',	0,	0,	NULL),
-(47,	'Размер игрушки',	47,	1,	1,	'',	'',	'razmerigrushki',	'',	0,	0,	NULL),
-(48,	'Страна производитель',	48,	1,	1,	'',	'',	'stranaproizvoditel',	'',	0,	0,	NULL),
-(49,	'Тепловая мощность',	49,	1,	1,	'',	'',	'teplovayamoschnost',	'',	0,	0,	NULL),
-(50,	'Максимальная температура теплоносителя',	50,	1,	1,	'',	'',	'maksimalnayatemperaturateplonositelya',	'',	0,	0,	NULL),
-(51,	'Максимальное рабочее давление',	51,	1,	1,	'',	'',	'maksimalnoerabocheedavlenie',	'',	0,	0,	NULL),
-(52,	'Конструкция радиатора',	52,	1,	1,	'',	'',	'konstruktsiyaradiatora',	'',	0,	0,	NULL),
-(53,	'Способ подключения',	53,	1,	1,	'',	'',	'sposobpodklyucheniya',	'',	0,	0,	NULL),
-(54,	'Кол-во секций в радиаторе',	54,	1,	1,	'',	'',	'kolvosektsijvradiatore',	'',	0,	0,	NULL),
-(55,	'Объем воды в радиаторе',	55,	1,	1,	'',	'',	'obemvodyvradiatore',	'',	0,	0,	NULL),
-(56,	'Опрессовочное давление',	56,	1,	1,	'',	'',	'opressovochnoedavlenie',	'',	0,	0,	NULL),
-(57,	'Способ установки',	57,	1,	1,	'',	'',	'sposobustanovki',	'',	0,	0,	NULL),
-(58,	'Номинальный объем водонагревателя',	58,	1,	1,	'',	'',	'nominalnyjobemvodonagrevatelya',	'',	0,	0,	NULL),
-(59,	'Положение установки',	59,	1,	1,	'',	'',	'polozhenieustanovki',	'',	0,	0,	NULL),
-(60,	'Форма',	60,	1,	1,	'',	'',	'forma',	'',	0,	0,	NULL),
-(61,	'Мощность ТЭНа',	61,	1,	1,	'',	'',	'moschnosttena',	'',	0,	0,	NULL),
-(62,	'Гарантия',	62,	1,	1,	'',	'',	'garantiya',	'',	0,	0,	NULL),
-(63,	'Тип нагревательного элемента (ТЭНа)',	63,	1,	1,	'',	'',	'tipnagrevatelnogoelementatena',	'',	0,	0,	NULL),
-(64,	'Мощность',	64,	1,	1,	'',	'',	'moschnost',	'',	0,	0,	NULL),
-(65,	'Отвод газов',	65,	1,	1,	'',	'',	'otvodgazov',	'',	0,	0,	NULL),
-(66,	'Тип розжига',	66,	1,	1,	'',	'',	'tiprozzhiga',	'',	0,	0,	NULL),
-(67,	'Производительность',	67,	1,	1,	'',	'',	'proizvoditelnost',	'',	0,	0,	NULL),
-(68,	'Производительность ГВС',	68,	1,	1,	'',	'',	'proizvoditelnostgvs',	'',	0,	0,	NULL),
-(69,	'Модуляция мощности',	69,	1,	1,	'',	'',	'modulyatsiyamoschnosti',	'',	0,	0,	NULL),
-(70,	'Вес (кг)',	70,	1,	1,	'',	'',	'veskg',	'',	0,	0,	NULL),
-(71,	'Объем (м3)',	71,	1,	1,	'',	'',	'obemm3',	'',	0,	0,	NULL),
-(72,	'Габариты В.Ш.Г. (мм.)',	72,	1,	1,	'',	'',	'gabarityvshgmm',	'',	0,	0,	NULL),
-(73,	'Мин. давление газа',	73,	1,	1,	'',	'',	'mindavleniegaza',	'',	0,	0,	NULL),
-(74,	'Страна',	74,	1,	1,	'',	'',	'strana',	'',	0,	0,	NULL),
-(75,	'Вид мяса',	75,	1,	1,	'',	'',	'vidspmyasa',	'',	NULL,	NULL,	NULL),
-(76,	'Производитель',	76,	1,	1,	'',	'',	'proizvoditel',	'',	0,	0,	NULL),
-(77,	'Количество мест',	77,	1,	1,	'',	'',	'kolichestvospmest',	'',	0,	0,	NULL),
-(78,	'Высота сиденья',	78,	1,	1,	'',	'',	'vysotaspsidenya',	'',	0,	0,	NULL),
-(79,	'Водонепронецаемый',	79,	1,	1,	'',	'',	'vodonepronetsaemyj',	'',	0,	0,	NULL),
-(80,	'Автор',	80,	1,	1,	'',	'',	'avtor',	'',	NULL,	NULL,	NULL),
-(81,	'Язык',	81,	1,	1,	'',	'',	'yazyk',	'',	0,	0,	NULL),
-(82,	'Оригинальное название',	82,	1,	1,	'',	'',	'originalnoespnazvanie',	'',	0,	0,	NULL),
-(83,	'Обложка',	83,	1,	1,	'',	'',	'oblozhka',	'',	0,	0,	NULL),
-(84,	'Страниц',	84,	1,	1,	'',	'',	'stranits',	'',	0,	0,	NULL),
-(85,	'Иллюстрации',	85,	1,	1,	'',	'',	'illyustratsii',	'',	0,	0,	NULL),
-(86,	'Год издания',	86,	1,	1,	'',	'',	'godspizdaniya',	'',	NULL,	NULL,	NULL),
-(87,	'Рубрика',	87,	1,	1,	'',	'',	'rubrika',	'',	0,	0,	NULL),
-(88,	'тип товара',	88,	1,	1,	'',	'',	'tipsptovara',	'',	1,	NULL,	NULL),
-(89,	'диаметр колеса',	89,	1,	1,	'',	'',	'diametrspkolesa',	'',	0,	0,	NULL),
-(90,	'длина хода вилки',	90,	1,	1,	'',	'',	'dlinasphodaspvilki',	'',	0,	0,	NULL),
-(91,	'вилка',	91,	1,	1,	'',	'',	'vilka',	'',	0,	0,	NULL),
-(92,	'материал рамы',	92,	1,	1,	'',	'',	'materialspramy',	'',	0,	0,	NULL),
-(93,	'задний переключатель',	93,	1,	1,	'',	'',	'zadnijsppereklyuchatel',	'',	0,	0,	NULL),
-(94,	'тип заднего амортизатора',	94,	1,	1,	'',	'',	'tipspzadnegospamortizatora',	'',	0,	0,	NULL),
-(95,	'тип тормозов',	95,	1,	1,	'',	'',	'tipsptormozov',	'',	0,	0,	NULL),
-(96,	'Операционная сиситема',	96,	1,	1,	'',	'',	'operatsionnayaspsisitema',	'',	0,	0,	NULL),
-(97,	'Память',	97,	1,	1,	'',	'',	'pamyat',	'',	NULL,	1,	NULL),
-(98,	'Дисплей',	98,	1,	1,	'',	'',	'displej',	'',	NULL,	NULL,	NULL),
-(99,	'Клавиатура',	99,	0,	1,	'',	'',	'klaviatura',	'',	0,	0,	NULL),
-(100,	'Параметры сканера',	100,	0,	1,	'',	'',	'parametryspskanera',	'',	0,	0,	NULL),
-(101,	'Тип штрих-кодов',	101,	1,	1,	'',	'',	'tipspshtrihmkodov',	'',	NULL,	1,	NULL),
-(102,	'PTT',	102,	1,	1,	'',	'',	'ptt',	'',	NULL,	1,	NULL),
-(103,	'Датчик',	103,	1,	1,	'',	'',	'datchik',	'',	0,	0,	NULL),
-(104,	'Пылевлагозащита',	104,	1,	1,	'',	'',	'pylevlagozaschita',	'',	0,	0,	NULL),
-(105,	'Ударопрочность',	105,	1,	1,	'',	'',	'udaroprochnost',	'',	0,	0,	NULL),
-(106,	'Рабочая температура',	106,	1,	1,	'',	'',	'rabochayasptemperatura',	'',	0,	0,	NULL),
-(107,	'Габариты (мм)',	107,	1,	1,	'',	'',	'gabaritysplbmmrb',	'',	NULL,	1,	NULL),
-(108,	'Ширина бумаги',	108,	1,	1,	'',	'',	'shirinaspbumagi',	'',	NULL,	NULL,	NULL),
-(109,	'Тип корма',	109,	1,	1,	'',	'',	'tipspkorma',	'',	NULL,	1,	NULL),
-(110,	'Назначение корма',	110,	1,	1,	'',	'',	'naznacheniespkorma',	'',	NULL,	1,	NULL),
-(111,	'Порода',	111,	1,	1,	'',	'',	'poroda',	'',	NULL,	1,	NULL),
-(112,	'Класс корма',	112,	1,	1,	'',	'',	'klassspkorma',	'',	NULL,	1,	NULL),
-(113,	'Монтаж',	113,	0,	1,	'',	'',	'montazh',	'',	0,	0,	NULL),
-(114,	'Дверцы',	114,	0,	1,	'',	'',	'dvertsy',	'',	0,	0,	NULL),
-(115,	'Габариты',	115,	0,	1,	'',	'',	'gabarity',	'',	0,	0,	NULL);
+INSERT INTO `ok_features` (`id`, `name`, `position`, `in_filter`, `auto_name_id`, `auto_value_id`, `url`, `external_id`, `url_in_product`, `to_index_new_value`, `description`) VALUES
+(1,	'Вес',	1,	1,	'',	'',	'ves',	'',	NULL,	1,	NULL),
+(2,	'Высота',	2,	1,	'',	'',	'vysota',	'',	0,	0,	NULL),
+(3,	'Диаметр',	3,	1,	'',	'',	'diametr',	'',	0,	0,	NULL),
+(4,	'Ткань',	4,	1,	'',	'',	'tkan',	'',	NULL,	0,	NULL),
+(5,	'Предназначение',	5,	1,	'',	'',	'prednaznachenie',	'',	0,	0,	NULL),
+(6,	'Наполнитель',	6,	1,	'',	'',	'napolnitel',	'',	0,	0,	NULL),
+(7,	'Количество наполнителя',	7,	1,	'',	'',	'kolichestvonapolnitelya',	'',	0,	0,	NULL),
+(8,	'Объемный вес для транспортных компаний',	8,	1,	'',	'',	'obemnyjvesdlyatransportnyhkompanij',	'',	0,	0,	NULL),
+(9,	'Производство ',	9,	1,	'',	'',	'proizvodstvo',	'',	0,	0,	NULL),
+(10,	'Серия',	10,	1,	'',	'',	'seriya',	'',	0,	0,	NULL),
+(11,	'Диагональ',	11,	1,	'',	'',	'diagonal',	'',	0,	0,	NULL),
+(12,	'Тип экрана',	12,	1,	'',	'',	'tipekrana',	'',	0,	0,	NULL),
+(13,	'Разрешение экрана',	13,	1,	'',	'',	'razreshenieekrana',	'',	0,	0,	NULL),
+(14,	'Система',	14,	1,	'',	'',	'sistema',	'',	0,	0,	NULL),
+(15,	'Количество ядер',	15,	1,	'',	'',	'kolichestvoyader',	'',	0,	0,	NULL),
+(16,	'Процессор',	16,	1,	'',	'',	'protsessor',	'',	0,	0,	NULL),
+(17,	'Частота процессора',	17,	1,	'',	'',	'chastotaprotsessora',	'',	0,	0,	NULL),
+(18,	'Оперативная память',	18,	1,	'',	'',	'operativnayapamyat',	'',	0,	0,	NULL),
+(19,	'Встроенная память',	19,	1,	'',	'',	'vstroennayapamyat',	'',	0,	0,	NULL),
+(20,	'Поддержка SD карт',	20,	1,	'',	'',	'podderzhkasdkart',	'',	0,	0,	NULL),
+(21,	'Sim-карт',	21,	1,	'',	'',	'simkart',	'',	0,	0,	NULL),
+(22,	'Размеры SIM',	22,	1,	'',	'',	'razmerysim',	'',	0,	0,	NULL),
+(23,	'GSM (2G)',	23,	1,	'',	'',	'gsm2g',	'',	0,	0,	NULL),
+(24,	'3G',	24,	1,	'',	'',	'3g',	'',	0,	0,	NULL),
+(25,	'LTE (4G)',	25,	1,	'',	'',	'lte4g',	'',	0,	0,	NULL),
+(26,	'WCDMA',	26,	1,	'',	'',	'wcdma',	'',	0,	0,	NULL),
+(27,	'Основная камера',	27,	1,	'',	'',	'osnovnayakamera',	'',	0,	0,	NULL),
+(28,	'Фронтальная камера',	28,	1,	'',	'',	'frontalnayakamera',	'',	0,	0,	NULL),
+(29,	'Вспышка',	29,	1,	'',	'',	'vspyshka',	'',	0,	0,	NULL),
+(30,	'Bluetooth',	30,	1,	'',	'',	'bluetooth',	'',	0,	0,	NULL),
+(31,	'GPS',	31,	1,	'',	'',	'gps',	'',	0,	0,	NULL),
+(32,	'A-GPS',	32,	1,	'',	'',	'agps',	'',	0,	0,	NULL),
+(33,	'Wi-Fi',	33,	1,	'',	'',	'wifi',	'',	0,	0,	NULL),
+(34,	'ИК порт',	34,	1,	'',	'',	'ikport',	'',	0,	0,	NULL),
+(35,	'Разъемы',	35,	1,	'',	'',	'razemy',	'',	0,	0,	NULL),
+(36,	'Аккумулятор',	36,	1,	'',	'',	'akkumulyator',	'',	0,	0,	NULL),
+(37,	'Размеры',	37,	1,	'',	'',	'razmery',	'',	0,	0,	NULL),
+(38,	'Цвет',	38,	1,	'',	'',	'tsvet',	'',	0,	0,	NULL),
+(39,	'Wi-Fi Hotspot',	39,	1,	'',	'',	'wifihotspot',	'',	0,	0,	NULL),
+(40,	'Сканер отпечатков пальцев',	40,	1,	'',	'',	'skanerotpechatkovpaltsev',	'',	0,	0,	NULL),
+(41,	'3G (UMTS)',	41,	1,	'',	'',	'3gumts',	'',	0,	0,	NULL),
+(42,	'Возраст',	42,	1,	'',	'',	'vozrast',	'',	0,	0,	NULL),
+(43,	'Пол',	43,	1,	'',	'',	'pol',	'',	0,	0,	NULL),
+(44,	'Комплектация',	44,	1,	'',	'',	'komplektatsiya',	'',	0,	0,	NULL),
+(45,	'Материал',	45,	1,	'',	'',	'material',	'',	0,	0,	NULL),
+(46,	'Размеры упаковки',	46,	1,	'',	'',	'razmeryupakovki',	'',	0,	0,	NULL),
+(47,	'Размер игрушки',	47,	1,	'',	'',	'razmerigrushki',	'',	0,	0,	NULL),
+(48,	'Страна производитель',	48,	1,	'',	'',	'stranaproizvoditel',	'',	0,	0,	NULL),
+(49,	'Тепловая мощность',	49,	1,	'',	'',	'teplovayamoschnost',	'',	0,	0,	NULL),
+(50,	'Максимальная температура теплоносителя',	50,	1,	'',	'',	'maksimalnayatemperaturateplonositelya',	'',	0,	0,	NULL),
+(51,	'Максимальное рабочее давление',	51,	1,	'',	'',	'maksimalnoerabocheedavlenie',	'',	0,	0,	NULL),
+(52,	'Конструкция радиатора',	52,	1,	'',	'',	'konstruktsiyaradiatora',	'',	0,	0,	NULL),
+(53,	'Способ подключения',	53,	1,	'',	'',	'sposobpodklyucheniya',	'',	0,	0,	NULL),
+(54,	'Кол-во секций в радиаторе',	54,	1,	'',	'',	'kolvosektsijvradiatore',	'',	0,	0,	NULL),
+(55,	'Объем воды в радиаторе',	55,	1,	'',	'',	'obemvodyvradiatore',	'',	0,	0,	NULL),
+(56,	'Опрессовочное давление',	56,	1,	'',	'',	'opressovochnoedavlenie',	'',	0,	0,	NULL),
+(57,	'Способ установки',	57,	1,	'',	'',	'sposobustanovki',	'',	0,	0,	NULL),
+(58,	'Номинальный объем водонагревателя',	58,	1,	'',	'',	'nominalnyjobemvodonagrevatelya',	'',	0,	0,	NULL),
+(59,	'Положение установки',	59,	1,	'',	'',	'polozhenieustanovki',	'',	0,	0,	NULL),
+(60,	'Форма',	60,	1,	'',	'',	'forma',	'',	0,	0,	NULL),
+(61,	'Мощность ТЭНа',	61,	1,	'',	'',	'moschnosttena',	'',	0,	0,	NULL),
+(62,	'Гарантия',	62,	1,	'',	'',	'garantiya',	'',	0,	0,	NULL),
+(63,	'Тип нагревательного элемента (ТЭНа)',	63,	1,	'',	'',	'tipnagrevatelnogoelementatena',	'',	0,	0,	NULL),
+(64,	'Мощность',	64,	1,	'',	'',	'moschnost',	'',	0,	0,	NULL),
+(65,	'Отвод газов',	65,	1,	'',	'',	'otvodgazov',	'',	0,	0,	NULL),
+(66,	'Тип розжига',	66,	1,	'',	'',	'tiprozzhiga',	'',	0,	0,	NULL),
+(67,	'Производительность',	67,	1,	'',	'',	'proizvoditelnost',	'',	0,	0,	NULL),
+(68,	'Производительность ГВС',	68,	1,	'',	'',	'proizvoditelnostgvs',	'',	0,	0,	NULL),
+(69,	'Модуляция мощности',	69,	1,	'',	'',	'modulyatsiyamoschnosti',	'',	0,	0,	NULL),
+(70,	'Вес (кг)',	70,	1,	'',	'',	'veskg',	'',	0,	0,	NULL),
+(71,	'Объем (м3)',	71,	1,	'',	'',	'obemm3',	'',	0,	0,	NULL),
+(72,	'Габариты В.Ш.Г. (мм.)',	72,	1,	'',	'',	'gabarityvshgmm',	'',	0,	0,	NULL),
+(73,	'Мин. давление газа',	73,	1,	'',	'',	'mindavleniegaza',	'',	0,	0,	NULL),
+(74,	'Страна',	74,	1,	'',	'',	'strana',	'',	0,	0,	NULL),
+(75,	'Вид мяса',	75,	1,	'',	'',	'vidspmyasa',	'',	NULL,	NULL,	NULL),
+(76,	'Производитель',	76,	1,	'',	'',	'proizvoditel',	'',	0,	0,	NULL),
+(77,	'Количество мест',	77,	1,	'',	'',	'kolichestvospmest',	'',	0,	0,	NULL),
+(78,	'Высота сиденья',	78,	1,	'',	'',	'vysotaspsidenya',	'',	0,	0,	NULL),
+(79,	'Водонепронецаемый',	79,	1,	'',	'',	'vodonepronetsaemyj',	'',	0,	0,	NULL),
+(80,	'Автор',	80,	1,	'',	'',	'avtor',	'',	NULL,	NULL,	NULL),
+(81,	'Язык',	81,	1,	'',	'',	'yazyk',	'',	0,	0,	NULL),
+(82,	'Оригинальное название',	82,	1,	'',	'',	'originalnoespnazvanie',	'',	0,	0,	NULL),
+(83,	'Обложка',	83,	1,	'',	'',	'oblozhka',	'',	0,	0,	NULL),
+(84,	'Страниц',	84,	1,	'',	'',	'stranits',	'',	0,	0,	NULL),
+(85,	'Иллюстрации',	85,	1,	'',	'',	'illyustratsii',	'',	0,	0,	NULL),
+(86,	'Год издания',	86,	1,	'',	'',	'godspizdaniya',	'',	NULL,	NULL,	NULL),
+(87,	'Рубрика',	87,	1,	'',	'',	'rubrika',	'',	0,	0,	NULL),
+(88,	'тип товара',	88,	1,	'',	'',	'tipsptovara',	'',	1,	NULL,	NULL),
+(89,	'диаметр колеса',	89,	1,	'',	'',	'diametrspkolesa',	'',	0,	0,	NULL),
+(90,	'длина хода вилки',	90,	1,	'',	'',	'dlinasphodaspvilki',	'',	0,	0,	NULL),
+(91,	'вилка',	91,	1,	'',	'',	'vilka',	'',	0,	0,	NULL),
+(92,	'материал рамы',	92,	1,	'',	'',	'materialspramy',	'',	0,	0,	NULL),
+(93,	'задний переключатель',	93,	1,	'',	'',	'zadnijsppereklyuchatel',	'',	0,	0,	NULL),
+(94,	'тип заднего амортизатора',	94,	1,	'',	'',	'tipspzadnegospamortizatora',	'',	0,	0,	NULL),
+(95,	'тип тормозов',	95,	1,	'',	'',	'tipsptormozov',	'',	0,	0,	NULL),
+(96,	'Операционная сиситема',	96,	1,	'',	'',	'operatsionnayaspsisitema',	'',	0,	0,	NULL),
+(97,	'Память',	97,	1,	'',	'',	'pamyat',	'',	NULL,	1,	NULL),
+(98,	'Дисплей',	98,	1,	'',	'',	'displej',	'',	NULL,	NULL,	NULL),
+(99,	'Клавиатура',	99,	0,	'',	'',	'klaviatura',	'',	0,	0,	NULL),
+(100,	'Параметры сканера',	100,	0,	'',	'',	'parametryspskanera',	'',	0,	0,	NULL),
+(101,	'Тип штрих-кодов',	101,	1,	'',	'',	'tipspshtrihmkodov',	'',	NULL,	1,	NULL),
+(102,	'PTT',	102,	1,	'',	'',	'ptt',	'',	NULL,	1,	NULL),
+(103,	'Датчик',	103,	1,	'',	'',	'datchik',	'',	0,	0,	NULL),
+(104,	'Пылевлагозащита',	104,	1,	'',	'',	'pylevlagozaschita',	'',	0,	0,	NULL),
+(105,	'Ударопрочность',	105,	1,	'',	'',	'udaroprochnost',	'',	0,	0,	NULL),
+(106,	'Рабочая температура',	106,	1,	'',	'',	'rabochayasptemperatura',	'',	0,	0,	NULL),
+(107,	'Габариты (мм)',	107,	1,	'',	'',	'gabaritysplbmmrb',	'',	NULL,	1,	NULL),
+(108,	'Ширина бумаги',	108,	1,	'',	'',	'shirinaspbumagi',	'',	NULL,	NULL,	NULL),
+(109,	'Тип корма',	109,	1,	'',	'',	'tipspkorma',	'',	NULL,	1,	NULL),
+(110,	'Назначение корма',	110,	1,	'',	'',	'naznacheniespkorma',	'',	NULL,	1,	NULL),
+(111,	'Порода',	111,	1,	'',	'',	'poroda',	'',	NULL,	1,	NULL),
+(112,	'Класс корма',	112,	1,	'',	'',	'klassspkorma',	'',	NULL,	1,	NULL),
+(113,	'Монтаж',	113,	0,	'',	'',	'montazh',	'',	0,	0,	NULL),
+(114,	'Дверцы',	114,	0,	'',	'',	'dvertsy',	'',	0,	0,	NULL),
+(115,	'Габариты',	115,	0,	'',	'',	'gabarity',	'',	0,	0,	NULL);
 
 DROP TABLE IF EXISTS `ok_features_aliases`;
 CREATE TABLE `ok_features_aliases` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `variable` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `position` int(11) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `variable` (`variable`),
+  UNIQUE KEY `variable` (`variable`(100)),
   KEY `position` (`position`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -778,11 +782,11 @@ CREATE TABLE `ok_features_aliases_values` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `feature_alias_id` int(11) NOT NULL,
   `value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `feature_id` int(11) DEFAULT 0,
+  `feature_id` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `feature_id` (`feature_id`),
   KEY `feature_alias_id` (`feature_alias_id`),
-  KEY `value` (`value`)
+  KEY `value` (`value`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
@@ -792,10 +796,10 @@ CREATE TABLE `ok_features_values` (
   `feature_id` int(11) NOT NULL,
   `value` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `translit` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT 0,
-  `to_index` tinyint(1) DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT '0',
+  `to_index` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `feature_id_translit` (`feature_id`,`translit`),
+  UNIQUE KEY `feature_id_translit` (`feature_id`,`translit`(100)),
   KEY `feature_id` (`feature_id`),
   KEY `position` (`position`),
   KEY `value` (`value`(64))
@@ -1246,24 +1250,24 @@ CREATE TABLE `ok_features_values_aliases_values` (
   `feature_id` int(11) NOT NULL,
   `lang_id` int(11) NOT NULL,
   KEY `feature_alias_id` (`feature_alias_id`),
-  KEY `translit` (`translit`),
   KEY `feature_id` (`feature_id`),
-  KEY `lang_id` (`lang_id`)
+  KEY `lang_id` (`lang_id`),
+  KEY `translit` (`translit`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `ok_feedbacks`;
 CREATE TABLE `ok_feedbacks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ip` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `message` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `processed` tinyint(1) NOT NULL DEFAULT 0,
-  `lang_id` int(11) NOT NULL DEFAULT 0,
-  `is_admin` tinyint(1) NOT NULL DEFAULT 0,
-  `parent_id` int(11) NOT NULL DEFAULT 0,
+  `processed` tinyint(1) NOT NULL DEFAULT '0',
+  `lang_id` int(11) NOT NULL DEFAULT '0',
+  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
+  `parent_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1272,7 +1276,7 @@ DROP TABLE IF EXISTS `ok_groups`;
 CREATE TABLE `ok_groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `discount` decimal(5,2) NOT NULL DEFAULT 0.00,
+  `discount` decimal(5,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1283,13 +1287,13 @@ DROP TABLE IF EXISTS `ok_images`;
 CREATE TABLE `ok_images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `product_id` int(11) NOT NULL DEFAULT 0,
+  `product_id` int(11) NOT NULL DEFAULT '0',
   `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `filename` (`filename`),
   KEY `product_id` (`product_id`),
-  KEY `position` (`position`)
+  KEY `position` (`position`),
+  KEY `filename` (`filename`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_images` (`id`, `name`, `product_id`, `filename`, `position`) VALUES
@@ -1984,7 +1988,7 @@ CREATE TABLE `ok_labels` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `color` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1998,8 +2002,8 @@ CREATE TABLE `ok_languages` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `label` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `href_lang` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT 0,
-  `position` int(11) NOT NULL DEFAULT 0,
+  `enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT '0',
   `name_ru` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `name_ua` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `name_en` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -2072,8 +2076,8 @@ CREATE TABLE `ok_lang_brands` (
   `meta_title` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_description` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `annotation` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `annotation` mediumtext COLLATE utf8mb4_unicode_ci,
+  `description` mediumtext COLLATE utf8mb4_unicode_ci,
   UNIQUE KEY `lang_id` (`lang_id`,`brand_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -2133,12 +2137,12 @@ CREATE TABLE `ok_lang_categories` (
   `meta_title` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_description` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `annotation` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `annotation` mediumtext COLLATE utf8mb4_unicode_ci,
+  `description` mediumtext COLLATE utf8mb4_unicode_ci,
   `auto_meta_title` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `auto_meta_keywords` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `auto_meta_desc` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `auto_description` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `auto_description` mediumtext COLLATE utf8mb4_unicode_ci,
   UNIQUE KEY `lang_id` (`lang_id`,`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -2369,7 +2373,7 @@ CREATE TABLE `ok_lang_features` (
   `lang_id` int(11) NOT NULL,
   `feature_id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `description` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` mediumtext COLLATE utf8mb4_unicode_ci,
   UNIQUE KEY `lang_id` (`lang_id`,`feature_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -2744,11 +2748,11 @@ CREATE TABLE `ok_lang_features_values` (
   `feature_value_id` int(11) NOT NULL,
   `value` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL,
   `translit` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  KEY `translit_feature_id_lang_id` (`translit`,`lang_id`),
   KEY `lang_id` (`lang_id`),
   KEY `feature_value_id` (`feature_value_id`),
-  KEY `translit` (`translit`),
-  KEY `value` (`value`(64))
+  KEY `value` (`value`(100)),
+  KEY `translit_feature_id_lang_id` (`translit`(100),`lang_id`),
+  KEY `translit` (`translit`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_lang_features_values` (`lang_id`, `feature_value_id`, `value`, `translit`) VALUES
@@ -4327,8 +4331,8 @@ CREATE TABLE `ok_lang_products` (
   `lang_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `name` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `annotation` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `annotation` mediumtext COLLATE utf8mb4_unicode_ci,
+  `description` mediumtext COLLATE utf8mb4_unicode_ci,
   `meta_title` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_description` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -5028,7 +5032,7 @@ CREATE TABLE `ok_lang_seo_filter_patterns` (
   `title` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `keywords` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `meta_description` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT '',
-  `description` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` mediumtext COLLATE utf8mb4_unicode_ci,
   UNIQUE KEY `lang_id_filter_auto_meta_id` (`lang_id`,`seo_filter_pattern_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -5867,14 +5871,14 @@ CREATE TABLE `ok_managers` (
   `login` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `permissions` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cnt_try` tinyint(4) NOT NULL DEFAULT 0,
+  `cnt_try` tinyint(4) NOT NULL DEFAULT '0',
   `last_try` date DEFAULT NULL,
   `comment` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT '',
-  `menu_status` tinyint(1) NOT NULL DEFAULT 1,
-  `menu` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `last_activity` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `menu_status` tinyint(1) NOT NULL DEFAULT '1',
+  `menu` mediumtext COLLATE utf8mb4_unicode_ci,
+  `last_activity` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `login` (`login`)
+  KEY `login` (`login`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_managers` (`id`, `lang`, `login`, `password`, `permissions`, `cnt_try`, `last_try`, `comment`, `menu_status`, `menu`, `last_activity`) VALUES
@@ -5885,8 +5889,8 @@ CREATE TABLE `ok_menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `visible` tinyint(1) NOT NULL DEFAULT 1,
-  `position` int(11) NOT NULL DEFAULT 0,
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
+  `position` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `visible` (`visible`),
   KEY `position` (`position`)
@@ -5901,13 +5905,13 @@ INSERT INTO `ok_menu` (`id`, `group_id`, `name`, `visible`, `position`) VALUES
 DROP TABLE IF EXISTS `ok_menu_items`;
 CREATE TABLE `ok_menu_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `menu_id` int(11) NOT NULL DEFAULT 0,
-  `parent_id` int(11) NOT NULL DEFAULT 0,
+  `menu_id` int(11) NOT NULL DEFAULT '0',
+  `parent_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `url` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `is_target_blank` tinyint(1) NOT NULL DEFAULT 0,
-  `visible` tinyint(1) NOT NULL DEFAULT 1,
-  `position` int(11) NOT NULL DEFAULT 0,
+  `is_target_blank` tinyint(1) NOT NULL DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
+  `position` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `menu_id` (`menu_id`),
   KEY `parent_id` (`parent_id`),
@@ -5951,7 +5955,7 @@ CREATE TABLE `ok_modules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `vendor` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `module_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `position` int(11) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT '0',
   `enabled` tinyint(4) DEFAULT NULL,
   `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `backend_main_controller` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -5966,43 +5970,44 @@ INSERT INTO `ok_modules` (`id`, `vendor`, `module_name`, `position`, `enabled`, 
 (6,	'OkayCMS',	'YandexXMLVendorModel',	6,	1,	'xml',	'YandexXmlAdmin'),
 (7,	'OkayCMS',	'YandexXML',	7,	1,	'xml',	'YandexXmlAdmin'),
 (8,	'OkayCMS',	'GoogleMerchant',	8,	1,	'xml',	'GoogleMerchantAdmin'),
-(9,	'OkayCMS',	'YandexMoneyApi',	9,	1,	'payment',	'DescriptionAdmin');
+(9,	'OkayCMS',	'YandexMoneyApi',	9,	1,	'payment',	'DescriptionAdmin'),
+(10,	'OkayCMS',	'PayKeeper',	10,	1,	'payment',	'DescriptionAdmin');
 
 DROP TABLE IF EXISTS `ok_orders`;
 CREATE TABLE `ok_orders` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `delivery_id` int(11) DEFAULT 0,
-  `delivery_price` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `payment_method_id` int(11) DEFAULT 0,
-  `paid` tinyint(1) NOT NULL DEFAULT 0,
+  `delivery_id` int(11) DEFAULT '0',
+  `delivery_price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `payment_method_id` int(11) DEFAULT '0',
+  `paid` tinyint(1) NOT NULL DEFAULT '0',
   `payment_date` datetime DEFAULT NULL,
-  `closed` tinyint(1) NOT NULL DEFAULT 0,
+  `closed` tinyint(1) NOT NULL DEFAULT '0',
   `date` datetime DEFAULT NULL,
-  `user_id` int(11) DEFAULT 0,
+  `user_id` int(11) DEFAULT '0',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `phone` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `comment` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `status_id` int(11) NOT NULL DEFAULT 0,
+  `status_id` int(11) NOT NULL DEFAULT '0',
   `url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '',
-  `payment_details` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `payment_details` mediumtext COLLATE utf8mb4_unicode_ci,
   `ip` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `total_price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `total_price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `note` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `discount` decimal(5,2) NOT NULL DEFAULT 0.00,
-  `coupon_discount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `discount` decimal(5,2) NOT NULL DEFAULT '0.00',
+  `coupon_discount` decimal(10,2) NOT NULL DEFAULT '0.00',
   `coupon_code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `separate_delivery` tinyint(1) DEFAULT 0,
-  `modified` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `lang_id` int(11) NOT NULL DEFAULT 0,
+  `separate_delivery` tinyint(1) DEFAULT '0',
+  `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `lang_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `login` (`user_id`),
   KEY `written_off` (`closed`),
   KEY `date` (`date`),
   KEY `status` (`status_id`),
-  KEY `code` (`url`),
-  KEY `payment_status` (`paid`)
+  KEY `payment_status` (`paid`),
+  KEY `code` (`url`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_orders` (`id`, `delivery_id`, `delivery_price`, `payment_method_id`, `paid`, `payment_date`, `closed`, `date`, `user_id`, `name`, `address`, `phone`, `email`, `comment`, `status_id`, `url`, `payment_details`, `ip`, `total_price`, `note`, `discount`, `coupon_discount`, `coupon_code`, `separate_delivery`, `modified`, `lang_id`) VALUES
@@ -6022,9 +6027,9 @@ DROP TABLE IF EXISTS `ok_orders_status`;
 CREATE TABLE `ok_orders_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `is_close` tinyint(1) NOT NULL DEFAULT 0,
+  `is_close` tinyint(1) NOT NULL DEFAULT '0',
   `color` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ffffff',
-  `position` int(11) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT '0',
   `status_1c` enum('not_use','new','accepted','to_delete') COLLATE utf8mb4_unicode_ci DEFAULT 'not_use',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -6046,12 +6051,12 @@ CREATE TABLE `ok_pages` (
   `meta_description` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `description` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `position` int(11) NOT NULL DEFAULT 0,
-  `visible` tinyint(1) NOT NULL DEFAULT 0,
-  `last_modify` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `position` int(11) NOT NULL DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
+  `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `order_num` (`position`),
-  KEY `url` (`url`)
+  KEY `url` (`url`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_pages` (`id`, `url`, `name`, `name_h1`, `meta_title`, `meta_description`, `meta_keywords`, `description`, `position`, `visible`, `last_modify`) VALUES
@@ -6077,10 +6082,10 @@ CREATE TABLE `ok_payment_methods` (
   `module` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `description` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `currency_id` int(11) NOT NULL DEFAULT 0,
+  `currency_id` int(11) NOT NULL DEFAULT '0',
   `settings` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT 0,
-  `position` int(11) NOT NULL DEFAULT 0,
+  `enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT '0',
   `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `position` (`position`)
@@ -6104,42 +6109,42 @@ DROP TABLE IF EXISTS `ok_products`;
 CREATE TABLE `ok_products` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `brand_id` int(11) DEFAULT 0,
+  `brand_id` int(11) DEFAULT '0',
   `name` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `annotation` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `visible` tinyint(1) NOT NULL DEFAULT 1,
-  `position` int(11) NOT NULL DEFAULT 0,
+  `annotation` mediumtext COLLATE utf8mb4_unicode_ci,
+  `description` mediumtext COLLATE utf8mb4_unicode_ci,
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
+  `position` int(11) NOT NULL DEFAULT '0',
   `meta_title` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `meta_description` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `created` timestamp NULL DEFAULT NULL,
-  `featured` tinyint(1) DEFAULT 0,
+  `featured` tinyint(1) DEFAULT '0',
   `external_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `rating` float(3,1) DEFAULT 0.0,
-  `votes` int(11) DEFAULT 0,
+  `rating` float(3,1) DEFAULT '0.0',
+  `votes` int(11) DEFAULT '0',
   `special` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '',
-  `last_modify` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `main_category_id` int(11) DEFAULT NULL,
   `main_image_id` int(11) DEFAULT NULL,
-  `to_rozetka` tinyint(1) DEFAULT 0,
-  `not_to_rozetka` tinyint(1) DEFAULT 0,
-  `to__okaycms__yandex_xml_vendor_model` tinyint(1) DEFAULT 0,
-  `not_to__okaycms__yandex_xml_vendor_model` tinyint(1) DEFAULT 0,
-  `to__okaycms__yandex_xml` tinyint(1) DEFAULT 0,
-  `not_to__okaycms__yandex_xml` tinyint(1) DEFAULT 0,
-  `to__okaycms__google_merchant` tinyint(1) DEFAULT 0,
-  `not_to__okaycms__google_merchant` tinyint(1) DEFAULT 0,
+  `to_rozetka` tinyint(1) DEFAULT '0',
+  `not_to_rozetka` tinyint(1) DEFAULT '0',
+  `to__okaycms__yandex_xml_vendor_model` tinyint(1) DEFAULT '0',
+  `not_to__okaycms__yandex_xml_vendor_model` tinyint(1) DEFAULT '0',
+  `to__okaycms__yandex_xml` tinyint(1) DEFAULT '0',
+  `not_to__okaycms__yandex_xml` tinyint(1) DEFAULT '0',
+  `to__okaycms__google_merchant` tinyint(1) DEFAULT '0',
+  `not_to__okaycms__google_merchant` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `url` (`url`),
   KEY `brand_id` (`brand_id`),
   KEY `visible` (`visible`),
   KEY `position` (`position`),
   KEY `external_id` (`external_id`),
   KEY `hit` (`featured`),
-  KEY `name` (`name`(255)),
   KEY `main_category_id` (`main_category_id`),
-  KEY `main_image_id` (`main_image_id`)
+  KEY `main_image_id` (`main_image_id`),
+  KEY `url` (`url`(100)),
+  KEY `name` (`name`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_products` (`id`, `url`, `brand_id`, `name`, `annotation`, `description`, `visible`, `position`, `meta_title`, `meta_keywords`, `meta_description`, `created`, `featured`, `external_id`, `rating`, `votes`, `special`, `last_modify`, `main_category_id`, `main_image_id`, `to_rozetka`, `not_to_rozetka`, `to__okaycms__yandex_xml_vendor_model`, `not_to__okaycms__yandex_xml_vendor_model`, `to__okaycms__yandex_xml`, `not_to__okaycms__yandex_xml`, `to__okaycms__google_merchant`, `not_to__okaycms__google_merchant`) VALUES
@@ -6375,7 +6380,7 @@ DROP TABLE IF EXISTS `ok_products_categories`;
 CREATE TABLE `ok_products_categories` (
   `product_id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
-  `position` int(11) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`product_id`,`category_id`),
   KEY `position` (`position`),
   KEY `product_id` (`product_id`),
@@ -8305,13 +8310,13 @@ INSERT INTO `ok_products_features_values` (`product_id`, `value_id`) VALUES
 DROP TABLE IF EXISTS `ok_purchases`;
 CREATE TABLE `ok_purchases` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `order_id` int(11) NOT NULL DEFAULT 0,
-  `product_id` int(11) DEFAULT 0,
-  `variant_id` int(11) DEFAULT 0,
+  `order_id` int(11) NOT NULL DEFAULT '0',
+  `product_id` int(11) DEFAULT '0',
+  `variant_id` int(11) DEFAULT '0',
   `product_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `variant_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `price` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `amount` int(11) NOT NULL DEFAULT 0,
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `amount` int(11) NOT NULL DEFAULT '0',
   `sku` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `units` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
@@ -8334,7 +8339,7 @@ DROP TABLE IF EXISTS `ok_related_blogs`;
 CREATE TABLE `ok_related_blogs` (
   `post_id` int(11) NOT NULL,
   `related_id` int(11) NOT NULL,
-  `position` int(11) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`post_id`,`related_id`),
   KEY `position` (`position`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -8349,7 +8354,7 @@ DROP TABLE IF EXISTS `ok_related_products`;
 CREATE TABLE `ok_related_products` (
   `product_id` int(11) NOT NULL,
   `related_id` int(11) NOT NULL,
-  `position` int(11) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`product_id`,`related_id`),
   KEY `position` (`position`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -8546,8 +8551,8 @@ CREATE TABLE `ok_seo_filter_patterns` (
   `title` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `keywords` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `meta_description` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT '',
-  `description` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `feature_id` int(11) DEFAULT 0,
+  `description` mediumtext COLLATE utf8mb4_unicode_ci,
+  `feature_id` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `category_id_param_type_feature_id` (`category_id`,`type`,`feature_id`),
   KEY `category_id` (`category_id`),
@@ -8562,7 +8567,7 @@ CREATE TABLE `ok_settings` (
   `param` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`setting_id`),
-  UNIQUE KEY `param` (`param`)
+  UNIQUE KEY `param` (`param`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_settings` (`setting_id`, `param`, `value`) VALUES
@@ -8590,7 +8595,7 @@ INSERT INTO `ok_settings` (`setting_id`, `param`, `value`) VALUES
 (131,	'yandex_sales_notes',	''),
 (132,	'posts_num',	'8'),
 (133,	'image_sizes',	'200x200|60x60|50x50|219x172|162x77|183x183|35x35|400x300|100x100|1000x1000|800x600|300x300|87x72|330x300|77x77|165x90|150x150|300x120|55x55|250x250|75x75|70x70|360x360|1170x390|465x265|250x100|420x250|160x65|1170x420|120x60|50x40|420x260|420x245|420x225|420x220|26x26|32x32|30x30|80x80|180x180|150x130|120x100|40x30|40x25|20x20|24x24|160x60|90x90|23x23|120x75|480x220|120x80|120x70|120x65|100x60|100x50|1170x380|1170x360|1170x400|900x320|1170x700|1200x700|900x700|500x320|22x22'),
-(134,	'products_image_sizes',	'200x200|50x50|1800x1200w|600x340|75x75|330x300|800x600|55x55|300x120|35x35|300x200|150x150|110x150|110x130|100x100|70x70|65x65|800x600w|80x80|200x150|40x40|800x550|300x180|800x500|1200x1110|1200x1000|125x125|120x120'),
+(134,	'products_image_sizes',	'200x200|50x50|1800x1200w|600x340|75x75|330x300|800x600|55x55|300x120|35x35|300x200|150x150|110x150|110x130|100x100|70x70|65x65|800x600w|80x80|200x150|40x40|800x550|300x180|800x500|1200x1110|1200x1000|125x125|120x120|1200x1000w'),
 (135,	'captcha_product',	'1'),
 (136,	'captcha_post',	'1'),
 (137,	'captcha_cart',	'1'),
@@ -8605,7 +8610,7 @@ INSERT INTO `ok_settings` (`setting_id`, `param`, `value`) VALUES
 (152,	'lastModifyPosts',	'2018-06-26 20:31:31'),
 (153,	'image_quality',	'75'),
 (154,	'email_lang',	'ru'),
-(155,	'site_logo',	'logo.svg'),
+(155,	'site_logo',	'logo.png'),
 (156,	'gather_enabled',	'1'),
 (157,	'captcha_callback',	'1'),
 (158,	'iframe_map_code',	'<iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2241.7081645541616!2d37.5206056!3d55.8156667!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x944fd88cf96de197!2sOkayCMS!5e0!3m2!1sru!2sua!4v1495180474127\" width=\"100%\" height=\"450\" frameborder=\"0\" style=\"border:0;\" allowfullscreen></iframe><br>'),
@@ -8636,7 +8641,7 @@ INSERT INTO `ok_settings` (`setting_id`, `param`, `value`) VALUES
 DROP TABLE IF EXISTS `ok_settings_lang`;
 CREATE TABLE `ok_settings_lang` (
   `param` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `lang_id` int(11) NOT NULL DEFAULT 0,
+  `lang_id` int(11) NOT NULL DEFAULT '0',
   `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`lang_id`,`param`),
   KEY `name` (`param`),
@@ -8670,7 +8675,7 @@ DROP TABLE IF EXISTS `ok_spec_img`;
 CREATE TABLE `ok_spec_img` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -8685,28 +8690,28 @@ CREATE TABLE `ok_subscribe_mailing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
-  KEY `email` (`email`)
+  KEY `email` (`email`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_subscribe_mailing` (`id`, `email`) VALUES
-(4,	'ssda@i.ua'),
-(5,	'sswea@i.ua'),
-(6,	'syns@i.ua'),
 (1,	'test@okay.com'),
 (2,	'test11@okay.com'),
-(3,	'testt@gmail.com');
+(3,	'testt@gmail.com'),
+(4,	'ssda@i.ua'),
+(5,	'sswea@i.ua'),
+(6,	'syns@i.ua');
 
 DROP TABLE IF EXISTS `ok_support_info`;
 CREATE TABLE `ok_support_info` (
   `id` tinyint(1) NOT NULL AUTO_INCREMENT,
   `temp_key` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `temp_time` timestamp NULL DEFAULT NULL,
-  `new_messages` int(11) NOT NULL DEFAULT 0,
-  `balance` int(11) NOT NULL DEFAULT 0,
+  `new_messages` int(11) NOT NULL DEFAULT '0',
+  `balance` int(11) NOT NULL DEFAULT '0',
   `private_key` varchar(2048) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `public_key` varchar(2048) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `okay_public_key` varchar(2048) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `is_auto` tinyint(1) NOT NULL DEFAULT 1,
+  `is_auto` tinyint(1) NOT NULL DEFAULT '1',
   `accesses` varchar(2048) COLLATE utf8mb4_unicode_ci DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -8722,13 +8727,13 @@ CREATE TABLE `ok_users` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `phone` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `group_id` int(11) NOT NULL DEFAULT 0,
+  `group_id` int(11) NOT NULL DEFAULT '0',
   `last_ip` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created` timestamp NULL DEFAULT current_timestamp(),
+  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `remind_code` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `remind_expire` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `email` (`email`)
+  KEY `email` (`email`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ok_users` (`id`, `email`, `password`, `name`, `phone`, `address`, `group_id`, `last_ip`, `created`, `remind_code`, `remind_expire`) VALUES
@@ -8745,13 +8750,13 @@ CREATE TABLE `ok_variants` (
   `product_id` int(11) NOT NULL,
   `sku` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `weight` decimal(10,2) DEFAULT 0.00,
-  `price` decimal(14,2) NOT NULL DEFAULT 0.00,
+  `weight` decimal(10,2) DEFAULT '0.00',
+  `price` decimal(14,2) NOT NULL DEFAULT '0.00',
   `compare_price` decimal(14,2) DEFAULT NULL,
   `stock` mediumint(9) DEFAULT NULL,
-  `position` int(11) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT '0',
   `external_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `currency_id` int(11) NOT NULL DEFAULT 0,
+  `currency_id` int(11) NOT NULL DEFAULT '0',
   `units` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
@@ -9035,3 +9040,5 @@ INSERT INTO `ok_variants` (`id`, `product_id`, `sku`, `name`, `weight`, `price`,
 (287,	229,	'',	'',	NULL,	0.00,	0.00,	NULL,	287,	'',	2,	''),
 (288,	48,	'',	'синий',	NULL,	5100.00,	0.00,	NULL,	288,	'',	4,	''),
 (289,	48,	'',	'красный',	NULL,	5200.00,	0.00,	NULL,	289,	'',	4,	'');
+
+-- 2019-09-16 14:43:45

@@ -6,7 +6,6 @@ namespace Okay\Admin\Controllers;
 
 use Okay\Core\Image;
 use Okay\Entities\DeliveriesEntity;
-use Okay\Entities\ImagesEntity;
 use Okay\Entities\PaymentsEntity;
 
 class DeliveryAdmin extends IndexAdmin
@@ -15,7 +14,6 @@ class DeliveryAdmin extends IndexAdmin
     public function fetch(
         DeliveriesEntity $deliveriesEntity,
         PaymentsEntity $paymentsEntity,
-        ImagesEntity $imagesEntity,
         Image $imageCore
     ) {
         $delivery = new \stdClass;
@@ -27,7 +25,7 @@ class DeliveryAdmin extends IndexAdmin
             $delivery->description      = $this->request->post('description');
             $delivery->price            = $this->request->post('price');
             $delivery->free_from        = $this->request->post('free_from');
-            $delivery->separate_payment    = $this->request->post('separate_payment','boolean');
+            $delivery->separate_payment = $this->request->post('separate_payment','boolean');
 
             if (!$deliveryPayments = $this->request->post('delivery_payments')) {
                 $deliveryPayments = [];

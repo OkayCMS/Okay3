@@ -12,7 +12,7 @@ class Config
 {
 
     /*Версия системы*/
-    public $version = '3.0.0';
+    public $version = '3.0.1';
     /*Тип системы*/
     public $version_type = 'pro';
     

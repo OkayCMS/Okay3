@@ -162,7 +162,7 @@
                                             </div>
                                             <div class="okay_list_boding okay_list_status">
                                                 {*visible*}
-                                                <label class="switch switch-default fn_switch_block" data-hint="{$btr->general_enable|escape}">
+                                                <label class="switch switch-default hint-bottom-middle-t-info-s-small-mobile hint-anim fn_switch_block" data-hint="{$btr->general_enable|escape}">
                                                     <input class="switch-input fn_ajax_action fn_visible {if $menu_item->visible}fn_active_class{/if}" data-controller="menu_item" data-action="visible" data-id="{$menu_item->id}" type="checkbox"  {if $menu_item->visible}checked=""{/if}/>
                                                     <input class="form-control fn_visible_input" type="hidden" name="menu_items[visible][]" value="{$menu_item->visible|intval}"/>
                                                     <span class="switch-label"></span>
@@ -212,7 +212,7 @@
                                     </span>
                                 </div>
                                 <div class="okay_list_boding okay_list_status">
-                                    <label class="switch switch-default fn_switch_block" data-hint="{$btr->general_enable|escape}">
+                                    <label class="switch switch-default hint-bottom-middle-t-info-s-small-mobile hint-anim fn_switch_block" data-hint="{$btr->general_enable|escape}">
                                         <input class="switch-input fn_visible" type="checkbox"/>
                                         <input class="form-control fn_visible_input" type="hidden" name="menu_items[visible][]" value="0"/>
                                         <span class="switch-label"></span>

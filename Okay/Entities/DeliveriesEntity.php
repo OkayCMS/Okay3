@@ -33,7 +33,20 @@ class DeliveriesEntity extends Entity
     protected static $langObject = 'delivery';
     protected static $langTable = 'deliveries';
     protected static $tableAlias = 'd';
-    
+
+    public function add($delivery)
+    {
+        if (empty($delivery->price)) {
+            $delivery->price = 0.00;
+        }
+
+        if (empty($delivery->free_from)) {
+            $delivery->free_from = 0.00;
+        }
+
+        return parent::add($delivery);
+    }
+
     public function delete($ids)
     {
         /** @var Image $imageCore */

@@ -42,7 +42,10 @@
                         {/if}
                     </span>
                     {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{url controller=TranslationsAdmin id=null}">{$btr->general_back|escape}</a>
+                        <a class="btn btn_return float-xs-right" href="{url controller=TranslationsAdmin id=null}">
+                            {include file='svg_icon.tpl' svgId='return'}
+                            <span>{$btr->general_back|escape}</span>
+                        </a>
                     {/if}
                 </div>
             </div>
@@ -59,9 +62,6 @@
                     {if $message_error == 'label_empty'}{$btr->translation_empty|escape}{/if}
                     {if $message_error == 'label_exists'}{$btr->translation_used|escape}{/if}
                     {if $message_error == 'label_is_class'}{$btr->translation_not_allowed|escape}{/if}
-                    {if $smarty.get.return}
-                        <a class="button" href="{url controller=TranslationsAdmin}">{$btr->general_back|escape}</a>
-                    {/if}
                 </div>
             </div>
         </div>

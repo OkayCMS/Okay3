@@ -6,7 +6,7 @@
     <div class="col-lg-7 col-md-7">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
-                {$btr->general_categories|escape}
+                {$btr->general_categories|escape} - {$categoriesCount}
             </div>
             <div class="box_btn_heading">
                 <a class="btn btn_small btn-info" href="{url controller=CategoryAdmin return=$smarty.server.REQUEST_URI}">

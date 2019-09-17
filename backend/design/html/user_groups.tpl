@@ -6,7 +6,7 @@
     <div class="col-lg-8 col-md-8">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
-                {$btr->user_groups_groups|escape} ({$groups|count})
+                {$btr->user_groups_groups|escape} - {$groups|count}
             </div>
             <div class="box_btn_heading">
                 <a class="btn btn_small btn-info" href="index.php?controller=UserGroupAdmin&return={$smarty.server.REQUEST_URI}">

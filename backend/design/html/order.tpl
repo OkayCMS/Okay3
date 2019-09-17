@@ -592,9 +592,9 @@ $(function() {
                 var msg = "";
                 if(data){
                     elem.closest(".fn_ajax_label_wrapper").find(".fn_order_labels").html(data.data);
-                    toastr.success(msg, "Success");
+                    toastr.success(msg, "{/literal}{$btr->toastr_success|escape}{literal}");
                 } else {
-                    toastr.error(msg, "Error");
+                    toastr.error(msg, "{/literal}{$btr->toastr_error|escape}{literal}");
 
                 }
             }

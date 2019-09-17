@@ -90,6 +90,8 @@ class CommentsEntity extends Entity
         foreach ((array)$ids as $id) {
             $this->setLastModifyEntities($id);
         }
+
+        return true;
     }
     
     private function setLastModifyEntities($commentId)

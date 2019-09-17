@@ -6,7 +6,7 @@
     <div class="col-lg-7 col-md-7">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
-               {$btr->callbacks_requests|escape} ({$callbacks_count})
+               {$btr->callbacks_requests|escape} - {$callbacks_count}
             </div>
         </div>
     </div>

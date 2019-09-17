@@ -14,7 +14,6 @@ class FeaturesEntity extends Entity
         'id',
         'position',
         'in_filter',
-        'yandex',
         'auto_name_id',
         'auto_value_id',
         'url',
