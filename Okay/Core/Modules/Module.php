@@ -7,7 +7,7 @@ namespace Okay\Core\Modules;
 class Module
 {
     const COMMON_MODULE_NAMESPACE = 'Okay\\Modules';
-    const COMMON_MODULE_DIRECTORY = __DIR__.'/../../Modules/';
+    const COMMON_MODULE_DIRECTORY = 'Okay/Modules/';
 
     /**
      * Получить базовую область видимости для указанного модуля
@@ -82,7 +82,7 @@ class Module
             throw new \Exception('Module "'.$vendor.'/'.$moduleName.'" not exists');
         }
 
-        return rtrim(realpath($dir), '/') . '/';
+        return rtrim($dir, '/') . '/';
     }
 
     /**

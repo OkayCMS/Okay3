@@ -106,7 +106,7 @@
                     </div>
                     {* Link to registration *}
                     <div class="form__footer">
-                        <div id="uLogin" data-ulogin="display=panel;theme=classic;fields=first_name,last_name,email;providers=facebook,google,yandex,vkontakte;mobilebuttons=0;"></div>
+                        <div id="uLogin" data-ulogin="display=panel;theme=flat;fields=first_name,last_name,email;providers=facebook,google;mobilebuttons=0;"></div>
                     </div>
                 </div>
             </div>

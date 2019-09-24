@@ -139,6 +139,16 @@ switch ($object) {
         break;
 }
 
+if (empty($entity)) {
+    /** @var Okay\Core\Modules\UpdateObject $updateObject */
+    $updateObject = $DI->get(\Okay\Core\Modules\UpdateObject::class);
+    $moduleEntityObject = $updateObject->getByAlias($object);
+
+    if (!empty($moduleEntityObject) && $managers->access($moduleEntityObject->permission, $manager)) {
+        $entity = $entityFactory->get($moduleEntityObject->entityName);
+    }
+}
+
 if (!empty($entity)) {
     $result = $entity->update($id, $values);
 }

@@ -79,6 +79,10 @@ class UserController extends AbstractController
     
     public function login(UsersEntity $usersEntity)
     {
+        if (!empty($this->user->id)) {
+            $this->response->redirectTo(Router::generateUrl('user', [], true));
+        }
+
         if ($this->request->method('post')) {
             $email    = $this->request->post('email');
             $password = $this->request->post('password');
@@ -100,6 +104,10 @@ class UserController extends AbstractController
     
     public function register(UsersEntity $usersEntity, Validator $validator)
     {
+        if (!empty($this->user->id)) {
+            $this->response->redirectTo(Router::generateUrl('user', [], true));
+        }
+
         if ($this->request->method('post') && $this->request->post('register')) {
             $user = new \stdClass();
             $user->last_ip  = $_SERVER['REMOTE_ADDR'];

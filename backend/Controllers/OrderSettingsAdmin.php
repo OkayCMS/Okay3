@@ -49,7 +49,6 @@ class OrderSettingsAdmin extends IndexAdmin
                 $current_status = $this->request->post('name');
                 $status_1c = $this->request->post('status_1c');
                 $is_close = $this->request->post('is_close');
-                $ids_status = $this->request->post('id');
                 $colors_status = $this->request->post('color');
                 foreach ($current_status as $id=>$value) {
                     $update_status = new \stdClass();
@@ -61,25 +60,15 @@ class OrderSettingsAdmin extends IndexAdmin
                 }
             }
 
-            // Действия с выбранными
-            $ids = $this->request->post('check');
-            if (is_array($ids)) {
-                switch($this->request->post('action')) {
-                    case 'delete': {
-                        $result = [];
-                        /*Удалить статус*/
-                        foreach($ids as $id) {
-                            $result[$id][] = $orderStatusEntity->delete($id);
-                        }
-                        $this->design->assign("error_status", $result);
-                        break;
-                    }
-                }
+            $idsToDelete = $this->request->post('check');
+            if (!empty($idsToDelete) && $orderStatusEntity->count() > 1) {
+                $result = $orderStatusEntity->delete($idsToDelete);
+                $this->design->assign("error_status", $result);
             }
         }
         // Отображение
         $ordersStatuses = $orderStatusEntity->find();
-        $this->design->assign('orders_status', $ordersStatuses);
+        $this->design->assign('orders_statuses', $ordersStatuses);
 
         /*Метки заказов*/
         if ($this->request->post('labels')) {
@@ -121,15 +110,9 @@ class OrderSettingsAdmin extends IndexAdmin
             }
 
             // Действия с выбранными
-            $ids = $this->request->post('check');
-            if (is_array($ids)) {
-                switch ($this->request->post('action')) {
-                    case 'delete': {
-                        /*Удалить метку*/
-                        $orderLabelsEntity->delete($ids);
-                        break;
-                    }
-                }
+            $idToDelete = $this->request->post('check');
+            if (!empty($ids)) {
+                $orderLabelsEntity->delete($idToDelete);
             }
         }
         // Отображение

@@ -109,28 +109,37 @@ class ProductsLogic
         $featuresValues = [];
         $features = [];
         foreach ($featuresValuesEntity->find($featuresFilter) as $fv) {
-            $featuresValues[$fv->id] = $fv;
+            $featuresValues[$fv->feature_id][$fv->id] = $fv;
         }
         
         foreach ($featuresEntity->find($featuresFilter) as $f) {
             $features[$f->id] = $f;
         }
 
-        foreach ($featuresValuesEntity->getProductValuesIds($productsIds) as $pv) {
-            if (isset($featuresValues[$pv->value_id])) {
-                $featureValue = $featuresValues[$pv->value_id];
-                if (!isset($products[$pv->product_id]->features[$featureValue->feature_id])) {
-                    $products[$pv->product_id]->features[$featureValue->feature_id] = clone $features[$featureValue->feature_id];
+        $productsValuesIds = [];
+        foreach ($featuresValuesEntity->getProductValuesIds($productsIds) as $productValueId) {
+            $productsValuesIds[$productValueId->value_id][] = $productValueId->product_id;
+        }
+        
+        foreach ($features as $feature) {
+            if (isset($featuresValues[$feature->id])) {
+                foreach ($featuresValues[$feature->id] as $featureValue) {
+                    if (isset($productsValuesIds[$featureValue->id])) {
+                        foreach ($productsValuesIds[$featureValue->id] as $productId) {
+                            if (!isset($products[$productId]->features[$featureValue->feature_id])) {
+                                $products[$productId]->features[$featureValue->feature_id] = clone $features[$featureValue->feature_id];
+                            }
+                            $products[$productId]->features[$featureValue->feature_id]->values[] = $featureValue;
+                        }
+                    }
                 }
-                $products[$pv->product_id]->features[$featureValue->feature_id]->values[] = $featureValue;
             }
         }
 
-        foreach($products as $p) {
+        foreach ($products as $p) {
             if (!empty($p->features)) {
                 foreach ($p->features as $feature) {
                     $values = [];
-
                     foreach ($feature->values as $featureValue) {
                         $values[] = $featureValue->value;
                     }

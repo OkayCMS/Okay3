@@ -16,11 +16,16 @@ use Okay\Core\Config;
 use Okay\Core\Managers;
 use Okay\Entities\ManagersEntity;
 use Okay\Core\EntityFactory;
+use Okay\Core\Modules\Modules;
 
 require_once('vendor/autoload.php');
 $DI = include 'Okay/Core/config/container.php';
 
 $smartyPlugins = include_once 'Okay/Core/SmartyPlugins/SmartyPlugins.php';
+
+/** @var Modules $modules */
+$modules = $DI->get(Modules::class);
+$modules->startEnabledModules();
 
 /** @var EntityFactory $entityFactory */
 $entityFactory = $DI->get(EntityFactory::class);

@@ -155,7 +155,7 @@
                     <span class="filter__name_arrow">{include file="svg.tpl" svgId="arrow_right"}</span>
                 </div>
                 
-                <div class="filter__group feature_content">
+                <div class="fn_view_content filter__group feature_content">
                     {* Display all brands *}
                     <div class="filter__item">
                         <form method="post">
@@ -200,7 +200,7 @@
                     {/foreach}
                     {if $b_count > 4}
                         <div class="box_view_all_feature">
-                            <a class="view_all_feature" href="">{$lang->filter_view_show|escape}</a>
+                            <a class="fn_view_all view_all_feature" href="">{$lang->filter_view_show|escape}</a>
                         </div>
                     {/if}
                 </div>
@@ -213,7 +213,7 @@
                         <span data-feature="{$f->id}">{$f->name|escape}</span>
                         <span class="filter__name_arrow">{include file="svg.tpl" svgId="arrow_right"}</span>
                     </div>
-                    <div class="filter__group feature_content">
+                    <div class="fn_view_content filter__group feature_content">
                         {* Display all features *}
                         <div class="filter__item">
                             <form method="post">
@@ -260,7 +260,7 @@
                         {/foreach}
                         {if $f_count > 4}
                         <div class="box_view_all_feature">
-                            <a class="view_all_feature" href="">{$lang->filter_view_show|escape}</a>
+                            <a class="fn_view_all view_all_feature" href="">{$lang->filter_view_show|escape}</a>
                         </div>
                     {/if}
                     </div>

@@ -91,12 +91,7 @@ session_write_close();
 unset($_SESSION['lang_id']);
 unset($_SESSION['admin_lang_id']);
 
-// ›ÍÒÂÎ¸ ÍÛ¯‡ÂÚ ÚÓÎ¸ÍÓ 1251
-setlocale(LC_ALL, 'ru_RU.1251');
-$sqlQuery = $queryFactory->newSqlQuery()->setStatement('SET NAMES cp1251');
-$db->query($sqlQuery);
-
-// —Ú‡ÌËˆ‡, ÍÓÚÓÛ˛ ˝ÍÒÔÓÚËÛÂÏ
+// –°—Ç—Ä–∞–Ω–∏—Ü–∞, –∫–æ—Ç–æ—Ä—É—é —ç–∫—Å–ø–æ—Ä—Ç–∏—Ä—É–µ–º
 $page = $request->get('page');
 if(empty($page) || $page==1) {
     $page = 1;
@@ -105,7 +100,7 @@ if(empty($page) || $page==1) {
     }
 }
 
-// ŒÚÍ˚‚‡ÂÏ Ù‡ÈÎ ˝ÍÒÔÓÚ‡ Ì‡ ‰Ó·‡‚ÎÂÌËÂ
+// –û—Ç–∫—Ä—ã–≤–∞–µ–º —Ñ–∞–π–ª —ç–∫—Å–ø–æ—Ä—Ç–∞ –Ω–∞ –¥–æ–±–∞–≤–ª–µ–Ω–∏–µ
 $f = fopen($exportFilesDir.$filename, 'ab');
 
 $filter = ['page'=>$page, 'limit'=>$productsCount];
@@ -117,14 +112,14 @@ if ($brandId = $request->get('brand_id', 'integer')) {
     $filter['brand_id'] = $brandId;
 }
 
-// ›ÍÒÔÓÚËÛÂÏ Ò‚ÓÈÒÚ‚‡
+// –≠–∫—Å–ø–æ—Ä—Ç–∏—Ä—É–µ–º —Å–≤–æ–π—Å—Ç–≤–∞
 $featuresFilter['limit'] = $featuresEntity->count($featuresFilter);
 $features = $featuresEntity->find($featuresFilter);
 foreach($features as $feature) {
     $columnsNames[$feature->name] = $feature->name;
 }
 
-// ≈ÒÎË Ì‡˜‡ÎË ÒÌ‡˜‡Î‡ - ‰Ó·‡‚ËÏ ‚ ÔÂ‚Û˛ ÒÚÓÍÛ Ì‡Á‚‡ÌËˇ ÍÓÎÓÌÓÍ
+// –ï—Å–ª–∏ –Ω–∞—á–∞–ª–∏ —Å–Ω–∞—á–∞–ª–∞ - –¥–æ–±–∞–≤–∏–º –≤ –ø–µ—Ä–≤—É—é —Å—Ç—Ä–æ–∫—É –Ω–∞–∑–≤–∞–Ω–∏—è –∫–æ–ª–æ–Ω–æ–∫
 if($page == 1) {
     fputcsv($f, $columnsNames, $columnDelimiter);
 }
@@ -146,7 +141,7 @@ foreach ($featuresValuesEntity->getProductValuesIds($productsIds) as $pv) {
     $productsValues[$pv->product_id][$pv->value_id] = $pv->value_id;
 }
 
-// ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
+// –ó–Ω–∞—á–µ–Ω–∏—è —Å–≤–æ–π—Å—Ç–≤ —Ç–æ–≤–∞—Ä–∞
 foreach($products as $pId=>&$product) {
 
     if (isset($productsValues[$pId])) {
@@ -170,21 +165,21 @@ foreach($products as $pId=>&$product) {
         $path = [];
         $cat = $categoriesEntity->get((int)$category->category_id);
         if(!empty($cat)) {
-            // ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
+            // –í—ã—á–∏—Å–ª—è–µ–º —Å–æ—Å—Ç–∞–≤–ª—è—é—â–∏–µ –∫–∞—Ç–µ–≥–æ—Ä–∏–∏
             foreach($cat->path as $p) {
                 $path[] = str_replace($subcategoryDelimiter, '\\'.$subcategoryDelimiter, $p->name);
             }
-            // ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
+            // –î–æ–±–∞–≤–ª—è–µ–º –∫–∞—Ç–µ–≥–æ—Ä–∏—é –∫ —Ç–æ–≤–∞—Ä—É
             $categories[] = implode('/', $path);
         }
     }
     $product['category'] = implode(',, ', $categories);
 }
 
-// »ÁÓ·‡ÊÂÌËˇ ÚÓ‚‡Ó‚
+// –ò–∑–æ–±—Ä–∞–∂–µ–Ω–∏—è —Ç–æ–≤–∞—Ä–æ–≤
 $images = $imagesEntity->find(['product_id'=>array_keys($products)]);
 foreach($images as $image) {
-    // ƒÓ·‡‚ÎˇÂÏ ËÁÓ·‡ÊÂÌËˇ Í ÚÓ‚‡Û ˜ÂÁÂ Á‡ÔˇÚÛ˛
+    // –î–æ–±–∞–≤–ª—è–µ–º –∏–∑–æ–±—Ä–∞–∂–µ–Ω–∏—è –∫ —Ç–æ–≤–∞—Ä—É —á–µ–∑–µ—Ä –∑–∞–ø—è—Ç—É—é
     if(empty($products[$image->product_id]['images'])) {
         $products[$image->product_id]['images'] = $image->filename;
     } else {
@@ -248,10 +243,12 @@ foreach($products as &$product) {
 $totalProducts = $productsEntity->count($filter);
 fclose($f);
 
-if($productsCount*$page < $totalProducts) {
+if ($productsCount*$page < $totalProducts) {
     $data = ['end'=>false, 'page'=>$page, 'totalpages'=>$totalProducts/$productsCount];
 } else {
     $data = ['end'=>true, 'page'=>$page, 'totalpages'=>$totalProducts/$productsCount];
+    // –≠–∫—Å–µ–ª—å –∫—É—à–∞–µ—Ç —Ç–æ–ª—å–∫–æ 1251, –ø–æ—ç—Ç–æ–º—É –∫–æ–Ω–≤–µ—Ä—Ç–∏—Ä—É–µ–º —Ñ–∞–π–ª
+    file_put_contents($exportFilesDir.$filename, iconv( "utf-8", "windows-1251//IGNORE", file_get_contents($exportFilesDir.$filename)));
 }
 
 if($data) {

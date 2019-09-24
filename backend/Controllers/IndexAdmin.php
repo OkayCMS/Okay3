@@ -185,6 +185,11 @@ class IndexAdmin
         $langId = $languages->getLangId();
         $design->assign('lang_id', $langId);
         
+        $mainLanguage = $languages->getMainLanguage();
+        if (!empty($mainLanguage->id)) {
+            $design->assign('main_lang_id', $mainLanguage->id);
+        }
+        
         if (!empty($this->manager)) {
             // Перевод админки
             $file = "backend/lang/" . $this->manager->lang . ".php";

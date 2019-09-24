@@ -200,8 +200,8 @@ class BrandsEntity extends Entity
         }
 
         $update = $this->queryFactory->newUpdate();
-        $update->table('__products')
-            ->set('brand_id', null)
+        $update->table(ProductsEntity::getTable())
+            ->set('brand_id', 0)
             ->where('brand_id IN (:brands_ids)')
             ->bindValue('brands_ids', $ids);
         $this->db->query($update);

@@ -3,6 +3,7 @@ $version = "9.14.0";
 if(!empty($_SERVER['HTTP_USER_AGENT'])){
     session_name(md5($_SERVER['HTTP_USER_AGENT']));
 }
+session_start();
 
 mb_internal_encoding('UTF-8');
 mb_http_output('UTF-8');

@@ -7,12 +7,15 @@ class Recaptcha
 
     private $settings;
 
+    private $request;
+
     private $secret_key;
     private $url = 'https://www.google.com/recaptcha/api/siteverify';
 
-    public function __construct(Settings $settings)
+    public function __construct(Settings $settings, Request $request)
     {
         $this->settings = $settings;
+        $this->request  = $request;
         
         switch ($this->settings->captcha_type) {
             case 'invisible':

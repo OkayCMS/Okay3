@@ -20,14 +20,9 @@
             <div class="block--boxed block--border boxed--stretch d-sm-flex justify-content-between">
                 {if $product->images}
                     {* Main product image *}
-                    <div class="fn_gallery_image gallery_image product-page__image f_row justify-content-center">
+                    <div class="gallery_image product-page__image f_row justify-content-center">
                         <div class="product-page__img">
-                            {if $product->image}
-                               <img class="fn_img fn_xzoom-fancy product_img xzoom4" xoriginal="{$product->image->filename|resize:1200:1000:w}" itemprop="image" src="{$product->image->filename|resize:800:550}" alt="{$product->name|escape}" title="{$product->name|escape}">
-                            {else}
-                                <img class="fn_img" src="design/{get_theme}/images/no_image.png" width="340" height="340" alt="{$product->name|escape}"/>
-                            {/if}
-
+                            <img class="fn_img fn_xzoom-fancy product_img xzoom4" xoriginal="{$product->image->filename|resize:1200:1000:w}" itemprop="image" src="{$product->image->filename|resize:800:550}" alt="{$product->name|escape}" title="{$product->name|escape}">
 
                             {if $product->featured || $product->special || $product->variant->compare_price}
                                 <div class="stickers stickers_product-page">
@@ -62,9 +57,9 @@
                         </a>
                     {/if}
                 {else}
-                <div class="product-page__no_image d-flex align-items-center justify-content-center" title="{$product->name|escape}">
-                    {include file="svg.tpl" svgId="no_image"}
-                </div>
+                    <div class="product-page__no_image d-flex align-items-center justify-content-center" title="{$product->name|escape}">
+                        {include file="svg.tpl" svgId="no_image"}
+                    </div>
                 {/if}
             </div>
         </div>
@@ -252,14 +247,14 @@
                 <div class="details_boxed__item">
                     <div class="fn_accordion accordion">
                         {* Delivery *}
-                        <div class="accordion__item"> 
-                            <div class="accordion__title">
+                        <div class="accordion__item visible">
+                            <div class="accordion__title active">
                                 <div class="accordion__header">
                                     <i class="mdi mdi-truck-fast"></i>
                                     <span data-language="product_delivery">{$lang->product_delivery}</span>
                                 </div>
                             </div>
-                            <div class="accordion__content">
+                            <div class="accordion__content" style="display: block;">
                                 <div class="">
                                     {$settings->product_deliveries}
                                 </div>

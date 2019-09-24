@@ -5,12 +5,13 @@ namespace Okay\Core\Modules;
 
 
 use Okay\Core\Database;
-use Okay\Core\OkayContainer\OkayContainer;
 use Okay\Core\QueryFactory;
+use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\Css as TemplateCss;
+use Okay\Core\TemplateConfig\Js as TemplateJs;
 use Okay\Entities\ManagersEntity;
 use Okay\Entities\ModulesEntity;
 use Okay\Core\EntityFactory;
-use Okay\Core\Router;
 use OkayLicense\License;
 
 class Modules // todo подумать, мож сюда переедит CRUD Entity/Modules
@@ -38,6 +39,11 @@ class Modules // todo подумать, мож сюда переедит CRUD En
      * @var Database
      */
     private $db;
+
+    /**
+     * @var TemplateConfig
+     */
+    private $templateConfig;
     
     /** @var array список контроллеров бекенда */
     private $backendControllersList = [];
@@ -47,13 +53,15 @@ class Modules // todo подумать, мож сюда переедит CRUD En
         License $license,
         Module $module,
         QueryFactory $queryFactory,
-        Database $database
+        Database $database,
+        TemplateConfig $templateConfig
     ) {
         $this->entityFactory = $entityFactory;
         $this->module = $module;
         $this->license = $license;
         $this->queryFactory = $queryFactory;
         $this->db = $database;
+        $this->templateConfig = $templateConfig;
         
     }
     
@@ -95,10 +103,31 @@ class Modules // todo подумать, мож сюда переедит CRUD En
         }
         
         $this->db->query($select);
-        $enabledModules = $this->db->results();
+        $modules = $this->db->results();
 
-        foreach ($enabledModules as $module) {
+        foreach ($modules as $module) {
+            $moduleThemesDir = $this->module->getModuleDirectory($module->vendor, $module->module_name) . 'design/';
             $this->backendControllersList = array_merge($this->backendControllersList, $this->license->startModule($module->id, $module->vendor, $module->module_name));
+            if (file_exists($moduleThemesDir . 'css.php') && ($moduleCss = include $moduleThemesDir . 'css.php') && is_array($moduleCss)) {
+                
+                /** @var TemplateCss $cssItem */
+                foreach ($moduleCss as $cssItem) {
+                    if ($cssItem->getDir() === null) {
+                        $cssItem->setDir($moduleThemesDir . 'css/');
+                    }
+                    $this->templateConfig->registerCss($cssItem);
+                }
+            }
+            if (file_exists($moduleThemesDir . 'js.php') && ($moduleJs = include $moduleThemesDir . 'js.php') && is_array($moduleJs)) {
+                
+                /** @var TemplateJs $moduleJs */
+                foreach ($moduleJs as $jsItem) {
+                    if ($jsItem->getDir() === null) {
+                        $jsItem->setDir($moduleThemesDir . 'js/');
+                    }
+                    $this->templateConfig->registerJs($jsItem);
+                }
+            }
         }
     }
     

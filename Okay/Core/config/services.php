@@ -28,6 +28,9 @@ use Okay\Logic\MoneyLogic;
 use Okay\Core\Modules\Module;
 use Okay\Core\Modules\Modules;
 use Okay\Core\Modules\Installer;
+use Okay\Core\Modules\SqlPresentor;
+use Okay\Core\Modules\EntityMigrator;
+use Okay\Core\Modules\UpdateObject;
 
 $services = [
     BRouter::class => [
@@ -233,6 +236,7 @@ $services = [
         'class' => Recaptcha::class,
         'arguments' => [
             new SR(Settings::class),
+            new SR(Request::class),
         ],
     ],
     Managers::class => [
@@ -303,6 +307,7 @@ $services = [
             new SR(Module::class),
             new SR(QueryFactory::class),
             new SR(Database::class),
+            new SR(TemplateConfig::class),
         ],
     ],
     Installer::class => [
@@ -319,6 +324,20 @@ $services = [
             new SR(Settings::class),
             new SR(EntityFactory::class),
         ],
+    ],
+    EntityMigrator::class => [
+        'class' => EntityMigrator::class,
+        'arguments' => [
+            new SR(Database::class),
+            new SR(QueryFactory::class),
+            new SR(SqlPresentor::class),
+        ],
+    ],
+    SqlPresentor::class => [
+        'class' => SqlPresentor::class,
+    ],
+    UpdateObject::class => [
+        'class' => UpdateObject::class,
     ],
 
     //> Logic classes

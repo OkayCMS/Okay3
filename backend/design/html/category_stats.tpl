@@ -36,29 +36,23 @@
                                     <form class="date_filter row" method="get">
                                         <input type="hidden" name="controller" value="CategoryStatsAdmin" />
                                         <div class="col-md-5 col-lg-5 pr-0 pl-0">
-                                            <div class="input-group mobile_input-group">
+                                            <div class="input-group mobile_input-group input-group--date">
                                                 <span class=" input-group-addon-date">{$btr->general_from|escape}</span>
                                                 {if $is_mobile || $is_tablet}
                                                     <input type="date" class="fn_from_date form-control" name="date_from" value="{$date_from}" autocomplete="off">
                                                     {else}
                                                     <input type="text" class="fn_from_date form-control" name="date_from" value="{$date_from}" autocomplete="off">
                                                 {/if}
-                                                <div class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-5 col-lg-5 pr-0 pl-0">
-                                            <div class="input-group mobile_input-group">
+                                            <div class="input-group mobile_input-group input-group--date">
                                                 <span class=" input-group-addon-date">{$btr->general_to|escape}</span>
                                                 {if $is_mobile || $is_tablet}
                                                     <input type="date" class="fn_to_date form-control" name="date_to" value="{$date_to}" autocomplete="off">
                                                     {else}
                                                     <input type="text" class="fn_to_date form-control" name="date_to" value="{$date_to}" autocomplete="off">
                                                 {/if}
-                                                <div class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-2 pr-0 mobile_text_right">

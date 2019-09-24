@@ -9,6 +9,7 @@ use Okay\Core\Database;
 use Okay\Core\Entity\Entity;
 use Okay\Core\EntityFactory;
 use Okay\Core\Managers;
+use Okay\Core\QueryFactory;
 use Okay\Core\ServiceLocator;
 use Okay\Entities\ModulesEntity;
 
@@ -33,9 +34,18 @@ abstract class AbstractInit
     
     /** @var Database $db */
     private $db;
+
+    /** @var QueryFactory $queryFactory */
+    private $queryFactory;
     
     /** @var ModulesEntitiesFilters $entitiesFilters */
     private $entitiesFilters;
+
+    /** @var EntityMigrator $entityMigrator */
+    private $entityMigrator;
+
+    /** @var UpdateObject $updateObject */
+    private $updateObject;
 
     /**
      * @var int id модуля в базе
@@ -53,17 +63,19 @@ abstract class AbstractInit
             throw new \Exception('"$moduleId" must be integer');
         }
         
-        $serviceLocator      = new ServiceLocator();
-        $this->entityFactory = $serviceLocator->getService(EntityFactory::class);
-        $this->module        = $serviceLocator->getService(Module::class);
-        $this->modules       = $serviceLocator->getService(Modules::class);
-        $this->managers      = $serviceLocator->getService(Managers::class);
-        $this->db            = $serviceLocator->getService(Database::class);
+        $serviceLocator        = new ServiceLocator();
+        $this->entityFactory   = $serviceLocator->getService(EntityFactory::class);
+        $this->queryFactory    = $serviceLocator->getService(QueryFactory::class);
+        $this->entityMigrator  = $serviceLocator->getService(EntityMigrator::class);
+        $this->module          = $serviceLocator->getService(Module::class);
+        $this->modules         = $serviceLocator->getService(Modules::class);
+        $this->managers        = $serviceLocator->getService(Managers::class);
+        $this->db              = $serviceLocator->getService(Database::class);
         $this->entitiesFilters = $serviceLocator->getService(ModulesEntitiesFilters::class);
-        $this->moduleId      = $moduleId;
-        $this->vendor        = $vendor;
-        $this->moduleName    = $moduleName;
-        
+        $this->updateObject    = $serviceLocator->getService(UpdateObject::class);
+        $this->moduleId        = $moduleId;
+        $this->vendor          = $vendor;
+        $this->moduleName      = $moduleName;
     }
 
     /**
@@ -75,24 +87,57 @@ abstract class AbstractInit
      * Метод, который вызывается для каждого модуля во время каждого запуска системы
      */
     abstract public function init();
-    
+
+    /**
+     * Метод расширяет коллекцию объектов доступную для использования в файле ajax/update_object.php,
+     * который обновляет определенноую по алиасу сущность повредством AJAX запроса из админ панели сайта
+     *
+     * @param $alias - уникальный псевдоним, который идентифицирует сущность (указывается в атрибуте data-controller="алиас" тега в админ панели)
+     * @param $permission - права доступа к псевдониму для менеджера
+     * @param $entityClassName - полное имя сущности, которая будет обновляться
+     * @throws \Exception
+     */
+    protected function registerUpdateObject($alias, $permission, $entityClassName)
+    {
+        $this->updateObject->register($alias, $permission, $entityClassName);
+    }
+
     protected function registerEntityFilter($entityClassName, $filterName, $filterClassName, $filterMethod)
     {
         $this->entitiesFilters->registerFilter($entityClassName, $filterName, $filterClassName, $filterMethod);
     }
-    
-    protected function registerEntityField(EntityField $field)
+
+    protected function migrateEntityTable($entityClassName, $field)
     {
-        $field->changeDatabase();
-        
-        /** @var Entity $entityClass */
-        $entityClass = $field->getEntityClass();
-        if ($field->getIsLang() === true) {
-            $entityClass::addLangField($field->getName());
-        } else {
-            $entityClass::addField($field->getName());
+        $this->entityMigrator->migrateTable($entityClassName, $field);
+    }
+
+    protected function registerEntityField($entityClassName, EntityField $field)
+    {
+        $this->entityMigrator->migrateField($entityClassName, $field);
+
+        /** @var Entity $entityClassName */
+        if ($field->isLangField()) {
+            $entityClassName::addLangField($field->getName());
+            return;
         }
-        
+
+        $entityClassName::addField($field->getName());
+    }
+
+    protected function registerEntityFields($entityClassName, $fields)
+    {
+        /** @var Entity $entityClassName */
+        $this->entityMigrator->migrateFieldSet($entityClassName, (array) $fields);
+
+        /** @var EntityField $field */
+        foreach($fields as $field) {
+            if ($field->isLangField()) {
+                $entityClassName::addLangField($field->getName());
+            } else {
+                $entityClassName::addField($field->getName());
+            }
+        }
     }
     
     /**
@@ -179,5 +224,4 @@ abstract class AbstractInit
         
         return true;
     }
-    
 }

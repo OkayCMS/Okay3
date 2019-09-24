@@ -306,7 +306,7 @@ class ProductAdmin extends IndexAdmin
                     
                     // Характеристики товара
                     // Удалим все значения свойств товара
-                    $featuresValuesEntity->deleteProductValue($product->id,1,3);
+                    $featuresValuesEntity->deleteProductValue($product->id);
                     if ($featuresValues = $this->request->post('features_values')) {
                         $featuresValuesText = $this->request->post('features_values_text');
                         foreach ($featuresValues as $featureId=>$feature_values) {

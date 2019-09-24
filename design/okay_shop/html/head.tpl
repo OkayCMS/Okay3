@@ -65,7 +65,7 @@
     {if $controller == 'CategoryController' || $controller == 'BrandController' || $controller == 'ProductsController'}
         {if $set_canonical}
             <meta name="robots" content="noindex,nofollow">
-        {elseif $current_page || $sort}
+        {elseif $sort}
             <meta name="robots" content="noindex,follow">
         {elseif isset($smarty.get.keyword)}
             <meta name="robots" content="noindex,follow">
@@ -133,8 +133,8 @@
             <meta property="og:image" content="{$post->image|resize:400:300:false:$config->resized_blog_dir}">
             <link rel="image_src" href="{$post->image|resize:400:300:false:$config->resized_blog_dir}">
         {else}
-            <meta property="og:image" content="{$rootUrl}/design/{get_theme}/images/{$settings->site_logo}">
-            <meta name="twitter:image" content="{$rootUrl}/design/{get_theme}/images/{$settings->site_logo}">
+            <meta property="og:image" content="{$rootUrl}/{$config->design_images}{$settings->site_logo}">
+            <meta name="twitter:image" content="{$rootUrl}/{$config->design_images}{$settings->site_logo}">
         {/if}
         <meta property="og:description" content='{$post->annotation|strip_tags|escape}'>
         {*twitter*}
@@ -146,15 +146,15 @@
         <meta property="og:title" content="{$settings->site_name|escape}">
         <meta property="og:type" content="website">
         <meta property="og:url" content="{$rootUrl}">
-        <meta property="og:image" content="{$rootUrl}/design/{get_theme}/images/{$settings->site_logo}">
+        <meta property="og:image" content="{$rootUrl}/{$config->design_images}{$settings->site_logo}">
         <meta property="og:site_name" content="{$settings->site_name|escape}">
         <meta property="og:description" content="{$meta_description|escape}">
-        <link rel="image_src" href="{$rootUrl}/design/{get_theme}/images/{$settings->site_logo}">
+        <link rel="image_src" href="{$rootUrl}/{$config->design_images}{$settings->site_logo}">
         {*twitter*}
         <meta name="twitter:card" content="summary">
         <meta name="twitter:title" content="{$settings->site_name|escape}">
         <meta name="twitter:description" content="{$meta_description|escape}">
-        <meta name="twitter:image" content="{$rootUrl}/design/{get_theme}/images/{$settings->site_logo}">
+        <meta name="twitter:image" content="{$rootUrl}/{$config->design_images}{$settings->site_logo}">
     {/if}
 
     {* The canonical address of the page *}
@@ -230,7 +230,7 @@
         <script>ut_tracker.end('render:recaptcha');</script>
     {/if}
 
-    <link rel="search" type="application/opensearchdescription+xml" title="OkayCMS {$config->version_type|escape} Search" href="{url_generator route="opensearch" absolute=1}" />
+    <link rel="search" type="application/opensearchdescription+xml" title="{$rootUrl} Search" href="{url_generator route="opensearch" absolute=1}" />
 
     {* Favicon *}
     <link href="{$rootUrl}/{$config->design_images}{$settings->site_favicon}?v={$settings->site_favicon_version}" type="image/x-icon" rel="icon">

@@ -481,21 +481,41 @@ $(function(){
 
     /* Accordion */
     if( $('.fn_accordion').length ) {
-        $(".fn_accordion > .accordion__item:eq(0) .accordion__title").addClass("active").next().slideDown();
+        // $(".fn_accordion > .accordion__item:eq(0) .accordion__title").addClass("active").next().slideDown();
+        //
+        // $(".fn_accordion .accordion__title").click(function(e) {
+        //     var dropDown = $(this).closest(".accordion__item").find(".accordion__content");
+        //
+        //     $(this).closest(".fn_accordion").find(".accordion__content").not(dropDown).slideUp();
+        //
+        //     if ($(this).hasClass("active")) {
+        //         $(this).removeClass("active");
+        //     } else {
+        //         $(this).closest(".accordion").find(".accordion__title.active").removeClass("active");
+        //         $(this).addClass("active");
+        //     }
+        //     dropDown.stop(false, true).slideToggle();
+        //     e.preventDefault();
+        // });
 
-        $(".fn_accordion .accordion__title").click(function(e) {
-            var dropDown = $(this).closest(".accordion__item").find(".accordion__content");
 
-            $(this).closest(".fn_accordion").find(".accordion__content").not(dropDown).slideUp();
+        $(".fn_accordion").on('click', '.accordion__title', function() {
+            var outerBox = $(this).parents('.fn_accordion');
+            var target = $(this).parents('.accordion__item');
 
-            if ($(this).hasClass("active")) {
-                $(this).removeClass("active");
-            } else {
-                $(this).closest(".accordion").find(".accordion__title.active").removeClass("active");
-                $(this).addClass("active");
+            if($(this).hasClass('active')!==true){
+                $(outerBox).find('.accordion__item .accordion__title').removeClass('active');
             }
-            dropDown.stop(false, true).slideToggle();
-            e.preventDefault();
+
+            if ($(this).next('.accordion__content').is(':visible')){
+                return false;
+            }else{
+                $(this).addClass('active');
+                $(outerBox).children('.accordion__item').removeClass('visible');
+                $(outerBox).find('.accordion__item').children('.accordion__content').slideUp(300);
+                target.addClass('visible');
+                $(this).next('.accordion__content').slideDown(300);
+            }
         });
     }
 
@@ -1017,3 +1037,4 @@ $.fn.rater.rate = function ($this, opts, rating) {
         });
     });
 };
+

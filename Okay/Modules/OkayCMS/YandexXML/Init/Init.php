@@ -24,21 +24,21 @@ class Init extends AbstractInit
     
     public function init()
     {
-        $field = new EntityField(CategoriesEntity::class, self::TO_FEED_FIELD);
+        $field = new EntityField(self::TO_FEED_FIELD);
         $field->setTypeTinyInt(1);
-        $this->registerEntityField($field);
+        $this->registerEntityField(CategoriesEntity::class, $field);
         
-        $field = new EntityField(BrandsEntity::class, self::TO_FEED_FIELD);
+        $field = new EntityField(self::TO_FEED_FIELD);
         $field->setTypeTinyInt(1);
-        $this->registerEntityField($field);
+        $this->registerEntityField(BrandsEntity::class, $field);
         
-        $field = new EntityField(ProductsEntity::class, self::TO_FEED_FIELD);
+        $field = new EntityField(self::TO_FEED_FIELD);
         $field->setTypeTinyInt(1);
-        $this->registerEntityField($field);
+        $this->registerEntityField(ProductsEntity::class, $field);
         
-        $field = new EntityField(ProductsEntity::class, self::NOT_TO_FEED_FIELD);
+        $field = new EntityField(self::NOT_TO_FEED_FIELD);
         $field->setTypeTinyInt(1);
-        $this->registerEntityField($field);
+        $this->registerEntityField(ProductsEntity::class, $field);
         
         $this->registerBackendController('YandexXmlAdmin');
         $this->addBackendControllerPermission('YandexXmlAdmin', self::FEED_UPLOAD_FIELD);

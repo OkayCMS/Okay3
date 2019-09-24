@@ -281,14 +281,19 @@
                         <span data-language="index_categories">{$lang->index_categories}</span>
                         <span class="fn_switch_parent footer__title_arrow hidden-lg-up">{include file="svg.tpl" svgId="arrow_right"}</span>
                     </div>
-                    <div class="footer__content footer__menu hidden-md-down">
+                    <div class="fn_view_content footer__content footer__menu hidden-md-down">
+                        {$c_count = 0}
                         {foreach $categories as $c}
+                            {$c_count = $c_count+1}
                             {if $c->visible}
-                                <div class="footer__menu_item">
-                                    <a class="footer__menu_link" href="{url_generator route="category" url=$c->url}">{$c->name|escape}</a>
+                                <div class="footer__menu_item {if $c_count > 5}closed{else}opened{/if}">
+                                    <a class="footer__menu_link" href="{url_generator route='category' url=$c->url}">{$c->name|escape}</a>
                                 </div>
                             {/if}
                         {/foreach}
+                        {if $c_count > 5}
+                            <a class="fn_view_all footer__view_all" href="">{$lang->filter_view_show|escape}</a>
+                        {/if}
                     </div>
                 </div>
                 {* Subscribing *}

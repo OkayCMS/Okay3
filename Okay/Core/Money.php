@@ -31,6 +31,12 @@ class Money
         $coef = 1;
         if (isset($_SESSION['currency_id']) && $mainCurrency->id != $_SESSION['currency_id']) {
             $currency = $this->entityFactory->get(CurrenciesEntity::class)->get(intval($_SESSION['currency_id']));
+
+            if (empty($currency)) {
+                $_SESSION['currency_id'] = $mainCurrency->id;
+                return $coef;
+            }
+
             $coef = $currency->rate_from / $currency->rate_to;
         }
 

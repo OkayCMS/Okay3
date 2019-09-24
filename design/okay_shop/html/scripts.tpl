@@ -10,6 +10,8 @@
         });
     {/if}
 
+
+
     /* Mobile menu */
     $(function(){
         var $main_nav = $('.fn_mobile_menu');
@@ -27,12 +29,12 @@
         $main_nav.hcOffcanvasNav(defaultData);
     });
 
-    /* Показать все в фильтрах по свойствам */
-    $( document ).on( 'click', '.view_all_feature', function(e) {
-        $(this).closest('.feature_content').toggleClass('opened');
-        $('.view_all_feature').not($(this)).html('{$lang->filter_view_show|escape}');
-        $('.view_all_feature').not($(this)).closest('.feature_content').removeClass('opened');
-        if ($(this).closest('.feature_content').hasClass('opened')) {
+    /* Показать все в фильтрах по свойствам и в футере категории */
+    $( document ).on( 'click', '.fn_view_all', function(e) {
+        $(this).closest('.fn_view_content').toggleClass('opened');
+        $('.fn_view_all').not($(this)).html('{$lang->filter_view_show|escape}');
+        $('.fn_view_all').not($(this)).closest('.fn_view_content').removeClass('opened');
+        if ($(this).closest('.fn_view_content').hasClass('opened')) {
             $(this).html('{$lang->filter_view_hide|escape}');
         } else {
             $(this).html('{$lang->filter_view_show|escape}');

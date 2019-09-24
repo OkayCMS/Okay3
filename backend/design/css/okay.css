@@ -2441,7 +2441,7 @@ label.switch_label {
     text-align: left;
 }
 .okay_list .okay_list_order_stg_lbl_name{
-     width: calc(100% - 170px);
+     width: calc(100% - 120px);
     text-align: left;
 }
 .okay_list .okay_list_order_stg_sts_status{
@@ -2585,6 +2585,32 @@ label.switch_label {
 .okay_list_currency_exchange_item .input-group-qw{vertical-align: middle;}
 .okay_list_boding .bootstrap-select.form-control:not([class*="col-"]) {
     width: auto;
+}
+.input-group--date .form-control{
+    -moz-appearance: none;
+    z-index: 0!important;
+    border-right: 1px solid #ccc!important;
+}
+.input-group--date .form-control:hover {
+    z-index: 0!important;
+}
+.input-group--date:after {
+    content: "\f073";
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    z-index: 1;
+    text-align: center;
+    width: 10%;
+    height: 100%;
+    pointer-events: none;
+    box-sizing: border-box;
+    transition: 0.5s all;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    line-height: 35px;
 }
 .input-group{
     position: relative;
@@ -5896,4 +5922,8 @@ div.mce-fullscreen {
     border-left: 5px solid #C0392B;
     background-color: #F2D7D5;
     color: #C0392B;
+}
+.jssocials-share-odnoklassniki,
+.jssocials-share-vkontakte{
+    display: none!important;
 }

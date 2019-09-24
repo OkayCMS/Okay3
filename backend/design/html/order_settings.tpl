@@ -36,10 +36,6 @@
                         {*Шапка таблицы*}
                         <div class="okay_list_head">
                             <div class="okay_list_boding okay_list_drag"></div>
-                            <div class="okay_list_heading okay_list_check">
-                                <input class="hidden_check fn_check_all" type="checkbox" id="check_all_1" name="" value=""/>
-                                <label class="okay_ckeckbox" for="check_all_1"></label>
-                            </div>
                             <div class="okay_list_heading okay_list_order_stg_sts_name">{$btr->general_name|escape}</div>
                             <div class="okay_list_heading okay_list_order_stg_sts_status">{$btr->order_write_off|escape}</div>
                             <div class="okay_list_heading okay_list_order_stg_sts_status2">{$btr->order_settings_1c_action|escape}</div>
@@ -47,8 +43,8 @@
                             <div class="okay_list_heading okay_list_close"></div>
                         </div>
                         <div class="fn_status_list fn_sort_list okay_list_body sortable">
-                            {if $orders_status}
-                                {foreach $orders_status as $order_status}
+                            {if $orders_statuses}
+                                {foreach $orders_statuses as $order_status}
                                     <div class="fn_row okay_list_body_item">
                                         <div class="okay_list_row fn_sort_item">
                                             <input type="hidden" name="positions[{$order_status->id}]" value="{$order_status->position}">
@@ -57,7 +53,7 @@
                                             <div class="okay_list_boding okay_list_drag move_zone">
                                                 {include file='svg_icon.tpl' svgId='drag_vertical'}
                                             </div>
-                                            <div class="okay_list_boding okay_list_check">
+                                            <div class="okay_list_boding okay_list_check hidden">
                                                 <input class="hidden_check" type="checkbox" id="id_or_{$order_status->id}" name="check[]" value="{$order_status->id}"/>
                                                 <label class="okay_ckeckbox" for="id_or_{$order_status->id}"></label>
                                             </div>
@@ -103,10 +99,12 @@
                                                 <span data-hint="#{$order_status->color}" class="fn_color label_color_item hint-bottom-middle-t-info-s-small-mobile  hint-anim" style="background-color:#{$order_status->color};"></span>
                                             </div>
                                             <div class="okay_list_boding okay_list_close">
-                                                {*delete*}
-                                                <button data-hint="{$btr->order_settings_delete_status|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                                    {include file='svg_icon.tpl' svgId='delete'}
-                                                </button>
+                                                {if count($orders_statuses) > 1}
+                                                    {*delete*}
+                                                    <button data-hint="{$btr->order_settings_delete_status|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
+                                                        {include file='svg_icon.tpl' svgId='delete'}
+                                                    </button>
+                                                {/if}
                                             </div>
                                         </div>
                                     </div>
@@ -117,7 +115,6 @@
                                 <div class="fn_row okay_list_body_item">
                                     <div class="okay_list_row fn_sort_item">
                                         <div class="okay_list_boding okay_list_drag"></div>
-                                        <div class="okay_list_heading okay_list_check"></div>
                                         <div class="okay_list_boding okay_list_order_stg_sts_name">
                                             <input type="text" class="form-control" name="new_name[]" value="">
                                             {if $is_mobile == true}
@@ -164,18 +161,7 @@
 
                         {*Блок массовых действий*}
                         <div class="okay_list_footer">
-                            <div class="okay_list_foot_left">
-                                <div class="okay_list_boding okay_list_drag"></div>
-                                <div class="okay_list_heading okay_list_check">
-                                    <input class="hidden_check fn_check_all" type="checkbox" id="check_all_2" name="" value=""/>
-                                    <label class="okay_ckeckbox" for="check_all_2"></label>
-                                </div>
-                                <div class="okay_list_option">
-                                    <select name="action" class="selectpicker">
-                                        <option value="delete">{$btr->general_delete|escape}</option>
-                                    </select>
-                                </div>
-                            </div>
+                            <div class="okay_list_foot_left"></div>
                             <button type="submit" value="labels" class="btn btn_small btn_blue">
                                 {include file='svg_icon.tpl' svgId='checked'}
                                 <span>{$btr->general_apply|escape}</span>
@@ -210,10 +196,6 @@
                     <div class="okay_list">
                         {*Шапка таблицы*}
                         <div class="okay_list_head">
-                            <div class="okay_list_heading okay_list_check">
-                                <input class="hidden_check fn_check_all" type="checkbox" id="check_all_3" name="" value=""/>
-                                <label class="okay_ckeckbox" for="check_all_3"></label>
-                            </div>
                             <div class="okay_list_heading okay_list_order_stg_lbl_name">{$btr->general_name|escape}</div>
                             <div class="okay_list_heading okay_list_order_stg_sts_label">{$btr->order_settings_colour|escape}</div>
                             <div class="okay_list_heading okay_list_close"></div>
@@ -226,7 +208,7 @@
                                         <input type="hidden" name="positions[{$label->id}]" value="{$label->position}">
                                         <input type="hidden" name="id[]" value="{$label->id}">
 
-                                        <div class="cokay_list_boding okay_list_check">
+                                        <div class="cokay_list_boding okay_list_check hidden">
                                             <input class="hidden_check" type="checkbox" id="id_{$label->id}" name="check[]" value="{$label->id}"/>
                                             <label class="okay_ckeckbox" for="id_{$label->id}"></label>
                                         </div>
@@ -251,7 +233,6 @@
                             {/foreach}
                             <div class="fn_row fn_new_label fn_sort_item okay_list_body_item">
                                 <div class="okay_list_row fn_sort_item">
-                                    <div class="cokay_list_boding okay_list_check"></div>
                                     <div class="okay_list_boding okay_list_order_stg_lbl_name">
                                         <input type="text" class="form-control" name="new_name[]" value="">
                                     </div>
@@ -266,14 +247,9 @@
                         {*Блок массовых действий*}
                         <div class="okay_list_footer ">
                             <div class="okay_list_foot_left">
-                                <div class="okay_list_heading okay_list_check">
+                                <div class="okay_list_heading okay_list_check hidden">
                                     <input class="hidden_check fn_check_all" type="checkbox" id="check_all_4" name="" value=""/>
                                     <label class="okay_ckeckbox" for="check_all_4"></label>
-                                </div>
-                                <div class="okay_list_option">
-                                    <select name="action" class="selectpicker">
-                                        <option value="delete">{$btr->general_delete|escape}</option>
-                                    </select>
                                 </div>
                             </div>
                             <button type="submit" value="labels" class="btn btn_small btn_blue">

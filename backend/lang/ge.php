@@ -439,6 +439,7 @@ $backendTranslations->product_rating = 'პროდუქტის რეიტ
 $backendTranslations->product_rating_number = 'ხმების რაოდენობა:';
 $backendTranslations->product_rating_value = 'რეიტინგის მნიშვნელობა:';
 $backendTranslations->product_updated = 'პროდუქტი შეცვლილია';
+$backendTranslations->product_features_values_change_notice = 'ქონების მართვა ხდება მხოლოდ ძირითად ენაზე. ღირებულების თარგმნა, გადადით ქონების გვერდზე.';
 $backendTranslations->products_add = 'პროდუქტის დამატება';
 $backendTranslations->products_bestsellers = 'გაყიდვების ჰიტები';
 $backendTranslations->products_create_dublicate = 'დუბლიკატის შექმნა';

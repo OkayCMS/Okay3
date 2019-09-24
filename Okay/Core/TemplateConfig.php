@@ -90,7 +90,7 @@ class TemplateConfig
         }
     }
 
-    private function registerCss(TemplateCss $css)
+    public function registerCss(TemplateCss $css)
     {
         // Файл настроек шаблона регистрировать не нужно
         if ($css->getFilename() != $this->themeSettingsFileName && $this->checkFile($css->getFilename(), 'css', $css->getDir()) === true) {
@@ -104,7 +104,7 @@ class TemplateConfig
         }
     }
 
-    private function registerJs(TemplateJs $js)
+    public function registerJs(TemplateJs $js)
     {
         if ($this->checkFile($js->getFilename(), 'js', $js->getDir()) === true) {
             $fullPath = $this->getFullPath($js->getFilename(), 'js', $js->getDir());

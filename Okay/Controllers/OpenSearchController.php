@@ -11,11 +11,11 @@ class OpenSearchController extends AbstractController
     
     
     public function renderXml() {
-        $this->design->setTemplatesDir('xml');
-        $this->design->setCompiledDir('xml/compiled');
+        $this->design->setTemplatesDir('Okay/xml');
+        $this->design->setCompiledDir('Okay/xml/compiled');
         
-        if ($this->settings->site_favicon) {
-            $ext = pathinfo($this->settings->site_favicon, PATHINFO_EXTENSION);
+        if ($this->settings->get('site_favicon')) {
+            $ext = pathinfo($this->settings->get('site_favicon'), PATHINFO_EXTENSION);
             $faviconMime = '';
 
             switch ($ext) {

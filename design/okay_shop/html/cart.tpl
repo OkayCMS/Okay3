@@ -34,27 +34,26 @@
                                             {include file="svg.tpl" svgId="comment_icon"}
                                             <span data-language="cart_form_header">{$lang->cart_form_header}</span>
                                         </div>
-
-                                        {* Form error messages *}
-                                        {if $error}
-                                            <div class="message_error">
-                                                {if $error == 'empty_name'}
-                                                    <span data-language="form_enter_name">{$lang->form_enter_name}</span>
-                                                {/if}
-                                                {if $error == 'empty_email'}
-                                                    <span data-language="form_enter_email">{$lang->form_enter_email}</span>
-                                                {/if}
-                                                {if $error == 'captcha'}
-                                                    <span data-language="form_error_captcha">{$lang->form_error_captcha}</span>
-                                                {/if}
-                                                {if $error == 'empty_phone'}
-                                                    <span data-language="form_error_phone">{$lang->form_error_phone}</span>
-                                                {/if}
-                                            </div>
-                                        {/if}
                                     </div>
 
                                     <div class="form__body">
+                                        {* Form error messages *}
+                                        {if $error}
+                                        <div class="message_error">
+                                            {if $error == 'empty_name'}
+                                            <span data-language="form_enter_name">{$lang->form_enter_name}</span>
+                                            {/if}
+                                            {if $error == 'empty_email'}
+                                            <span data-language="form_enter_email">{$lang->form_enter_email}</span>
+                                            {/if}
+                                            {if $error == 'captcha'}
+                                            <span data-language="form_error_captcha">{$lang->form_error_captcha}</span>
+                                            {/if}
+                                            {if $error == 'empty_phone'}
+                                            <span data-language="form_error_phone">{$lang->form_error_phone}</span>
+                                            {/if}
+                                        </div>
+                                        {/if}
                                         <div class="f_row">
                                             {* User's name *}
                                             <div class="f_col-md-6 f_col-lg-12 f_col-xl-6">

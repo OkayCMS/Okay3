@@ -121,6 +121,18 @@
             <li class="breadcrumbs__item" data-language="breadcrumb_comparison">{$lang->breadcrumb_comparison}</li>
         {elseif $controller == 'WishListController'}
             <li class="breadcrumbs__item" data-language="breadcrumb_wishlist">{$lang->breadcrumb_wishlist}</li>
+        {elseif !empty($breadcrumbs) && is_array($breadcrumbs)}
+            {foreach $breadcrumbs as $url => $name}
+                {if !$name@last}
+                    <li class="breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                        <a itemprop="url" href="{$url|escape}">
+                            <span itemprop="title">{$name|escape}</span>
+                        </a>
+                    </li>
+                {else}
+                    <li class="breadcrumbs__item">{$name|escape}</li>
+                {/if}
+            {/foreach}
         {/if}
     </ol>
 {/if}

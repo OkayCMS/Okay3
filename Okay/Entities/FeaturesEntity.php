@@ -123,7 +123,7 @@ class FeaturesEntity extends Entity
             $productsIds = $this->db->results('product_id');
             if (!empty($productsIds)) {
                 $update = $this->queryFactory->newUpdate();
-                $update->table(Products::getTable())
+                $update->table(ProductsEntity::getTable())
                     ->set('last_modify', 'now()')
                     ->where('id IN (:products_ids)')
                     ->bindValue('products_ids', $productsIds);

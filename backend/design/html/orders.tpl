@@ -84,30 +84,24 @@
                                 <input type="hidden" name="status" value="{$status}">
 
                                 <div class="col-md-5 col-lg-5 pr-0 pl-0">
-                                    <div class="input-group mobile_input-group">
+                                    <div class="input-group mobile_input-group input-group--date">
                                         <span class="input-group-addon-date">{$btr->general_from|escape}</span>
                                         {if $is_mobile || $is_tablet}
                                             <input type="date" class="fn_from_date form-control" name="from_date" value="{$from_date}" autocomplete="off" >
                                         {else}
                                             <input type="text" class="fn_from_date form-control" name="from_date" value="{$from_date}" autocomplete="off" >
                                         {/if}
-                                        <div class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-5 col-lg-5 pr-0 pl-0">
-                                    <div class="input-group mobile_input-group">
+                                    <div class="input-group mobile_input-group input-group--date">
                                         <span class="input-group-addon-date">{$btr->general_to|escape}</span>
                                         {if $is_mobile || $is_tablet}
                                             <input type="date" class="fn_to_date form-control" name="to_date" value="{$to_date}" autocomplete="off" >
                                             {else}
                                             <input type="text" class="fn_to_date form-control" name="to_date" value="{$to_date}" autocomplete="off" >
                                         {/if}
-                                        <div class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </div>
-                                    </div>
+                                     </div>
                                 </div>
                                 <div class="col-md-2 col-lg-2 pr-0 mobile_text_right">
                                     <button class="btn btn_blue" type="submit">{$btr->general_apply|escape}</button>

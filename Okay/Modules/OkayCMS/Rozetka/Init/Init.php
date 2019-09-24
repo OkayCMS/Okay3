@@ -20,21 +20,21 @@ class Init extends AbstractInit
     
     public function init()
     {
-        $field = new EntityField(CategoriesEntity::class, 'to_rozetka');
+        $field = new EntityField('to_rozetka');
         $field->setTypeTinyInt(1);
-        $this->registerEntityField($field);
+        $this->registerEntityField(CategoriesEntity::class, $field);
         
-        $field = new EntityField(BrandsEntity::class, 'to_rozetka');
+        $field = new EntityField('to_rozetka');
         $field->setTypeTinyInt(1);
-        $this->registerEntityField($field);
+        $this->registerEntityField(BrandsEntity::class, $field);
         
-        $field = new EntityField(ProductsEntity::class, 'to_rozetka');
+        $field = new EntityField('to_rozetka');
         $field->setTypeTinyInt(1);
-        $this->registerEntityField($field);
+        $this->registerEntityField(ProductsEntity::class, $field);
         
-        $field = new EntityField(ProductsEntity::class, 'not_to_rozetka');
+        $field = new EntityField('not_to_rozetka');
         $field->setTypeTinyInt(1);
-        $this->registerEntityField($field);
+        $this->registerEntityField(ProductsEntity::class, $field);
         
         $this->registerBackendController('RozetkaXmlAdmin');
         $this->addBackendControllerPermission('RozetkaXmlAdmin', 'rozetka_upload');

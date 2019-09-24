@@ -891,7 +891,7 @@
         font-weight: 600;
     }
     .message_error{
-        margin: 10px 0;
+        margin: 10px 0 20px;
     }
     .boxed__description img{
         display: block;
@@ -1274,7 +1274,14 @@
         line-height: 1.5;
         margin: 0 0 0.5rem;
     }
-
+    .details_boxed_pct {
+        top: -20px;
+    }
+    .details_boxed__prices {
+        -webkit-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
 }
 
 @media only screen and (max-width : 480px) {
