@@ -36,7 +36,7 @@ return [
         'prefix'   => '{$db_prefix}',
         'db_sql_mode' => '{$db_sql_mode}',
         'db_timezone' => '{$db_timezone}',
-
+        'db_names' => '{$db_names}',
     ],
     'config' => [
         'config_file' => __DIR__ . '/../../../config/config.php',

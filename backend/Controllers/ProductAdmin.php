@@ -420,7 +420,16 @@ class ProductAdmin extends IndexAdmin
         if (!empty($productCategories)) {
             $productCategories = $categoriesEntity->find(['id'=>array_keys($productCategories)]);
         } elseif (!empty($product->id)) {
-            $productCategories = $categoriesEntity->find(['product_id'=>$product->id]);
+            
+            foreach ($categoriesEntity->getProductCategories($product->id) as $pc) {
+                $productCategories[$pc->category_id] = $pc;
+            }
+
+            if (!empty($productCategories)) {
+                foreach ($categoriesEntity->find(['id' => array_keys($productCategories)]) as $category) {
+                    $productCategories[$category->id] = $category;
+                }
+            }
         }
         
         if (empty($productVariants)) {

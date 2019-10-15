@@ -11,21 +11,6 @@ use Okay\Core\Database;
 trait CRUD
 {
 
-    /**
-     * @var Database
-     */
-    //protected $db;
-
-    /**
-     * @var QueryFactory
-     */
-    //protected $queryFactory;
-
-    /**
-     * @var Select
-     */
-    //protected $select; // todo remove this
-
     public function get($id)
     {
         if (empty($id)) {
@@ -52,6 +37,7 @@ trait CRUD
         $this->setUp();
         $this->buildPagination($filter);
         $this->buildFilter($filter);
+        $this->select->distinct(true);
         $this->select->cols($this->getAllFields());
         
         $this->db->query($this->select);
@@ -71,6 +57,7 @@ trait CRUD
     {
         $this->setUp();
         $this->buildFilter($filter);
+        $this->select->distinct(true);
         $this->select->cols(["COUNT( DISTINCT " . $this->getTableAlias() . ".id) as count"]);
         
         // Уберем группировку и сортировку при подсчете по умолчанию

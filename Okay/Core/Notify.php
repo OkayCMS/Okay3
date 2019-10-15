@@ -17,6 +17,7 @@ use Okay\Entities\TranslationsEntity;
 use Okay\Entities\UsersEntity;
 use Okay\Logic\OrdersLogic;
 use PHPMailer\PHPMailer\PHPMailer;
+use Psr\Log\LoggerInterface;
 
 class Notify
 {
@@ -30,6 +31,7 @@ class Notify
     private $design;
     private $backendTranslations;
     private $rootDir;
+    private $logger;
     
     public function __construct(
         Settings $settings,
@@ -40,6 +42,7 @@ class Notify
         OrdersLogic $ordersLogic,
         BackendTranslations $backendTranslations,
         PHPMailer $PHPMailer,
+        LoggerInterface $logger,
         $rootDir
     ) {
         $this->PHPMailer = $PHPMailer;
@@ -50,6 +53,7 @@ class Notify
         $this->ordersLogic = $ordersLogic;
         $this->entityFactory = $entityFactory;
         $this->backendTranslations = $backendTranslations;
+        $this->logger = $logger;
         $this->rootDir = $rootDir;
     }
 
@@ -84,6 +88,16 @@ class Notify
         } else {
             $this->PHPMailer->AddAddress($to);
         }
+
+        if ($this->PHPMailer->Send()) {
+            return;
+        }
+
+        if ($this->PHPMailer->SMTPDebug != 0) {
+            $this->logger->notice("Can`t send mail to '{$to}', ErrorInfo: {$this->PHPMailer->ErrorInfo}", ['subject' => $subject]);
+        } else {
+            $this->logger->notice("Can`t send mail to '{$to}', ErrorInfo: For view details should enable debug mode", ['subject' => $subject]);
+        }
     }
 
     /*Отправка емейла*/
@@ -108,19 +122,19 @@ class Notify
     /*Отправка емейла клиенту о заказе*/
     public function emailOrderUser($orderId)
     {
-        /** @var Orders $ordersEntity */
+        /** @var OrdersEntity $ordersEntity */
         $ordersEntity = $this->entityFactory->get(OrdersEntity::class);
         
-        /** @var Deliveries $deliveriesEntity */
+        /** @var DeliveriesEntity $deliveriesEntity */
         $deliveriesEntity = $this->entityFactory->get(DeliveriesEntity::class);
         
-        /** @var OrderStatus $ordersStatusEntity */
+        /** @var OrderStatusEntity $ordersStatusEntity */
         $ordersStatusEntity = $this->entityFactory->get(OrderStatusEntity::class);
         
-        /** @var Currencies $currenciesEntity */
+        /** @var CurrenciesEntity $currenciesEntity */
         $currenciesEntity = $this->entityFactory->get(CurrenciesEntity::class);
         
-        /** @var Translations $translationsEntity */
+        /** @var TranslationsEntity $translationsEntity */
         $translationsEntity = $this->entityFactory->get(TranslationsEntity::class);
         
         if (!($order = $ordersEntity->get(intval($orderId))) || empty($order->email)) {
@@ -190,19 +204,19 @@ class Notify
     /*Отправка емейла о заказе администратору*/
     public function emailOrderAdmin($orderId)
     {
-        /** @var Orders $ordersEntity */
+        /** @var OrdersEntity $ordersEntity */
         $ordersEntity = $this->entityFactory->get(OrdersEntity::class);
 
-        /** @var Deliveries $deliveriesEntity */
+        /** @var DeliveriesEntity $deliveriesEntity */
         $deliveriesEntity = $this->entityFactory->get(DeliveriesEntity::class);
         
-        /** @var Users $usersEntity */
+        /** @var UsersEntity $usersEntity */
         $usersEntity = $this->entityFactory->get(UsersEntity::class);
 
-        /** @var OrderStatus $ordersStatusEntity */
+        /** @var OrderStatusEntity $ordersStatusEntity */
         $ordersStatusEntity = $this->entityFactory->get(OrderStatusEntity::class);
 
-        /** @var Currencies $currenciesEntity */
+        /** @var CurrenciesEntity $currenciesEntity */
         $currenciesEntity = $this->entityFactory->get(CurrenciesEntity::class);
         
         if (!($order = $ordersEntity->get(intval($orderId)))) {
@@ -252,13 +266,13 @@ class Notify
     public function emailCommentAdmin($commentId)
     {
 
-        /** @var Comments $commentsEntity */
+        /** @var CommentsEntity $commentsEntity */
         $commentsEntity = $this->entityFactory->get(CommentsEntity::class);
         
-        /** @var Products $productsEntity */
+        /** @var ProductsEntity $productsEntity */
         $productsEntity = $this->entityFactory->get(ProductsEntity::class);
         
-        /** @var Blog $blogEntity */
+        /** @var BlogEntity $blogEntity */
         $blogEntity = $this->entityFactory->get(BlogEntity::class);
         
         if (!($comment = $commentsEntity->get(intval($commentId)))) {
@@ -294,7 +308,7 @@ class Notify
     /*Отправка емейла администратору о заказе обратного звонка*/
     public function emailCallbackAdmin($callbackId)
     {
-        /** @var Callbacks $callbacksEntity */
+        /** @var CallbacksEntity $callbacksEntity */
         $callbacksEntity = $this->entityFactory->get(CallbacksEntity::class);
         
         if (!($callback = $callbacksEntity->get(intval($callbackId)))) {
@@ -321,16 +335,16 @@ class Notify
     public function emailCommentAnswerToUser($commentId)
     {
 
-        /** @var Comments $commentsEntity */
+        /** @var CommentsEntity $commentsEntity */
         $commentsEntity = $this->entityFactory->get(CommentsEntity::class);
 
-        /** @var Translations $translationsEntity */
+        /** @var TranslationsEntity $translationsEntity */
         $translationsEntity = $this->entityFactory->get(TranslationsEntity::class);
 
-        /** @var Products $productsEntity */
+        /** @var ProductsEntity $productsEntity */
         $productsEntity = $this->entityFactory->get(ProductsEntity::class);
 
-        /** @var Blog $blogEntity */
+        /** @var BlogEntity $blogEntity */
         $blogEntity = $this->entityFactory->get(BlogEntity::class);
         
         if(!($comment = $commentsEntity->get(intval($commentId)))
@@ -387,10 +401,10 @@ class Notify
     /*Отправка емейла о восстановлении пароля клиенту*/
     public function emailPasswordRemind($userId, $code)
     {
-        /** @var Users $usersEntity */
+        /** @var UsersEntity $usersEntity */
         $usersEntity = $this->entityFactory->get(UsersEntity::class);
 
-        /** @var Translations $translationsEntity */
+        /** @var TranslationsEntity $translationsEntity */
         $translationsEntity = $this->entityFactory->get(TranslationsEntity::class);
         
         if(!($user = $usersEntity->get(intval($userId)))) {
@@ -420,7 +434,7 @@ class Notify
     public function emailFeedbackAdmin($feedbackId)
     {
 
-        /** @var Users $feedbackEntity */
+        /** @var UsersEntity $feedbackEntity */
         $feedbackEntity = $this->entityFactory->get(FeedbacksEntity::class);
         
         if (!($feedback = $feedbackEntity->get(intval($feedbackId)))) {
@@ -449,10 +463,10 @@ class Notify
     public function emailFeedbackAnswerFoUser($comment_id,$text)
     {
 
-        /** @var Feedbacks $feedbackEntity */
+        /** @var FeedbacksEntity $feedbackEntity */
         $feedbackEntity = $this->entityFactory->get(FeedbacksEntity::class);
 
-        /** @var Translations $translationsEntity */
+        /** @var TranslationsEntity $translationsEntity */
         $translationsEntity = $this->entityFactory->get(TranslationsEntity::class);
         
         if(!($feedback = $feedbackEntity->get(intval($comment_id)))) {

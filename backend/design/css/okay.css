@@ -2437,8 +2437,13 @@ label.switch_label {
     width: 140px;
 }
 .okay_list .okay_list_order_stg_sts_name{
-     width: calc(100% - 385px);
+    width: calc(100% - 160px);
     text-align: left;
+}
+.okay_list .okay_list_order_stg_sts_name_1c{
+    width: calc(100% - 220px);
+    text-align: left;
+    padding-left: 20px!important;
 }
 .okay_list .okay_list_order_stg_lbl_name{
      width: calc(100% - 120px);
@@ -2454,10 +2459,10 @@ label.switch_label {
 }
 .okay_list .okay_list_order_stg_sts_status2{
     -webkit-box-flex: 0;
-    -webkit-flex: 0 0 120px;
-    -ms-flex: 0 0 120px;
-    flex: 0 0 120px;
-    max-width: 120px;
+    -webkit-flex: 0 0 200px;
+    -ms-flex: 0 0 200px;
+    flex: 0 0 200px;
+    max-width: 200px;
     text-align: center;
 }
 .okay_list .okay_list_order_stg_sts_label{

@@ -37,8 +37,6 @@
                         <div class="okay_list_head">
                             <div class="okay_list_boding okay_list_drag"></div>
                             <div class="okay_list_heading okay_list_order_stg_sts_name">{$btr->general_name|escape}</div>
-                            <div class="okay_list_heading okay_list_order_stg_sts_status">{$btr->order_write_off|escape}</div>
-                            <div class="okay_list_heading okay_list_order_stg_sts_status2">{$btr->order_settings_1c_action|escape}</div>
                             <div class="okay_list_heading okay_list_order_stg_sts_label">{$btr->order_settings_colour|escape}</div>
                             <div class="okay_list_heading okay_list_close"></div>
                         </div>
@@ -67,14 +65,6 @@
                                                         <option value="0" {if $order_status->is_close == 0}selected=""{/if} >{$btr->order_write_off|escape}: {$btr->order_no|escape}</option>
                                                     </select>
                                                 </div>
-                                                <div class="hidden-sm-up mt-q">
-                                                    <select name="status_1c[{$order_status->id}]" class="selectpicker col-xs-12 px-0">
-                                                        <option value="not_use" {if $order_status->status_1c == ''}selected=""{/if}>{$btr->order_settings_1c_action|escape}: {$btr->order_settings_1c_not_use|escape}</option>
-                                                        <option value="new" {if $order_status->status_1c == 'new'}selected=""{/if}>{$btr->order_settings_1c_action|escape}: {$btr->order_settings_1c_new|escape}</option>
-                                                        <option value="accepted" {if $order_status->status_1c == 'accepted'}selected=""{/if}>{$btr->order_settings_1c_action|escape}: {$btr->order_settings_1c_accepted|escape}</option>
-                                                        <option value="to_delete" {if $order_status->status_1c == 'to_delete'}selected=""{/if}>{$btr->order_settings_1c_action|escape}: {$btr->order_settings_1c_to_delete|escape}</option>
-                                                    </select>
-                                                </div>
                                                 {/if}
                                             </div>
 
@@ -83,14 +73,6 @@
                                                 <select name="is_close[{$order_status->id}]" class="selectpicker col-xs-12 px-0">
                                                     <option value="1" {if $order_status->is_close == 1}selected=""{/if} >{$btr->order_yes|escape}</option>
                                                     <option value="0" {if $order_status->is_close == 0}selected=""{/if} >{$btr->order_no|escape}</option>
-                                                </select>
-                                            </div>
-                                            <div class="okay_list_boding okay_list_order_stg_sts_status2">
-                                                <select name="status_1c[{$order_status->id}]" class="selectpicker col-xs-12 px-0">
-                                                    <option value="not_use" {if $order_status->status_1c == ''}selected=""{/if}>{$btr->order_settings_1c_not_use|escape}</option>
-                                                    <option value="new" {if $order_status->status_1c == 'new'}selected=""{/if}>{$btr->order_settings_1c_new|escape}</option>
-                                                    <option value="accepted" {if $order_status->status_1c == 'accepted'}selected=""{/if}>{$btr->order_settings_1c_accepted|escape}</option>
-                                                    <option value="to_delete" {if $order_status->status_1c == 'to_delete'}selected=""{/if}>{$btr->order_settings_1c_to_delete|escape}</option>
                                                 </select>
                                             </div>
                                             {/if}
@@ -124,14 +106,6 @@
                                                         <option value="0">{$btr->order_settings_not_reduse_products|escape}</option>
                                                     </select>
                                                 </div>
-                                                <div class="hidden-sm-up mt-q">
-                                                    <select name="new_status_1c[]" class="selectpicker col-xs-12 px-0">
-                                                        <option value="not_use">{$btr->order_settings_1c_not_use|escape}</option>
-                                                        <option value="new">{$btr->order_settings_1c_new|escape}</option>
-                                                        <option value="accepted">{$btr->order_settings_1c_accepted|escape}</option>
-                                                        <option value="to_delete">{$btr->order_settings_1c_to_delete|escape}</option>
-                                                    </select>
-                                                </div>
                                             {/if}
                                         </div>
                                         {if $is_mobile == false}
@@ -139,14 +113,6 @@
                                                 <select name="new_is_close[]" class="selectpicker">
                                                     <option value="1">{$btr->order_settings_reduse_products|escape}</option>
                                                     <option value="0">{$btr->order_settings_not_reduse_products|escape}</option>
-                                                </select>
-                                            </div>
-                                            <div class="okay_list_boding okay_list_order_stg_sts_status2">
-                                                <select name="new_status_1c[]" class="selectpicker col-xs-12 px-0">
-                                                    <option value="not_use">{$btr->order_settings_1c_not_use|escape}</option>
-                                                    <option value="new">{$btr->order_settings_1c_new|escape}</option>
-                                                    <option value="accepted">{$btr->order_settings_1c_accepted|escape}</option>
-                                                    <option value="to_delete">{$btr->order_settings_1c_to_delete|escape}</option>
                                                 </select>
                                             </div>
                                         {/if}

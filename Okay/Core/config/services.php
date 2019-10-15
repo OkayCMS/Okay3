@@ -138,6 +138,8 @@ $services = [
     TemplateConfig::class => [
         'class' => TemplateConfig::class,
         'arguments' => [
+            new SR(Modules::class),
+            new SR(Module::class),
             new PR('root_dir'),
             new PR('template_config.scripts_defer'),
             new PR('template_config.them_settings_filename'),
@@ -195,6 +197,7 @@ $services = [
             new SR(\Okay\Logic\OrdersLogic::class),
             new SR(BackendTranslations::class),
             new SR(PHPMailer::class),
+            new SR(LoggerInterface::class),
             new PR('root_dir'),
         ],
     ],
@@ -307,7 +310,6 @@ $services = [
             new SR(Module::class),
             new SR(QueryFactory::class),
             new SR(Database::class),
-            new SR(TemplateConfig::class),
         ],
     ],
     Installer::class => [

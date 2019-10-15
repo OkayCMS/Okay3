@@ -7,10 +7,9 @@
 
         <link>{$rootUrl}</link>
 
-        {if !empty($products)}
             {foreach $products as $p}
                 {foreach $p->variants as $v}
-                    {if !$settings->okaycms__google_merchant__upload_non_exists_products_to_google && $v->stock !== 0}{continue}{/if}
+                    {if !$settings->okaycms__google_merchant__upload_non_exists_products_to_google && $v->stock === '0'}{continue}{/if}
                     {if $settings->okaycms__google_merchant__no_export_without_price == 1 && $v->price == 0}{continue}{/if}
 
                     <item>
@@ -62,6 +61,5 @@
                     </item>
                 {/foreach}
             {/foreach}
-        {/if}
     </channel>
 </rss>

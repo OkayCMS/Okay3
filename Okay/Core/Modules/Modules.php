@@ -39,29 +39,25 @@ class Modules // todo подумать, мож сюда переедит CRUD En
      * @var Database
      */
     private $db;
-
-    /**
-     * @var TemplateConfig
-     */
-    private $templateConfig;
     
     /** @var array список контроллеров бекенда */
     private $backendControllersList = [];
+    
+    /** @var array список запущенных модулей */
+    private $runningModules = [];
 
     public function __construct(
         EntityFactory $entityFactory,
         License $license,
         Module $module,
         QueryFactory $queryFactory,
-        Database $database,
-        TemplateConfig $templateConfig
+        Database $database
     ) {
         $this->entityFactory = $entityFactory;
         $this->module = $module;
         $this->license = $license;
         $this->queryFactory = $queryFactory;
         $this->db = $database;
-        $this->templateConfig = $templateConfig;
         
     }
     
@@ -106,29 +102,20 @@ class Modules // todo подумать, мож сюда переедит CRUD En
         $modules = $this->db->results();
 
         foreach ($modules as $module) {
-            $moduleThemesDir = $this->module->getModuleDirectory($module->vendor, $module->module_name) . 'design/';
+            
+            // Запоминаем какие модули мы запустили, они понадобятся чтобы активировать их js и css
+            $this->runningModules[] = [
+                'vendor' => $module->vendor,
+                'module_name' => $module->module_name,
+            ];
+            
             $this->backendControllersList = array_merge($this->backendControllersList, $this->license->startModule($module->id, $module->vendor, $module->module_name));
-            if (file_exists($moduleThemesDir . 'css.php') && ($moduleCss = include $moduleThemesDir . 'css.php') && is_array($moduleCss)) {
-                
-                /** @var TemplateCss $cssItem */
-                foreach ($moduleCss as $cssItem) {
-                    if ($cssItem->getDir() === null) {
-                        $cssItem->setDir($moduleThemesDir . 'css/');
-                    }
-                    $this->templateConfig->registerCss($cssItem);
-                }
-            }
-            if (file_exists($moduleThemesDir . 'js.php') && ($moduleJs = include $moduleThemesDir . 'js.php') && is_array($moduleJs)) {
-                
-                /** @var TemplateJs $moduleJs */
-                foreach ($moduleJs as $jsItem) {
-                    if ($jsItem->getDir() === null) {
-                        $jsItem->setDir($moduleThemesDir . 'js/');
-                    }
-                    $this->templateConfig->registerJs($jsItem);
-                }
-            }
         }
+    }
+    
+    public function getRunningModules()
+    {
+        return $this->runningModules;
     }
     
     /**
@@ -136,6 +123,7 @@ class Modules // todo подумать, мож сюда переедит CRUD En
      * @param $vendor
      * @param $moduleName
      * @return bool
+     * @throws \Exception
      */
     public function isActiveModule($vendor, $moduleName)
     {

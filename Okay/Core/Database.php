@@ -60,6 +60,12 @@ class Database
 
         $this->pdo->connect();
 
+        if (!empty($this->dbParams->db_names)) {
+            $sql = $this->queryFactory->newSqlQuery();
+            $sql->setStatement("SET NAMES '{$this->dbParams->db_names}'");
+            $this->query($sql);
+        }
+
         if (!empty($this->dbParams->db_sql_mode)) {
             $sql = $this->queryFactory->newSqlQuery();
             $sql->setStatement('SET SESSION SQL_MODE = "' . $this->dbParams->db_sql_mode . '"');

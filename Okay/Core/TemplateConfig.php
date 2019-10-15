@@ -5,6 +5,8 @@ namespace Okay\Core;
 
 
 use MatthiasMullie\Minify\JS;
+use Okay\Core\Modules\Module;
+use Okay\Core\Modules\Modules;
 use Okay\Core\TemplateConfig\Css as TemplateCss;
 use Okay\Core\TemplateConfig\Js as TemplateJs;
 use Okay\Entities\ManagersEntity;
@@ -30,13 +32,23 @@ class TemplateConfig
     private $compileJsDir;
     private $settingsFile;
     
+    /** @var Modules */
+    private $modules;
+    
+    /** @var Module */
+    private $module;
+    
     public function __construct(
+        Modules $modules,
+        Module $module,
         $rootDir,
         $scriptsDefer,
         $themeSettingsFileName,
         $compileCssDir,
         $compileJsDir
     ) {
+        $this->modules = $modules;
+        $this->module = $module;
         $this->rootDir = $rootDir;
         $this->scriptsDefer = $scriptsDefer;
         $this->themeSettingsFileName = $themeSettingsFileName;
@@ -48,6 +60,7 @@ class TemplateConfig
      * @param $theme
      * @param $adminTheme
      * @param $adminThemeManagers
+     * @throws \Exception
      * 
      * Метод конфигуратор, нужен, чтобы не передавать в зависимости целый класс Settings
      */
@@ -70,6 +83,31 @@ class TemplateConfig
             }
         }
         
+        $runningModules = $this->modules->getRunningModules();
+        foreach ($runningModules as $runningModule) {
+
+            $moduleThemesDir = $this->module->getModuleDirectory($runningModule['vendor'], $runningModule['module_name']) . 'design/';
+            
+            if (file_exists($moduleThemesDir . 'css.php') && ($moduleCss = include $moduleThemesDir . 'css.php') && is_array($moduleCss)) {
+                /** @var TemplateCss $cssItem */
+                foreach ($moduleCss as $cssItem) {
+                    if ($cssItem->getDir() === null) {
+                        $cssItem->setDir($moduleThemesDir . 'css/');
+                    }
+                    $this->registerCss($cssItem);
+                }
+            }
+            if (file_exists($moduleThemesDir . 'js.php') && ($moduleJs = include $moduleThemesDir . 'js.php') && is_array($moduleJs)) {
+
+                /** @var TemplateJs $jsItem */
+                foreach ($moduleJs as $jsItem) {
+                    if ($jsItem->getDir() === null) {
+                        $jsItem->setDir($moduleThemesDir . 'js/');
+                    }
+                    $this->registerJs($jsItem);
+                }
+            }
+        }
     }
     
     public function __destruct()
@@ -90,7 +128,7 @@ class TemplateConfig
         }
     }
 
-    public function registerCss(TemplateCss $css)
+    private function registerCss(TemplateCss $css)
     {
         // Файл настроек шаблона регистрировать не нужно
         if ($css->getFilename() != $this->themeSettingsFileName && $this->checkFile($css->getFilename(), 'css', $css->getDir()) === true) {
@@ -104,7 +142,7 @@ class TemplateConfig
         }
     }
 
-    public function registerJs(TemplateJs $js)
+    private function registerJs(TemplateJs $js)
     {
         if ($this->checkFile($js->getFilename(), 'js', $js->getDir()) === true) {
             $fullPath = $this->getFullPath($js->getFilename(), 'js', $js->getDir());
