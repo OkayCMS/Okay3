@@ -15,7 +15,7 @@ use Okay\Entities\OrderStatusEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\TranslationsEntity;
 use Okay\Entities\UsersEntity;
-use Okay\Logic\OrdersLogic;
+use Okay\Helpers\OrdersHelper;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Log\LoggerInterface;
 
@@ -26,7 +26,7 @@ class Notify
     private $settings;
     private $languages;
     private $entityFactory;
-    private $ordersLogic;
+    private $ordersHelper;
     private $templateConfig;
     private $design;
     private $backendTranslations;
@@ -39,7 +39,7 @@ class Notify
         EntityFactory $entityFactory,
         Design $design,
         TemplateConfig $templateConfig,
-        OrdersLogic $ordersLogic,
+        OrdersHelper $ordersHelper,
         BackendTranslations $backendTranslations,
         PHPMailer $PHPMailer,
         LoggerInterface $logger,
@@ -50,7 +50,7 @@ class Notify
         $this->languages = $languages;
         $this->design = $design;
         $this->templateConfig = $templateConfig;
-        $this->ordersLogic = $ordersLogic;
+        $this->ordersHelper = $ordersHelper;
         $this->entityFactory = $entityFactory;
         $this->backendTranslations = $backendTranslations;
         $this->logger = $logger;
@@ -161,7 +161,7 @@ class Notify
         }
         /*/lang_modify...*/
         
-        $purchases = $this->ordersLogic->getOrderPurchases($order->id);
+        $purchases = $this->ordersHelper->getOrderPurchases($order->id);
         $this->design->assign('purchases', $purchases);
         
         // Способ доставки
@@ -178,7 +178,7 @@ class Notify
             $this->design->assign('currency', current($currenciesEntity->find(['enabled'=>1])));
         }
         $emailTemplate = $this->design->fetch($this->rootDir.'design/'.$this->templateConfig->getTheme().'/html/email/email_order.tpl');
-        $subject = $this->design->get_var('subject');
+        $subject = $this->design->getVar('subject');
         $from = ($this->settings->notify_from_name ? $this->settings->notify_from_name." <".$this->settings->notify_from_email.">" : $this->settings->notify_from_email);
         $this->email($order->email, $subject, $emailTemplate, $from);
         
@@ -223,7 +223,7 @@ class Notify
             return false;
         }
         
-        $purchases = $this->ordersLogic->getOrderPurchases($order->id);
+        $purchases = $this->ordersHelper->getOrderPurchases($order->id);
         $this->design->assign('purchases', $purchases);
         
         // Способ доставки
@@ -257,7 +257,7 @@ class Notify
         // Отправляем письмо
         $emailTemplate = $this->design->fetch($this->rootDir.'backend/design/html/email/email_order_admin.tpl');
 
-        $subject = $this->design->get_var('subject');
+        $subject = $this->design->getVar('subject');
         
         $this->email($this->settings->order_email, $subject, $emailTemplate, $this->settings->notify_from_email);
     }
@@ -301,7 +301,7 @@ class Notify
         $this->design->assign('btr', $backendTranslations);
         // Отправляем письмо
         $email_template = $this->design->fetch($this->rootDir.'backend/design/html/email/email_comment_admin.tpl');
-        $subject = $this->design->get_var('subject');
+        $subject = $this->design->getVar('subject');
         $this->email($this->settings->comment_email, $subject, $email_template, $this->settings->notify_from_email);
     }
 
@@ -327,7 +327,7 @@ class Notify
         $this->design->assign('btr', $backendTranslations);
         // Отправляем письмо
         $email_template = $this->design->fetch($this->rootDir.'backend/design/html/email/email_callback_admin.tpl');
-        $subject = $this->design->get_var('subject');
+        $subject = $this->design->getVar('subject');
         $this->email($this->settings->comment_email, $subject, $email_template, "$callback->name <$callback->phone>", "$callback->name <$callback->phone>");
     }
 
@@ -382,7 +382,7 @@ class Notify
 
         // Отправляем письмо
         $emailTemplate = $this->design->fetch($this->rootDir.'design/'.$this->templateConfig->getTheme().'/html/email/email_comment_answer_to_user.tpl');
-        $subject = $this->design->get_var('subject');
+        $subject = $this->design->getVar('subject');
         $from = ($this->settings->notify_from_name ? $this->settings->notify_from_name." <".$this->settings->notify_from_email.">" : $this->settings->notify_from_email);
         $this->email($parentComment->email, $subject, $emailTemplate, $from, $from);
 
@@ -422,7 +422,7 @@ class Notify
         
         // Отправляем письмо
         $email_template = $this->design->fetch($this->rootDir.'design/'.$this->templateConfig->getTheme().'/html/email/email_password_remind.tpl');
-        $subject = $this->design->get_var('subject');
+        $subject = $this->design->getVar('subject');
         $from = ($this->settings->notify_from_name ? $this->settings->notify_from_name." <".$this->settings->notify_from_email.">" : $this->settings->notify_from_email);
         $this->email($user->email, $subject, $email_template, $from);
         
@@ -455,7 +455,7 @@ class Notify
         $this->design->assign('btr', $backendTranslations);
         // Отправляем письмо
         $email_template = $this->design->fetch($this->rootDir.'backend/design/html/email/email_feedback_admin.tpl');
-        $subject = $this->design->get_var('subject');
+        $subject = $this->design->getVar('subject');
         $this->email($this->settings->comment_email, $subject, $email_template, "$feedback->name <$feedback->email>", "$feedback->name <$feedback->email>");
     }
 
@@ -492,7 +492,7 @@ class Notify
 
         // Отправляем письмо
         $email_template = $this->design->fetch($this->rootDir.'design/'.$this->templateConfig->getTheme().'/html/email/email_feedback_answer_to_user.tpl');
-        $subject = $this->design->get_var('subject');
+        $subject = $this->design->getVar('subject');
         $from = ($this->settings->notify_from_name ? $this->settings->notify_from_name." <".$this->settings->notify_from_email.">" : $this->settings->notify_from_email);
         $this->email($feedback->email, $subject, $email_template, $from, $from);
 
@@ -525,9 +525,9 @@ class Notify
         require($file);
         $this->design->assign('btr', $backendTranslations);
         $this->design->assign('code',$code);
-        $this->design->assign('recovery_url', 'backend/index.php?module=AuthAdmin&code='.$code);
+        $this->design->assign('recovery_url', Request::getRootUrl() . '/backend/index.php?controller=AuthAdmin&code='.$code);
         $email_template = $this->design->fetch($this->rootDir.'backend/design/html/email/email_admin_recovery.tpl');
-        $subject = $this->design->get_var('subject');
+        $subject = $this->design->getVar('subject');
         $from = ($this->settings->notify_from_name ? $this->settings->notify_from_name." <".$this->settings->notify_from_email.">" : $this->settings->notify_from_email);
         $this->email($email, $subject, $email_template, $from, $from);
         return true;

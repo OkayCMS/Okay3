@@ -194,6 +194,78 @@
             </div>
         </div>
     </div>
+    
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="boxed fn_toggle_wrap min_height_230px">
+                <div class="heading_box">
+                    {$btr->delivery_type|escape}
+                    <div class="toggle_arrow_wrap fn_toggle_card text-primary">
+                        <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
+                    </div>
+                </div>
+
+                <div class="toggle_body_wrap on fn_card">
+
+                    <div class="row">
+                        <div class="col-lg-6 pr-0">
+                            <div class="form-group clearfix">
+                                <div class="heading_label" >{$btr->payment_method_type|escape}</div>
+                                <select name="module_id" class="selectpicker">
+                                    <option value='null'>{$btr->payment_method_manual|escape}</option>
+                                    {foreach $delivery_modules as $delivery_module}
+                                        <option value="{$delivery_module->id}" {if $delivery->module_id == $delivery_module->id}selected{/if} >{$delivery_module->vendor|escape}/{$delivery_module->module_name|escape}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {foreach $delivery_modules as $delivery_module}
+                        <div class="row fn_module_settings" {if $delivery_module->id != $delivery->module_id}style="display:none;"{/if} data-module_id="{$delivery_module->id}">
+                            <div class="col-lg-12 col-md-12 heading_box">{$delivery_module->vendor|escape}/{$delivery_module->module_name|escape}</div>
+                            {foreach $delivery_module->settings as $setting}
+                                {$variable_name = $setting->variable}
+                                {if !empty($setting->options) && $setting->options|@count>1}
+                                    <div class="col-lg-6">
+                                        <div class="form-group clearfix">
+                                            <div class="heading_label" >{$setting->name|escape}</div>
+                                            <div class="">
+                                                <select name="delivery_settings[{$setting->variable}]" class="selectpicker">
+                                                    {foreach $setting->options as $option}
+                                                        <option value="{$option->value}" {if isset($delivery_settings[$setting->variable]) && $option->value==$delivery_settings[$setting->variable]}selected{/if}>{$option->name|escape}</option>
+                                                    {/foreach}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {else}
+                                    <div class="col-lg-6" style="height: 75px;">
+                                        <div class="form-group clearfix">
+                                            
+                                            {if $setting->type == 'checkbox'}
+                                                <label class="heading_label" for="{$setting->variable}">{$setting->name|escape}</label>
+                                                <div class="boxes_inline">
+                                                    
+                                                    <input name="delivery_settings[{$setting->variable}]" class="hidden_check" type="{$setting->type|escape}" value="{$setting->value|escape}" {if $setting->value == $delivery_settings[$setting->variable]}checked{/if} id="{$setting->variable}"/>
+                                                    <label class="okay_ckeckbox" for="{$setting->variable}"></label>
+                                                </div>
+                                            {else}
+                                                <label class="heading_label" for="{$setting->variable}">{$setting->name|escape}</label>
+                                                <div>
+                                                    <input name="delivery_settings[{$setting->variable}]" class="form-control" type="{$setting->type|escape}" value="{if isset($delivery_settings[$setting->variable])}{$delivery_settings[$setting->variable]|escape}{/if}" id="{$setting->variable}"/>
+                                                </div>
+                                            {/if}
+                                        </div>
+                                    </div>
+                                {/if}
+                            {/foreach}
+                        </div>
+                    {/foreach}
+                </div>
+            </div>
+        </div>
+    </div>
 
     {*Параметры элемента*}
     <div class="row">
@@ -272,6 +344,17 @@
 {include file='tinymce_init.tpl'}
 
 <script>
+
+    $(function() {
+        $('div.fn_module_settings').filter(':hidden').find("input, select, textarea").attr("disabled", true);
+
+        $('select[name=module_id]').on('change',function(){
+            $('div.fn_module_settings').hide().find("input, select, textarea").attr("disabled", true);
+            $('div.fn_module_settings[data-module_id="'+$(this).val()+'"]').show().find("input, select, textarea").attr("disabled", false);
+            $('div.fn_module_settings[data-module_id="'+$(this).val()+'"]').find('select').selectpicker('refresh');
+        });
+    });
+    
     $(document).on("click", ".fn_type_delivery", function () {
         var action = $(this).data("type");
         $(".delivery_type").removeClass("active");

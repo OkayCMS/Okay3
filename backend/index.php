@@ -11,7 +11,11 @@ use Okay\Core\Request;
 use Okay\Core\Response;
 use Okay\Core\Managers;
 use Okay\Core\ManagerMenu;
+use Okay\Core\Config;
 use OkayLicense\License;
+use Okay\Core\Entity\Entity;
+
+ini_set('display_errors', 'off');
 
 //ini_set('display_errors', 'on');
 //error_reporting(E_ALL);
@@ -32,6 +36,14 @@ $_SESSION['id'] = session_id();
 
 @ini_set('session.gc_maxlifetime', 86400); // 86400 = 24 часа
 @ini_set('session.cookie_lifetime', 0); // 0 - пока браузер не закрыт
+
+/** @var Config $config */
+$config = $DI->get(Config::class);
+
+if ($config->get('debug_mode') == true) {
+    ini_set('display_errors', 'on');
+    error_reporting(E_ALL);
+}
 
 /** @var BackendTranslations $backendTranslations */
 $backendTranslations = $DI->get(BackendTranslations::class);
@@ -83,6 +95,12 @@ $response->addHeader('Pragma: no-cache');
 $backendControllerName = $request->get('controller');
 $backendControllerName = preg_replace("/[^A-Za-z0-9\.]+/", "", $backendControllerName);
 
+$lessonsEntity = $entityFactory->get(\Okay\Entities\LessonsEntity::class);
+if ($lessonsEntity->count(['not_done' => 1]) == 0) {
+    $managers->removeControllersPermissionByModuleName('LearningAdmin');
+    $managerMenu->removeMenuItem('left_settings', 'learning_title');
+}
+
 $manager = null;
 if (!empty($_SESSION['admin'])) {
     $manager = $managersEntity->get($_SESSION['admin']);
@@ -105,15 +123,19 @@ foreach ($modulesBackendControllers as $backendController) {
     $managerMenu->addCommonModuleController($backendController);
 }
 
+if (!empty($manager)) {
+    foreach ($modules->getRunningModules() as $runningModule) {
+        foreach ($modules->getModuleBackendTranslations($runningModule['vendor'], $runningModule['module_name'], $manager->lang) as $var => $translation) {
+            $backendTranslations->addTranslation($var, $translation);
+        }
+    }
+}
+
 if (($controllerParams = $module->getBackendControllerParams($backendControllerName)) && in_array($backendControllerName, $modulesBackendControllers)) {
 
     $vendor = $controllerParams['vendor'];
     $moduleName = $controllerParams['module'];
     $controllerName = $controllerParams['controller'];
-
-    foreach ($modules->getModuleTranslations($vendor, $moduleName) as $var=>$translation) {
-        $backendTranslations->addTranslation($var, $translation);
-    }
     
     $design->useModuleDir();
     $design->setModuleTemplatesDir($module->getModuleDirectory($vendor, $moduleName) . 'Backend/design/html');
@@ -146,11 +168,9 @@ function getMethodParams($controllerName, $methodName)
     foreach ($reflectionMethod->getParameters() as $parameter) {
 
         if ($parameter->getClass() !== null) {
-            $class = new \ReflectionClass($parameter->getClass()->name);
-            $namespace = trim($class->getNamespaceName(), '\\');
-
-            // Определяем namespace запрашиваемого типа, это Entity или сервис из DI
-            if ($namespace == 'Okay\Entities') {
+            
+            // Определяем это Entity или сервис из DI
+            if (is_subclass_of($parameter->getClass()->name, Entity::class)) {
                 $methodParams[] = $entityFactory->get($parameter->getClass()->name);
             } else {
                 $methodParams[] = $serviceLocator->getService($parameter->getClass()->name);

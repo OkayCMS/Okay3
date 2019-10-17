@@ -23,6 +23,7 @@
  *                                                                                 который   используется   в  слаге,  а именно по  имени  параметра и переменной в  аргументе  метода класса
  *                                                                                 контроллера, которые должны совпадать
  *     ],
+ *     'to_front' => true|false, - нужен ли будет этот роут как JS переменная на фронте. В JS его можно будет видеть как okay.router['<route_name>']
  * ],
  *
  */
@@ -115,6 +116,7 @@ return [
             'controller' => 'CartController',
             'method' => 'cartAjax',
         ],
+        'to_front' => true,
     ],
     'wishlist' => [
         'slug' => '/wishlist',
@@ -129,6 +131,7 @@ return [
             'controller' => 'WishListController',
             'method' => 'ajaxUpdate',
         ],
+        'to_front' => true,
     ],
     'comparison' => [
         'slug' => 'comparison',
@@ -143,6 +146,7 @@ return [
             'controller' => 'ComparisonController',
             'method' => 'ajaxUpdate',
         ],
+        'to_front' => true,
     ],
     'product' => [
         'slug' => '/products/{$url}',
@@ -157,6 +161,7 @@ return [
             'controller' => 'ProductController',
             'method' => 'rating',
         ],
+        'to_front' => true,
     ],
     'category' => [
         'slug' => '/catalog/{$url}{$filtersUrl}',
@@ -202,6 +207,7 @@ return [
             'controller' => 'ProductsController',
             'method' => 'ajaxSearch',
         ],
+        'to_front' => true,
     ],
     'discounted' => [
         'slug' => '/discounted{$filtersUrl}',
@@ -305,6 +311,13 @@ return [
         'params' => [
             'controller' => 'DynamicJsController',
             'method' => 'getJs',
+        ],
+    ],
+    'common_js' => [
+        'slug' => 'common_js/{$fileId}.js',
+        'params' => [
+            'controller' => 'DynamicJsController',
+            'method' => 'getCommonJs',
         ],
     ],
     'support' => [

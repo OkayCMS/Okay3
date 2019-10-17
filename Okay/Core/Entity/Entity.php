@@ -4,6 +4,7 @@
 namespace Okay\Core\Entity;
 
 
+use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Core\Modules\ModulesEntitiesFilters;
 use Okay\Core\QueryFactory;
 use Aura\SqlQuery\Common\Select;
@@ -168,26 +169,27 @@ abstract class Entity implements EntityInterface, FilterPriorityInterface
 
     /**
      * @param string $order
+     * @param array $orderFields массив полей, который определила автоматическая сортировка.
+     * Метод может его переопределить, и обязательно его нужно вернуть
+     * @param array $additionalData просто кастомный массив данных, который может понадобиться
      * @return array
      * Здесь это метод-заглушка, если нужно применить кастомную сортировку,
      * переопределяем этот метод в нужном Entity классе.
      * Там через switch case описываем кастомные сортировки
      */
-    protected function customOrder($order = null)
+    protected function customOrder($order = null, array $orderFields = [], array $additionalData = [])
     {
-        $orderFields = [];
-
         // Пример, как реализовать кастомную сортировку.
         /*switch ($order) {
             case 'some_custom_order' :
                 $orderFields = [
                     'visible',
-                    'name'
+                    'name',
                 ];
                 break;
         }*/
 
-        return $orderFields;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $orderFields, func_get_args());
     }
 
     public function flush()

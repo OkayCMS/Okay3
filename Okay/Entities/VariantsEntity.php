@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class VariantsEntity extends Entity
 {
@@ -46,7 +47,7 @@ class VariantsEntity extends Entity
     public function get($id)
     {
         if (empty($id)) {
-            return null;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
         }
 
         $this->select->join('left', '__currencies AS c', 'c.id=v.currency_id');
@@ -83,6 +84,24 @@ class VariantsEntity extends Entity
             ->bindValue('currency_id', $id)
             ->bindValue('main_currency_id', $mainCurrency->id);
         $this->db->query($sql);
+
+        ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
+    }
+
+    protected function customOrder($order = null, array $orderFields = [], array $additionalData = [])
+    {
+
+        switch ($order) {
+            case 'in_stock_first' :
+                $orderFields = [
+                    'IF(stock=0, 0, 1) DESC',
+                    'position',
+                    'id',
+                ];
+                break;
+        }
+        
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $orderFields, func_get_args());
     }
 
     protected function resetInfo($variant)
@@ -93,6 +112,10 @@ class VariantsEntity extends Entity
 
         if (property_exists($variant, 'stock') && $variant->stock === null) {
             $variant->stock = $this->settings->max_order_amount;
+        }
+
+        if (property_exists($variant, 'units') && $variant->units === null) {
+            $variant->units = $this->settings->units;
         }
 
         return $variant;

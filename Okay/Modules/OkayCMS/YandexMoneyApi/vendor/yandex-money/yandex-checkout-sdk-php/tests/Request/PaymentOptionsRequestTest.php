@@ -340,6 +340,9 @@ class PaymentOptionsRequestTest extends TestCase
         $instance->confirmationType = $value;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testValidate()
     {
         $instance = new PaymentOptionsRequest();
@@ -398,13 +401,14 @@ class PaymentOptionsRequestTest extends TestCase
             ),
         );
         $currencies = CurrencyCode::getValidValues();
+        $countCurrencies = count($currencies);
         $confirmations = ConfirmationType::getValidValues();
         for ($i = 0; $i < 10; $i++) {
             $request = array(
                 'account_id' => ($i < 3 ? $i : ($i < 6 ? (float)$i : uniqid())),
                 'gateway_id' => uniqid(),
                 'amount' => ($i < 4 ? mt_rand(1, 999999999) : mt_rand(1, 999999999) / 13.0),
-                'currency' => $currencies[mt_rand(0, count($currencies) - 1)],
+                'currency' => $currencies[$i % $countCurrencies],
                 'confirmation_types' => $confirmations[mt_rand(0, count($confirmations) - 1)],
             );
             $result[] = array($request);

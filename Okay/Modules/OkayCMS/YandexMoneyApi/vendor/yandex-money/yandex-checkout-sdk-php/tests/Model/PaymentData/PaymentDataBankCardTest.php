@@ -7,8 +7,6 @@ use YandexCheckout\Model\PaymentData\PaymentDataBankCard;
 use YandexCheckout\Model\PaymentData\PaymentDataBankCardCard;
 use YandexCheckout\Model\PaymentMethodType;
 
-require_once __DIR__ . '/AbstractPaymentDataTest.php';
-
 class PaymentDataBankCardTest extends AbstractPaymentDataTest
 {
     /**

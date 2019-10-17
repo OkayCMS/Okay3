@@ -30,7 +30,7 @@ use YandexCheckout\Model\PaymentMethod\AbstractPaymentMethod;
 
 /**
  * Interface PaymentInterface
- * 
+ *
  * @package YandexCheckout\Model
  *
  * @property-read string $id Идентификатор платежа
@@ -47,6 +47,7 @@ use YandexCheckout\Model\PaymentMethod\AbstractPaymentMethod;
  * @property-read AmountInterface $refundedAmount Сумма возвращенных средств платежа
  * @property-read AmountInterface $refunded_amount Сумма возвращенных средств платежа
  * @property-read bool $paid Признак оплаты заказа
+ * @property-read bool $refundable Возможность провести возврат по API
  * @property-read string $receiptRegistration Состояние регистрации фискального чека
  * @property-read string $receipt_registration Состояние регистрации фискального чека
  * @property-read Metadata $metadata Метаданные платежа указанные мерчантом
@@ -114,6 +115,12 @@ interface PaymentInterface
     public function getPaid();
 
     /**
+     * Возможность провести возврат по API
+     * @return bool Возможность провести возврат по API
+     */
+    public function getRefundable();
+
+    /**
      * Возвращает состояние регистрации фискального чека
      * @return string Состояние регистрации фискального чека
      */
@@ -131,4 +138,18 @@ interface PaymentInterface
      * @since 1.0.2
      */
     public function getExpiresAt();
+
+    /**
+     * Возвращает комментарий к статусу canceled: кто отменил платеж и по какой причине
+     * @return CancellationDetailsInterface|null Комментарий к статусу canceled
+     * @since 1.0.13
+     */
+    public function getCancellationDetails();
+
+    /**
+     * Возвращает данные об авторизации платежа
+     * @return AuthorizationDetailsInterface|null Данные об авторизации платежа
+     * @since 1.0.18
+     */
+    public function getAuthorizationDetails();
 }

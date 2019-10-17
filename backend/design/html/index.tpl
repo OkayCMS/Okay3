@@ -6,6 +6,21 @@
     <META HTTP-EQUIV="Expires" CONTENT="-1"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>{$meta_title|escape}</title>
+
+    {literal}
+    <script>
+        var okay = {};
+        okay.router = {};
+        {/literal}
+        {if $front_routes}
+            {foreach $front_routes as $name=>$route}
+                okay.router['{$name}'] = '{url_generator route=$name absolute=1}';
+            {/foreach}
+        {/if}
+        {literal}
+    </script>
+    {/literal}
+    
     <link rel="icon" href="design/images/favicon.png" type="image/x-icon" />
     <script src="design/js/jquery/jquery.js"></script>
     <script src="design/js/jquery.scrollbar.min.js"></script>
@@ -77,10 +92,29 @@
                                     {if $items|count == 1}
                                         <input type="hidden" value="{$items|reset}" name="manager_menu[{$section|escape}][{$items|key}]" />
                                     {/if}
+
+                                    {if $config->dev_mode}
+                                        <div class="fn_backend_menu_section" data-section_name="{$section}">{$section}</div>
+                                    {/if}
+
                                     <a class="nav-link {if $items|count > 1}fn_item_switch nav-dropdown-toggle{/if}" href="{if $items|count > 1}javascript:;{else}index.php?controller={$items|reset}{/if}">
                                         <span class="{$section} title">{$btr->getTranslation({$section})}</span>
                                         <span class="icon-thumbnail">
-                                           {include file='svg_icon.tpl' svgId=$section}
+                                            {if !empty($additional_section_icons[$section])}
+                                                {if $additional_section_icons[$section]['type'] === 'file'}
+                                                    <img src="{$rootUrl}/{$additional_section_icons.$section.data}">
+                                                {else}
+                                                    {$additional_section_icons.$section.data}
+                                                {/if}
+                                            {else}
+                                                {$svg_icon = {include file='svg_icon.tpl' svgId=$section}}
+                                                {if $svg_icon}
+                                                    {$svg_icon}
+                                                {else}
+                                                    {$translation = {$btr->getTranslation({$section})}}
+                                                    <span class="manager_menu_section_icon">{$translation.0}</span>
+                                                {/if}
+                                            {/if}
                                         </span>
                                         {if $items|count >1}
                                             <span class="arrow"></span>
@@ -324,6 +358,55 @@
 <script>
     $(function(){
 
+        {if $config->dev_mode}
+            // При нажатии на лейбл под названием секции меню происходит копирование в буфер обмена
+            (function copyToBufferMenuSections() {
+                $('.fn_backend_menu_section').on('click', function(e) {
+                    var sectionName = $(this).data('section_name'),
+                        code = document.querySelector('.fn_backend_menu_section[data-section_name="' + sectionName + '"]'),
+                        range = document.createRange();
+
+                    range.selectNode(code);
+                    window.getSelection().addRange(range);
+
+                    sectionHighlightAnimation($(this));
+
+                    var successful = document.execCommand('copy'),
+                        msg = "";
+
+                    if (successful) {
+                        toastr.success(msg, "{$btr->toastr_success|escape}");
+                    } else {
+                        toastr.error(msg, "{$btr->toastr_error|escape}");
+                    }
+
+                    window.getSelection().removeAllRanges();
+                });
+            })();
+
+            $('.fn_design_block_name').parent().addClass('design_block_parent_element');
+            $('.fn_design_block_name').on('mouseover', function () {
+                $(this).parent().addClass('focus');
+            });
+            $('.fn_design_block_name').on('mouseout', function () {
+                $(this).parent().removeClass('focus');
+            });
+
+            function sectionHighlightAnimation($element) {
+                $element.css({
+                    color: 'white',
+                    transition: '0.3s'
+                });
+
+                setTimeout(function() {
+                    $element.css({
+                        color: 'red',
+                    });
+                }, 300);
+            }
+
+        {/if}
+        
         /* Initializing the scrollbar */
         if($('.scrollbar-inner').size()>0){
             $('.scrollbar-inner').scrollbar({

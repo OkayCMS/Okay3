@@ -40,6 +40,16 @@
         left: 287px !important;
         width: calc(100% - 295px) !important;
     }
+    .boxed_learning--bg {
+        padding: 50px 15px;
+    }
+    .boxed_learning--bg .heading_page {
+        font-size: 34px;
+        line-height: 1.6;
+    }
+    .boxed_learning--bg .heading_box {
+        font-size: 20px;
+    }
 
 }
 @media only screen and (max-width : 1199px) {
@@ -203,6 +213,44 @@
     .feature_alias_value{
         width: calc(100% - 500px);
     }
+    .learning_boxed__video {
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 100px;
+        -ms-flex: 0 0 100px;
+        flex: 0 0 100px;
+        max-width: 100px;
+        position: relative;
+    }
+    .learning_boxed__video img {
+        width: 100px;
+    }
+    .video__button {
+        width: 30px;
+        height: 30px;
+    }
+    .video__button svg {
+        width: 30px;
+        height: 30px;
+    }
+    .learning_boxed__details {
+        padding-left: 15px;
+    }
+    .learning_boxed__body {
+        padding-bottom: 10px;
+        font-size: 14px;
+        line-height: 1.5;
+        padding-right: 0;
+    }
+    .lesson_done_icon {
+        top: 10px;
+        right: 15px;
+        width: 40px;
+    }
+    .lesson_done_icon svg {
+        width: 30px;
+        height: 30px;
+    }
+
 
 }
 
@@ -802,6 +850,64 @@
         padding-right: 0px;
         padding-left: 0px;
     }
+    .progress-bar__wrap{
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+    .progress-bar-holder {
+        margin-right: 0px;
+        margin-bottom: 15px;
+    }
+    .progress-bar{
+        height: 40px;
+    }
+    .progress-bar__wrap form{
+        width: 100%;
+    }
+    .learning_boxed__footer,
+    .learning_boxed{
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+    .learning_boxed__video{
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 auto;
+        -ms-flex: 0 0 auto;
+        flex: 0 0 auto;
+        width: auto;
+        width: 200px;
+        margin-bottom: 10px;
+    }
+    .learning_boxed__details {
+        padding-left: 0;
+    }
+    .learning_boxed__footer{
+        -webkit-box-pack: start;
+        -webkit-justify-content: flex-start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        -webkit-box-align: start;
+        -webkit-align-items: flex-start;
+        -ms-flex-align: start;
+        align-items: flex-start;
+    }
+    .learning_boxed__footer form{
+        position: absolute;
+        top: 15px;
+        right: 30px;
+    }
+    .learning_boxed__footer form .btn{
+        padding: 5px 5px;
+        font-size: 12px;
+    }
+
+
 }
 
 /* Custom, iPhone Retina */

@@ -42,14 +42,14 @@ class CommentsEntity extends Entity
         if (isset($filter['ip'])) {
             $ip_filter = " OR c.ip = :ip";
             $this->select->bindValue('ip', $filter['ip']);
-            // Удалим фильтр по IP, т.к. в чистом виде он нам не нужен
-            unset($filter['ip']);
         }
 
         $this->select->where("(c.approved = :approved {$ip_filter})");
         $this->select->bindValue('approved', (int)$value);
     }
 
+    // Фильтровать по IP в чистом виде нам не нужно
+    protected function filter__ip($value) {}
 
     protected function filter__has_parent($value)
     {

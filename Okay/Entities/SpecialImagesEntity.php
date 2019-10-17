@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class SpecialImagesEntity extends Entity
 {
@@ -25,7 +26,7 @@ class SpecialImagesEntity extends Entity
     /*Удаление промо-изображений*/
     public function delete($imageId) {
         if (empty($imageId)){
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
         $filename = $this->cols(['filename'])->get((int)$imageId)->filename;
@@ -53,7 +54,7 @@ class SpecialImagesEntity extends Entity
             ->where('special=:special')
             ->bindValue('special', $filename);
         $this->db->query($update);
-        
-        return true;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
 }

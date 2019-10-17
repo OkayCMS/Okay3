@@ -15,7 +15,7 @@
 <ul class="second-nav">
     {if $controller != 'MainController'}
         <li>
-            <a href="{url_generator route="main"}">
+            <a href="{url_generator route='main'}">
                 {include file="svg.tpl" svgId="home_icon"}
                 <span data-language="mobile_menu_home">{$lang->mobile_menu_home}</span>
             </a>

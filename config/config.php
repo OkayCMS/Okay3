@@ -54,6 +54,8 @@ smarty_security = true
 [design]
 debug_translation = false
 scripts_defer = true
+;Режим разработчика, пока только в админке подписывает блоки
+dev_mode = false
 
 [images]
 ;Указываем какую библиотеку использовать для нарезки изображений. Варианты: Gregwar, Imagick или GD. Это имя класса адаптера
@@ -91,10 +93,6 @@ resized_deliveries_dir = files/resized/deliveries/
 ;Изображения оригиналов и нарезок фоток способов оплаты
 original_payments_dir = files/originals/payments/
 resized_payments_dir = files/resized/payments/
-
-;Изображения баннеров
-banners_images_dir = files/originals/slides/
-resized_banners_images_dir = files/resized/slides/
 
 ; Папка изображений языков
 lang_images_dir = files/originals/lang/

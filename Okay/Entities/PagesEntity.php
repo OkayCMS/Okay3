@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class PagesEntity extends Entity
 {
@@ -66,6 +67,7 @@ class PagesEntity extends Entity
         $this->setUp();
 
         if (!is_int($id) && $this->getAlternativeIdField()) {
+            $id = $this->formattedUrl($id);
             $filter[$this->getAlternativeIdField()] = $id;
         } else {
             $filter['id'] = $id;
@@ -75,26 +77,51 @@ class PagesEntity extends Entity
         $this->select->cols($this->getAllFields());
 
         $this->db->query($this->select);
-        return $this->getResult();
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->getResult(), func_get_args());
     }
     
     public function delete($ids)
     {
         $ids = (array)$ids;
-        $result = false;
-        if (!empty($ids)) {
-            $result = true;
-            foreach ($ids as $id) {
-                // Запретим удаление системных ссылок
-                $page = $this->get(intval($id));
-                if (!in_array($page->url, $this->systemPages)) {
-                    parent::delete($id);
-                } else {
-                    $result = false;
-                }
+
+        if (empty($ids)) {
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
+        }
+
+        $result = true;
+        foreach ($ids as $id) {
+            // Запретим удаление системных ссылок
+            $page = $this->get(intval($id));
+            if (!in_array($page->url, $this->systemPages)) {
+                parent::delete($id);
+            } else {
+                $result = false;
             }
         }
-        return $result;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
 
+    private function formattedUrl($url)
+    {
+        $url = trim($url);
+
+        if (empty($url)) {
+            return $url;
+        }
+
+        $url = explode('?', $url)[0];
+
+        if ($url[0] === '/') {
+            $url = substr($url, 1);
+        }
+
+        $lastSymbolNumber = strlen($url) - 1;
+        if ($url[$lastSymbolNumber] == '/') {
+            $url = substr($url, 0, -1);
+        }
+
+        return $url;
+    }
 }

@@ -18,15 +18,14 @@
     <header class="header">
         <div class="header__top hidden-md-down">
             <div class="container">
-                <div class="f_row flex-nowrap justify-content-between">
+                <div class="f_row align-items-center flex-nowrap justify-content-between">
                     {* Account *}
                     <div id="account" class="d-flex align-items-center f_col">
                         {include file="user_informer.tpl"}
                     </div>
                     <div class="d-flex align-items-center f_col justify-content-end">
                         {* Callback *}
-                        <a class="fn_callback callback" href="#fn_callback" data-language="index_back_call">
-                            <i class="mdi mdi-phone-return"></i>
+                        <a class="fn_callback callback d-inline-flex align-items-center icon icon-phone-callback" href="#fn_callback" data-language="index_back_call">
                             <span>{$lang->index_back_call}</span>
                         </a>
                         {* Language & Currency *}
@@ -46,7 +45,7 @@
                     <div class="logo header__logo ">
                         {if !empty({$settings->site_logo})}
                         <a class="logo__link " href="{if $controller=='MainController'}javascript:;{else}{url_generator route="main"}{/if}">
-                            <img class=""  src="{$rootUrl}/{$config->design_images}{$settings->site_logo}?v={$settings->site_logo_version}" alt="{$settings->site_name|escape}"/>
+                            <img src="{$rootUrl}/{$config->design_images}{$settings->site_logo}?v={$settings->site_logo_version}" alt="{$settings->site_name|escape}"/>
                         </a>
                         {/if}
                     </div>
@@ -61,7 +60,7 @@
                                 {foreach $settings->site_phones as $phone}
                                     <div class="header-contact__item{if $phone@first} header-contact__item--visible{/if}">
                                         <div class="header-contact__phone">
-                                            <a class="header-contact__section mdi mdi-phone-in-talk" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
+                                            <a class="header-contact__section icon icon-phone-in-talk" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
                                                 <span>{$phone|escape}</span>
                                             </a>
                                         </div>
@@ -71,7 +70,7 @@
                             {if $settings->site_email}
                                 <div class="header-contact__item">
                                     <div class="header-contact__email">
-                                        <a class="header-contact__section mdi mdi-email-outline" href="mailto:{$settings->site_email|escape}" >
+                                        <a class="header-contact__section icon icon-mail-outline" href="mailto:{$settings->site_email|escape}" >
                                             <span>{$settings->site_email|escape}</span>
                                         </a>
                                     </div>
@@ -80,21 +79,13 @@
                             {if $settings->site_working_hours}
                                 <div class="header-contact__item">
                                     <div class="header-contact__time">
-                                        <div class="header-contact__section mdi mdi-calendar-clock">
+                                        <div class="header-contact__section icon icon-schedule">
                                             <div class="header-contact__title-s">{$settings->site_working_hours}</div>
                                         </div>
                                     </div>
                                 </div>
                             {/if}
-                            {*<div class="header-contact__item">
-                                <div class="header-contact__location">
-                                    <div class="header-contact__section mdi mdi-map-marker-outline">
-                                        <div class="header-contact__title" data-language="index_location_title">{$lang->index_location_title}</div>
-                                        <div class="header-contact__title-s" data-language="company_location">{$lang->company_location}</div>
-                                    </div>
-                                </div>
-                            </div>*}
-                        </div>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -106,17 +97,16 @@
                         {* Mobile menu button*}
                         <div class="fn_menu_switch menu_switcher hidden-lg-up">
                             <div class="menu_switcher__heading d-flex align-items-center">
-                                <i class="mdi mdi-menu catalog_icon"></i>
+                                <i class="icon icon-reorder catalog_icon"></i>
                                 <span class="" data-language="index_categories">{$lang->index_mobile_menu}</span>
                             </div>
                         </div>
                         {* Catalog heading *}
-                        {get_banner var=banner_group1 group='group1'}
-                        <div class="{if $controller != 'MainController' || empty($banner_group1->items)}fn_catalog_switch button--blick{/if} catalog_button d-lg-flex hidden-md-down ">
+                        <div class="{if $controller != 'MainController' || empty($global_banners)}fn_catalog_switch button--blick{/if} catalog_button d-lg-flex hidden-md-down ">
                             <div class="catalog_button__heading d-flex align-items-center ">
-                                <i class="mdi mdi-menu catalog_icon"></i>
+                                <i class="icon icon-reorder catalog_icon"></i>
                                 <span class="" data-language="index_categories">{$lang->index_categories}</span>
-                                {if $controller != 'MainController' || empty($banner_group1->items)}
+                                {if $controller != 'MainController' || empty($global_banners)}
                                     <span class="catalog_button__arrow">{include file="svg.tpl" svgId="arrow_right"}</span>
                                 {/if}
                             </div>
@@ -124,27 +114,27 @@
                         {* Search form *}
                         <form id="fn_search" class="fn_search_mob search d-md-flex" action="{url_generator route='search'}">
                             <input class="fn_search search__input" type="text" name="keyword" value="{$keyword|escape}" data-language="index_search" placeholder="{$lang->index_search}"/>
-                            <button class="search__button mdi mdi-magnify d-flex align-items-center justify-content-center" type="submit"></button>
+                            <button class="search__button icon icon-search d-flex align-items-center justify-content-center" type="submit"></button>
                         </form>
-                        <div class="header_informers">
+                        <div class="header_informers d-flex align-items-center">
                             {* Mobile search toggle *}
-                            <div class="fn_search_toggle header_informers__item mdi mdi-magnify hidden-md-up"></div>
+                            <div class="fn_search_toggle header_informers__item d-flex align-items-center justify-content-center icon icon-search hidden-md-up"></div>
                             {* Wishlist informer *}
-                            <div id="wishlist" class="header_informers__item">
+                            <div id="wishlist" class="header_informers__item d-flex align-items-center justify-content-center">
                                 {include file="wishlist_informer.tpl"}
                             </div>
                             {* Comparison informer *}
-                            <div id="comparison" class="header_informers__item">
+                            <div id="comparison" class="header_informers__item d-flex align-items-center justify-content-center">
                                 {include "comparison_informer.tpl"}
                             </div>
                             {* Cart informer*}
-                            <div id="cart_informer" class="header_informers__item">
+                            <div id="cart_informer" class="header_informers__item d-flex align-items-center justify-content-center">
                                 {include file='cart_informer.tpl'}
                             </div>
                         </div>
                         {* Categories menu *}
                         {if $is_mobile == false && $is_tablet == false}
-                            <nav class="fn_catalog_menu categories_nav hidden-md-down {if $controller == 'MainController' && !empty($banner_group1->items)}categories_nav--show{/if}">
+                            <nav class="fn_catalog_menu categories_nav hidden-md-down {if $controller == 'MainController' && !empty($global_banners)}categories_nav--show{/if}">
                                 {include file="desktop_categories.tpl"}
                             </nav>
                         {/if}
@@ -157,45 +147,13 @@
     {* Тело сайта *}
     <div id="fn_content" class="main">
         {* Banners *}
-        {if !empty($banner_group1->items)}
-        <div class="container">
-            <div class="main_banner">
-                <div class="fn_banner_group1 main_banner__inner owl-carousel">
-                    {foreach $banner_group1->items as $bi}
-                        {* Banners variant image *}
-                        {* main_banner_var2 - изображение на всю ширину, main_banner_var1 - изображение справа на 50% *}
-                        <div class="main_banner_var main_banner_var2 lazy" data-bg="url('{$bi->image|resize:1200:700:false:$config->resized_banners_images_dir}')">
-                            <div class="main_banner_var__content">
-                                <div class="main_banner_var__image">
-                                    <img src="{$bi->image|resize:500:320:false:$config->resized_banners_images_dir}" alt="{$bi->alt}" title="{$bi->title}"/>
-                                </div>
-                                <div class="main_banner_var__column dark">
-                                    <div class="main_banner_var__colboxed">
-                                        {if $bi->title}
-                                            <div class="main_banner_var__title">
-                                                {$bi->title}
-                                            </div>
-                                        {/if}
 
-                                        {if $bi->description}
-                                            <div class="main_banner_var__text">
-                                                {$bi->description}
-                                            </div>
-                                        {/if}
-
-                                        {if $bi->url}
-                                            <a href="{$bi->url}" target="_blank" class="main_banner_var__button button button--big button--basic button--blick">
-                                                <span>Подробнее</span>
-                                            </a>
-                                        {/if}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {/foreach}
+        {if !empty($global_banners)}
+            <div class="container">
+                <div class="{if $controller == "MainController"}main_banner{/if}">
+                    {$global_banners}
                 </div>
             </div>
-        </div>
         {/if}
 
         {* Контент сайта *}
@@ -219,6 +177,10 @@
     {* Кнопка на верх *}
     <div class="fn_to_top to_top"></div>
 
+    <div>
+        {get_design_block block="front_before_footer_content"}
+    </div>
+
     {* Footer *}
     <footer class="footer">
         <div class="container">
@@ -229,11 +191,11 @@
                         <span data-language="index_contacts">{$lang->index_contacts}</span>
                         <span class="fn_switch_parent footer__title_arrow hidden-lg-up">{include file="svg.tpl" svgId="arrow_right"}</span>
                     </div>
-                    <div class="footer__content hidden-md-down">
+                    <div class="footer__content footer__hidden">
                         {if $settings->site_phones}
                             {foreach $settings->site_phones as $phone}
                                 <div class="footer__contact_item">
-                                    <a class="phone mdi mdi-phone-in-talk" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
+                                    <a class="phone icon icon-phone-callback" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
                                         <span>{$phone|escape}</span>
                                     </a>
                                 </div>
@@ -241,14 +203,14 @@
                         {/if}
                         {if $settings->site_email}
                             <div class="footer__contact_item">
-                                <a class="email mdi mdi-email-outline" href="mailto:{$settings->site_email|escape}">
+                                <a class="email icon icon-mail-outline" href="mailto:{$settings->site_email|escape}">
                                     <span>{$settings->site_email|escape}</span>
                                 </a>
                             </div>
                         {/if}
                         {if $settings->site_working_hours}
                             <div class="footer__contact_item">
-                                <span class="open_hours mdi mdi-calendar-clock">
+                                <span class="open_hours icon icon-schedule">
                                     {$settings->site_working_hours}
                                 </span>
                             </div>
@@ -259,7 +221,7 @@
                             </span>
                         </div>*}
                         <div class="footer__contact_item">
-                            <a class="fn_callback callback mdi mdi-phone-return" href="#fn_callback" data-language="index_back_call">
+                            <a class="fn_callback callback d-inline-flex align-items-center icon icon-phone-callback" href="#fn_callback" data-language="index_back_call">
                                 <span>{$lang->index_back_call}</span>
                             </a>
                         </div>
@@ -271,7 +233,7 @@
                         <span data-language="index_about_store">{$lang->index_about_store}</span>
                         <span class="fn_switch_parent footer__title_arrow hidden-lg-up">{include file="svg.tpl" svgId="arrow_right"}</span>
                     </div>
-                    <div class="footer__content footer__menu hidden-md-down">
+                    <div class="footer__content footer__menu footer__hidden">
                         {$menu_footer}
                     </div>
                 </div>
@@ -281,7 +243,7 @@
                         <span data-language="index_categories">{$lang->index_categories}</span>
                         <span class="fn_switch_parent footer__title_arrow hidden-lg-up">{include file="svg.tpl" svgId="arrow_right"}</span>
                     </div>
-                    <div class="fn_view_content footer__content footer__menu hidden-md-down">
+                    <div class="fn_view_content footer__content footer__menu footer__hidden">
                         {$c_count = 0}
                         {foreach $categories as $c}
                             {$c_count = $c_count+1}
@@ -302,7 +264,7 @@
                         <span data-language="subscribe_heading">{$lang->subscribe_heading}</span>
                         <span class="fn_switch_parent footer__title_arrow hidden-lg-up">{include file="svg.tpl" svgId="arrow_right"}</span>
                     </div>
-                    <div id="subscribe_container" class="footer__content hidden-md-down">
+                    <div id="subscribe_container" class="footer__content footer__hidden">
                         <div class="subscribe__title">
                             <span data-language="subscribe_promotext">{$lang->subscribe_promotext}</span>
                         </div>
@@ -344,7 +306,7 @@
                             <span data-language="index_in_networks">{$lang->index_in_networks}</span>
                             <span class="fn_switch_parent footer__title_arrow hidden-lg-up">{include file="svg.tpl" svgId="arrow_right"}</span>
                         </div>
-                        <div class="footer__content footer__social social hidden-md-down">
+                        <div class="footer__content footer__social social footer__hidden">
                             {*Домен некоторых соц. сетей не соответствует стилям font-awesome, для них сделаны эти алиасы*}
                             {$social_aliases.ok = 'odnoklassniki'}
 
@@ -352,7 +314,7 @@
                             {$social_domain = preg_replace('~(https?://)?(www\.)?([^\.]+)?\..*~', '$3', $social_link)}
                             {if isset($social_aliases.$social_domain) || $social_domain}
                             <a class="social__link {if isset($social_aliases.$social_domain)}{$social_aliases.$social_domain}{else}{$social_domain}{/if}" href="{if !preg_match('~^https?://.*$~', $social_link)}https://{/if}{$social_link|escape}" target="_blank" title="{$social_domain}">
-                                <i class="mdi mdi-{if isset($social_aliases.$social_domain)}{$social_aliases.$social_domain}{else}{$social_domain}{/if}"></i>
+                                <i class="icon icon-{if isset($social_aliases.$social_domain)}{$social_aliases.$social_domain}{else}{$social_domain}{/if}"></i>
                             </a>
                             {/if}
                             {/foreach}
@@ -396,11 +358,12 @@
             </div>
         </div>
     </footer>
-    {*if $is_mobile === true || $is_tablet === true*}
+
+    {if $is_mobile === true || $is_tablet === true}
     <div class="fn_mobile_menu hidden">
         {include file="mobile_menu.tpl"}
     </div>
-    {*/if*}
+    {/if}
     {* Форма обратного звонка *}
     {include file='callback.tpl'}
 
@@ -432,5 +395,10 @@
         <script src="//ulogin.ru/js/ulogin.js"></script>
     {/if}
     <script>ut_tracker.end('parsing:page');</script>
+
+    <div>
+        {get_design_block block="front_after_footer_content"}
+    </div>
+
 </body>
 </html>

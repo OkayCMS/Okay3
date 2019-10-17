@@ -11,6 +11,6 @@ class Text extends AbstractResponse
     {
         header('Content-type: text/html; charset=utf-8', true);
 
-        print $content;
+        print implode('', $content);
     }
 }

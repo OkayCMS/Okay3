@@ -147,7 +147,7 @@
                                                 {foreach $payment_methods as $payment_method}
                                                 <div class="delivery__item">
                                                     <label class="checkbox delivery__label{if $payment_method@first} active{/if}">
-                                                        <input class="checkbox__input delivery__input"  type="radio" name="payment_method_id" value="{$payment_method->id}" {if $delivery@first && $payment_method@first} checked{/if} id="payment_{$delivery->id}_{$payment_method->id}">
+                                                        <input class="checkbox__input delivery__input"  type="radio" name="payment_method_id"{if $payment_method@first} checked{/if} value="{$payment_method->id}" {if $delivery@first && $payment_method@first} checked{/if} id="payment_{$delivery->id}_{$payment_method->id}">
 
                                                         <svg class="checkbox__icon" viewBox="0 0 20 20">
                                                             <path class="checkbox__mark" fill="none" d="M4 10 l5 4 8-8.5"></path>

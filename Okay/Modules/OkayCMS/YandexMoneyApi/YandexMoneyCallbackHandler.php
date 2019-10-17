@@ -52,38 +52,25 @@ class YandexMoneyCallbackHandler
 
     public function processReturnUrl()
     {
-        $orderId       = $this->request->get('order');
+        $orderId       = $this->request->get('order_id');
         $order         = $this->ordersEntity->get((int) $orderId);
         $paymentMethod = $this->paymentsEntity->get((int) $order->payment_method_id);
         $settings      = $this->paymentsEntity->getPaymentSettings($paymentMethod->id);
         $apiClient     = $this->getApiClient($settings['yandex_api_shopid'], $settings['yandex_api_password']);
         $paymentId     = $this->getPaymentId($orderId);
-        //$logger        = new YandexMoneyLogger($settings['ya_kassa_debug']);
-        //$apiClient->setLogger($logger);
 
-        try {
-            $paymentInfo = $apiClient->getPaymentInfo((string) $paymentId);
-            if ($paymentInfo->status == PaymentStatus::WAITING_FOR_CAPTURE) {
-                $captureResult = $this->capturePayment($apiClient, $paymentInfo);
-                if ($captureResult->status == PaymentStatus::SUCCEEDED) {
-                    $this->completePayment($order, $paymentId);
-                    //$logger->info('Complete payment #'.$paymentId.' orderId: '.$orderId);
-                } else {
-                    //$logger->info('Capture order fail. OrderId: '.$orderId);
-                }
-            } elseif ($paymentInfo->status == PaymentStatus::CANCELED) {
-                //$logger->info('Cancel order. OrderId: '.$orderId);
-            } elseif ($paymentInfo->status == PaymentStatus::SUCCEEDED) {
+        $paymentInfo = $apiClient->getPaymentInfo((string) $paymentId);
+        if ($paymentInfo->status == PaymentStatus::WAITING_FOR_CAPTURE) {
+            $captureResult = $this->capturePayment($apiClient, $paymentInfo);
+            if ($captureResult->status == PaymentStatus::SUCCEEDED) {
                 $this->completePayment($order, $paymentId);
-                //$logger->info('Complete payment #'.$paymentId.' orderId: '.$orderId);
             }
-
-            $return_url = $this->request->getRootUrl().'/order/'.$order->url;
-            $this->response->redirectTo($return_url);
-        } catch (\Exception $e) {
-            //$logger->error($e->getMessage());
-            throw $e;
+        } elseif ($paymentInfo->status == PaymentStatus::SUCCEEDED) {
+            $this->completePayment($order, $paymentId);
         }
+
+        $return_url = $this->request->getRootUrl().'/order/'.$order->url;
+        $this->response->redirectTo($return_url);
     }
 
     public function processNotification()
@@ -174,24 +161,14 @@ class YandexMoneyCallbackHandler
         }
     }
 
-    /**
-     * @param \YandexCheckout\Client $apiClient
-     * @param object $payment
-     *
-     * @return \YandexCheckout\Request\Payments\Payment\CreateCaptureResponse
-     */
     protected function capturePayment($apiClient, $payment)
     {
-        $captureRequest = CreateCaptureRequest::builder()->setAmount($payment->getAmount())->build();
+        $captureRequest = CreateCaptureRequest::builder();
+        $captureRequest->setAmount($payment->getAmount());
+        $captureRequest->build();
         return $apiClient->capturePayment($captureRequest, $payment->id);
     }
 
-    /**
-     * @param int|string $shopId
-     * @param string $shopPassword
-     *
-     * @return Client
-     */
     protected function getApiClient($shopId, $shopPassword)
     {
         $apiClient = new Client();

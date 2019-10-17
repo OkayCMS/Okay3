@@ -2,13 +2,35 @@
 
 namespace Tests\YandexCheckout\Client;
 
+use DateTime;
+use Exception;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
+use ReflectionMethod;
 use YandexCheckout\Client;
+use YandexCheckout\Common\Exceptions\ApiConnectionException;
 use YandexCheckout\Common\Exceptions\ApiException;
+use YandexCheckout\Common\Exceptions\AuthorizeException;
+use YandexCheckout\Common\Exceptions\BadApiRequestException;
+use YandexCheckout\Common\Exceptions\ForbiddenException;
+use YandexCheckout\Common\Exceptions\InternalServerError;
 use YandexCheckout\Common\Exceptions\JsonException;
+use YandexCheckout\Common\Exceptions\NotFoundException;
 use YandexCheckout\Common\Exceptions\ResponseProcessingException;
+use YandexCheckout\Common\Exceptions\TooManyRequestsException;
+use YandexCheckout\Common\Exceptions\UnauthorizedException;
+use YandexCheckout\Common\LoggerWrapper;
 use YandexCheckout\Helpers\Random;
 use YandexCheckout\Helpers\StringObject;
+use YandexCheckout\Model\CurrencyCode;
+use YandexCheckout\Model\MonetaryAmount;
+use YandexCheckout\Model\Receipt\ReceiptItemAmount;
+use YandexCheckout\Model\Receipt\SettlementType;
+use YandexCheckout\Model\ReceiptCustomer;
+use YandexCheckout\Model\ReceiptItem;
+use YandexCheckout\Model\ReceiptType;
+use YandexCheckout\Model\Settlement;
 use YandexCheckout\Request\PaymentOptionsRequest;
 use YandexCheckout\Request\PaymentOptionsResponse;
 use YandexCheckout\Request\PaymentOptionsResponseItem;
@@ -20,6 +42,8 @@ use YandexCheckout\Request\Payments\Payment\CreateCaptureResponse;
 use YandexCheckout\Request\Payments\PaymentResponse;
 use YandexCheckout\Request\Payments\PaymentsRequest;
 use YandexCheckout\Request\Payments\PaymentsResponse;
+use YandexCheckout\Request\Receipts\AbstractReceiptResponse;
+use YandexCheckout\Request\Receipts\CreatePostReceiptRequest;
 use YandexCheckout\Request\Refunds\CreateRefundRequest;
 use YandexCheckout\Request\Refunds\CreateRefundResponse;
 use YandexCheckout\Request\Refunds\RefundResponse;
@@ -31,6 +55,14 @@ class ClientTest extends TestCase
     /**
      * @dataProvider paymentOptionsDataProvider
      * @param $paymentOptionsRequest
+     * @throws ApiException
+     * @throws ResponseProcessingException
+     * @throws BadApiRequestException
+     * @throws ForbiddenException
+     * @throws InternalServerError
+     * @throws NotFoundException
+     * @throws TooManyRequestsException
+     * @throws UnauthorizedException
      */
     public function testPaymentOptions($paymentOptionsRequest)
     {
@@ -104,7 +136,7 @@ class ClientTest extends TestCase
         $apiClient->setApiClient($curlClientStub)->setAuth('shopId', 'shopPassword');
         try {
             $apiClient->getPaymentOptions($paymentOptionsRequest);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             self::assertInstanceOf($requiredException, $e);
             return;
         }
@@ -115,7 +147,7 @@ class ClientTest extends TestCase
     {
         $payment = CreatePaymentRequest::builder()
             ->setAmount(123)
-            ->setPaymentToken(\YandexCheckout\Helpers\Random::str(36))
+            ->setPaymentToken(Random::str(36))
             ->build();
 
         $curlClientStub = $this->getCurlClientStub();
@@ -156,7 +188,7 @@ class ClientTest extends TestCase
                     'value' => 123,
                     'currency' => 'USD',
                 ),
-                'payment_token' => \YandexCheckout\Helpers\Random::str(36),
+                'payment_token' => Random::str(36),
             ), 123);
 
         self::assertSame($curlClientStub, $apiClient->getApiClient());
@@ -211,12 +243,13 @@ class ClientTest extends TestCase
      * @param $httpCode
      * @param $errorResponse
      * @param $requiredException
+     * @throws Exception
      */
     public function testInvalidCreatePayment($httpCode, $errorResponse, $requiredException)
     {
         $payment = CreatePaymentRequest::builder()
             ->setAmount(123)
-            ->setPaymentToken(\YandexCheckout\Helpers\Random::str(36))
+            ->setPaymentToken(Random::str(36))
             ->build();
         $curlClientStub = $this->getCurlClientStub();
         $curlClientStub
@@ -242,6 +275,14 @@ class ClientTest extends TestCase
     /**
      * @dataProvider paymentsListDataProvider
      * @param mixed $request
+     * @throws ApiException
+     * @throws ResponseProcessingException
+     * @throws BadApiRequestException
+     * @throws ForbiddenException
+     * @throws InternalServerError
+     * @throws NotFoundException
+     * @throws TooManyRequestsException
+     * @throws UnauthorizedException
      */
     public function testPaymentsList($request)
     {
@@ -268,7 +309,7 @@ class ClientTest extends TestCase
     {
         return array(
             array(null),
-            array(PaymentsRequest::builder()->setAccountId(12)->build()),
+            array(PaymentsRequest::builder()->build()),
             array(array(
                 'account_id' => 12,
             ))
@@ -283,7 +324,7 @@ class ClientTest extends TestCase
      */
     public function testInvalidPaymentsList($httpCode, $errorResponse, $requiredException)
     {
-        $payments = PaymentsRequest::builder()->setAccountId(12)->build();
+        $payments = PaymentsRequest::builder()->build();
         $curlClientStub = $this->getCurlClientStub();
         $curlClientStub
             ->expects($this->any())
@@ -309,6 +350,14 @@ class ClientTest extends TestCase
      * @dataProvider paymentInfoDataProvider
      * @param mixed $paymentId
      * @param string $exceptionClassName
+     * @throws ApiException
+     * @throws ResponseProcessingException
+     * @throws BadApiRequestException
+     * @throws ForbiddenException
+     * @throws InternalServerError
+     * @throws NotFoundException
+     * @throws TooManyRequestsException
+     * @throws UnauthorizedException
      */
     public function testGetPaymentInfo($paymentId, $exceptionClassName = null)
     {
@@ -349,7 +398,7 @@ class ClientTest extends TestCase
             array(0.1, '\InvalidArgumentException'),
             array(Random::str(35), '\InvalidArgumentException'),
             array(Random::str(37), '\InvalidArgumentException'),
-            array(new \DateTime(), '\InvalidArgumentException'),
+            array(new DateTime(), '\InvalidArgumentException'),
             array(array(), '\InvalidArgumentException'),
         );
     }
@@ -359,6 +408,7 @@ class ClientTest extends TestCase
      * @param $httpCode
      * @param $errorResponse
      * @param $requiredException
+     * @throws Exception
      */
     public function testInvalidGetPaymentInfo($httpCode, $errorResponse, $requiredException)
     {
@@ -375,7 +425,7 @@ class ClientTest extends TestCase
         $apiClient = new Client();
         $apiClient->setApiClient($curlClientStub)->setAuth('shopId', 'shopPassword');
         try {
-            $apiClient->getPaymentInfo(\YandexCheckout\Helpers\Random::str(36));
+            $apiClient->getPaymentInfo(Random::str(36));
         } catch (ApiException $e) {
             self::assertInstanceOf($requiredException, $e);
             return;
@@ -452,7 +502,7 @@ class ClientTest extends TestCase
 
         try {
             $apiClient->capturePayment($capturePaymentRequest, null, 123);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             // it's ok
             return;
         }
@@ -464,6 +514,7 @@ class ClientTest extends TestCase
      * @param $httpCode
      * @param $errorResponse
      * @param $requiredException
+     * @throws Exception
      */
     public function testInvalidCapturePayment($httpCode, $errorResponse, $requiredException)
     {
@@ -578,7 +629,7 @@ class ClientTest extends TestCase
         $apiClient = new Client();
         $apiClient->setApiClient($curlClientStub)->setAuth('shopId', 'shopPassword');
         try {
-            $apiClient->cancelPayment(\YandexCheckout\Helpers\Random::str(36));
+            $apiClient->cancelPayment(Random::str(36));
         } catch (ApiException $e) {
             self::assertInstanceOf($requiredException, $e);
             return;
@@ -731,6 +782,7 @@ class ClientTest extends TestCase
      * @param $httpCode
      * @param $errorResponse
      * @param $requiredException
+     * @throws Exception
      */
     public function testInvalidCreateRefund($httpCode, $errorResponse, $requiredException)
     {
@@ -761,6 +813,14 @@ class ClientTest extends TestCase
      *
      * @param mixed $refundId
      * @param string $exceptionClassName
+     * @throws ApiException
+     * @throws BadApiRequestException
+     * @throws ForbiddenException
+     * @throws InternalServerError
+     * @throws NotFoundException
+     * @throws ResponseProcessingException
+     * @throws TooManyRequestsException
+     * @throws UnauthorizedException
      */
     public function testRefundInfo($refundId, $exceptionClassName = null)
     {
@@ -788,7 +848,7 @@ class ClientTest extends TestCase
 
         try {
             $apiClient->getRefundInfo(null);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             // it's ok
             return;
         }
@@ -800,6 +860,7 @@ class ClientTest extends TestCase
      * @param $httpCode
      * @param $errorResponse
      * @param $requiredException
+     * @throws Exception
      */
     public function testInvalidRefundInfo($httpCode, $errorResponse, $requiredException)
     {
@@ -816,7 +877,7 @@ class ClientTest extends TestCase
         $apiClient = new Client();
         $apiClient->setApiClient($curlClientStub)->setAuth('shopId', 'shopPassword');
         try {
-            $apiClient->getRefundInfo(\YandexCheckout\Helpers\Random::str(36));
+            $apiClient->getRefundInfo(Random::str(36));
         } catch (ApiException $e) {
             self::assertInstanceOf($requiredException, $e);
             return;
@@ -828,7 +889,7 @@ class ClientTest extends TestCase
     {
         $payment = CreatePaymentRequest::builder()
             ->setAmount(123)
-            ->setPaymentToken(\YandexCheckout\Helpers\Random::str(36))
+            ->setPaymentToken(Random::str(36))
             ->build();
 
         $curlClientStub = $this->getCurlClientStub();
@@ -853,7 +914,7 @@ class ClientTest extends TestCase
     {
         $payment = CreatePaymentRequest::builder()
             ->setAmount(123)
-            ->setPaymentToken(\YandexCheckout\Helpers\Random::str(36))
+            ->setPaymentToken(Random::str(36))
             ->build();
 
         $curlClientStub = $this->getCurlClientStub();
@@ -878,7 +939,7 @@ class ClientTest extends TestCase
     {
         $payment = CreatePaymentRequest::builder()
             ->setAmount(123)
-            ->setPaymentToken(\YandexCheckout\Helpers\Random::str(36))
+            ->setPaymentToken(Random::str(36))
             ->build();
 
         $curlClientStub = $this->getCurlClientStub();
@@ -903,7 +964,7 @@ class ClientTest extends TestCase
     {
         $payment = CreatePaymentRequest::builder()
             ->setAmount(123)
-            ->setPaymentToken(\YandexCheckout\Helpers\Random::str(36))
+            ->setPaymentToken(Random::str(36))
             ->build();
 
         $curlClientStub = $this->getCurlClientStub();
@@ -928,7 +989,7 @@ class ClientTest extends TestCase
     {
         $payment = CreatePaymentRequest::builder()
             ->setAmount(123)
-            ->setPaymentToken(\YandexCheckout\Helpers\Random::str(36))
+            ->setPaymentToken(Random::str(36))
             ->build();
 
         $curlClientStub = $this->getCurlClientStub();
@@ -966,7 +1027,7 @@ class ClientTest extends TestCase
         $response = $apiClient
             ->setApiClient($curlClientStub)
             ->setAuth('shopId', 'shopPassword')
-            ->getPaymentInfo(\YandexCheckout\Helpers\Random::str(36));
+            ->getPaymentInfo(Random::str(36));
     }
 
     public function testToManyRequestsException()
@@ -986,7 +1047,7 @@ class ClientTest extends TestCase
         $response = $apiClient
             ->setApiClient($curlClientStub)
             ->setAuth('shopId', 'shopPassword')
-            ->getPaymentInfo(\YandexCheckout\Helpers\Random::str(36));
+            ->getPaymentInfo(Random::str(36));
     }
 
     public function testAnotherExceptions()
@@ -1043,13 +1104,13 @@ class ClientTest extends TestCase
     public function testSetLogger()
     {
         $wrapped = new ArrayLogger();
-        $logger = new \YandexCheckout\Common\LoggerWrapper($wrapped);
+        $logger = new LoggerWrapper($wrapped);
 
         $apiClient = new Client();
         $apiClient->setLogger($logger);
 
         $clientMock = $this->getMockBuilder('YandexCheckout\Client\ApiClientInterface')
-            ->setMethods(array('setLogger', 'setConfig', 'call'))
+            ->setMethods(array('setLogger', 'setConfig', 'call', 'getUserAgent'))
             ->disableOriginalConstructor()
             ->getMock();
         $expectedLoggers = array();
@@ -1091,7 +1152,7 @@ class ClientTest extends TestCase
     {
         $instance = new TestClient();
 
-        if(version_compare(PHP_VERSION, '5.5') >= 0) {
+        if (version_compare(PHP_VERSION, '5.5') >= 0) {
             $value = array('test' => 'test', 'val' => null);
             $value['val'] = &$value;
             try {
@@ -1101,23 +1162,238 @@ class ClientTest extends TestCase
                 self::assertEquals(JSON_ERROR_RECURSION, $e->getCode());
                 self::assertEquals('Failed serialize json. Unknown error', $e->getMessage());
             }
-        }
 
-        $value = array('test' => iconv('utf-8', 'windows-1251', 'абвгдеёжз'));
-        try {
-            $instance->encode($value);
-            self::fail('Exception not thrown');
-        } catch (JsonException $e) {
-            self::assertEquals(JSON_ERROR_UTF8, $e->getCode());
-            self::assertEquals('Failed serialize json. Malformed UTF-8 characters, possibly incorrectly encoded', $e->getMessage());
+            $value = array('test' => iconv('utf-8', 'windows-1251', 'абвгдеёжз'));
+            try {
+                $instance->encode($value);
+                self::fail('Exception not thrown');
+            } catch (JsonException $e) {
+                self::assertEquals(JSON_ERROR_UTF8, $e->getCode());
+                self::assertEquals('Failed serialize json. Malformed UTF-8 characters, possibly incorrectly encoded',
+                    $e->getMessage());
+            }
+        } else {
+            $value = array('test' => iconv('utf-8', 'windows-1251', 'абвгдеёжз'));
+            $decoded = json_decode(json_encode($value), true);
+            self::assertNotSame($decoded, $value);
         }
     }
 
-    public function testSdkVersion()
+    public function testCreatePaymentErrors() {
+        $payment = CreatePaymentRequest::builder()
+            ->setAmount(123)
+            ->setPaymentToken(Random::str(36))
+            ->build();
+
+        $curlClientStub = $this->getCurlClientStub();
+        $curlClientStub
+            ->expects($this->once())
+            ->method('sendRequest')
+            ->willReturn(array(
+                array('Header-Name' => 'HeaderValue'),
+                $this->getFixtures('createPaymentErrorsGeneralFixtures.json'),
+                array('http_code' => 200)
+            ));
+
+        $apiClient = new Client();
+        $response = $apiClient
+            ->setApiClient($curlClientStub)
+            ->setAuth('shopId', 'shopPassword')
+            ->createPayment($payment);
+
+        self::assertSame($curlClientStub, $apiClient->getApiClient());
+        self::assertTrue($response instanceof CreatePaymentResponse);
+        self::assertEquals("canceled", $response->getStatus());
+        self::assertEquals("general_decline", $response->getCancellationDetails()->getReason());
+    }
+
+    /**
+     * @throws ApiException
+     * @throws BadApiRequestException
+     * @throws ForbiddenException
+     * @throws InternalServerError
+     * @throws NotFoundException
+     * @throws ResponseProcessingException
+     * @throws TooManyRequestsException
+     * @throws UnauthorizedException
+     * @throws ApiConnectionException
+     * @throws AuthorizeException
+     */
+    public function testCreateReceipt()
     {
-        $composerJsonFile = dirname(__FILE__) . '/../../composer.json';
-        $data = json_decode(file_get_contents($composerJsonFile));
-        self::assertEquals($data->version, Client::SDK_VERSION);
+        // Create Receipt via object
+        $receipt = $this->createReceiptViaObject();
+        $curlClientStub = $this->getCurlClientStub();
+        $curlClientStub
+            ->expects($this->once())
+            ->method('sendRequest')
+            ->willReturn(array(
+                array('Header-Name' => 'HeaderValue'),
+                $this->getFixtures('createReceiptFixtures.json'),
+                array('http_code' => 200)
+            ));
+
+        $apiClient = new Client();
+        $response = $apiClient
+            ->setApiClient($curlClientStub)
+            ->setAuth('shopId', 'shopPassword')
+            ->createReceipt($receipt);
+
+        self::assertSame($curlClientStub, $apiClient->getApiClient());
+        self::assertTrue($response instanceof AbstractReceiptResponse);
+
+        $curlClientStub = $this->getCurlClientStub();
+        $curlClientStub
+            ->expects($this->once())
+            ->method('sendRequest')
+            ->willReturn(array(
+                array('Header-Name' => 'HeaderValue'),
+                $this->getFixtures('createReceiptFixtures.json'),
+                array('http_code' => 200)
+            ));
+
+        // Create Receipt via array
+        $receipt = $this->createReceiptViaArray();
+        $apiClient = new Client();
+        $response = $apiClient
+            ->setApiClient($curlClientStub)
+            ->setAuth('shopId', 'shopPassword')
+            ->createReceipt($receipt, 123);
+
+        self::assertSame($curlClientStub, $apiClient->getApiClient());
+        self::assertTrue($response instanceof AbstractReceiptResponse);
+
+        $curlClientStub = $this->getCurlClientStub();
+        $curlClientStub
+            ->expects($this->any())
+            ->method('sendRequest')
+            ->willReturn(array(
+                array('Header-Name' => 'HeaderValue'),
+                '{"type":"error","code":"request_accepted","retry_after":1800}',
+                array('http_code' => 202)
+            ));
+
+        try {
+            $response = $apiClient
+                ->setApiClient($curlClientStub)
+                ->setAuth('shopId', 'shopPassword')
+                ->createReceipt($receipt, 123);
+            self::fail('Исключение не было выброшено');
+        } catch (ApiException $e) {
+            self::assertInstanceOf('YandexCheckout\Common\Exceptions\ResponseProcessingException', $e);
+            return;
+        }
+
+        $curlClientStub = $this->getCurlClientStub();
+        $curlClientStub
+            ->expects($this->any())
+            ->method('sendRequest')
+            ->willReturn(array(
+                array('Header-Name' => 'HeaderValue'),
+                '{"type":"error","code":"request_accepted"}',
+                array('http_code' => 202)
+            ));
+
+        try {
+            $apiClient->setRetryTimeout(0);
+            $response = $apiClient
+                ->setApiClient($curlClientStub)
+                ->setAuth('shopId', 'shopPassword')
+                ->createReceipt($receipt, 123);
+            self::fail('Исключение не было выброшено');
+        } catch (ResponseProcessingException $e) {
+            self::assertEquals(Client::DEFAULT_DELAY, $e->retryAfter);
+            return;
+        }
+    }
+
+    /**
+     * @return array
+     */
+    private function createReceiptViaArray()
+    {
+        return array(
+            'customer' => array(
+                'full_name' => 'Иванов Иван Иванович',
+                'inn' => '6321341814',
+                'email' => 'johndoe@yandex.ru',
+                'phone' => '79000000000'
+            ),
+            'items' => array(
+                array(
+                    'description' => 'string',
+                    'quantity' => 1,
+                    'amount' => array(
+                        'value' => '10.00',
+                        'currency' => 'RUB'
+                    ),
+                    'vat_code' => 1,
+                    'payment_subject' => 'commodity',
+                    'payment_mode' => 'full_prepayment',
+                    'product_code' => '00 00 00 01 00 21 FA 41 00 23 05 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 12 00 AB 00',
+                    'country_of_origin_code' => 'RU',
+                    'customs_declaration_number' => '10714040/140917/0090376',
+                    'excise' => '20.00'
+                )
+            ),
+            'tax_system_code' => 1,
+            'type' => 'payment',
+            'send' => true,
+            'settlements' => array(
+                array(
+                    'type' => 'cashless',
+                    'amount' => array(
+                        'value' => '10.00',
+                        'currency' => 'RUB'
+                    )
+                )
+            ),
+            'payment_id' => '1da5c87d-0984-50e8-a7f3-8de646dd9ec9'
+        );
+    }
+
+    /**
+     * @return CreatePostReceiptRequest
+     */
+    private function createReceiptViaObject()
+    {
+        $customer = new ReceiptCustomer(array(
+            'full_name' => 'Иванов Иван Иванович',
+            'inn' => '6321341814',
+            'email' => 'johndoe@yandex.ru',
+            'phone' => '79000000000'
+        ));
+        $settlement = new Settlement(array(
+            'type' => 'cashless',
+            'amount' => array(
+                'value' => '10.00',
+                'currency' => 'RUB'
+            )
+        ));
+        $receiptItem = new ReceiptItem(array(
+            'description' => 'string',
+            'quantity' => 1,
+            'amount' => array(
+                'value' => '10.00',
+                'currency' => 'RUB'
+            ),
+            'vat_code' => 1,
+            'payment_subject' => 'commodity',
+            'payment_mode' => 'full_prepayment',
+            'product_code' => '00 00 00 01 00 21 FA 41 00 23 05 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 12 00 AB 00',
+            'country_of_origin_code' => 'RU',
+            'customs_declaration_number' => '10714040/140917/0090376',
+            'excise' => '20.00'
+        ));
+
+        return CreatePostReceiptRequest::builder()
+            ->setCustomer($customer)
+            ->setType(ReceiptType::PAYMENT)
+            ->setObjectId('1da5c87d-0984-50e8-a7f3-8de646dd9ec9')
+            ->setSend(true)
+            ->setSettlements(array($settlement))
+            ->setItems(array($receiptItem))
+            ->build();
     }
 
     /**
@@ -1135,10 +1411,12 @@ class ClientTest extends TestCase
     public function errorResponseDataProvider()
     {
         return array(
-            array(\YandexCheckout\Common\Exceptions\BadApiRequestException::HTTP_CODE, '{}', 'YandexCheckout\Common\Exceptions\BadApiRequestException'),
-            array(\YandexCheckout\Common\Exceptions\ForbiddenException::HTTP_CODE, '{}', 'YandexCheckout\Common\Exceptions\ForbiddenException'),
-            array(\YandexCheckout\Common\Exceptions\UnauthorizedException::HTTP_CODE, '{}', 'YandexCheckout\Common\Exceptions\UnauthorizedException'),
-            array(\YandexCheckout\Common\Exceptions\InternalServerError::HTTP_CODE, '{}', 'YandexCheckout\Common\Exceptions\InternalServerError'),
+            array(NotFoundException::HTTP_CODE, '{}', 'YandexCheckout\Common\Exceptions\NotFoundException'),
+            array(BadApiRequestException::HTTP_CODE, '{}', 'YandexCheckout\Common\Exceptions\BadApiRequestException'),
+            array(BadApiRequestException::HTTP_CODE, '{}', 'YandexCheckout\Common\Exceptions\BadApiRequestException'),
+            array(ForbiddenException::HTTP_CODE, '{}', 'YandexCheckout\Common\Exceptions\ForbiddenException'),
+            array(UnauthorizedException::HTTP_CODE, '{}', 'YandexCheckout\Common\Exceptions\UnauthorizedException'),
+            array(TooManyRequestsException::HTTP_CODE, '{}', 'YandexCheckout\Common\Exceptions\TooManyRequestsException'),
         );
     }
 
@@ -1170,7 +1448,7 @@ class TestClient extends Client
 {
     public function encode($data)
     {
-        $refl = new \ReflectionMethod($this, 'encodeData');
+        $refl = new ReflectionMethod($this, 'encodeData');
         $refl->setAccessible(true);
         return $refl->invoke($this, $data);
     }

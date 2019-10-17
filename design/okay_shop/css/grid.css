@@ -1570,38 +1570,40 @@
 .invisible {
     visibility: hidden;
 }
-.hidden,
-.hidden-xs-up {
+.hidden{
     display: none;
+}
+.hidden-xs-up {
+    display: none!important;
 }
 
 @media (max-width: 575px) {
     .hidden-xs-down {
-        display: none;
+        display: none!important;
     }
 }
 
 @media (min-width: 576px) {
     .hidden-sm-up {
-        display: none;
+        display: none!important;
     }
 }
 
 @media (max-width: 767px) {
     .hidden-sm-down {
-        display: none;
+        display: none!important;
     }
 }
 
 @media (min-width: 768px) {
     .hidden-md-up {
-        display: none;
+        display: none!important;
     }
 }
 
 @media (max-width: 991px) {
     .hidden-md-down {
-        display: none;
+        display: none!important;
     }
 }
 

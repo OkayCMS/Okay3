@@ -1444,7 +1444,9 @@ class UploadHandler
         return $res;
     }
 
-    public function onUploadEnd ($res){
+    public function onUploadEnd ($res) {
+        return;
+
         $targetPath = $this->options['storeFolder'];
         $targetPathThumb = $this->options['storeFolderThumb'];
 

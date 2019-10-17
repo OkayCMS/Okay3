@@ -4,8 +4,9 @@
 namespace Okay\Entities;
 
 
-use Okay\Core\Entity\Entity;
 use Okay\Core\Languages;
+use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class LanguagesEntity extends Entity
 {
@@ -55,18 +56,23 @@ class LanguagesEntity extends Entity
             $this->initLanguages();
         }
         
-        if (!empty($id)) {
-            if (is_int($id) && isset($this->allLanguages[$id])) {
-                return $this->allLanguages[$id];
-            } elseif (is_string($id)) {
-                foreach ($this->allLanguages as $language) {
-                    if ($language->label == $id) {
-                        return $language;
-                    }
+        if (empty($id)) {
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
+        }
+
+        if (is_int($id) && isset($this->allLanguages[$id])) {
+            return ExtenderFacade::execute([static::class, __FUNCTION__], $this->allLanguages[$id], func_get_args());
+        }
+
+        if (is_string($id)) {
+            foreach ($this->allLanguages as $language) {
+                if ($language->label == $id) {
+                    return ExtenderFacade::execute([static::class, __FUNCTION__], $language, func_get_args());
                 }
             }
         }
-        return false;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
     }
 
     /**
@@ -91,7 +97,8 @@ class LanguagesEntity extends Entity
         }
 
         $this->lang->setLangId($currentLangId);
-        return $result;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
     
     // Метод по сути ничего не фильтрует, только возвращает все языки
@@ -100,13 +107,14 @@ class LanguagesEntity extends Entity
         if (empty($this->allLanguages)) {
             $this->initLanguages();
         }
-        return $this->allLanguages;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->allLanguages, func_get_args());
     }
     
     /*Выборка первого языка сайта*/
     public function getMainLanguage()
     {
-        return $this->mainLanguage;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->mainLanguage, func_get_args());
     }
 
     public function update($ids, $language)
@@ -137,7 +145,7 @@ class LanguagesEntity extends Entity
             if ($entitiesLangInfo = $languagesCore->getEntitiesLangInfo()) {
                 foreach ($entitiesLangInfo as $entityLangInfo) {
                     $sql = $this->queryFactory->newSqlQuery();
-                    $sql->setStatement('INSERT INTO __lang_' . $entityLangInfo->langTable . ' (' . implode(',', $entityLangInfo->fields) . ', ' . $entityLangInfo->object . '_id, lang_id)
+                    $sql->setStatement('INSERT INTO ' . $entityLangInfo->langTable . ' (' . implode(',', $entityLangInfo->fields) . ', ' . $entityLangInfo->object . '_id, lang_id)
                                     SELECT ' . implode(',', $entityLangInfo->fields) . ', id, ' . $langId . '
                                     FROM ' . $entityLangInfo->table);
                     $this->db->query($sql);
@@ -168,7 +176,8 @@ class LanguagesEntity extends Entity
             }
         }
         $this->initLanguages();
-        return $langId;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $langId, func_get_args());
     }
 
     /*Удаление языка*/

@@ -10,6 +10,7 @@ use Okay\Core\Modules\Modules;
 use Okay\Core\TemplateConfig\Css as TemplateCss;
 use Okay\Core\TemplateConfig\Js as TemplateJs;
 use Okay\Entities\ManagersEntity;
+use Psr\Log\LoggerInterface;
 use Sabberworm\CSS\Parser;
 use Sabberworm\CSS\OutputFormat;
 
@@ -31,6 +32,7 @@ class TemplateConfig
     private $compileCssDir;
     private $compileJsDir;
     private $settingsFile;
+    private $registeredTemplateFiles = false;
     
     /** @var Modules */
     private $modules;
@@ -70,44 +72,6 @@ class TemplateConfig
         $this->adminTheme = $adminTheme;
         $this->adminThemeManagers = $adminThemeManagers;
         $this->settingsFile = 'design/' . $this->getTheme() . '/css/' . $this->themeSettingsFileName;
-        
-        if (($themeJs = include 'design/' . $this->getTheme() . '/js.php') && is_array($themeJs)) {
-            foreach ($themeJs as $jsItem) {
-                $this->registerJs($jsItem);
-            }
-        }
-        
-        if (($themeCss = include 'design/' . $this->getTheme() . '/css.php') && is_array($themeCss)) {
-            foreach ($themeCss as $cssItem) {
-                $this->registerCss($cssItem);
-            }
-        }
-        
-        $runningModules = $this->modules->getRunningModules();
-        foreach ($runningModules as $runningModule) {
-
-            $moduleThemesDir = $this->module->getModuleDirectory($runningModule['vendor'], $runningModule['module_name']) . 'design/';
-            
-            if (file_exists($moduleThemesDir . 'css.php') && ($moduleCss = include $moduleThemesDir . 'css.php') && is_array($moduleCss)) {
-                /** @var TemplateCss $cssItem */
-                foreach ($moduleCss as $cssItem) {
-                    if ($cssItem->getDir() === null) {
-                        $cssItem->setDir($moduleThemesDir . 'css/');
-                    }
-                    $this->registerCss($cssItem);
-                }
-            }
-            if (file_exists($moduleThemesDir . 'js.php') && ($moduleJs = include $moduleThemesDir . 'js.php') && is_array($moduleJs)) {
-
-                /** @var TemplateJs $jsItem */
-                foreach ($moduleJs as $jsItem) {
-                    if ($jsItem->getDir() === null) {
-                        $jsItem->setDir($moduleThemesDir . 'js/');
-                    }
-                    $this->registerJs($jsItem);
-                }
-            }
-        }
     }
     
     public function __destruct()
@@ -128,6 +92,52 @@ class TemplateConfig
         }
     }
 
+    private function registerTemplateFiles()
+    {
+        if ($this->registeredTemplateFiles === true) {
+            return;
+        }
+        
+        if (($themeJs = include 'design/' . $this->getTheme() . '/js.php') && is_array($themeJs)) {
+            foreach ($themeJs as $jsItem) {
+                $this->registerJs($jsItem);
+            }
+        }
+
+        if (($themeCss = include 'design/' . $this->getTheme() . '/css.php') && is_array($themeCss)) {
+            foreach ($themeCss as $cssItem) {
+                $this->registerCss($cssItem);
+            }
+        }
+
+        $runningModules = $this->modules->getRunningModules();
+        foreach ($runningModules as $runningModule) {
+
+            $moduleThemesDir = $this->module->getModuleDirectory($runningModule['vendor'], $runningModule['module_name']) . 'design/';
+
+            if (file_exists($moduleThemesDir . 'css.php') && ($moduleCss = include $moduleThemesDir . 'css.php') && is_array($moduleCss)) {
+                /** @var TemplateCss $cssItem */
+                foreach ($moduleCss as $cssItem) {
+                    if ($cssItem->getDir() === null) {
+                        $cssItem->setDir($moduleThemesDir . 'css/');
+                    }
+                    $this->registerCss($cssItem);
+                }
+            }
+            if (file_exists($moduleThemesDir . 'js.php') && ($moduleJs = include $moduleThemesDir . 'js.php') && is_array($moduleJs)) {
+
+                /** @var TemplateJs $jsItem */
+                foreach ($moduleJs as $jsItem) {
+                    if ($jsItem->getDir() === null) {
+                        $jsItem->setDir($moduleThemesDir . 'js/');
+                    }
+                    $this->registerJs($jsItem);
+                }
+            }
+        }
+        $this->registeredTemplateFiles = true;
+    }
+    
     private function registerCss(TemplateCss $css)
     {
         // Файл настроек шаблона регистрировать не нужно
@@ -161,10 +171,70 @@ class TemplateConfig
     /**
      * Метод возвращает теги на подключение всех зарегестрированных js и css для блока head
      * @return string
+     * @throws \Exception
      */
     public function head()
     {
-        return $this->getIncludeHtml('head');
+
+        $SL = new ServiceLocator();
+        
+        /** @var LoggerInterface $logger */
+        $logger = $SL->getService(LoggerInterface::class);
+        
+        /** @var Config $config */
+        $config = $SL->getService(Config::class);
+        
+        $head = '';
+        // Подключаем динамический JS (scripts.tpl)
+        $commonJsFile = "design/" . $this->getTheme() . "/html/common_js.tpl";
+        if (is_file($commonJsFile)) {
+            $filename = md5_file($commonJsFile) . json_encode($_GET);
+            if (isset($_SESSION['common_js'])) {
+                $filename .= json_encode($_SESSION['common_js']);
+            }
+
+            $filename = md5($filename);
+
+            $getParams = (!empty($_GET) ? "?" . http_build_query($_GET) : '');
+            $head .= "<script src=\"" . Router::generateUrl('common_js', ['fileId' => $filename]) . $getParams . "\"" . ($this->scriptsDefer == true ? " defer" : '') . "></script>" . PHP_EOL;
+        } else {
+            $logger->error("File \"$commonJsFile\" not found");
+        }
+
+        $head .= $this->getIncludeHtml('head');
+        
+        if ($config->get('dev_mode') == true) {
+            $head .= '<style>
+                .design_block_parent_element {
+                    position: relative;
+                    border: 1px solid transparent;
+                    min-height: 15px;
+                }
+                .design_block_parent_element.focus {
+                    border: 1px solid red;
+                }
+                .fn_design_block_name {
+                    position: absolute;
+                    top: -9px;
+                    left: 15px;
+                    background-color: #fff;
+                    padding: 0 10px;
+                    box-sizing: border-box;
+                    font-size: 14px;
+                    line-height: 14px;
+                    font-weight: 700;
+                    color: red;
+                    cursor: pointer;
+                    z-index: 1000;
+                }
+                .fn_design_block_name:hover {
+                    z-index: 1100;
+                }
+            </style>';
+        }
+        
+        return $head;
+        
     }
 
     /**
@@ -181,6 +251,9 @@ class TemplateConfig
         
         /** @var EntityFactory $entityFactory */
         $entityFactory = $SL->getService(EntityFactory::class);
+        
+        /** @var LoggerInterface $logger */
+        $logger = $SL->getService(LoggerInterface::class);
         
         /** @var ManagersEntity $managersEntity */
         $managersEntity = $entityFactory->get(ManagersEntity::class);
@@ -227,6 +300,8 @@ class TemplateConfig
             
             $getParams = (!empty($_GET) ? "?" . http_build_query($_GET) : '');
             $footer .= "<script src=\"" . Router::generateUrl('dynamic_js', ['fileId' => $filename]) . $getParams . "\"" . ($this->scriptsDefer == true ? " defer" : '') . "></script>" . PHP_EOL;
+        } else {
+            $logger->error("File \"$dynamicJsFile\" not found");
         }
         
         return $footer;
@@ -373,6 +448,7 @@ class TemplateConfig
      */
     private function getIncludeHtml($position = 'head')
     {
+        $this->registerTemplateFiles();
         $include_html = '';
 
         // Подключаем основной файл стилей

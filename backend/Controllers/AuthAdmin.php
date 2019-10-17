@@ -8,6 +8,7 @@ use Okay\Core\Response;
 use Okay\Core\Managers;
 use Okay\Core\Notify;
 use Okay\Core\Validator;
+use Okay\Entities\LessonsEntity;
 use Okay\Entities\ManagersEntity;
 
 class AuthAdmin extends IndexAdmin
@@ -16,6 +17,7 @@ class AuthAdmin extends IndexAdmin
     public function fetch(
         Managers $managers,
         ManagersEntity $managersEntity,
+        LessonsEntity $lessonsEntity,
         Notify $notify,
         Response $response,
         Validator $validator
@@ -55,6 +57,13 @@ class AuthAdmin extends IndexAdmin
                     }
                     unset($_SESSION['admin_password_recovery_code']);
                     $_SESSION['admin'] = $manager->login;
+
+                    $allManagers = $managersEntity->order('id ASC')->find();
+                    $firstManager = reset($allManagers);
+
+                    if ($lessonsEntity->count(['not_done' => 1]) > 0 && $firstManager->id === $manager->id) {
+                        $response->redirectTo($this->request->getRootUrl() . '/backend/index.php?controller=LearningAdmin');
+                    }
                     $response->redirectTo($this->request->getBasePathWithDomain() . '/backend/index.php');
                 }
             }
@@ -86,6 +95,13 @@ class AuthAdmin extends IndexAdmin
                     $managersEntity->updateLastActivityDate($manager->id);
                     $loginRedirectResource = (!empty($_SESSION['before_auth_url']) ? $_SESSION['before_auth_url'] : $this->request->getBasePathWithDomain() . '/backend/index.php');
                     unset($_SESSION['before_auth_url']);
+
+                    $allManagers = $managersEntity->order('id ASC')->find();
+                    $firstManager = reset($allManagers);
+
+                    if ($lessonsEntity->count(['not_done' => 1]) > 0 && $firstManager->id === $manager->id) {
+                        $response->redirectTo($this->request->getRootUrl() . '/backend/index.php?controller=LearningAdmin');
+                    }
                     $response->redirectTo($loginRedirectResource);
                 } else {
                     /*неверный пароль менеджера*/

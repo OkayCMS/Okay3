@@ -10,7 +10,7 @@ use Okay\Core\QueryFactory;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\ProductsEntity;
-use Okay\Logic\ProductsLogic;
+use Okay\Helpers\ProductsHelper;
 use Okay\Modules\OkayCMS\GoogleMerchant\Init\Init;
 
 class GoogleMerchantController extends AbstractController
@@ -18,7 +18,7 @@ class GoogleMerchantController extends AbstractController
     
     public function render(
         ProductsEntity $productsEntity,
-        ProductsLogic $productsLogic,
+        ProductsHelper $productsHelper,
         CategoriesEntity $categoriesEntity,
         BrandsEntity $brandsEntity,
         Database $db,
@@ -61,10 +61,10 @@ class GoogleMerchantController extends AbstractController
             ->find($filter);
 
         if (!empty($products)) {
-            $products = $productsLogic->attachVariants($products, $filter);
-            $products = $productsLogic->attachImages($products);
+            $products = $productsHelper->attachVariants($products, $filter);
+            $products = $productsHelper->attachImages($products);
             $products = $this->sliceImagesByProduct($products, 10);
-            $products = $productsLogic->attachFeatures($products);
+            $products = $productsHelper->attachFeatures($products);
 
             $allCategoriesMappedById = $categoriesEntity->mappedBy('id')->find();
             $products = $this->attachProductType($products, $allCategoriesMappedById);

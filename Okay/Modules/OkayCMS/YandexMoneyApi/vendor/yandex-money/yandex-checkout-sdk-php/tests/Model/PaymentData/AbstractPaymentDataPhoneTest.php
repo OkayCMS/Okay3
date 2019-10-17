@@ -4,8 +4,6 @@ namespace Tests\YandexCheckout\Model\PaymentData;
 
 use YandexCheckout\Model\PaymentData\PaymentDataMobileBalance;
 
-require_once __DIR__ . '/AbstractPaymentDataTest.php';
-
 abstract class AbstractPaymentDataPhoneTest extends AbstractPaymentDataTest
 {
     /**

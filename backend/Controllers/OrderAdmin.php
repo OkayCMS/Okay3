@@ -4,19 +4,15 @@
 namespace Okay\Admin\Controllers;
 
 
+use Okay\Admin\Helpers\BackendOrdersHelper;
+use Okay\Admin\Requests\OrdersRequest;
 use Okay\Core\Notify;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\DeliveriesEntity;
-use Okay\Entities\ImagesEntity;
 use Okay\Entities\OrderLabelsEntity;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\OrderStatusEntity;
 use Okay\Entities\PaymentsEntity;
-use Okay\Entities\ProductsEntity;
-use Okay\Entities\PurchasesEntity;
-use Okay\Entities\UserGroupsEntity;
-use Okay\Entities\UsersEntity;
-use Okay\Entities\VariantsEntity;
 
 class OrderAdmin extends IndexAdmin
 {
@@ -25,257 +21,136 @@ class OrderAdmin extends IndexAdmin
         OrdersEntity $ordersEntity,
         OrderLabelsEntity $orderLabelsEntity,
         OrderStatusEntity $orderStatusEntity,
-        PurchasesEntity $purchasesEntity,
-        ProductsEntity $productsEntity,
-        VariantsEntity $variantsEntity,
-        ImagesEntity $imagesEntity,
         DeliveriesEntity $deliveriesEntity,
         PaymentsEntity $paymentsEntity,
         CurrenciesEntity $currenciesEntity,
-        UsersEntity $usersEntity,
-        UserGroupsEntity $userGroupsEntity,
-        Notify $notify
+        Notify $notify,
+        OrdersRequest $ordersRequest,
+        BackendOrdersHelper $backendOrdersHelper
     ) {
-        $order = new \stdClass;
+        
         /*Прием информации о заказе*/
         if ($this->request->method('post')) {
-            $order->id = $this->request->post('id', 'integer');
-            $order->name = $this->request->post('name');
-            $order->email = $this->request->post('email');
-            $order->phone = $this->request->post('phone');
-            $order->address = $this->request->post('address');
-            $order->comment = $this->request->post('comment');
-            $order->note = $this->request->post('note');
-            $order->discount = $this->request->post('discount', 'float');
-            $order->coupon_discount = $this->request->post('coupon_discount', 'float');
-            $order->delivery_id = $this->request->post('delivery_id', 'integer');
-            $order->delivery_price = $this->request->post('delivery_price', 'float');
-            $order->payment_method_id = $this->request->post('payment_method_id', 'integer');
-            $order->paid = $this->request->post('paid', 'integer');
-            $order->user_id = $this->request->post('user_id', 'integer');
-            $order->lang_id = $this->request->post('entity_lang_id', 'integer');
+            
+            $order = $ordersRequest->postOrder();
+            $purchases = $ordersRequest->postPurchases();
             
             if (!$orderLabels = $this->request->post('order_labels')) {
                 $orderLabels = [];
             }
 
-            $purchases = [];
-            if ($this->request->post('purchases')) {
-                foreach ($this->request->post('purchases') as $n => $va) foreach ($va as $i => $v) {
-                    if (empty($purchases[$i])) {
-                        $purchases[$i] = new \stdClass;
-                    }
-                    $purchases[$i]->$n = $v;
-                }
+            // Установим отметку "доставка оплачивается отдельно"
+            if ($order->delivery_id) {
+                $deliverySeparatePayment = (array)$deliveriesEntity->cols(['separate_payment'])->get((int)$order->delivery_id);
+                $order->separate_delivery = $deliverySeparatePayment['separate_payment'];
             }
-
+            
             if (empty($purchases)) {
                 $this->design->assign('message_error', 'empty_purchase');
             } else {
                 /*Добавление/Обновление заказа*/
                 if (empty($order->id)) {
-                    $order->id = $ordersEntity->add($order);
+                    $preparedOrder = $backendOrdersHelper->prepareAdd($order);
+                    $order->id  = $backendOrdersHelper->add($preparedOrder);
                     $this->design->assign('message_success', 'added');
                 } else {
-                    $ordersEntity->update($order->id, $order);
+                    $preparedOrder = $backendOrdersHelper->prepareUpdate($order);
+                    $backendOrdersHelper->update($preparedOrder);
                     $this->design->assign('message_success', 'updated');
                 }
-
+                
                 $orderLabelsEntity->updateOrderLabels($order->id, $orderLabels);
 
                 if ($order->id) {
                     /*Работа с покупками заказа*/
                     $postedPurchasesIds = [];
                     foreach ($purchases as $purchase) {
-                        $variant = $variantsEntity->get($purchase->variant_id);
-
                         if (!empty($purchase->id)) {
-                            if (!empty($variant)) {
-                                $purchasesEntity->update($purchase->id, [
-                                    'variant_id' => $purchase->variant_id,
-                                    'variant_name' => $variant->name,
-                                    'sku' => $variant->sku,
-                                    'price' => $purchase->price,
-                                    'amount' => $purchase->amount,
-                                ]);
-                            } else {
-                                $purchasesEntity->update($purchase->id, ['price' => $purchase->price, 'amount' => $purchase->amount]);
+                            $preparedPurchase = $backendOrdersHelper->prepareUpdatePurchase($order, $purchase);
+                            $backendOrdersHelper->updatePurchase($preparedPurchase);
+                        } else {
+                            $preparedPurchase = $backendOrdersHelper->prepareAddPurchase($order, $purchase);
+                            if (!$purchase->id = $backendOrdersHelper->addPurchase($preparedPurchase)) {
+                                $this->design->assign('message_error', 'error_closing');
                             }
-                        } elseif (!$purchase->id = $purchasesEntity->add(['order_id' => $order->id, 'variant_id' => $purchase->variant_id, 'price' => $purchase->price, 'amount' => $purchase->amount])) {
-                            $this->design->assign('message_error', 'error_closing');
                         }
-
                         $postedPurchasesIds[] = $purchase->id;
                     }
 
                     // Удалить непереданные товары
-                    foreach ($purchasesEntity->find(['order_id' => $order->id]) as $p) {
-                        if (!in_array($p->id, $postedPurchasesIds)) {
-                            $purchasesEntity->delete($p->id);
-                        }
-                    }
+                    $backendOrdersHelper->deletePurchases($order, $postedPurchasesIds);
 
+                    // Обновим статус заказа
                     $newStatusId = $this->request->post('status_id', 'integer');
-                    $newStatusInfo = $orderStatusEntity->get(intval($newStatusId));
-
-                    if ($newStatusInfo->is_close == 1) {
-                        if (!$ordersEntity->close(intval($order->id))) {
-                            $this->design->assign('message_error', 'error_closing');
-                        } else {
-                            $ordersEntity->update($order->id, ['status_id' => $newStatusId]);
-                        }
-                    } else {
-                        if ($ordersEntity->open(intval($order->id))) {
-                            $ordersEntity->update($order->id, ['status_id' => $newStatusId]);
-                        }
-                    }
-
-                    $d = $deliveriesEntity->cols(['separate_payment'])->get((int)$order->delivery_id);
-                    $o = $ordersEntity->cols(['separate_delivery'])->get((int)$order->id);
-                    if ($d && $o && $d->separate_payment != $o->separate_delivery) {
-                        $ordersEntity->update($order->id, ['separate_delivery'=>$d->separate_payment]);
+                    if (!$backendOrdersHelper->updateOrderStatus($order, $newStatusId)) {
+                        $this->design->assign('message_error', 'error_closing');
                     }
 
                     // Обновим итоговую стоимость заказа
                     $ordersEntity->updateTotalPrice($order->id);
-                    $order = $ordersEntity->get((int)$order->id);
+                    $order = $backendOrdersHelper->findOrder($order->id);
 
                     // Отправляем письмо пользователю
                     if ($this->request->post('notify_user')) {
                         $notify->emailOrderUser($order->id);
                     }
                 }
+
+                // По умолчанию метод ничего не делает, но через него можно зацепиться моделем
+                $backendOrdersHelper->executeCustomPost($order);
             }
         } else {
-            $order->id = $this->request->get('id', 'integer');
-            $order = $ordersEntity->get(intval($order->id));
+            
+            $order = $backendOrdersHelper->findOrder($this->request->get('id', 'integer'));
             // Метки заказа
             $orderLabels = [];
-            if(isset($order->id)) {
+            if (isset($order->id)) {
                 $orderLabels = $orderLabelsEntity->find(['order_id', $order->id]);
-                if($orderLabels) {
+                if ($orderLabels) {
                     foreach ($orderLabels as $orderLabel) {
                         $orderLabels[] = $orderLabel->id;
                     }
                 }
             }
         }
-        
-        
+
+        $purchases = $backendOrdersHelper->findOrderPurchases($order);
+
         $subtotal = 0;
-        $purchases_count = 0;
-        if (!empty($order->id) && ($purchases = $purchasesEntity->find(['order_id'=>$order->id]))) {
-            // Покупки
-            $productsIds = [];
-            $variantsIds = [];
-            $imagesIds = [];
-            foreach ($purchases as $purchase) {
-                $productsIds[] = $purchase->product_id;
-                $variantsIds[] = $purchase->variant_id;
+        $hasVariantNotInStock = false;
+        foreach ($purchases as $purchase) {
+            if (($purchase->amount > $purchase->variant->stock || !$purchase->variant->stock) && !$hasVariantNotInStock) {
+                $hasVariantNotInStock = true;
             }
-            
-            $products = [];
-            foreach ($productsEntity->find(['id'=>$productsIds, 'limit' => count($productsIds)]) as $p) {
-                $products[$p->id] = $p;
-                $imagesIds[] = $p->main_image_id;
-            }
-
-            if (!empty($imagesIds)) {
-                $images = $imagesEntity->find(['id'=>$imagesIds]);
-                foreach ($images as $image) {
-                    if (isset($products[$image->product_id])) {
-                        $products[$image->product_id]->image = $image;
-                    }
-                }
-            }
-            
-            $variants = [];
-            foreach ($variantsEntity->find(['product_id'=>$productsIds]) as $v) {
-                if ($v->rate_from != $v->rate_to && $v->currency_id) {
-                    $v->price = number_format($v->price*$v->rate_to/$v->rate_from, 2, '.', '');
-                    $v->compare_price = number_format($v->compare_price*$v->rate_to/$v->rate_from, 2, '.', '');
-                }
-                $v->units = $v->units ? $v->units : $this->settings->units;
-                $variants[$v->id] = $v;
-            }
-            
-            foreach ($variants as $variant) {
-                if (!empty($products[$variant->product_id])) {
-                    $products[$variant->product_id]->variants[] = $variant;
-                }
-            }
-
-            /*Определение, есть ли товары с количеством 0*/
-            $hasVariantNotInStock = false;
-            foreach ($purchases as $purchase) {
-                if(!empty($products[$purchase->product_id])) {
-                    $purchase->product = $products[$purchase->product_id];
-                }
-                if (!empty($variants[$purchase->variant_id])) {
-                    $purchase->variant = $variants[$purchase->variant_id];
-                }
-                if (($purchase->amount > $purchase->variant->stock || !$purchase->variant->stock) && !$hasVariantNotInStock) {
-                    $hasVariantNotInStock = true;
-                }
-                $subtotal += $purchase->price*$purchase->amount;
-                $purchases_count += $purchase->amount;
-            }
-            $this->design->assign('hasVariantNotInStock', $hasVariantNotInStock);
-        } else {
-            $purchases = [];
+            $subtotal += $purchase->price*$purchase->amount;
         }
-        
-        // Если новый заказ и передали get параметры
-        if (empty($order->id)) {
-            $order = new \stdClass;
-            if (empty($order->phone)) {
-                $order->phone = $this->request->get('phone', 'string');
-            }
-            if (empty($order->name)) {
-                $order->name = $this->request->get('name', 'string');
-            }
-            if (empty($order->address)) {
-                $order->address = $this->request->get('address', 'string');
-            }
-            if (empty($order->email)) {
-                $order->email = $this->request->get('email', 'string');
-            }
+        // Способ доставки
+        $delivery = $backendOrdersHelper->findOrderDelivery($order);
+        $this->design->assign('delivery', $delivery);
+
+        // Способ оплаты
+        $paymentMethod = $backendOrdersHelper->findOrderPayment($order);
+        if (!empty($paymentMethod)) {
+            // Валюта оплаты
+            $paymentCurrency = $currenciesEntity->get(intval($paymentMethod->currency_id));
+            $this->design->assign('payment_currency', $paymentCurrency);
         }
+
+        $user = $backendOrdersHelper->findOrderUser($order);
+        $neighborsOrders = $backendOrdersHelper->findNeighborsOrders(
+            $order,
+            $this->request->get('label', 'integer'),
+            $this->request->get('status', 'integer')
+        );
         
+        $this->design->assign('delivery', $delivery);
+        $this->design->assign('payment_method', $paymentMethod);
+        $this->design->assign('user', $user);
         $this->design->assign('purchases', $purchases);
-        $this->design->assign('purchases_count', $purchases_count);
         $this->design->assign('subtotal', $subtotal);
         $this->design->assign('order', $order);
-        
-        if (!empty($order->id)) {
-            // Способ доставки
-            $delivery = $deliveriesEntity->get($order->delivery_id);
-            $this->design->assign('delivery', $delivery);
-
-            // Способ оплаты
-            $paymentMethod = $paymentsEntity->get($order->payment_method_id);
-            
-            if (!empty($paymentMethod)) {
-                $this->design->assign('payment_method', $paymentMethod);
-                // Валюта оплаты
-                $paymentCurrency = $currenciesEntity->get(intval($paymentMethod->currency_id));
-                $this->design->assign('payment_currency', $paymentCurrency);
-            }
-            // Пользователь
-            if (!empty($order->user_id)) {
-                $orderUser = $usersEntity->get(intval($order->user_id));
-                $orderUser->group = $userGroupsEntity->get(intval($orderUser->group_id));
-                $this->design->assign('user', $orderUser);
-            }
-        }
-
-        if (!empty($order->id)) {
-            $neighborsFilter = [];
-            $neighborsFilter['id'] = $order->id;
-            $neighborsFilter['status_id'] = $this->request->get('status');
-            $neighborsFilter['label_id'] = $this->request->get('label');
-            $this->design->assign('neighbors_orders', $ordersEntity->getNeighborsOrders($neighborsFilter));
-        }
+        $this->design->assign('hasVariantNotInStock', $hasVariantNotInStock);
+        $this->design->assign('neighbors_orders', $neighborsOrders);
 
         //все статусы
         $allStatuses = $orderStatusEntity->find();

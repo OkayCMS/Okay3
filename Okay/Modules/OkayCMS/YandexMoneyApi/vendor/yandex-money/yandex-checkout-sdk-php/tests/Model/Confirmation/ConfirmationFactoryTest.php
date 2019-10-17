@@ -152,6 +152,12 @@ class ConfirmationFactoryTest extends TestCase
                     'type' => ConfirmationType::REDIRECT,
                 ),
             ),
+            array(
+                array(
+                    'type' => ConfirmationType::QR,
+                    'confirmation_data' => Random::str(30),
+                ),
+            ),
         );
         foreach (ConfirmationType::getValidValues() as $value) {
             $result[] = array(array('type' => $value));

@@ -6,7 +6,7 @@ namespace Okay\Modules\OkayCMS\LiqPay;
 
 use Okay\Core\EntityFactory;
 use Okay\Core\Modules\AbstractModule;
-use Okay\Core\Modules\Payments\PaymentFormInterface;
+use Okay\Core\Modules\Interfaces\PaymentFormInterface;
 use Okay\Core\Money;
 use Okay\Core\Router;
 use Okay\Entities\CurrenciesEntity;

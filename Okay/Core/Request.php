@@ -32,7 +32,12 @@ class Request
         }
         
     }
-    
+
+    public function getCurrentUrl()
+    {
+        return $this->getRootUrl().$_SERVER['REQUEST_URI'];
+    }
+
     public function getLangId()
     {
         return $this->langId;

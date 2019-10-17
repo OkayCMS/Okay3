@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class SupportInfoEntity extends Entity
 {
@@ -28,7 +29,7 @@ class SupportInfoEntity extends Entity
     public function getInfo()
     {
         if (!empty($this->info)) {
-            return $this->info;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], $this->info, func_get_args());
         }
 
         $this->setUp();
@@ -37,7 +38,8 @@ class SupportInfoEntity extends Entity
         $info = $this->getResult();
 
         if (!empty($info)) {
-            return $this->info = $info;
+            $this->info = $info;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], $this->info, func_get_args());
         }
 
         $this->clearInfo();
@@ -52,14 +54,15 @@ class SupportInfoEntity extends Entity
         ];
         $this->addInfo($this->info);
 
-        return $this->info;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->info, func_get_args());
     }
 
     private function clearInfo()
     {
         $sql = $this->queryFactory->newSqlQuery();
         $sql->setStatement("TRUNCATE ".self::getTable());
-        return (bool) $this->db->query($sql);
+        $result = (bool) $this->db->query($sql);
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
 
     private function addInfo($info)
@@ -67,7 +70,8 @@ class SupportInfoEntity extends Entity
         $insert = $this->queryFactory->newInsert();
         $insert->into(self::getTable());
         $insert->cols((array) $info);
-        return (bool) $this->db->query($insert);
+        $result = (bool) $this->db->query($insert);
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
 
     public function updateInfo($info)
@@ -77,7 +81,8 @@ class SupportInfoEntity extends Entity
         $update = $this->queryFactory->newUpdate();
         $update->table(self::getTable());
         $update->cols((array) $info);
-        return (bool) $this->db->query($update);
+        $result = (bool) $this->db->query($update);
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
 
     public function get($id)

@@ -37,11 +37,15 @@ class PaymentMethodFactory
         PaymentMethodType::CASH           => 'PaymentMethodCash',
         PaymentMethodType::MOBILE_BALANCE => 'PaymentMethodMobileBalance',
         PaymentMethodType::APPLE_PAY      => 'PaymentMethodApplePay',
-        PaymentMethodType::ANDROID_PAY    => 'PaymentMethodAndroidPay',
+        PaymentMethodType::GOOGLE_PAY     => 'PaymentMethodGooglePay',
         PaymentMethodType::QIWI           => 'PaymentMethodQiwi',
         PaymentMethodType::WEBMONEY       => 'PaymentMethodWebmoney',
         PaymentMethodType::ALFABANK       => 'PaymentMethodAlfaBank',
         PaymentMethodType::INSTALLMENTS   => 'PaymentMethodInstallments',
+        PaymentMethodType::B2B_SBERBANK   => 'PaymentMethodB2bSberbank',
+        PaymentMethodType::TINKOFF_BANK   => 'PaymentMethodTinkoffBank',
+        PaymentMethodType::PSB            => 'PaymentMethodPsb',
+        PaymentMethodType::WECHAT         => 'PaymentMethodWechat',
     );
 
     private $optionsMap = array(
@@ -53,6 +57,7 @@ class PaymentMethodFactory
 
     /**
      * @param string $type
+     *
      * @return AbstractPaymentMethod
      */
     public function factory($type)
@@ -63,13 +68,15 @@ class PaymentMethodFactory
         if (!array_key_exists($type, $this->typeClassMap)) {
             throw new \InvalidArgumentException('Invalid payment method data type "'.$type.'"');
         }
-        $className = __NAMESPACE__ . '\\' . $this->typeClassMap[$type];
+        $className = __NAMESPACE__.'\\'.$this->typeClassMap[$type];
+
         return new $className();
     }
 
     /**
      * @param array $data
      * @param string|null $type
+     *
      * @return AbstractPaymentMethod
      */
     public function factoryFromArray(array $data, $type = null)

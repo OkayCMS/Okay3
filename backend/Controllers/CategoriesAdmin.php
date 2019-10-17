@@ -4,55 +4,49 @@
 namespace Okay\Admin\Controllers;
 
 
-use Aura\SqlQuery\QueryFactory;
-use Okay\Entities\CategoriesEntity;
-use Okay\Entities\VariantsEntity;
+use Okay\Admin\Requests\CategoriesRequest;
+use Okay\Admin\Helpers\BackendCategoriesHelper;
 
 class CategoriesAdmin extends IndexAdmin
 {
     
     public function fetch(
-        CategoriesEntity $categoriesEntity,
-        VariantsEntity $variantsEntity,
-        QueryFactory $queryFactory
+        BackendCategoriesHelper $backendCategoriesHelper,
+        CategoriesRequest       $categoriesRequest
     ) {
         if ($this->request->method('post')) {
+
             // Действия с выбранными
-            $ids = $this->request->post('check');
+            $ids = $categoriesRequest->postCheckedIds();
             if (is_array($ids)) {
                 switch($this->request->post('action')) {
                     case 'disable': {
-                        /*Выключение категории*/
-                        $categoriesEntity->update($ids, ['visible'=>0]);
+                        $backendCategoriesHelper->disable($ids);
                         break;
                     }
                     case 'enable': {
-                        /*Включение категории*/
-                        $categoriesEntity->update($ids, ['visible'=>1]);
+                        $backendCategoriesHelper->enable($ids);
                         break;
                     }
                     case 'delete': {
-                        /*Удаление категории*/
-                        $categoriesEntity->delete($ids);
+                        $backendCategoriesHelper->delete($ids);
                         break;
                     }
                 }
             }
             
             // Сортировка
-            $positions = $this->request->post('positions');
-            $ids = array_keys($positions);
-            sort($positions);
-            foreach($positions as $i=>$position) {
-                $categoriesEntity->update($ids[$i], ['position'=>$position]);
-            }
+            $positions = $categoriesRequest->postPositions();
+            list($ids, $positions) = $backendCategoriesHelper->sortPositions($positions);
+            $backendCategoriesHelper->updatePositions($ids, $positions);
         }
-        /*Выборка дерева категорий*/
-        $categories = $categoriesEntity->getCategoriesTree();
-        $categoriesCount = $categoriesEntity->count();
+
+        // Категории
+        $categories      = $backendCategoriesHelper->getCategoriesTree();
+        $categoriesCount = $backendCategoriesHelper->countAllCategories();
 
         $this->design->assign('categoriesCount', $categoriesCount);
-        $this->design->assign('categories', $categories);
+        $this->design->assign('categories',      $categories);
         $this->response->setContent($this->design->fetch('categories.tpl'));
     }
     

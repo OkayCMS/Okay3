@@ -53,6 +53,8 @@ class Image
      */
     private $entityFactory;
     
+    private $resizeObjects;
+    
     public function __construct(
         Settings $settings,
         Config $config,
@@ -73,6 +75,33 @@ class Image
         $this->queryFactory   = $queryFactory;
         $this->db             = $db;
         $this->entityFactory  = $entityFactory;
+    }
+
+    /**
+     * @param string $originalImgDirDirective название директивы конфига, которая содержит путь к директории оригиналов изображений
+     * @param string $resizedImgDirDirective название директивы конфига, которая содержит путь к директории нарезок изображений
+     * @throws \Exception
+     */
+    public function addResizeObject($originalImgDirDirective, $resizedImgDirDirective)
+    {
+        if (($originalImgDir = $this->config->get($originalImgDirDirective)) && ($resizedImgDir = $this->config->get($resizedImgDirDirective))) {
+            $object = pathinfo($resizedImgDir, PATHINFO_BASENAME);
+            $this->resizeObjects[$object] = [
+                'original_dir' => $originalImgDir,
+                'resized_dir' => $resizedImgDir,
+            ];
+        }
+    }
+
+    /**
+     * Метод возвращает массив объектов ресайза. В виде ключа выступает название конечной директории ресайза,
+     * значение это массив с ключами original_dir и resized_dir, 
+     * 
+     * @return array
+     */
+    public function getResizeObjects()
+    {
+        return $this->resizeObjects;
     }
     
     /**

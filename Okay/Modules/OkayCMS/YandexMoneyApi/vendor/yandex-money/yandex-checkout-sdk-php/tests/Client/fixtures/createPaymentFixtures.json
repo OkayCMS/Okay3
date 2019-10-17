@@ -22,6 +22,7 @@
   },
   "confirmation": {
     "type": "redirect",
+    "locale": "ru_RU",
     "enforce": true,
     "return_url": "string",
     "confirmation_url": "string"
@@ -31,6 +32,8 @@
     "currency": "RUB"
   },
   "paid": true,
+  "refundable": true,
+  "test": true,
   "receipt_registration": "succeeded",
   "metadata": {}
 }

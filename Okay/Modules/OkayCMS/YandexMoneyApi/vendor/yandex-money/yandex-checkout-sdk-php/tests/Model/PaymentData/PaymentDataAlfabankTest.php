@@ -6,8 +6,6 @@ use YandexCheckout\Helpers\Random;
 use YandexCheckout\Model\PaymentData\PaymentDataAlfabank;
 use YandexCheckout\Model\PaymentMethodType;
 
-require_once __DIR__ . '/AbstractPaymentDataTest.php';
-
 class PaymentDataAlfabankTest extends AbstractPaymentDataTest
 {
     /**

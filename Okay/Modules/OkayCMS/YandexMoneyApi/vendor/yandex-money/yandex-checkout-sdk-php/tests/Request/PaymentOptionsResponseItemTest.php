@@ -105,7 +105,7 @@ class PaymentOptionsResponseItemTest extends TestCase
             ),
             array(
                 array(
-                    'payment_method_type' => PaymentMethodType::ANDROID_PAY,
+                    'payment_method_type' => PaymentMethodType::GOOGLE_PAY,
                     'confirmation_types' => array(),
                     'charge' => array(
                         'value' => mt_rand(1, 100),
@@ -133,6 +133,46 @@ class PaymentOptionsResponseItemTest extends TestCase
                         'currency' => CurrencyCode::USD,
                     ),
                     'extra_fee' => true,
+                ),
+            ),
+            array(
+                array(
+                    'payment_method_type' => PaymentMethodType::ALFABANK,
+                    'confirmation_types' => array(),
+                    'charge' => array(
+                        'value' => mt_rand(1, 100),
+                        'currency' => CurrencyCode::BYN,
+                    ),
+                ),
+            ),
+            array(
+                array(
+                    'payment_method_type' => PaymentMethodType::SBERBANK,
+                    'confirmation_types' => array(),
+                    'charge' => array(
+                        'value' => mt_rand(1, 100),
+                        'currency' => CurrencyCode::CNY,
+                    ),
+                ),
+            ),
+            array(
+                array(
+                    'payment_method_type' => PaymentMethodType::CASH,
+                    'confirmation_types' => array(),
+                    'charge' => array(
+                        'value' => mt_rand(1, 100),
+                        'currency' => CurrencyCode::KZT,
+                    ),
+                ),
+            ),
+            array(
+                array(
+                    'payment_method_type' => PaymentMethodType::BANK_CARD,
+                    'confirmation_types' => array(),
+                    'charge' => array(
+                        'value' => mt_rand(1, 100),
+                        'currency' => CurrencyCode::UAH,
+                    ),
                 ),
             ),
         );

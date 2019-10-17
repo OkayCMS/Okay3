@@ -3,10 +3,9 @@
 namespace Tests\YandexCheckout\Request\Payments;
 
 use PHPUnit\Framework\TestCase;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
 use YandexCheckout\Helpers\Random;
 use YandexCheckout\Helpers\StringObject;
-use YandexCheckout\Model\Status;
+use YandexCheckout\Model\PaymentStatus;
 use YandexCheckout\Request\Payments\PaymentsRequest;
 use YandexCheckout\Request\Payments\PaymentsRequestBuilder;
 
@@ -21,90 +20,22 @@ class PaymentsRequestTest extends TestCase
     }
 
     /**
-     * @dataProvider validPaymentIdDataProvider
+     * @dataProvider validNetPageDataProvider
      * @param $value
      */
-    public function testPaymentId($value)
+    public function testPage($value)
     {
-        $this->getterAndSetterTest($value, 'paymentId', $value === null ? '' : (string)$value);
+        $this->getterAndSetterTest($value, 'page', $value === null ? '' : (string)$value);
     }
 
     /**
-     * @dataProvider invalidPaymentIdDataProvider
+     * @dataProvider invalidPageDataProvider
      * @expectedException \InvalidArgumentException
      * @param $value
      */
-    public function testSetInvalidPaymentId($value)
+    public function testSetInvalidPage($value)
     {
-        $this->getTestInstance()->setPaymentId($value);
-    }
-
-    /**
-     * @dataProvider invalidPaymentIdDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param $value
-     */
-    public function testSetterInvalidPaymentId($value)
-    {
-        $this->getTestInstance()->paymentId = $value;
-    }
-
-    /**
-     * @dataProvider validIdDataProvider
-     * @param $value
-     */
-    public function testShopId($value)
-    {
-        $this->getterAndSetterTest($value, 'accountId', $value === null ? '' : (string)$value);
-    }
-
-    /**
-     * @dataProvider invalidIdDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param $value
-     */
-    public function testSetInvalidAccountId($value)
-    {
-        $this->getTestInstance()->setAccountId($value);
-    }
-
-    /**
-     * @dataProvider invalidIdDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param $value
-     */
-    public function testSetterInvalidAccountId($value)
-    {
-        $this->getTestInstance()->accountId = $value;
-    }
-
-    /**
-     * @dataProvider validIdDataProvider
-     * @param $value
-     */
-    public function testGatewayId($value)
-    {
-        $this->getterAndSetterTest($value, 'gatewayId', $value === null ? '' : (string)$value);
-    }
-
-    /**
-     * @dataProvider invalidIdDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param $value
-     */
-    public function testSetInvalidGatewayId($value)
-    {
-        $this->getTestInstance()->setGatewayId($value);
-    }
-
-    /**
-     * @dataProvider invalidIdDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param $value
-     */
-    public function testSetterInvalidGatewayId($value)
-    {
-        $this->getTestInstance()->gatewayId = $value;
+        $this->getTestInstance()->setPage($value);
     }
 
     /**
@@ -114,16 +45,12 @@ class PaymentsRequestTest extends TestCase
     public function testDateMethods($value)
     {
         $properties = array(
-            'createdGte',
-            'createdGt',
-            'createdLte',
-            'createdLt',
-            'authorizedGte',
-            'authorizedGt',
-            'authorizedLte',
-            'authorizedLt',
+            'createdAtGte',
+            'createdAtGt',
+            'createdAtLte',
+            'createdAtLt',
         );
-        $expected = null;
+        $expected   = null;
         if ($value instanceof \DateTime) {
             $expected = $value->format(DATE_ATOM);
         } elseif (is_numeric($value)) {
@@ -141,9 +68,9 @@ class PaymentsRequestTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @param mixed $value
      */
-    public function testSetInvalidCreatedGte($value)
+    public function testSetInvalidCreatedAtGte($value)
     {
-        $this->getTestInstance()->setCreatedGte($value);
+        $this->getTestInstance()->setCreatedAtGte($value);
     }
 
     /**
@@ -151,9 +78,9 @@ class PaymentsRequestTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @param mixed $value
      */
-    public function testSetterInvalidCreatedGte($value)
+    public function testSetInvalidCreatedAtGt($value)
     {
-        $this->getTestInstance()->createdGte = $value;
+        $this->getTestInstance()->setCreatedAtGt($value);
     }
 
     /**
@@ -161,9 +88,9 @@ class PaymentsRequestTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @param mixed $value
      */
-    public function testSetInvalidCreatedGt($value)
+    public function testSetInvalidCreatedAtLte($value)
     {
-        $this->getTestInstance()->setCreatedGt($value);
+        $this->getTestInstance()->setCreatedAtLte($value);
     }
 
     /**
@@ -171,129 +98,48 @@ class PaymentsRequestTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @param mixed $value
      */
-    public function testSetterInvalidCreatedGt($value)
+    public function testSetInvalidCreatedAtLt($value)
     {
-        $this->getTestInstance()->createdGt = $value;
+        $this->getTestInstance()->setCreatedAtLt($value);
+    }
+
+
+    /**
+     * @dataProvider validLimitDataProvider
+     * @param $value
+     */
+    public function testLimit($value)
+    {
+        $this->getterAndSetterTest($value, 'limit', $value);
     }
 
     /**
-     * @dataProvider invalidDateDataProvider
+     * @dataProvider invalidDataProvider
      * @expectedException \InvalidArgumentException
-     * @param mixed $value
+     * @param $value
      */
-    public function testSetInvalidCreatedLte($value)
+    public function testSetInvalidLimit($value)
     {
-        $this->getTestInstance()->setCreatedLte($value);
+        $this->getTestInstance()->setLimit($value);
     }
 
     /**
-     * @dataProvider invalidDateDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param mixed $value
+     * @dataProvider validIdDataProvider
+     * @param $value
      */
-    public function testSetterInvalidCreatedLte($value)
+    public function testRecipientGatewayId($value)
     {
-        $this->getTestInstance()->createdLte = $value;
+        $this->getterAndSetterTest($value, 'recipientGatewayId', $value === null ? '' : (string)$value);
     }
 
     /**
-     * @dataProvider invalidDateDataProvider
+     * @dataProvider invalidIdDataProvider
      * @expectedException \InvalidArgumentException
-     * @param mixed $value
+     * @param $value
      */
-    public function testSetInvalidCreatedLt($value)
+    public function testSetInvalidRecipientGatewayId($value)
     {
-        $this->getTestInstance()->setCreatedLt($value);
-    }
-
-    /**
-     * @dataProvider invalidDateDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param mixed $value
-     */
-    public function testSetterInvalidCreatedLt($value)
-    {
-        $this->getTestInstance()->createdLt = $value;
-    }
-
-    /**
-     * @dataProvider invalidDateDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param mixed $value
-     */
-    public function testSetInvalidAuthorizedGte($value)
-    {
-        $this->getTestInstance()->setAuthorizedGte($value);
-    }
-
-    /**
-     * @dataProvider invalidDateDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param mixed $value
-     */
-    public function testSetterInvalidAuthorizedGte($value)
-    {
-        $this->getTestInstance()->authorizedGte = $value;
-    }
-
-    /**
-     * @dataProvider invalidDateDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param mixed $value
-     */
-    public function testSetInvalidAuthorizedGt($value)
-    {
-        $this->getTestInstance()->setAuthorizedGt($value);
-    }
-
-    /**
-     * @dataProvider invalidDateDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param mixed $value
-     */
-    public function testSetterInvalidAuthorizedGt($value)
-    {
-        $this->getTestInstance()->authorizedGt = $value;
-    }
-
-    /**
-     * @dataProvider invalidDateDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param mixed $value
-     */
-    public function testSetInvalidAuthorizedLte($value)
-    {
-        $this->getTestInstance()->setAuthorizedLte($value);
-    }
-
-    /**
-     * @dataProvider invalidDateDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param mixed $value
-     */
-    public function testSetterInvalidAuthorizedLte($value)
-    {
-        $this->getTestInstance()->authorizedLte = $value;
-    }
-
-    /**
-     * @dataProvider invalidDateDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param mixed $value
-     */
-    public function testSetInvalidAuthorizedLt($value)
-    {
-        $this->getTestInstance()->setAuthorizedLt($value);
-    }
-
-    /**
-     * @dataProvider invalidDateDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param mixed $value
-     */
-    public function testSetterInvalidAuthorizedLt($value)
-    {
-        $this->getTestInstance()->authorizedLt = $value;
+        $this->getTestInstance()->setRecipientGatewayId($value);
     }
 
     /**
@@ -315,54 +161,10 @@ class PaymentsRequestTest extends TestCase
         $this->getTestInstance()->setStatus($value);
     }
 
-    /**
-     * @dataProvider invalidDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param $value
-     */
-    public function testSetterInvalidStatus($value)
-    {
-        $this->getTestInstance()->status = $value;
-    }
-
-    /**
-     * @dataProvider validNetPageDataProvider
-     * @param $value
-     */
-    public function testNextPage($value)
-    {
-        $this->getterAndSetterTest($value, 'nextPage', $value === null ? '' : (string)$value);
-    }
-
-    /**
-     * @dataProvider invalidNextPageDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param $value
-     */
-    public function testSetInvalidNextPage($value)
-    {
-        $this->getTestInstance()->setNextPage($value);
-    }
-
-    /**
-     * @dataProvider invalidNextPageDataProvider
-     * @expectedException \InvalidArgumentException
-     * @param $value
-     */
-    public function testSetterInvalidNextPage($value)
-    {
-        $this->getTestInstance()->nextPage = $value;
-    }
-
     public function testValidate()
     {
         $instance = new PaymentsRequest();
-
-        self::assertFalse($instance->validate());
-        $instance->setAccountId(Random::str(10));
         self::assertTrue($instance->validate());
-        $instance->setAccountId(null);
-        self::assertFalse($instance->validate());
     }
 
     public function testBuilder()
@@ -400,8 +202,8 @@ class PaymentsRequestTest extends TestCase
             array(null),
             array(''),
             array('123'),
-            array(Random::str(1,64)),
-            array(new StringObject(Random::str(1,64))),
+            array(Random::str(1, 64)),
+            array(new StringObject(Random::str(1, 64))),
         );
     }
 
@@ -422,11 +224,19 @@ class PaymentsRequestTest extends TestCase
             array(null),
             array(''),
         );
-        foreach (Status::getValidValues() as $value) {
+        foreach (PaymentStatus::getValidValues() as $value) {
             $result[] = array($value);
             $result[] = array(new StringObject($value));
         }
         return $result;
+    }
+
+    public function validLimitDataProvider()
+    {
+        return array(
+            array(null),
+            array(Random::int(1, PaymentsRequest::MAX_LIMIT_VALUE)),
+        );
     }
 
     public function invalidIdDataProvider()
@@ -445,6 +255,9 @@ class PaymentsRequestTest extends TestCase
             array(array()),
             array(new \stdClass()),
             array(Random::str(10)),
+            array(Random::bytes(10)),
+            array(-1),
+            array(PaymentsRequest::MAX_LIMIT_VALUE + 1),
         );
         return $result;
     }
@@ -476,7 +289,7 @@ class PaymentsRequestTest extends TestCase
         );
     }
 
-    public function invalidNextPageDataProvider()
+    public function invalidPageDataProvider()
     {
         return array(
             array(array()),
@@ -490,7 +303,7 @@ class PaymentsRequestTest extends TestCase
     {
         $getter = 'get'.ucfirst($property);
         $setter = 'set'.ucfirst($property);
-        $has = 'has'.ucfirst($property);
+        $has    = 'has'.ucfirst($property);
 
         $instance = $this->getTestInstance();
 
@@ -520,7 +333,7 @@ class PaymentsRequestTest extends TestCase
             }
         }
 
-        $instance->{$setter}('');
+        $instance->{$setter}(null);
         if ($testHas) {
             self::assertFalse($instance->{$has}());
         }

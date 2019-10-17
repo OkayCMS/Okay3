@@ -81,7 +81,7 @@ class PaymentDataFactoryTest extends TestCase
     public function validTypeDataProvider()
     {
         $result = array();
-        foreach (PaymentMethodType::getValidValues() as $value) {
+        foreach (PaymentMethodType::getEnabledValues() as $value) {
             $result[] = array($value);
         }
         return $result;
@@ -113,8 +113,9 @@ class PaymentDataFactoryTest extends TestCase
             ),
             array(
                 array(
-                    'type' => PaymentMethodType::ANDROID_PAY,
-                    'paymentData' => Random::str(10, 20),
+                    'type' => PaymentMethodType::GOOGLE_PAY,
+                    'paymentMethodToken' => Random::str(10, 20),
+                    'googleTransactionId' => Random::str(10, 20),
                 ),
             ),
             array(
@@ -157,8 +158,13 @@ class PaymentDataFactoryTest extends TestCase
                     'type' => PaymentMethodType::INSTALLMENTS,
                 ),
             ),
+            array(
+                array(
+                    'type' => PaymentMethodType::TINKOFF_BANK,
+                ),
+            ),
         );
-        foreach (PaymentMethodType::getValidValues() as $value) {
+        foreach (PaymentMethodType::getEnabledValues() as $value) {
             $result[] = array(array('type' => $value));
         }
         return $result;

@@ -3,7 +3,7 @@
 namespace Tests\YandexCheckout\Request\Payments;
 
 use PHPUnit\Framework\TestCase;
-use YandexCheckout\Model\Status;
+use YandexCheckout\Model\PaymentStatus;
 use YandexCheckout\Request\Payments\PaymentsRequestBuilder;
 
 class PaymentsRequestBuilderTest extends TestCase
@@ -12,42 +12,19 @@ class PaymentsRequestBuilderTest extends TestCase
      * @dataProvider validDataProvider
      * @param $options
      */
-    public function testSetAccountId($options)
-    {
-        $builder = new PaymentsRequestBuilder();
-        try {
-            $builder->build();
-        } catch (\RuntimeException $e) {
-            $builder->setAccountId($options['accountId']);
-            if (!empty($options['accountId'])) {
-                $instance = $builder->build();
-                self::assertEquals($options['accountId'], $instance->getAccountId());
-                return;
-            } else {
-                $this->setExpectedException('\RuntimeException');
-                $builder->build();
-            }
-        }
-        self::fail('Exception not thrown');
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     * @param $options
-     */
-    public function testSetPaymentId($options)
+    public function testSetPage($options)
     {
         $builder = new PaymentsRequestBuilder();
 
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        self::assertNull($instance->getPaymentId());
+        $instance = $builder->build();
+        self::assertNull($instance->getPage());
 
-        $builder->setPaymentId($options['paymentId']);
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        if (empty($options['paymentId'])) {
-            self::assertNull($instance->getPaymentId());
+        $builder->setPage($options['page']);
+        $instance = $builder->build();
+        if (empty($options['page'])) {
+            self::assertNull($instance->getPage());
         } else {
-            self::assertEquals($options['paymentId'], $instance->getPaymentId());
+            self::assertEquals($options['page'], $instance->getPage());
         }
     }
 
@@ -55,19 +32,19 @@ class PaymentsRequestBuilderTest extends TestCase
      * @dataProvider validDataProvider
      * @param $options
      */
-    public function testSetGatewayId($options)
+    public function testSetCreatedAtGte($options)
     {
         $builder = new PaymentsRequestBuilder();
 
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        self::assertNull($instance->getGatewayId());
+        $instance = $builder->build();
+        self::assertNull($instance->getCreatedAtGte());
 
-        $builder->setGatewayId($options['gatewayId']);
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        if (empty($options['gatewayId'])) {
-            self::assertNull($instance->getGatewayId());
+        $builder->setCreatedAtGte($options['createdAtGte']);
+        $instance = $builder->build();
+        if (empty($options['createdAtGte'])) {
+            self::assertNull($instance->getCreatedAtGte());
         } else {
-            self::assertEquals($options['gatewayId'], $instance->getGatewayId());
+            self::assertEquals($options['createdAtGte'], $instance->getCreatedAtGte()->format(DATE_ATOM));
         }
     }
 
@@ -75,19 +52,19 @@ class PaymentsRequestBuilderTest extends TestCase
      * @dataProvider validDataProvider
      * @param $options
      */
-    public function testSetCreateGte($options)
+    public function testSetCreatedGt($options)
     {
         $builder = new PaymentsRequestBuilder();
 
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        self::assertNull($instance->getCreatedGte());
+        $instance = $builder->build();
+        self::assertNull($instance->getCreatedAtGt());
 
-        $builder->setCreatedGte($options['createGte']);
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        if (empty($options['createGte'])) {
-            self::assertNull($instance->getCreatedGte());
+        $builder->setCreatedAtGt($options['createdAtGt']);
+        $instance = $builder->build();
+        if (empty($options['createdAtGt'])) {
+            self::assertNull($instance->getCreatedAtGt());
         } else {
-            self::assertEquals($options['createGte'], $instance->getCreatedGte()->format(DATE_ATOM));
+            self::assertEquals($options['createdAtGt'], $instance->getCreatedAtGt()->format(DATE_ATOM));
         }
     }
 
@@ -95,19 +72,19 @@ class PaymentsRequestBuilderTest extends TestCase
      * @dataProvider validDataProvider
      * @param $options
      */
-    public function testSetCreateGt($options)
+    public function testSetCreatedLte($options)
     {
         $builder = new PaymentsRequestBuilder();
 
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        self::assertNull($instance->getCreatedGt());
+        $instance = $builder->build();
+        self::assertNull($instance->getCreatedAtLte());
 
-        $builder->setCreatedGt($options['createGt']);
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        if (empty($options['createGt'])) {
-            self::assertNull($instance->getCreatedGt());
+        $builder->setCreatedAtLte($options['createdAtLte']);
+        $instance = $builder->build();
+        if (empty($options['createdAtLte'])) {
+            self::assertNull($instance->getCreatedAtLte());
         } else {
-            self::assertEquals($options['createGt'], $instance->getCreatedGt()->format(DATE_ATOM));
+            self::assertEquals($options['createdAtLte'], $instance->getCreatedAtLte()->format(DATE_ATOM));
         }
     }
 
@@ -115,19 +92,19 @@ class PaymentsRequestBuilderTest extends TestCase
      * @dataProvider validDataProvider
      * @param $options
      */
-    public function testSetCreateLte($options)
+    public function testSetCreatedLt($options)
     {
         $builder = new PaymentsRequestBuilder();
 
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        self::assertNull($instance->getCreatedLte());
+        $instance = $builder->build();
+        self::assertNull($instance->getCreatedAtLt());
 
-        $builder->setCreatedLte($options['createLte']);
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        if (empty($options['createLte'])) {
-            self::assertNull($instance->getCreatedLte());
+        $builder->setCreatedAtLt($options['createdAtLt']);
+        $instance = $builder->build();
+        if (empty($options['createdAtLt'])) {
+            self::assertNull($instance->getCreatedAtLt());
         } else {
-            self::assertEquals($options['createLte'], $instance->getCreatedLte()->format(DATE_ATOM));
+            self::assertEquals($options['createdAtLt'], $instance->getCreatedAtLt()->format(DATE_ATOM));
         }
     }
 
@@ -135,19 +112,19 @@ class PaymentsRequestBuilderTest extends TestCase
      * @dataProvider validDataProvider
      * @param $options
      */
-    public function testSetCreateLt($options)
+    public function testSetLimit($options)
     {
         $builder = new PaymentsRequestBuilder();
 
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        self::assertNull($instance->getCreatedLt());
+        $instance = $builder->build();
+        self::assertNull($instance->getLimit());
 
-        $builder->setCreatedLt($options['createLt']);
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        if (empty($options['createLt'])) {
-            self::assertNull($instance->getCreatedLt());
+        $builder->setLimit($options['limit']);
+        $instance = $builder->build();
+        if (is_null($options['limit'])) {
+            self::assertNull($instance->getLimit());
         } else {
-            self::assertEquals($options['createLt'], $instance->getCreatedLt()->format(DATE_ATOM));
+            self::assertEquals($options['limit'], $instance->getLimit());
         }
     }
 
@@ -155,79 +132,19 @@ class PaymentsRequestBuilderTest extends TestCase
      * @dataProvider validDataProvider
      * @param $options
      */
-    public function testSetAuthorizedGte($options)
+    public function testSetRecipientGatewayId($options)
     {
         $builder = new PaymentsRequestBuilder();
 
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        self::assertNull($instance->getAuthorizedGte());
+        $instance = $builder->build(array());
+        self::assertNull($instance->getRecipientGatewayId());
 
-        $builder->setAuthorizedGte($options['authorizedGte']);
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        if (empty($options['authorizedGte'])) {
-            self::assertNull($instance->getAuthorizedGte());
+        $builder->setRecipientGatewayId(!empty($options['recipientGatewayId']) ? $options['recipientGatewayId'] : null);
+        $instance = $builder->build();
+        if (empty($options['recipientGatewayId'])) {
+            self::assertNull($instance->getRecipientGatewayId());
         } else {
-            self::assertEquals($options['authorizedGte'], $instance->getAuthorizedGte()->format(DATE_ATOM));
-        }
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     * @param $options
-     */
-    public function testSetAuthorizedGt($options)
-    {
-        $builder = new PaymentsRequestBuilder();
-
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        self::assertNull($instance->getAuthorizedGt());
-
-        $builder->setAuthorizedGt($options['authorizedGt']);
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        if (empty($options['authorizedGt'])) {
-            self::assertNull($instance->getAuthorizedGt());
-        } else {
-            self::assertEquals($options['authorizedGt'], $instance->getAuthorizedGt()->format(DATE_ATOM));
-        }
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     * @param $options
-     */
-    public function testSetAuthorizedLte($options)
-    {
-        $builder = new PaymentsRequestBuilder();
-
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        self::assertNull($instance->getAuthorizedLte());
-
-        $builder->setAuthorizedLte($options['authorizedLte']);
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        if (empty($options['authorizedLte'])) {
-            self::assertNull($instance->getAuthorizedLte());
-        } else {
-            self::assertEquals($options['authorizedLte'], $instance->getAuthorizedLte()->format(DATE_ATOM));
-        }
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     * @param $options
-     */
-    public function testSetAuthorizedLt($options)
-    {
-        $builder = new PaymentsRequestBuilder();
-
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        self::assertNull($instance->getAuthorizedLt());
-
-        $builder->setAuthorizedLt($options['authorizedLt']);
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        if (empty($options['authorizedLt'])) {
-            self::assertNull($instance->getAuthorizedLt());
-        } else {
-            self::assertEquals($options['authorizedLt'], $instance->getAuthorizedLt()->format(DATE_ATOM));
+            self::assertEquals($options['recipientGatewayId'], $instance->getRecipientGatewayId());
         }
     }
 
@@ -239,11 +156,11 @@ class PaymentsRequestBuilderTest extends TestCase
     {
         $builder = new PaymentsRequestBuilder();
 
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
+        $instance = $builder->build();
         self::assertNull($instance->getStatus());
 
         $builder->setStatus($options['status']);
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
+        $instance = $builder->build();
         if (empty($options['status'])) {
             self::assertNull($instance->getStatus());
         } else {
@@ -251,80 +168,45 @@ class PaymentsRequestBuilderTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider validDataProvider
-     * @param $options
-     */
-    public function testSetNextPage($options)
-    {
-        $builder = new PaymentsRequestBuilder();
-
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        self::assertNull($instance->getNextPage());
-
-        $builder->setNextPage($options['nextPage']);
-        $instance = $builder->build(array('accountId' => 'valid_shopId'));
-        if (empty($options['nextPage'])) {
-            self::assertNull($instance->getNextPage());
-        } else {
-            self::assertEquals($options['nextPage'], $instance->getNextPage());
-        }
-    }
-
     public function validDataProvider()
     {
-        $result = array(
+        $result   = array(
             array(
                 array(
-                    'paymentId' => null,
-                    'accountId' => null,
-                    'gatewayId' => null,
-                    'createGte' => null,
-                    'createGt' => null,
-                    'createLte' => null,
-                    'createLt' => null,
-                    'authorizedGte' => null,
-                    'authorizedGt' => null,
-                    'authorizedLte' => null,
-                    'authorizedLt' => null,
-                    'status' => null,
-                    'nextPage' => null,
+                    'page'               => null,
+                    'createdAtGte'       => null,
+                    'createdAtGt'        => null,
+                    'createdAtLte'       => null,
+                    'createdAtLt'        => null,
+                    'limit'              => null,
+                    'recipientGatewayId' => null,
+                    'status'             => null,
                 ),
             ),
             array(
                 array(
-                    'paymentId' => '',
-                    'accountId' => '',
-                    'gatewayId' => '',
-                    'createGte' => '',
-                    'createGt' => '',
-                    'createLte' => '',
-                    'createLt' => '',
-                    'authorizedGte' => '',
-                    'authorizedGt' => '',
-                    'authorizedLte' => '',
-                    'authorizedLt' => '',
-                    'status' => '',
-                    'nextPage' => '',
+                    'page'               => '',
+                    'createdAtGte'       => '',
+                    'createdAtGt'        => '',
+                    'createdAtLte'       => '',
+                    'createdAtLt'        => '',
+                    'limit'              => 0,
+                    'recipientGatewayId' => '',
+                    'status'             => '',
                 ),
             ),
         );
-        $statuses = Status::getValidValues();
+        $statuses = PaymentStatus::getValidValues();
         for ($i = 0; $i < 10; $i++) {
-            $request = array(
-                'paymentId' => $this->randomString(36),
-                'accountId'    => uniqid(),
-                'gatewayId' => uniqid(),
-                'createGte' => date(DATE_ATOM, mt_rand(1, time())),
-                'createGt' => date(DATE_ATOM, mt_rand(1, time())),
-                'createLte' => date(DATE_ATOM, mt_rand(1, time())),
-                'createLt' => date(DATE_ATOM, mt_rand(1, time())),
-                'authorizedGte' => date(DATE_ATOM, mt_rand(1, time())),
-                'authorizedGt' => date(DATE_ATOM, mt_rand(1, time())),
-                'authorizedLte' => date(DATE_ATOM, mt_rand(1, time())),
-                'authorizedLt' => date(DATE_ATOM, mt_rand(1, time())),
-                'status' => $statuses[mt_rand(0, count($statuses) - 1)],
-                'nextPage' => uniqid(),
+            $request  = array(
+                'page'               => $this->randomString(mt_rand(1, 30)),
+                'createdAtGte'       => date(DATE_ATOM, mt_rand(1, time())),
+                'createdAtGt'        => date(DATE_ATOM, mt_rand(1, time())),
+                'createdAtLte'       => date(DATE_ATOM, mt_rand(1, time())),
+                'createdAtLt'        => date(DATE_ATOM, mt_rand(1, time())),
+                'limit'              => mt_rand(1, 100),
+                'recipientGatewayId' => $this->randomString(mt_rand(1, 10)),
+                'status'             => $statuses[mt_rand(0, count($statuses) - 1)],
             );
             $result[] = array($request);
         }
@@ -340,7 +222,7 @@ class PaymentsRequestBuilderTest extends TestCase
             if ($any) {
                 $char = chr(mt_rand(32, 126));
             } else {
-                $rnd = mt_rand(0, strlen($chars) - 1);
+                $rnd  = mt_rand(0, strlen($chars) - 1);
                 $char = substr($chars, $rnd, 1);
             }
             $result .= $char;

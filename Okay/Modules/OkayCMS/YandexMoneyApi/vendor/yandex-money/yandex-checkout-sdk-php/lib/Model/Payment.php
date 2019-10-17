@@ -53,9 +53,14 @@ use YandexCheckout\Model\PaymentMethod\AbstractPaymentMethod;
  * @property AmountInterface $refundedAmount Сумма возвращенных средств платежа
  * @property AmountInterface $refunded_amount Сумма возвращенных средств платежа
  * @property bool $paid Признак оплаты заказа
+ * @property bool $refundable Возможность провести возврат по API
  * @property string $receiptRegistration Состояние регистрации фискального чека
  * @property string $receipt_registration Состояние регистрации фискального чека
  * @property Metadata $metadata Метаданные платежа указанные мерчантом
+ * @property CancellationDetailsInterface $cancellationDetails Комментарий к отмене платежа
+ * @property CancellationDetailsInterface $cancellation_details Комментарий к отмене платежа
+ * @property AuthorizationDetailsInterface $authorizationDetails Данные об авторизации платежа
+ * @property AuthorizationDetailsInterface $authorization_details Данные об авторизации платежа
  */
 class Payment extends AbstractObject implements PaymentInterface
 {
@@ -117,6 +122,11 @@ class Payment extends AbstractObject implements PaymentInterface
     private $_paid;
 
     /**
+     * @var bool Возможность провести возврат по API
+     */
+    private $_refundable;
+
+    /**
      * @var string Состояние регистрации фискального чека
      */
     private $_receiptRegistration;
@@ -134,6 +144,28 @@ class Payment extends AbstractObject implements PaymentInterface
      * @since 1.0.2
      */
     private $_expiresAt;
+
+    /**
+     * Комментарий к статусу canceled: кто отменил платеж и по какой причине
+     * @var CancellationDetailsInterface
+     * @since 1.0.13
+     */
+    private $_cancellationDetails;
+
+    /**
+     * Данные об авторизации платежа
+     * @var AuthorizationDetailsInterface
+     * @since 1.0.18
+     */
+    private $_authorizationDetails;
+
+    /**
+     * Признак тестовой операции.
+     * @var boolean
+     * @since 1.1.3
+     */
+    private $_test;
+
 
     /**
      * Возвращает идентификатор платежа
@@ -413,6 +445,35 @@ class Payment extends AbstractObject implements PaymentInterface
     }
 
     /**
+     * Проверяет возможность провести возврат по API
+     * @return bool Возможность провести возврат по API, true если есть, false если нет
+     */
+    public function getRefundable()
+    {
+        return $this->_refundable;
+    }
+
+    /**
+     * Устанавливает возможность провести возврат по API
+     * @param bool $value Возможность провести возврат по API
+     *
+     * @throws EmptyPropertyValueException Выбрасывается если переданный аргумент пуст
+     * @throws InvalidPropertyValueTypeException Выбрасывается если переданный аргумент не кастится в булево значение
+     */
+    public function setRefundable($value)
+    {
+        if ($value === null || $value === '') {
+            throw new EmptyPropertyValueException('Empty payment refundable flag value', 0, 'Payment.refundable');
+        } elseif (TypeCast::canCastToBoolean($value)) {
+            $this->_refundable = (bool)$value;
+        } else {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid payment refundable flag value type', 0, 'Payment.refundable', $value
+            );
+        }
+    }
+
+    /**
      * Возвращает состояние регистрации фискального чека
      * @return string Состояние регистрации фискального чека
      */
@@ -498,6 +559,67 @@ class Payment extends AbstractObject implements PaymentInterface
             $this->_expiresAt = $dateTime;
         } else {
             throw new InvalidPropertyValueTypeException('Invalid expires_at value', 0, 'payment.expires_at', $value);
+        }
+    }
+
+    /**
+     * Возвращает комментарий к статусу canceled: кто отменил платеж и по какой причине
+     * @return CancellationDetailsInterface|null Комментарий к статусу canceled
+     * @since 1.0.13
+     */
+    public function getCancellationDetails()
+    {
+        return $this->_cancellationDetails;
+    }
+
+    /**
+     * Устанавливает комментарий к статусу canceled: кто отменил платеж и по какой причине
+     * @param CancellationDetailsInterface $value Комментарий к статусу canceled
+     */
+    public function setCancellationDetails(CancellationDetailsInterface $value)
+    {
+        $this->_cancellationDetails = $value;
+    }
+    /**
+     * Возвращает данные об авторизации платежа
+     * @return AuthorizationDetailsInterface|null Данные об авторизации платежа
+     * @since 1.0.18
+     */
+    public function getAuthorizationDetails()
+    {
+        return $this->_authorizationDetails;
+    }
+
+    /**
+     * Устанавливает данные об авторизации платежа
+     * @param AuthorizationDetailsInterface $value Данные об авторизации платежа
+     */
+    public function setAuthorizationDetails(AuthorizationDetailsInterface $value)
+    {
+        $this->_authorizationDetails = $value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getTest()
+    {
+        return $this->_test;
+    }
+
+    /**
+     * @param bool $test
+     */
+    public function setTest($test)
+    {
+        if ($test === null || $test === '') {
+            throw new EmptyPropertyValueException('Empty payment test flag value', 0, 'Payment.test');
+        } elseif (TypeCast::canCastToBoolean($test)) {
+            $this->_test = (bool)$test;
+        } else {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid payment test flag value type', 0, 'Payment.test', $test
+            );
         }
     }
 }

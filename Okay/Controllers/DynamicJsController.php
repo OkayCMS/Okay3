@@ -31,15 +31,57 @@ class DynamicJsController extends AbstractController
     
             $dynamicJs = $this->design->fetch('scripts.tpl');
             $dynamicJs = preg_replace('~<script(.*?)>(.*?)</script>~is', '$2', $dynamicJs);
-    
+
+            if ($this->config->get('dev_mode') == true) {
+                $dynamicJs .= '$(function() {
+                    $(".fn_design_block_name").parent().addClass("design_block_parent_element");
+                    $(".fn_design_block_name").on("mouseover", function () {
+                        $(this).parent().addClass("focus");
+                    });
+                    $(".fn_design_block_name").on("mouseout", function () {
+                        $(this).parent().removeClass("focus");
+                    });
+                    });';
+            }
+            
             $dynamicJs = $templateConfig->minifyJs($dynamicJs);
         }
-
-        $this->response->addHeader('Cache-Control: no-cache, must-revalidate');
-        $this->response->addHeader('Expires: -1');
-        $this->response->addHeader('Pragma: no-cache');
-        $this->response->addHeader('Content-Type: application/javascript');
         
         $this->response->setContent($dynamicJs, RESPONSE_JAVASCRIPT);
+    }
+    
+    public function getCommonJs(
+        TemplateConfig $templateConfig,
+        $fileId
+    ) {
+        $commonJsFile = "design/" . $templateConfig->getTheme() . "/html/common_js.tpl";
+
+        $commonJs = '';
+        if (is_file($commonJsFile)) {
+            if (!empty($_SESSION['common_js']['controller'])) {
+                $this->design->assign('controller', $_SESSION['common_js']['controller']);
+            }
+
+            $this->design->assign('front_routes', $this->router->getFrontRoutes());
+            
+            if (isset($_SESSION['common_js']['vars'])) {
+                // Передаем глобальные переменные в шаблон
+                $jsVars = $_SESSION['common_js']['vars'];
+                
+                foreach ($jsVars as $var=>$value) {
+                    $jsVars[$var] = json_encode($value);
+                }
+                
+                $this->design->assign('common_js_vars', $jsVars);
+                unset($_SESSION['common_js']);
+            }
+
+            $commonJs = $this->design->fetch('common_js.tpl');
+            $commonJs = preg_replace('~<script(.*?)>(.*?)</script>~is', '$2', $commonJs);
+
+            $commonJs = $templateConfig->minifyJs($commonJs);
+        }
+        
+        $this->response->setContent($commonJs, RESPONSE_JAVASCRIPT);
     }
 }

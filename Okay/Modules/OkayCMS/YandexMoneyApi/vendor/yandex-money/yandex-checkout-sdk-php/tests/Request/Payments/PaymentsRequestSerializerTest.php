@@ -3,25 +3,21 @@
 namespace Tests\YandexCheckout\Request\Payments;
 
 use PHPUnit\Framework\TestCase;
-use YandexCheckout\Model\Status;
+use YandexCheckout\Model\PaymentStatus;
 use YandexCheckout\Request\Payments\PaymentsRequest;
 use YandexCheckout\Request\Payments\PaymentsRequestSerializer;
 
 class PaymentsRequestSerializerTest extends TestCase
 {
     private $fieldMap = array(
-        'paymentId'      => 'payment_id',
-        'gatewayId'      => 'gateway_id',
-        'createdGte'     => 'created_gte',
-        'createdGt'      => 'created_gt',
-        'createdLte'     => 'created_lte',
-        'createdLt'      => 'created_lt',
-        'authorizedGte'  => 'authorized_gte',
-        'authorizedGt'   => 'authorized_gt',
-        'authorizedLte'  => 'authorized_lte',
-        'authorizedLt'   => 'authorized_lt',
-        'status'         => 'status',
-        'nextPage'       => 'next_page',
+        'page'               => 'page',
+        'createdAtGte'       => 'created_at.gte',
+        'createdAtGt'        => 'created_at.gt',
+        'createdAtLte'       => 'created_at.lte',
+        'createdAtLt'        => 'created_at.lt',
+        'limit'              => 'limit',
+        'recipientGatewayId' => 'recipient.gateway_id',
+        'status'             => 'status',
     );
 
     /**
@@ -31,11 +27,9 @@ class PaymentsRequestSerializerTest extends TestCase
     public function testSerialize($options)
     {
         $serializer = new PaymentsRequestSerializer();
-        $data = $serializer->serialize(PaymentsRequest::builder()->build($options));
+        $data       = $serializer->serialize(PaymentsRequest::builder()->build($options));
 
-        $expected = array(
-            'account_id' => $options['accountId'],
-        );
+        $expected = array();
         foreach ($this->fieldMap as $field => $mapped) {
             if (isset($options[$field])) {
                 $value = $options[$field];
@@ -49,46 +43,53 @@ class PaymentsRequestSerializerTest extends TestCase
 
     public function validDataProvider()
     {
-        $result = array(
+        $result   = array(
             array(
-                array(
-                    'accountId' => uniqid(),
-                ),
+                array(),
             ),
             array(
                 array(
-                    'accountId' => uniqid(),
-                    'gatewayId' => '',
-                    'createGte' => '',
-                    'createGt' => '',
-                    'createLte' => '',
-                    'createLt' => '',
-                    'authorizedGte' => '',
-                    'authorizedGt' => '',
-                    'authorizedLte' => '',
-                    'authorizedLt' => '',
-                    'status' => '',
-                    'nextPage' => '',
+                    'page'               => '',
+                    'createdAtGte'       => '',
+                    'createdAtGt'        => '',
+                    'createdAtLte'       => '',
+                    'createdAtLt'        => '',
+                    'limit'              => 0,
+                    'recipientGatewayId' => '',
+                    'status'             => '',
                 ),
             ),
         );
-        $statuses = Status::getValidValues();
+        $statuses = PaymentStatus::getValidValues();
         for ($i = 0; $i < 10; $i++) {
-            $request = array(
-                'accountId' => uniqid(),
-                'gatewayId' => uniqid(),
-                'createGte' => date(DATE_ATOM, mt_rand(1, time())),
-                'createGt' => date(DATE_ATOM, mt_rand(1, time())),
-                'createLte' => date(DATE_ATOM, mt_rand(1, time())),
-                'createLt' => date(DATE_ATOM, mt_rand(1, time())),
-                'authorizedGte' => date(DATE_ATOM, mt_rand(1, time())),
-                'authorizedGt' => date(DATE_ATOM, mt_rand(1, time())),
-                'authorizedLte' => date(DATE_ATOM, mt_rand(1, time())),
-                'authorizedLt' => date(DATE_ATOM, mt_rand(1, time())),
-                'status' => $statuses[mt_rand(0, count($statuses) - 1)],
-                'nextPage' => uniqid(),
+            $request  = array(
+                'page'               => $this->randomString(mt_rand(1, 30)),
+                'createdAtGte'       => date(DATE_ATOM, mt_rand(1, time())),
+                'createdAtGt'        => date(DATE_ATOM, mt_rand(1, time())),
+                'createdAtLte'       => date(DATE_ATOM, mt_rand(1, time())),
+                'createdAtLt'        => date(DATE_ATOM, mt_rand(1, time())),
+                'limit'              => mt_rand(1, 100),
+                'recipientGatewayId' => $this->randomString(mt_rand(1, 10)),
+                'status'             => $statuses[mt_rand(0, count($statuses) - 1)],
             );
             $result[] = array($request);
+        }
+        return $result;
+    }
+
+    private function randomString($length, $any = true)
+    {
+        static $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-+_.';
+
+        $result = '';
+        for ($i = 0; $i < $length; $i++) {
+            if ($any) {
+                $char = chr(mt_rand(32, 126));
+            } else {
+                $rnd  = mt_rand(0, strlen($chars) - 1);
+                $char = substr($chars, $rnd, 1);
+            }
+            $result .= $char;
         }
         return $result;
     }

@@ -5,7 +5,7 @@
     <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
-                {$btr->okaycms__liqpay__description_title|escape}
+                {$btr->okaycms__wayforpay__description_title|escape}
             </div>
         </div>
     </div>

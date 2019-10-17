@@ -99,7 +99,7 @@ class PaymentMethodAdmin extends IndexAdmin
         $this->design->assign('payment_method', $paymentMethod);
         $this->design->assign('payment_settings', $paymentSettings);
         
-        $paymentModules = $modules->getPaymentModules();
+        $paymentModules = $modules->getPaymentModules($this->manager->lang);
         $this->design->assign('payment_modules', $paymentModules);
         
         $currencies = $currenciesEntity->find();

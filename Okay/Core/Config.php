@@ -12,7 +12,7 @@ class Config
 {
 
     /*Версия системы*/
-    public $version = '3.0.4';
+    public $version = '3.1.0';
     /*Тип системы*/
     public $version_type = 'pro';
     
@@ -31,17 +31,22 @@ class Config
         $this->initConfig();
     }
 
-    /*Выборка настройки*/
-    public function __get($name)
+    /**
+     * @param $name
+     * @return mixed|null
+     * @throws \Exception
+     * Выбор конфига
+     */
+    public function get($name)
     {
         if ($name == 'root_url') {
             throw new \Exception('Config::root_url is remove. Use Request::getRootUrl()');
         }
-        
+
         if ($name == 'subfolder') {
             throw new \Exception('Config::subfolder is remove. Use Request::getSubDir()');
         }
-        
+
         if (isset($this->vars[$name])) {
             return $this->vars[$name];
         }
@@ -49,8 +54,12 @@ class Config
         return null;
     }
 
-    /*Запись данных в конфиг*/
-    public function __set($name, $value)
+    /**
+     * @param $name
+     * @param $value
+     * Запись данных в конфиг
+     */
+    public function set($name, $value)
     {
         if (!isset($this->vars[$name]) && !isset($this->localVars[$name])) {
             return;
@@ -69,6 +78,16 @@ class Config
         fwrite($cf, $conf);
         fclose($cf);
         $this->vars[$name] = $value;
+    }
+    
+    public function __get($name)
+    {
+        return $this->get($name);
+    }
+
+    public function __set($name, $value)
+    {
+        $this->set($name, $value);
     }
 
     /*Формирование токена*/
@@ -124,6 +143,22 @@ class Config
         // Часовой пояс
         if (!empty($this->vars['php_timezone'])) {
             date_default_timezone_set($this->vars['php_timezone']);
+        }
+    }
+
+    public function loadConfigsFrom($filename)
+    {
+        if (!is_file($filename)) {
+            throw new \Exception("Cannot load configs from \"{$filename}\"");
+        }
+
+        $ini = parse_ini_file($filename);
+        foreach ($ini as $var => $value) {
+            if (isset($this->vars[$var])) {
+                throw new \Exception("Duplicate parameter \"{$var}\"");
+            }
+
+            $this->vars[$var] = $value;
         }
     }
     

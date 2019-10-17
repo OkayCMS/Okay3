@@ -8,7 +8,7 @@ use Okay\Core\Notify;
 use Okay\Core\Validator;
 use Okay\Entities\BlogEntity;
 use Okay\Entities\CommentsEntity;
-use Okay\Logic\ProductsLogic;
+use Okay\Helpers\ProductsHelper;
 
 class BlogController extends AbstractController
 {
@@ -17,7 +17,7 @@ class BlogController extends AbstractController
         BlogEntity $blogEntity,
         CommentsEntity $commentsEntity,
         Validator $validator,
-        ProductsLogic $productsLogic,
+        ProductsHelper $productsHelper,
         Notify $notify,
         $url,
         $typePost
@@ -87,9 +87,8 @@ class BlogController extends AbstractController
                 'id' => $relatedIds,
                 'limit' => count($relatedIds),
                 'visible' => 1,
-                'in_stock' => 1,
             ];
-            foreach ($productsLogic->getProductList($relatedFilter) as $p) {
+            foreach ($productsHelper->getProductList($relatedFilter) as $p) {
                 $relatedProducts[$p->id] = $p;
             }
             foreach ($relatedProducts as $id=>$r) {
@@ -133,7 +132,7 @@ class BlogController extends AbstractController
         $this->design->assign('meta_keywords', $post->meta_keywords);
         $this->design->assign('meta_description', $post->meta_description);
 
-        $this->response->setContent($this->design->fetch('post.tpl'));
+        $this->response->setContent('post.tpl');
     }
     
     public function fetchBlog(BlogEntity $blogEntity, $typePost)
@@ -204,7 +203,7 @@ class BlogController extends AbstractController
             $this->design->assign('meta_description', $this->page->meta_description);
         }
         
-        $this->response->setContent($this->design->fetch('blog.tpl'));
+        $this->response->setContent('blog.tpl');
     }
     
 }

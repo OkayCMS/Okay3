@@ -23,7 +23,7 @@ class LegTest extends TestCase
 
         self::assertEquals($data["departure_airport"], $leg->getDepartureAirport());
         self::assertEquals($data["destination_airport"], $leg->getDestinationAirport());
-        self::assertEquals('2018-06-20', $leg->getDepartureDate());
+        self::assertEquals($data["departure_date"], $leg->getDepartureDate());
 
     }
 
@@ -54,7 +54,21 @@ class LegTest extends TestCase
 
         $leg->setDestinationAirport($data['value']);
     }
-    
+
+    /**
+     * @dataProvider invalidDataProvider
+     *
+     * @param $data
+     */
+    public function testDepartureDateValidate($data)
+    {
+        $leg = new Leg();
+
+        $this->setExpectedException($data['exception']);
+
+        $leg->setDepartureDate($data['value']);
+    }
+
     public function validDataProvider()
     {
         return array(
@@ -69,7 +83,7 @@ class LegTest extends TestCase
                 array(
                     "departure_airport"   => "UGR",
                     "destination_airport" => "IVA",
-                    "departure_date"      => "2018-06-20 18:00",
+                    "departure_date"      => "2018-06-21",
                 ),
             ),
         );

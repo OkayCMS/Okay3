@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class UsersEntity extends Entity
 {
@@ -51,7 +52,7 @@ class UsersEntity extends Entity
     public function get($id)
     {
         if (empty($id)) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
         $this->select->join('LEFT', '__groups AS g', 'u.group_id=g.id');
@@ -59,10 +60,12 @@ class UsersEntity extends Entity
         $user = parent::get($id);
         
         if (empty($user)) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
-        $user->discount *= 1; // Убираем лишние нули, чтобы было 5 вместо 5.00
-        return $user;
+
+        $user->discount = floor($user->discount);
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $user, func_get_args());
     }
 
     public function add($user)
@@ -75,7 +78,7 @@ class UsersEntity extends Entity
         $count = $this->count(['email'=>$user['email']]);
         
         if ($count > 0) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
         
         return parent::add($user);
@@ -103,8 +106,8 @@ class UsersEntity extends Entity
             $this->db->query($update);
             
         }
-        parent::delete($ids);
-        return true;
+
+        return parent::delete($ids);
     }
 
     public function checkPassword($email, $password) {
@@ -116,10 +119,10 @@ class UsersEntity extends Entity
         ]);
         if (!empty($usersIds)) {
             $userId = reset($usersIds);
-            return $userId;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], $userId, func_get_args());
         }
-        
-        return false;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
     }
 
     public function generatePass($passLen = 6) {
@@ -132,17 +135,18 @@ class UsersEntity extends Entity
             ];
             $pass .= chr($ranges[rand(0, 2)]);
         }
-        return $pass;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $pass, func_get_args());
     }
 
     public function getUloginUser($token) {
         $s = file_get_contents('https://ulogin.ru/token.php?token=' . $token . '&host=' . $_SERVER['HTTP_HOST']);
-        return json_decode($s, true);
+        $result = json_decode($s, true);
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
 
-    protected function customOrder($order = null)
+    protected function customOrder($order = null, array $orderFields = [], array $additionalData = [])
     {
-        $orderFields = [];
         switch ($order) {
             case 'date':
                 $orderFields = ['u.created DESC'];
@@ -152,6 +156,6 @@ class UsersEntity extends Entity
                 break;
         }
 
-        return $orderFields;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $orderFields, func_get_args());
     }
 }

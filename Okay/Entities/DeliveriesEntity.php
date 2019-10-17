@@ -6,6 +6,7 @@ namespace Okay\Entities;
 
 use Okay\Core\Entity\Entity;
 use Okay\Core\Image;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class DeliveriesEntity extends Entity
 {
@@ -18,6 +19,8 @@ class DeliveriesEntity extends Entity
         'position',
         'separate_payment',
         'image',
+        'settings',
+        'module_id',
     ];
 
     protected static $langFields = [
@@ -85,7 +88,9 @@ class DeliveriesEntity extends Entity
             ->bindValue('delivery_id', $deliveryId);
         
         $this->db->query($select);
-        return $this->db->results('payment_method_id');
+
+        $results = $this->db->results('payment_method_id');
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $results, func_get_args());
     }
 
     /*Обновление способов оплаты у данного способа доставки*/
@@ -109,6 +114,39 @@ class DeliveriesEntity extends Entity
                 $this->db->query($insert);
             }
         }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
+    }
+
+    public function getSettings($deliveryId)
+    {
+        $select = $this->queryFactory->newSelect();
+        $select->from(self::getTable())
+            ->cols(['settings'])
+            ->where('id=:id')
+            ->bindValue('id', (int)$deliveryId);
+
+        $this->db->query($select);
+        $result = $this->db->result('settings');
+        $settings = [];
+        if (!empty($result)) {
+            $settings = unserialize($result);
+        }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $settings, func_get_args());
+    }
+
+    public function updateSettings($deliveryId, array $settings)
+    {
+        $settings = serialize($settings);
+        $update = $this->queryFactory->newUpdate();
+        $update->table(self::getTable())
+            ->cols(['settings' => $settings])
+            ->where('id=:id')
+            ->bindValue('id', (int)$deliveryId);
+        $this->db->query($update);
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $deliveryId, func_get_args());
     }
     
 }

@@ -7,25 +7,18 @@ namespace Okay\Core\Entity;
 trait order
 {
     
-    final public function order($order = null)
+    final public function order($order = null, array $additionalData = [])
     {
         $this->select->resetOrderBy();
-        $orderFields = [];
-        
-        // todo сортировка из модулей, возвращает массив полей
 
-        if (empty($orderFields)) {
-            $orderFields = $this->customOrder($order);
-        }
-
-        if (empty($orderFields)) {
-            $orderFields = $this->autoOrder($order);
-        }
+        $orderFields = $this->autoOrder($order);
 
         // Если не определили сортировку, тогда применим по умолчанию
         if (empty($orderFields)) {
             $orderFields = $this->getDefaultOrderFields();
         }
+        
+        $orderFields = $this->customOrder($order, $orderFields, $additionalData);
 
         if (!empty($orderFields)) {
 

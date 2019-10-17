@@ -4,11 +4,25 @@
 namespace Okay\Core\Modules;
 
 
+use Okay\Core\EntityFactory;
+use Okay\Core\ServiceLocator;
+use Okay\Entities\ModulesEntity;
+
+/**
+ * Class Module
+ * @package Okay\Core\Modules
+ * 
+ * Класс предназначен для получения различной информации по модулю
+ * 
+ */
+
 class Module
 {
     const COMMON_MODULE_NAMESPACE = 'Okay\\Modules';
     const COMMON_MODULE_DIRECTORY = 'Okay/Modules/';
 
+    private static $modulesIds;
+    
     /**
      * Получить базовую область видимости для указанного модуля
      * @param string $vendor
@@ -76,7 +90,7 @@ class Module
             throw new \Exception('"'.$moduleName.'" is wrong name of module');
         }
         
-        $dir = self::COMMON_MODULE_DIRECTORY.'/'.$vendor.'/'.$moduleName;
+        $dir = self::COMMON_MODULE_DIRECTORY.$vendor.'/'.$moduleName;
 
         if (!is_dir($dir)) {
             throw new \Exception('Module "'.$vendor.'/'.$moduleName.'" not exists');
@@ -113,6 +127,24 @@ class Module
     public function getServices($vendor, $moduleName)
     {
         $file = $this->getModuleDirectory($vendor, $moduleName).'/Init/services.php';
+
+        if (!file_exists($file)) {
+            return [];
+        }
+
+        return include($file);
+    }
+
+    /**
+     * Получить список сервисов модуля
+     * @param string $vendor
+     * @param string $moduleName
+     * @throws \Exception
+     * @return array
+     */
+    public function getSmartyPlugins($vendor, $moduleName)
+    {
+        $file = $this->getModuleDirectory($vendor, $moduleName).'/Init/SmartyPlugins.php';
 
         if (!file_exists($file)) {
             return [];
@@ -185,8 +217,36 @@ class Module
         return $vendor . '.' . $module . '.' . $controllerClass;
     }
 
-    public function generateModuleTemplateDir($vendorName, $moduleName)
+    public function generateModuleTemplateDir($vendor, $moduleName)
     {
-        return realpath(__DIR__.'/../../Modules/'.$vendorName.'/'.$moduleName.'/design/html/');
+        return realpath(__DIR__.'/../../Modules/'.$vendor.'/'.$moduleName.'/design/html/');
+    }
+
+    /**
+     * @param $namespace
+     * @return int|bool id модуля в системе, или false в случае ошибки
+     * @throws \Exception
+     * Метод принимает по сути имя любого класса модуля, и возвращает id этого модуля в БД
+     */
+    public function getModuleIdByNamespace($namespace)
+    {
+        $vendor = $this->getVendorName($namespace);
+        $moduleName = $this->getModuleName($namespace);
+        
+        if (!empty(self::$modulesIds[$vendor][$moduleName])) {
+            return self::$modulesIds[$vendor][$moduleName];
+        }
+        
+        $SL = new ServiceLocator();
+
+        /** @var EntityFactory $entityFactory */
+        $entityFactory = $SL->getService(EntityFactory::class);
+        
+        /** @var ModulesEntity $modulesEntity */
+        $modulesEntity = $entityFactory->get(ModulesEntity::class);
+        if ($module = $modulesEntity->getByVendorModuleName($vendor, $moduleName)) {
+            return self::$modulesIds[$vendor][$moduleName] = $module->id;
+        }
+        return false;
     }
 }

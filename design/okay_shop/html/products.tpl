@@ -84,7 +84,7 @@
             {if $current_page_num == 1 && (!empty($category->annotation) || !empty($brand->annotation)) && !$is_filter_page && !$smarty.get.page && !$smarty.get.sort}
                 <div class="boxed boxed--big">
                     <div class="">
-                        <div class="fn_reedmore">
+                        <div class="fn_readmore">
                             <div class="page-description__text boxed__description">
                                 {* Краткое описание категории *}
                                 {if !empty($category->annotation)}
@@ -130,7 +130,7 @@
             {if $current_page_num == 1 && $page->description}
             <div class="boxed boxed--big">
                 <div class="">
-                    <div class="fn_reedmore">
+                    <div class="fn_readmore">
                         <div class="page-description__text boxed__description">{$page->description}</div>
                     </div>
                 </div>
@@ -142,7 +142,7 @@
                 {if $seo_filter_pattern->description}
                     <div class="boxed boxed--big">
                         <div class="">
-                            <div class="fn_reedmore">
+                            <div class="fn_readmore">
                                 <div class="page-description__text boxed__description">{$seo_filter_pattern->description}</div>
                             </div>
                         </div>
@@ -150,7 +150,7 @@
                 {elseif (empty($category) || empty($brand)) && ($category->description || $brand->description) && !$is_filter_page && !$smarty.get.page && !$smarty.get.sort}
                     <div class="boxed boxed--big">
                         <div class="">
-                            <div class="fn_reedmore">
+                            <div class="fn_readmore">
                                 <div class="page-description__text boxed__description">
                                     {* Описание категории *}
                                     {$category->description}

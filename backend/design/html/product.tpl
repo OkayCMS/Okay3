@@ -117,6 +117,7 @@
                                 </div>
                             </div>
                         </div>
+                        {get_design_block block="product_general"}
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
@@ -150,6 +151,7 @@
                                     </label>
                                 </div>
                             </div>
+                            {get_design_block block="product_switch_checkboxes"}
                         </div>
                     </div>
                 </div>
@@ -172,7 +174,7 @@
                     <ul class="fn_droplist_wrap product_images_list clearfix sortable" data-image="product">
                         <li class="fn_dropzone dropzone_block">
                             <i class="fa fa-plus font-5xl" aria-hidden="true"></i>
-                            <input type="file" name="dropped_images[]" multiple class="dropinput">
+                            <input type="file" name="" data-name="dropped_images[]" multiple class="dropinput fn_template">
                         </li>
                         {foreach $product_images as $image}
                             <li class="product_image_item {if $image@first}first_image{/if} {if $image@iteration > 4}fn_toggle_hidden hidden{/if} fn_sort_item">
@@ -183,20 +185,20 @@
                                     {else}
                                         <img class="product_icon" src="design/images/no_image.png" width="40">
                                     {/if}
-                                   <input type=hidden name='images[]' value="{$image->id}">
+                                   <input type=hidden name='images_ids[]' value="{$image->id}">
                                 </i>
                             </li>
                         {/foreach}
                         <li class="fn_new_image_item product_image_item fn_sort_item">
                             <button type="button" class="fn_remove_image remove_image"></button>
                             <img src="" alt=""/>
-                            <input type=hidden name='images_urls[]' value="">
                         </li>
                     </ul>
                     {if $product_images|count > 4}
                         <div class="show_more_images fn_show_images">{$btr->product_images_all|escape}</div>
                     {/if}
                 </div>
+                {get_design_block block="product_images"}
             </div>
         </div>
 
@@ -255,6 +257,7 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="product_relations"}
             </div>
         </div>
     </div>
@@ -340,6 +343,14 @@
                                         </div>
                                         {/if}
                                     </div>
+
+                                    {$block = {get_design_block block="product_variant" vars=['variant' => $variant]}}
+                                    {if !empty($block)}
+                                        <div class="okay_list_row">
+                                            <div class="okay_list_boding variants_item_drag"></div>
+                                            {$block}
+                                        </div>
+                                    {/if}
                                 </div>
                             {/foreach}
                             <div class="okay_list_body_item variants_list_item fn_new_row_variant">
@@ -398,6 +409,15 @@
                                         </button>
                                     </div>
                                 </div>
+
+
+                                {$block = {get_design_block block="product_variant"}}
+                                {if !empty($block)}
+                                    <div class="okay_list_row">
+                                        <div class="okay_list_boding variants_item_drag"></div>
+                                        {$block}
+                                    </div>
+                                {/if}
                             </div>
                         </div>
                     </div>
@@ -429,7 +449,7 @@
                     <ul class="fn_droplist_wrap product_images_list clearfix sortable" data-image="special">
                         <li class="fn_dropzone dropzone_block">
                             <i class="fa fa-plus font-5xl" aria-hidden="true"></i>
-                            <input type="file" name="spec_dropped_images[]" multiple class="dropinput">
+                            <input type="file" name="" data-name="spec_dropped_images[]" multiple class="dropinput fn_template">
                         </li>
                         {if $special_images|count > 0}
                             {foreach $special_images as $special}
@@ -446,14 +466,13 @@
                                         </span>
                                         <input type="radio" name="special" value="{$special->filename|escape}" class="hidden" {if $product->special == $special->filename}checked{/if}>
                                     </i>
-                                    <input type="hidden" name="spec_images[]" value="{$special->id}" />
+                                    <input type="hidden" name="spec_images_ids[]" value="{$special->id}" />
                                 </li>
                             {/foreach}
                         {/if}
                         <li class="fn_new_spec_image_item product_image_item fn_sort_item">
                             <button type="button" class="fn_remove_image remove_image"></button>
                             <img src="" alt=""/>
-                            <input type="hidden" name='spec_images_urls[]' value="" />
                             <i class="move_zone fa fa-arrows font-2xl"></i>
                         </li>
                     </ul>
@@ -461,6 +480,7 @@
                         <div class="show_more_images fn_show_images">{$btr->product_images_all|escape}</div>
                     {/if}
                 </div>
+                {get_design_block block="product_promo_images"}
             </div>
         </div>
         {*Рейтинг*}
@@ -491,6 +511,7 @@
                         <input type="text" class="form-control" name="votes" value="{$product->votes}">
                     </div>
                 </div>
+                {get_design_block block="product_rationg"}
             </div>
         </div>
     </div>
@@ -607,6 +628,7 @@
                     </button>
                 </div>
             </div>
+            {get_design_block block="product_features"}
         </div>
         </div>
 
@@ -675,8 +697,8 @@
                         <input type=text name=related id="related_products" class="form-control" placeholder='{$btr->general_add_product|escape}'>
                     </div>
                 </div>
+                {get_design_block block="product_related_products"}
             </div>
-
         </div>
     </div>
 
@@ -718,9 +740,17 @@
                         <textarea name="meta_description" class="form-control okay_textarea fn_meta_field">{$product->meta_description|escape}</textarea>
                     </div>
                 </div>
+                {get_design_block block="product_meta_data"}
             </div>
         </div>
     </div>
+
+    {$block = {get_design_block block="product_custom_block"}}
+    {if !empty($block)}
+        <div class="boxed fn_toggle_wrap">
+            {$block}
+        </div>
+    {/if}
 
     {*Описание элемента*}
     <div class="row">
@@ -806,7 +836,8 @@
             });
 
             function handleFileSelect(evt){
-                dropInput = $(this).closest(".fn_droplist_wrap").find("input.dropinput:last").clone();
+                let dropInput = $(this).closest(".fn_droplist_wrap").find("input.dropinput.fn_template").clone();
+                dropInput.attr('name', dropInput.data('name')).removeClass('fn_template');
                 var parent = $(this).closest(".fn_droplist_wrap");
                 var files = evt.target.files; // FileList object
                 // Loop through the FileList and render image files as thumbnails.
@@ -829,9 +860,7 @@
                             clone_item.find("img").attr("src", e.target.result);
                             clone_item.find("input").val(theFile.name);
                             clone_item.appendTo(parent);
-                            temp_input =  dropInput.clone();
-                            parent.find("input.dropinput").hide();
-                            parent.find(".fn_dropzone").append(temp_input);
+                            parent.find(".fn_dropzone").append(dropInput);
                         };
                     })(f);
                     // Read in the image file as a data URL.

@@ -7,6 +7,7 @@ namespace Okay\Entities;
 use Okay\Core\Entity\Entity;
 use Okay\Core\Money;
 use Okay\Core\Translit;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class FeaturesValuesEntity extends Entity
 {
@@ -103,13 +104,18 @@ class FeaturesValuesEntity extends Entity
         $this->select->groupBy(['l.value']);
         $this->select->groupBy(['l.translit']);
 
-        if (isset($filter['visible']) || isset($filter['price'])) {
+        if (isset($filter['visible']) || isset($filter['in_stock']) || isset($filter['price'])) {
             $this->select->join('LEFT', '__products AS p', 'p.id=pf.product_id');
         }
         
         return parent::find($filter);
     }
 
+    protected function filter__in_stock()
+    {
+        $this->select->where("(SELECT count(*)>0 FROM __variants pv WHERE pv.product_id=p.id AND (pv.stock IS NULL OR pv.stock>0) LIMIT 1) = 1");
+    }
+    
     /*Удаление значения свойства*/
     public function delete($valuesIds = null)
     {
@@ -132,7 +138,8 @@ class FeaturesValuesEntity extends Entity
             ->groupBy(['value_id']);
         
         $this->db->query($select);
-        return $this->db->results(null, 'value_id');
+        $count = $this->db->results(null, 'value_id');
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $count, func_get_args());
     }
 
     protected function filter__product_id($productsIds)
@@ -272,7 +279,8 @@ class FeaturesValuesEntity extends Entity
         foreach ($this->db->results() as $res) {
             $result[$res->lang_id][$res->feature_id][$res->feature_value_id] = $res;
         }
-        return $result;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
     
     /*добавление значения свойства товара*/
@@ -294,10 +302,12 @@ class FeaturesValuesEntity extends Entity
                 'value_id' => $valueId,
             ])
             ->ignore();
+
         if ($this->db->query($insert)) {
-            return true;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
         }
-        return false;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
     }
 
     /*Метод возвращает ID всех значений свойств товаров*/
@@ -305,7 +315,7 @@ class FeaturesValuesEntity extends Entity
     {
 
         if (empty($productId)) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
         
         $select = $this->queryFactory->newSelect();
@@ -318,9 +328,11 @@ class FeaturesValuesEntity extends Entity
             ->bindValue('product_id', (array)$productId);
         
         if ($this->db->query($select)) {
-            return $this->db->results();
+            $results = $this->db->results();
+            return ExtenderFacade::execute([static::class, __FUNCTION__], $results, func_get_args());
         }
-        return false;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
     }
 
     /*удаление связки значения свойства и товара*/
@@ -333,7 +345,7 @@ class FeaturesValuesEntity extends Entity
 
         /*Удаляем только если передали хотябы один аргумент*/
         if (empty($productsIds) && empty($valuesIds) && empty($featuresIds)) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
         if (!empty($productsIds)) {
@@ -360,7 +372,7 @@ class FeaturesValuesEntity extends Entity
                                     ");
         $this->db->query($sql);
 
-        return true;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
 
 }

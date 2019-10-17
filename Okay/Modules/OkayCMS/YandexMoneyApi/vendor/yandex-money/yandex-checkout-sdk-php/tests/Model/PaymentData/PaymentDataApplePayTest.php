@@ -5,9 +5,7 @@ namespace Tests\YandexCheckout\Model\PaymentData;
 use YandexCheckout\Model\PaymentData\PaymentDataApplePay;
 use YandexCheckout\Model\PaymentMethodType;
 
-require_once __DIR__ . '/AbstractPaymentDataMobileTest.php';
-
-class PaymentDataApplePayTest extends AbstractPaymentDataMobileTest
+class PaymentDataApplePayTest extends AbstractPaymentDataApplePayTest
 {
     /**
      * @return PaymentDataApplePay

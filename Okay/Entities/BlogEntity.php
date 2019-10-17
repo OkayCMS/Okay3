@@ -6,6 +6,7 @@ namespace Okay\Entities;
 
 use Okay\Core\Entity\Entity;
 use Okay\Core\Image;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class BlogEntity extends Entity
 {
@@ -50,7 +51,7 @@ class BlogEntity extends Entity
     public function delete($ids)
     {
         if (empty($ids)) {
-            return false;
+            parent::delete($ids);
         }
         
         $ids = (array)$ids;
@@ -123,10 +124,10 @@ class BlogEntity extends Entity
         $nextId = $this->db->result('id');
         
         if($nextId) {
-            return $this->get((int)$nextId);
-        } else {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], $this->get((int) $nextId), func_get_args());
         }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
     }
 
     /*Выбираем предыдущую запись от текущей*/
@@ -162,11 +163,10 @@ class BlogEntity extends Entity
         $nextId = $this->db->result('id');
 
         if($nextId) {
-            return $this->get((int)$nextId);
-        } else {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], $this->get((int) $nextId), func_get_args());
         }
-        
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
     }
 
     public function getRelatedProducts($filter = [])
@@ -191,7 +191,9 @@ class BlogEntity extends Entity
         }
         
         $this->db->query($select);
-        return $this->db->results();
+
+        $results = $this->db->results();
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $results, func_get_args());
     }
 
     public function addRelatedProduct($postId, $relatedId, $position = 0)

@@ -10,14 +10,14 @@ use Okay\Core\QueryFactory;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\ProductsEntity;
-use Okay\Logic\ProductsLogic;
+use Okay\Helpers\ProductsHelper;
 
 class RozetkaController extends AbstractController
 {
     
     public function render(
         ProductsEntity $productsEntity,
-        ProductsLogic $productsLogic,
+        ProductsHelper $productsHelper,
         CategoriesEntity $categoriesEntity,
         BrandsEntity $brandsEntity,
         Database $db,
@@ -60,9 +60,9 @@ class RozetkaController extends AbstractController
             ->find($filter);
 
         if (!empty($products)) {
-            $products = $productsLogic->attachVariants($products, $filter);
-            $products = $productsLogic->attachImages($products);
-            $products = $productsLogic->attachFeatures($products, ['feed'=>1]);
+            $products = $productsHelper->attachVariants($products, $filter);
+            $products = $productsHelper->attachImages($products);
+            $products = $productsHelper->attachFeatures($products, ['feed'=>1]);
             
             $this->design->assign('products', $products);
             

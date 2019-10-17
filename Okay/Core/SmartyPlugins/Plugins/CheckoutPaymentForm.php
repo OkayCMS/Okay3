@@ -7,7 +7,7 @@ namespace Okay\Core\SmartyPlugins\Plugins;
 use Okay\Core\Design;
 use Okay\Core\Modules\Module;
 use Okay\Core\Modules\Modules;
-use Okay\Core\Modules\Payments\PaymentFormInterface;
+use Okay\Core\Modules\Interfaces\PaymentFormInterface;
 use Okay\Core\ServiceLocator;
 use Okay\Core\SmartyPlugins\Func;
 

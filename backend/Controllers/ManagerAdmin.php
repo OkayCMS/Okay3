@@ -74,7 +74,7 @@ class ManagerAdmin extends IndexAdmin
             }
         }
 
-        $btr = $this->design->get_var('btr');
+        $btr = $this->design->getVar('btr');
         $permission = $managerMenu->getPermissionMenu($btr);
 
         $btrLanguages = [];

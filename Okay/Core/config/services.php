@@ -18,19 +18,18 @@ use Mobile_Detect;
 use Aura\SqlQuery\QueryFactory as AuraQueryFactory;
 use Aura\Sql\ExtendedPdo;
 use Okay\Core\Import as ImportCore;
-use Okay\Logic\FeaturesLogic;
 use PHPMailer\PHPMailer\PHPMailer;
-use Okay\Logic\ProductsLogic;
-use Okay\Logic\CatalogLogic;
-use Okay\Logic\OrdersLogic;
-use Okay\Logic\FilterLogic;
-use Okay\Logic\MoneyLogic;
+use Okay\Helpers\ProductsHelper;
+use Okay\Helpers\MoneyHelper;
 use Okay\Core\Modules\Module;
 use Okay\Core\Modules\Modules;
 use Okay\Core\Modules\Installer;
 use Okay\Core\Modules\SqlPresentor;
 use Okay\Core\Modules\EntityMigrator;
 use Okay\Core\Modules\UpdateObject;
+use Okay\Core\Modules\Extender\ChainExtender;
+use Okay\Core\Modules\Extender\QueueExtender;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 $services = [
     BRouter::class => [
@@ -194,7 +193,7 @@ $services = [
             new SR(EntityFactory::class),
             new SR(Design::class),
             new SR(TemplateConfig::class),
-            new SR(\Okay\Logic\OrdersLogic::class),
+            new SR(\Okay\Helpers\OrdersHelper::class),
             new SR(BackendTranslations::class),
             new SR(PHPMailer::class),
             new SR(LoggerInterface::class),
@@ -257,6 +256,18 @@ $services = [
     ],
     BackendTranslations::class => [
         'class' => BackendTranslations::class,
+        'arguments' => [
+            new SR(LoggerInterface::class)
+        ],
+    ],
+    FrontTranslations::class => [
+        'class' => FrontTranslations::class,
+        'arguments' => [
+            new SR(EntityFactory::class),
+            new SR(Languages::class),
+            new SR(Modules::class),
+            new PR('design.debug_translation'),
+        ],
     ],
     JsSocial::class => [
         'class' => JsSocial::class,
@@ -277,8 +288,8 @@ $services = [
         'arguments' => [
             new SR(EntityFactory::class),
             new SR(Settings::class),
-            new SR(ProductsLogic::class),
-            new SR(\Okay\Logic\MoneyLogic::class),
+            new SR(ProductsHelper::class),
+            new SR(\Okay\Helpers\MoneyHelper::class),
         ],
     ],
     Comparison::class => [
@@ -293,7 +304,7 @@ $services = [
         'arguments' => [
             new SR(EntityFactory::class),
             new SR(Settings::class),
-            new SR(MoneyLogic::class),
+            new SR(MoneyHelper::class),
         ],
     ],
     ModulesEntitiesFilters::class => [
@@ -310,6 +321,7 @@ $services = [
             new SR(Module::class),
             new SR(QueryFactory::class),
             new SR(Database::class),
+            new SR(Config::class),
         ],
     ],
     Installer::class => [
@@ -341,60 +353,29 @@ $services = [
     UpdateObject::class => [
         'class' => UpdateObject::class,
     ],
-
-    //> Logic classes
-    ProductsLogic::class => [
-        'class' => ProductsLogic::class,
+    QueueExtender::class => [
+        'class' => QueueExtender::class
+    ],
+    ChainExtender::class => [
+        'class' => ChainExtender::class
+    ],
+    ExtenderFacade::class => [
+        'class' => ExtenderFacade::class,
         'arguments' => [
-            new SR(EntityFactory::class),
-            new SR(MoneyLogic::class),
+            new SR(QueueExtender::class),
+            new SR(ChainExtender::class),
         ],
     ],
-    CatalogLogic::class => [
-        'class' => CatalogLogic::class,
+    DesignBlocks::class => [
+        'class' => DesignBlocks::class,
         'arguments' => [
-            new SR(EntityFactory::class),
-            new SR(Money::class)
-        ],
-    ],
-    OrdersLogic::class => [
-        'class' => OrdersLogic::class,
-        'arguments' => [
-            new SR(EntityFactory::class),
-            new SR(ProductsLogic::class),
-            new SR(\Okay\Logic\MoneyLogic::class),
-        ],
-    ],
-    FilterLogic::class => [
-        'class' => FilterLogic::class,
-        'arguments' => [
-            new SR(EntityFactory::class),
-            new SR(Settings::class),
-            new SR(Languages::class),
-            new SR(Request::class),
-            new SR(Router::class),
             new SR(Design::class),
         ],
     ],
-    MoneyLogic::class => [
-        'class' => MoneyLogic::class,
-        'arguments' => [
-            new SR(EntityFactory::class),
-        ],
-    ],
-    FeaturesLogic::class => [
-        'class' => FeaturesLogic::class,
-        'arguments' => [
-            new SR(Database::class),
-            new SR(Import::class),
-            new SR(Translit::class),
-            new SR(EntityFactory::class),
-            new SR(QueryFactory::class),
-        ]
-    ],
-    //> Logic
 ];
 
 $adapters = include __DIR__ . '/../Adapters/adapters.php';
+$requestContainers = include __DIR__ . '/requests.php';
+$helpers           = include __DIR__ . '/helpers.php';
 
-return array_merge($services, $adapters);
+return array_merge($services, $adapters, $requestContainers, $helpers);

@@ -67,15 +67,6 @@
                                                 </div>
                                                 {/if}
                                             </div>
-
-                                            {if $is_mobile == false}
-                                            <div class="okay_list_boding okay_list_order_stg_sts_status">
-                                                <select name="is_close[{$order_status->id}]" class="selectpicker col-xs-12 px-0">
-                                                    <option value="1" {if $order_status->is_close == 1}selected=""{/if} >{$btr->order_yes|escape}</option>
-                                                    <option value="0" {if $order_status->is_close == 0}selected=""{/if} >{$btr->order_no|escape}</option>
-                                                </select>
-                                            </div>
-                                            {/if}
                                             <div class="okay_list_boding okay_list_order_stg_sts_label">
                                                 <input  name="color[{$order_status->id}]" value="{$order_status->color}" class="hidden">
                                                 <span data-hint="#{$order_status->color}" class="fn_color label_color_item hint-bottom-middle-t-info-s-small-mobile  hint-anim" style="background-color:#{$order_status->color};"></span>
@@ -108,15 +99,7 @@
                                                 </div>
                                             {/if}
                                         </div>
-                                        {if $is_mobile == false}
-                                            <div class="okay_list_boding okay_list_order_stg_sts_status">
-                                                <select name="new_is_close[]" class="selectpicker">
-                                                    <option value="1">{$btr->order_settings_reduse_products|escape}</option>
-                                                    <option value="0">{$btr->order_settings_not_reduse_products|escape}</option>
-                                                </select>
-                                            </div>
-                                        {/if}
-                                        <div class="okay_list_boding okay_list_order_stg_sts_label">
+                                         <div class="okay_list_boding okay_list_order_stg_sts_label">
                                             <input name="new_color[]" value="" class="hidden">
                                             <span data-hint="{$btr->order_settings_select_colour|escape}" class="fn_color label_color_item hint-bottom-middle-t-info-s-small-mobile  hint-anim"></span>
                                         </div>

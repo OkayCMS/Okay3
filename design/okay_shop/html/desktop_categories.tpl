@@ -8,7 +8,7 @@
                             <li class="categories_menu__item has_child">
                                 <a class="categories_menu__link{if $category->id == $c->id} selected{/if}" href="{url_generator route="category" url=$c->url}" data-category="{$c->id}">
                                     {if $c->image}
-                                        {if $level == 1 || $level == 2}
+                                        {if $level == 1 }
                                             <span class="categories_menu__icon lazy" data-bg="url({$c->image|resize:22:22:false:$config->resized_categories_dir})" ></span>
                                         {/if}
                                     {/if}
@@ -20,17 +20,17 @@
                         {else}
                             <li class="categories_menu__item">
                                 <a class="categories_menu__link{if $category->id == $c->id} selected{/if}" href="{url_generator route='category' url=$c->url}" data-category="{$c->id}">
-                                    {if $level >= 3}
+                                    {if $level == 3}
                                         <div class="categories_menu__image">
                                             {if $c->image}
-                                                <img class="lazy" data-src="{$c->image|resize:90:90:false:$config->resized_categories_dir}" alt="{$c->name|escape}" srcset="{$c->image|resize:90:90:false:$config->resized_categories_dir:null:null:true}"/>
+                                                <img class="lazy" data-src="{$c->image|resize:65:65:false:$config->resized_categories_dir}" alt="{$c->name|escape}" srcset="{$c->image|resize:90:90:false:$config->resized_categories_dir:null:null:true}"/>
                                             {else}
                                                 <div class="categories__no_image d-flex align-items-center justify-content-center" title="{$c->name|escape}">
                                                     {include file="svg.tpl" svgId="no_image"}
                                                 </div>
                                             {/if}
                                         </div>
-                                    {else}
+                                    {else if $level == 1}
                                         {if $c->image}
                                             <span class="categories_menu__icon lazy" data-bg="url({$c->image|resize:22:22:false:$config->resized_categories_dir})"></span>
                                         {/if}

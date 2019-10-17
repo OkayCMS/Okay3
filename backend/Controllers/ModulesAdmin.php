@@ -43,6 +43,8 @@ class ModulesAdmin extends IndexAdmin
                     }
                 }
             }
+
+            $this->response->redirectTo($this->request->getCurrentUrl());
         }
 
         $modules = array_merge($modulesEntity->findNotInstalled(), $modulesEntity->find());

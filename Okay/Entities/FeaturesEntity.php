@@ -6,6 +6,7 @@ namespace Okay\Entities;
 
 use Okay\Core\Entity\Entity;
 use Okay\Core\Translit;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class FeaturesEntity extends Entity
 {
@@ -107,7 +108,7 @@ class FeaturesEntity extends Entity
     public function delete($ids)
     {
         if (empty($ids)) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
         $ids = (array)$ids;
         
@@ -166,7 +167,9 @@ class FeaturesEntity extends Entity
             ->bindValue('feature_id', (int)$featureId);
         
         $this->db->query($select);
-        return $this->db->results('category_id');
+        $results = $this->db->results('category_id');
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $results, func_get_args());
     }
     
     /**
@@ -185,6 +188,7 @@ class FeaturesEntity extends Entity
             ->ignore();
         
         $this->db->query($insert);
+        return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
 
     /**
@@ -192,6 +196,7 @@ class FeaturesEntity extends Entity
      * @var array $categoriesIds
      * Обновление связки категории и свойства
      * @throws \Exception
+     * @return
      */
     public function updateFeatureCategories($featureId, array $categoriesIds)
     {
@@ -295,6 +300,8 @@ class FeaturesEntity extends Entity
             $sql->bindValue('feature_id', $featureId);
             $this->db->query($sql);
         }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
 
     public function checkAutoId($featureId, $autoId, $field = "auto_name_id")

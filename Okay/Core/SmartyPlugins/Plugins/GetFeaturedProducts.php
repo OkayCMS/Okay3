@@ -6,7 +6,7 @@ namespace Okay\Core\SmartyPlugins\Plugins;
 
 use Okay\Core\EntityFactory;
 use Okay\Entities\ProductsEntity;
-use Okay\Logic\ProductsLogic;
+use Okay\Helpers\ProductsHelper;
 use Okay\Core\SmartyPlugins\Func;
 
 class GetFeaturedProducts extends Func
@@ -22,13 +22,13 @@ class GetFeaturedProducts extends Func
     /**
      * @var Products
      */
-    private $productsLogic;
+    private $productsHelper;
 
     
-    public function __construct(EntityFactory $entityFactory, ProductsLogic $productsLogic)
+    public function __construct(EntityFactory $entityFactory, ProductsHelper $productsHelper)
     {
         $this->productsEntity = $entityFactory->get(ProductsEntity::class);
-        $this->productsLogic = $productsLogic;
+        $this->productsHelper = $productsHelper;
     }
 
     public function run($params, \Smarty_Internal_Template $smarty)
@@ -36,10 +36,9 @@ class GetFeaturedProducts extends Func
         if (!isset($params['visible'])) {
             $params['visible'] = 1;
         }
-        $params['in_stock'] = 1;
         $params['featured'] = 1;
         if (!empty($params['var'])) {
-            $products = $this->productsLogic->getProductList($params);
+            $products = $this->productsHelper->getProductList($params);
             $smarty->assign($params['var'], $products);
         }
     }

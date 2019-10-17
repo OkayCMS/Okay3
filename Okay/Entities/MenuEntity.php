@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class MenuEntity extends Entity
 {
@@ -42,14 +43,15 @@ class MenuEntity extends Entity
     public function get($id)
     {
         if (empty($id)) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
         $menu = parent::get($id);
         if (!empty($menu)) {
             $menu->var = '{$'.self::MENU_VAR_PREFIX.$menu->group_id."}";
         }
-        return $menu;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $menu, func_get_args());
     }
 
     public function delete($ids)

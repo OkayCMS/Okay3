@@ -11,7 +11,7 @@ use Okay\Entities\BrandsEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\FeaturesEntity;
-use Okay\Logic\ProductsLogic;
+use Okay\Helpers\ProductsHelper;
 use Okay\Modules\OkayCMS\YandexXML\Init\Init;
 
 class YandexXmlAdmin extends IndexAdmin
@@ -21,7 +21,7 @@ class YandexXmlAdmin extends IndexAdmin
         CategoriesEntity $categoriesEntity,
         BrandsEntity $brandsEntity,
         ProductsEntity $productsEntity,
-        ProductsLogic $productsLogic,
+        ProductsHelper $productsHelper,
         QueryFactory $queryFactory,
         Database $database,
         FeaturesEntity $featuresEntity
@@ -94,8 +94,8 @@ class YandexXmlAdmin extends IndexAdmin
 
         $allCategories       = $categoriesEntity->getCategoriesTree();
         $allBrands           = $brandsEntity->find(['limit' => $brandsEntity->count()]);
-        $relatedProducts     = $productsLogic->getProductList([Init::TO_FEED_FIELD => 1]);
-        $notRelatedProducts  = $productsLogic->getProductList([Init::NOT_TO_FEED_FIELD => 1]);
+        $relatedProducts     = $productsHelper->getProductList([Init::TO_FEED_FIELD => 1]);
+        $notRelatedProducts  = $productsHelper->getProductList([Init::NOT_TO_FEED_FIELD => 1]);
         $allFeatures         = $featuresEntity->find();
 
         $this->design->assign('categories', $allCategories);

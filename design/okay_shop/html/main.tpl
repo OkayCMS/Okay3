@@ -3,7 +3,7 @@
 {$canonical="{url_generator route="main" absolute=1}" scope=global}
 
 {* Featured products *}
-{get_featured_products var=featured_products limit=6}
+{get_featured_products var=featured_products limit=5}
 {if $featured_products}
     <div class="main-products main-products__featured container">
         <div class="block block--boxed block--border">
@@ -27,7 +27,6 @@
                     {/foreach}
                 </div>
             </div>
-            <div class="scrollbar"><div class="handle"><div class="mousearea"></div></div></div>
         </div>
     </div>
 {/if}
@@ -56,7 +55,7 @@
 {/if}
 
 {* Discount products *}
-{get_discounted_products var=discounted_products limit=6}
+{get_discounted_products var=discounted_products limit=5}
 {if $discounted_products}
     <div class="main-products main-products__new container">
         <div class="block block--boxed block--border">
@@ -80,7 +79,6 @@
                     {/foreach}
                 </div>
             </div>
-            <div class="scrollbar"><div class="handle"><div class="mousearea"></div></div></div>
         </div>
     </div>
 {/if}
@@ -99,7 +97,7 @@
                                 </h1>
                             </div>
                             <div class="block__body">
-                                <div class="fn_reedmore">
+                                <div class="fn_readmore">
                                     <div class="page-description__text boxed__description">{$page->description}</div>
                                 </div>
                             </div>
@@ -111,7 +109,7 @@
                     <div class="col-lg-5 col-xl-4">
                         <div class="block__header block__header--promo">
                             <div class="block__title">
-                                <span data-language="main_recommended_products">Бренды</span>
+                                <span data-language="main_brands">{$lang->main_brands}</span>
                             </div>
                             <div class="block__header_button">
                                 <a class="block__more d-flex align-items-center" href="{url_generator route="brands"}">

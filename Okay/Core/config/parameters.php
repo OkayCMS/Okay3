@@ -86,5 +86,6 @@ return [
         'smarty_compile_check'  => '{$smarty_compile_check}',
         'smarty_security'       => '{$smarty_security}',
         'smarty_cache_lifetime' => '{$smarty_cache_lifetime}',
+        'debug_translation'     => '{$debug_translation}',
     ],
 ];

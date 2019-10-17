@@ -1,10 +1,8 @@
 <?php
 
-namespace Common\Exceptions;
+namespace Tests\YandexCheckout\Common\Exceptions;
 
 use YandexCheckout\Common\Exceptions\ForbiddenException;
-
-require_once __DIR__ . '/AbstractApiRequestExceptionTest.php';
 
 class ForbiddenExceptionTest extends AbstractApiRequestExceptionTest
 {

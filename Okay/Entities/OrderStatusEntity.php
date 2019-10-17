@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class OrderStatusEntity extends Entity
 {
@@ -32,18 +33,21 @@ class OrderStatusEntity extends Entity
     
     public function delete($ids)
     {
-        $ids = (array)$ids;
-        if (!empty($ids)) {
-            
-            /** @var OrdersEntity $ordersEntity */
-            $ordersEntity = $this->entity->get(OrdersEntity::class);
-            $checkCnt = $ordersEntity->count(['status_id'=>$ids]);
+        $ids = (array) $ids;
 
-            if ($checkCnt == 0) {
-                return parent::delete($ids);
-            }
+        if (empty($ids)) {
+            return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
         }
-        return false;
+            
+        /** @var OrdersEntity $ordersEntity */
+        $ordersEntity = $this->entity->get(OrdersEntity::class);
+        $checkCnt = $ordersEntity->count(['status_id'=>$ids]);
+
+        if ($checkCnt == 0) {
+            return parent::delete($ids);
+        }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
 
 }

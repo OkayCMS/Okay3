@@ -52,7 +52,7 @@
                         {/foreach}
                     </div>
                     {else}
-                        <a href="{$product->image->filename|resize:1200:1000}" class="hidden">
+                        <a href="{$product->image->filename|resize:1200:1000:w}" class="hidden">
                             <img class="xzoom-gallery4" xpreview="{$product->image->filename|resize:800:550}" alt="{$product->name|escape}"/>
                         </a>
                     {/if}
@@ -77,12 +77,12 @@
                                 </span>
                                 {*Вывод количества голосов данного товара, скрыт ради микроразметки*}
                                 {if $product->rating > 0}
-                                <span class="rating_text hidden" itemprop="reviewCount">{$product->votes|string_format:"%.0f"}</span>
-                                <span class="rating_text hidden" itemprop="ratingValue">({$product->rating|string_format:"%.1f"})</span>
+                                <span class="rating_text hidden-xs-up" itemprop="reviewCount">{$product->votes|string_format:"%.0f"}</span>
+                                <span class="rating_text hidden-xs-up" itemprop="ratingValue">({$product->rating|string_format:"%.1f"})</span>
                                 {*Вывод лучшей оценки товара для микроразметки*}
-                                <span class="rating_text hidden" itemprop="bestRating" style="display:none;">5</span>
+                                <span class="rating_text hidden-xs-up" itemprop="bestRating" style="display:none;">5</span>
                                 {else}
-                                <span class="rating_text hidden">({$product->rating|string_format:"%.1f"})</span>
+                                <span class="rating_text hidden-xs-up">({$product->rating|string_format:"%.1f"})</span>
                                 {/if}
                             </div>
                         </div>
@@ -157,7 +157,7 @@
                             <div class="details_boxed__price_amount">
                                 <div class="details_boxed__prices">
                                     {* Old price *}
-                                    <div class="details_boxed__old_price {if !$product->variant->compare_price} hidden{/if}">
+                                    <div class="details_boxed__old_price {if !$product->variant->compare_price} hidden-xs-up{/if}">
                                         <span class="fn_old_price">{$product->variant->compare_price|convert}</span>
                                         <span class="currency">{$currency->sign|escape}</span>
                                     </div>
@@ -167,7 +167,7 @@
                                         <span class="currency" itemprop="priceCurrency" content="{$currency->code|escape}">{$currency->sign|escape}</span>
                                     </div>
 
-                                    <div class="fn_discount_label details_boxed_pct{if $product->variant->price>0 && $product->variant->compare_price>0 && $product->variant->compare_price>$product->variant->price}{else} hidden{/if}">
+                                    <div class="fn_discount_label details_boxed_pct{if $product->variant->price>0 && $product->variant->compare_price>0 && $product->variant->compare_price>$product->variant->price}{else} hidden-xs-up{/if}">
                                         {if $product->variant->price>0 && $product->variant->compare_price>0 && $product->variant->compare_price>$product->variant->price}
                                         {round((($product->variant->price-$product->variant->compare_price)/$product->variant->compare_price)*100, 2)}&nbsp;%
                                         {/if}
@@ -206,26 +206,30 @@
                                 <div class="fn_is_stock {if $product->variant->stock < 1} hidden{/if}">
                                     <button class=" product-page__button button--blick" type="submit" data-language="product_add_cart">{$lang->product_add_cart}</button>
                                 </div>
-                                <div class="details_boxed__other">
+
+                                 <div class="details_boxed__other">
+
+                                     {fast_order_btn product=$product}
+
                                     {* Wishlist *}
                                     {if is_array($wishlist->ids) && in_array($product->id, $wishlist->ids)}
                                         <a href="#" data-id="{$product->id}" class="fn_wishlist product-page__wishlist selected" title="{$lang->product_remove_favorite}" data-result-text="{$lang->product_add_favorite}" data-language="product_remove_favorite">
-                                            {include file="svg.tpl" svgId="wishlist_icon"}
+                                            <i class="icon icon-favorite-border"></i>
                                         </a>
                                     {else}
                                         <a href="#" data-id="{$product->id}" class="fn_wishlist product-page__wishlist" title="{$lang->product_add_favorite}" data-result-text="{$lang->product_remove_favorite}" data-language="product_add_favorite">
-                                            {include file="svg.tpl" svgId="wishlist_icon"}
+                                            <i class="icon icon-favorite-border"></i>
                                         </a>
                                     {/if}
 
                                     {* Comparison *}
                                     {if is_array($comparison->ids) && in_array($product->id, $comparison->ids)}
                                         <a class="fn_comparison product-page__compare selected" href="#" data-id="{$product->id}" title="{$lang->product_remove_comparison}" data-result-text="{$lang->product_add_comparison}" data-language="product_remove_comparison">
-                                            {include file="svg.tpl" svgId="compare_icon"}
+                                            <i class="icon icon-balance-scale"></i>
                                         </a>
                                     {else}
                                         <a class="fn_comparison product-page__compare" href="#" data-id="{$product->id}" title="{$lang->product_add_comparison}" data-result-text="{$lang->product_remove_comparison}" data-language="product_add_comparison">
-                                            {include file="svg.tpl" svgId="compare_icon"}
+                                            <i class="icon icon-balance-scale"></i>
                                         </a>
                                     {/if}
                                 </div>
@@ -250,7 +254,6 @@
                         <div class="accordion__item visible">
                             <div class="accordion__title active">
                                 <div class="accordion__header">
-                                    <i class="mdi mdi-truck-fast"></i>
                                     <span data-language="product_delivery">{$lang->product_delivery}</span>
                                 </div>
                             </div>
@@ -264,7 +267,6 @@
                         <div class="accordion__item">
                             <div class="accordion__title">
                                 <div class="accordion__header">
-                                    {include file="svg.tpl" svgId="money_icon"}
                                     <span data-language="product_payment">{$lang->product_payment}</span>
                                 </div>
                             </div>
@@ -285,20 +287,17 @@
             <div class="tabs__navigation hidden-sm-down">
                 {if $product->description}
                 <a class="tabs__link" href="#description">
-                    <i class="mdi mdi-tooltip-text-outline"></i>
                     <span data-language="product_description">{$lang->product_description}</span>
                 </a>
                 {/if}
 
                 {if $product->features}
                 <a class="tabs__link" href="#features">
-                    <i class="mdi mdi-clipboard-text-outline"></i>
                     <span data-language="product_features">{$lang->product_features}</span>
                 </a>
                 {/if}
 
                 <a id="fn_tab_comments" class="tabs__link" href="#comments" >
-                    <i class="mdi mdi-comment-text-outline"></i>
                     <span data-language="product_comments">{$lang->product_comments}</span>
                 </a>
             </div>

@@ -4,8 +4,9 @@
 namespace Okay\Entities;
 
 
-use Okay\Core\Entity\Entity;
 use Okay\Core\Image;
+use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class PaymentsEntity extends Entity
 {
@@ -88,7 +89,8 @@ class PaymentsEntity extends Entity
         if (!empty($result)) {
             $settings = unserialize($result);
         }
-        return $settings;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $settings, func_get_args());
     }
 
     /*Обновление настроек способа оплаты*/
@@ -101,7 +103,8 @@ class PaymentsEntity extends Entity
             ->where('id=:id')
             ->bindValue('id', (int)$methodId);
         $this->db->query($update);
-        return $methodId;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $methodId, func_get_args());
     }
 
     /*Выборка доступных способов оплаты для данного способа доставки*/
@@ -114,7 +117,8 @@ class PaymentsEntity extends Entity
             ->bindValue('payment_method_id', $paymentId);
 
         $this->db->query($select);
-        return $this->db->results('delivery_id');
+        $result = $this->db->results('delivery_id');
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
 
     /*Обновление способов оплаты у данного способа доставки*/
@@ -138,6 +142,8 @@ class PaymentsEntity extends Entity
                 $this->db->query($insert);
             }
         }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
     
 }

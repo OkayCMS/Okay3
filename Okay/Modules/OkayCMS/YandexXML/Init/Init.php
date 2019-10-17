@@ -20,25 +20,30 @@ class Init extends AbstractInit
     {
         $this->setModuleType(MODULE_TYPE_XML);
         $this->setBackendMainController('YandexXmlAdmin');
+
+        $field = new EntityField(self::TO_FEED_FIELD);
+        $field->setTypeTinyInt(1);
+        $this->migrateEntityField(CategoriesEntity::class, $field);
+
+        $field = new EntityField(self::TO_FEED_FIELD);
+        $field->setTypeTinyInt(1);
+        $this->migrateEntityField(BrandsEntity::class, $field);
+
+        $field = new EntityField(self::TO_FEED_FIELD);
+        $field->setTypeTinyInt(1);
+        $this->migrateEntityField(ProductsEntity::class, $field);
+
+        $field = new EntityField(self::NOT_TO_FEED_FIELD);
+        $field->setTypeTinyInt(1);
+        $this->migrateEntityField(ProductsEntity::class, $field);
     }
     
     public function init()
     {
-        $field = new EntityField(self::TO_FEED_FIELD);
-        $field->setTypeTinyInt(1);
-        $this->registerEntityField(CategoriesEntity::class, $field);
-        
-        $field = new EntityField(self::TO_FEED_FIELD);
-        $field->setTypeTinyInt(1);
-        $this->registerEntityField(BrandsEntity::class, $field);
-        
-        $field = new EntityField(self::TO_FEED_FIELD);
-        $field->setTypeTinyInt(1);
-        $this->registerEntityField(ProductsEntity::class, $field);
-        
-        $field = new EntityField(self::NOT_TO_FEED_FIELD);
-        $field->setTypeTinyInt(1);
-        $this->registerEntityField(ProductsEntity::class, $field);
+        $this->registerEntityField(CategoriesEntity::class, self::TO_FEED_FIELD);
+        $this->registerEntityField(BrandsEntity::class, self::TO_FEED_FIELD);
+        $this->registerEntityField(ProductsEntity::class, self::TO_FEED_FIELD);
+        $this->registerEntityField(ProductsEntity::class, self::NOT_TO_FEED_FIELD);
         
         $this->registerBackendController('YandexXmlAdmin');
         $this->addBackendControllerPermission('YandexXmlAdmin', self::FEED_UPLOAD_FIELD);
@@ -49,7 +54,8 @@ class Init extends AbstractInit
             \Okay\Modules\OkayCMS\YandexXML\ExtendsEntities\ProductsEntity::class,
             'okaycms__yandex_xml__only'
         );
-        
+
+        $this->addBackendBlock('products_icon', 'svg_feed.tpl');
     }
     
 }

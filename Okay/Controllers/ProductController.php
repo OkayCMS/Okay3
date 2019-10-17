@@ -12,7 +12,7 @@ use Okay\Entities\ProductsEntity;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\BlogEntity;
-use Okay\Logic\ProductsLogic;
+use Okay\Helpers\ProductsHelper;
 
 class ProductController extends AbstractController
 {
@@ -22,7 +22,7 @@ class ProductController extends AbstractController
         ProductsEntity $productsEntity,
         BrandsEntity $brandsEntity,
         CategoriesEntity $categoriesEntity,
-        ProductsLogic $productsLogic,
+        ProductsHelper $productsHelper,
         Money $moneyCore,
         CommentsEntity $commentsEntity,
         BlogEntity $blogEntity,
@@ -44,7 +44,7 @@ class ProductController extends AbstractController
         //lastModify
         $this->response->setHeaderLastModify($product->last_modify);
 
-        $product = $productsLogic->attachProductData($product);
+        $product = $productsHelper->attachProductData($product);
         
         // Вариант по умолчанию
         if (($vId = $this->request->get('variant', 'integer'))>0 && isset($product->variants[$vId])) {
@@ -95,7 +95,7 @@ class ProductController extends AbstractController
                 $notify->emailCommentAdmin($commentId);
 
                 $this->response->redirectTo($_SERVER['REQUEST_URI'].'#comment_'.$commentId);
-                return;
+                return null;
             }
         }
         
@@ -112,9 +112,8 @@ class ProductController extends AbstractController
                 'id' => $relatedIds,
                 'limit' => count($relatedIds),
                 'visible' => 1,
-                'in_stock' => 1,
             ];
-            foreach ($productsLogic->getProductList($relatedFilter) as $p) {
+            foreach ($productsHelper->getProductList($relatedFilter) as $p) {
                 $relatedProducts[$p->id] = $p;
             }
             foreach ($relatedProducts as $id=>$r) {
@@ -176,11 +175,11 @@ class ProductController extends AbstractController
             $this->design->assign('prev_product', $neighborsProducts['prev']);
         }
         
-        $productsLogic->setBrowsedProduct($product->id);
+        $productsHelper->setBrowsedProduct($product->id);
 
         $defaultProductsSeoPattern = (object)$this->settings->default_products_seo_pattern;
         $parts = [
-            '{$brand}'    => ($this->design->get_var('brand') ? $this->design->get_var('brand')->name : ''),
+            '{$brand}'    => ($this->design->getVar('brand') ? $this->design->getVar('brand')->name : ''),
             '{$product}'  => ($product->name ? $product->name : ''),
             '{$price}'    => ($product->variant->price != null ? $moneyCore->convert($product->variant->price, $this->currency->id, false).' '.$this->currency->sign : ''),
             '{$sitename}' => ($this->settings->site_name ? $this->settings->site_name : '')
@@ -271,10 +270,10 @@ class ProductController extends AbstractController
         $this->design->assign('meta_keywords', $autoMetaKeywords);
         $this->design->assign('meta_description', $autoMetaDescription);
 
-        $this->response->setContent($this->design->fetch('product.tpl'));
+        $this->response->setContent('product.tpl');
     }
     
-    public function rating(Products $productsEntity)
+    public function rating(ProductsEntity $productsEntity)
     {
         if (isset($_POST['id']) && is_numeric($_POST['rating'])) {
             $productId = intval(str_replace('product_', '', $_POST['id']));
@@ -294,15 +293,15 @@ class ProductController extends AbstractController
                     $productsEntity->update($productId, ['rating'=>$rate, 'votes' => ($product->votes + 1)]);
                     
                     $_SESSION['rating_ids'][] = $productId;
-                    $this->response->setContent(json_encode($rate), 'json');
+                    $this->response->setContent(json_encode($rate), RESPONSE_JSON);
                 } else {
-                    $this->response->setContent(json_encode(-1), 'json');
+                    $this->response->setContent(json_encode(-1), RESPONSE_JSON);
                 }
             } else {
-                $this->response->setContent(json_encode(0), 'json');
+                $this->response->setContent(json_encode(0), RESPONSE_JSON);
             }
         } else {
-            $this->response->setContent(json_encode(-1), 'json');
+            $this->response->setContent(json_encode(-1), RESPONSE_JSON);
         }
     }
 }

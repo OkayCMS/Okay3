@@ -20,13 +20,22 @@ interface EntityInterface
      * Поиск сущностей в соответствии с фильтром
      */
     public function find(array $filter = []);
+    
+    /**
+     * @param array $filter
+     * @return object|false
+     * Поиск одной сущности в соответствии с фильтром.
+     * Метод возвращает один кортеж данных
+     */
+    public function findOne(array $filter = []);
 
     /**
      * @param string $order
+     * @param array $additionalData кастомный массив данных, который может понадобиться в методе
      * @return self
      * 
      */
-    public function order($order);
+    public function order($order, array $additionalData = []);
 
     /**
      * @param array $cols

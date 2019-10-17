@@ -7,6 +7,7 @@ namespace Okay\Entities;
 use Aura\SqlQuery\Exception;
 use Okay\Core\Entity\Entity;
 use Okay\Core\Image;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class CategoriesEntity extends Entity
 {
@@ -63,7 +64,8 @@ class CategoriesEntity extends Entity
         if (empty($this->categoriesTree)) {
             $this->initCategories();
         }
-        return $this->categoriesTree;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->categoriesTree, func_get_args());
     }
 
     public function get($id)
@@ -73,18 +75,19 @@ class CategoriesEntity extends Entity
         }
 
         if (is_int($id) && array_key_exists(intval($id), $this->allCategories)) {
-            return $category = $this->allCategories[intval($id)];
+            $category = $this->allCategories[intval($id)];
+            return ExtenderFacade::execute([static::class, __FUNCTION__], $category, func_get_args());
         }
 
         if(is_string($id)) {
             foreach ($this->allCategories as $category) {
                 if ($category->url == $id) {
-                    return $this->get((int)$category->id);
+                    return ExtenderFacade::execute([static::class, __FUNCTION__], $this->get((int)$category->id), func_get_args());
                 }
             }
         }
 
-        return false;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
     }
     
     public function add($category)
@@ -110,7 +113,7 @@ class CategoriesEntity extends Entity
         }
 
         if (empty($filter)) {
-            return $this->allCategories;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], $this->allCategories, func_get_args());
         }
         
         $this->buildFilter($filter);
@@ -121,7 +124,7 @@ class CategoriesEntity extends Entity
             }
         }
 
-        return $matchedCategories;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $matchedCategories, func_get_args());
     }
 
     public function delete($ids)
@@ -175,14 +178,14 @@ class CategoriesEntity extends Entity
         
         unset($this->categoriesTree);
         unset($this->allCategories);
-        return true;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
 
     //Обновление информацию о главной категории товара
     public function updateMainProductsCategory($productsIds) {
         $productsIds = (array)$productsIds;
         if (empty($productsIds)) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
         $sql = $this->queryFactory->newSqlQuery();
@@ -192,6 +195,8 @@ class CategoriesEntity extends Entity
                           WHERE p.id IN (:products_ids)");
         $sql->bindValue('products_ids', $productsIds);
         $this->db->query($sql);
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
     
     public function addProductCategory($productId, $categoryId, $position = 0)
@@ -213,12 +218,14 @@ class CategoriesEntity extends Entity
             ->ignore();
         
         $this->db->query($insert);
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
 
     public function deleteProductCategory($productsIds, $categoriesIds = [])
     {
         if (empty($productsIds)) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
         $productsIds = (array) $productsIds;
@@ -231,14 +238,14 @@ class CategoriesEntity extends Entity
 
         if (empty($categoriesIds)) {
             $this->db->query($delete);
-            return true;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
         }
 
         $delete->where('category_id IN(:categories_ids)')
             ->bindValue('categories_ids', $categoriesIds);
 
         $this->db->query($delete);
-        return true;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
 
     /*Выбираем категории определенного товара*/
@@ -258,7 +265,8 @@ class CategoriesEntity extends Entity
         }
         
         $this->db->query($select);
-        return $this->db->results();
+        $results = $this->db->results();
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $results, func_get_args());
     }
 
     /*Выборка категорий яндекс маркета*/
@@ -278,7 +286,8 @@ class CategoriesEntity extends Entity
             }
             fclose($f);
         }
-        return $marketCats;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $marketCats, func_get_args());
     }
     
     protected function filter__id($ids)

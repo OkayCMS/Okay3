@@ -11,7 +11,7 @@ class ComparisonController extends AbstractController
     
     public function render()
     {
-        $this->response->setContent($this->design->fetch('comparison.tpl'));
+        $this->response->setContent('comparison.tpl');
     }
     
     public function ajaxUpdate(Comparison $comparison)

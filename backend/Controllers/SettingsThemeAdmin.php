@@ -188,13 +188,14 @@ class SettingsThemeAdmin extends IndexAdmin
             $this->design->assign('message_success', 'saved');
         }
 
-        $sitePhones = !empty($this->settings->site_phones) ? implode(', ', $this->settings->site_phones) : "";
+        $sitePhones = $this->settings->site_phones;
+        $stringifySitePhones = !empty($sitePhones) ? implode(', ', $this->settings->site_phones) : "";
         
         $this->design->assign('css_variables', $templateConfig->getCssVariables());
         $this->design->assign('allow_ext', $this->allowImg);
         $this->design->assign('js_socials', $jsSocial->getSocials());
         $this->design->assign('js_custom_socials', $jsSocial->getCustomSocials());
-        $this->design->assign('site_phones', $sitePhones);
+        $this->design->assign('site_phones', $stringifySitePhones);
         $this->design->assign('site_social_links', implode(PHP_EOL, $this->settings->site_social_links));
 
         $this->response->setContent($this->design->fetch('settings_theme.tpl'));

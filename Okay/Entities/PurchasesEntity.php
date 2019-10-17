@@ -4,8 +4,9 @@
 namespace Okay\Entities;
 
 
+use Okay\Helpers\MoneyHelper;
 use Okay\Core\Entity\Entity;
-use Okay\Logic\MoneyLogic;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class PurchasesEntity extends Entity
 {
@@ -34,6 +35,7 @@ class PurchasesEntity extends Entity
     public function useCache($useCache)
     {
         $this->useCache = (bool)$useCache;
+        ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
     
     public function update($id, $purchase)
@@ -103,8 +105,8 @@ class PurchasesEntity extends Entity
 
     public function add($purchase)
     {
-        /** @var MoneyLogic $moneyLogic */
-        $moneyLogic = $this->serviceLocator->getService(MoneyLogic::class);
+        /** @var MoneyHelper $moneyHelper */
+        $moneyHelper = $this->serviceLocator->getService(MoneyHelper::class);
         
         /** @var ProductsEntity $productsEntity */
         $productsEntity = $this->entity->get(ProductsEntity::class);
@@ -120,22 +122,22 @@ class PurchasesEntity extends Entity
                 return false;
             }
             
-            $variant = $moneyLogic->convertVariantPriceToMainCurrency($variant);
+            $variant = $moneyHelper->convertVariantPriceToMainCurrency($variant);
             
             $product = $productsEntity->get(intval($variant->product_id));
             if (empty($product)) {
-                return false;
+                ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
             }
         }
         
         $order = $this->getOrder(intval($purchase->order_id));
         if (empty($order->id)) {
-            return false;
+            ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
         
         // Не допустить нехватки на складе
         if ($order->closed && !empty($purchase->amount) && !$variant->infinity && $variant->stock<$purchase->amount) {
-            return false;
+            ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
         
         if (!isset($purchase->product_id) && isset($variant)) {
@@ -189,7 +191,6 @@ class PurchasesEntity extends Entity
         return parent::add($purchase);
     }
 
-    /*Удаление покупки*/
     public function delete($ids)
     {
         $this->useCache(false);

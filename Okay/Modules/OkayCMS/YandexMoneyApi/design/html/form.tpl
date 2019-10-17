@@ -57,38 +57,35 @@
     }
 </style>
 <div class="row">
-    <form class="col-lg-7" method="POST">
+    <form class="col-lg-7" method="POST" action="{url_generator route="OkayCMS.YandexMoneyApi.SendPaymentRequest" absolute=1}">
         <input type="hidden" name="payment_submit"/>
         <input type="hidden" name="payment_type" id="pm_yandex_money_payment_type" value="{$payment_type|escape}"/>
-        {$onKassaSide = $settings_pay['yandex_api_paymode'] === 'kassa'}
-        {$showInstallmentsButton = false}
-        {$showPayWithYandexButton = false}
+        <input type="hidden" name="amount" value="{$amount|escape}"/>
+        <input type="hidden" name="order_id" value="{$order->id|escape}"/>
 
-        {if $onKassaSide }
-            {$showInstallmentsButton = $settings_pay['yandex_show_installments_button']}
-            {$showPayWithYandexButton = $settings_pay['yandex_show_pay_with_yandex_button']}
-            {if $showInstallmentsButton || $showPayWithYandexButton}
-                <div class="yamoney_kassa_buttons">
-                    {if $showInstallmentsButton}
-                        <div class="ya_kassa_installments_button_container"></div>
-                    {/if}
-                    {if $showPayWithYandexButton}
-                        <div class="yamoney-pay-button {if !$showInstallmentsButton} yamoney-pay-button_type_fly{/if}">
-                            <button type="submit"><span>Заплатить</span>через Яндекс</button>
-                        </div>
-                    {/if}
-                </div>
-            {/if}
+        {if $payment_settings->yandex_api_paymode === 'kassa'}
+            <div class="yamoney_kassa_buttons">
 
-        {/if}
+                {if $payment_settings->yandex_show_installments_button}
+                    <div class="ya_kassa_installments_button_container"></div>
+                {/if}
 
-        {if !$onKassaSide || ($onKassaSide && !$showPayWithYandexButton)}
+                {if $payment_settings->yandex_show_pay_with_yandex_button}
+                    <div class="yamoney-pay-button {if !$payment_settings->yandex_show_installments_button} yamoney-pay-button_type_fly{/if}">
+                        <button type="submit"><span>Заплатить</span>через Яндекс</button>
+                    </div>
+                {else}
+                    <input type="submit" name="submit-button" value="{$button_text}" class="btn_order">
+                {/if}
+
+            </div>
+        {else}
             <input type="submit" name="submit-button" value="{$button_text}" class="btn_order">
         {/if}
-
     </form>
 </div>
-{if $onKassaSide && $showInstallmentsButton}
+
+{if $payment_settings->yandex_api_paymode === 'kassa' && $settings_pay->yandex_show_installments_button}
 {literal}
     <script src="https://static.yandex.net/kassa/pay-in-parts/ui/v1/"></script>
     <script type="text/javascript">

@@ -17,7 +17,7 @@
         <div class="boxed">
             <div class="row d_flex">
                 <div class="col-lg-12 col-md-12">
-                    {$btr->okaycms__yandex_money_api__description_part_1}: <b>{url_generator route='OkayCMS_YandexMoneyApi_callback' absolute=1}?action=notify</b> {$btr->okaycms__yandex_money_api__description_part_2}
+                    {$btr->okaycms__yandex_money_api__description_part_1}: <b>{url_generator route='OkayCMS.YandexMoneyApi.Callback' absolute=1}?action=notify</b> {$btr->okaycms__yandex_money_api__description_part_2}
                     <br><br>
                     {$btr->okaycms__yandex_money_api__description_part_3}
                 </div>

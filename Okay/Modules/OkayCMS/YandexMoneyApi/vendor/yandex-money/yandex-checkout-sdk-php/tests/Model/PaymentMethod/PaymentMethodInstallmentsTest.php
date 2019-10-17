@@ -5,8 +5,6 @@ namespace Tests\YandexCheckout\Model\PaymentMethod;
 use YandexCheckout\Model\PaymentMethod\PaymentMethodInstallments;
 use YandexCheckout\Model\PaymentMethodType;
 
-require_once __DIR__ . '/AbstractPaymentMethodTest.php';
-
 class PaymentMethodInstallmentsTest extends AbstractPaymentMethodTest
 {
     /**

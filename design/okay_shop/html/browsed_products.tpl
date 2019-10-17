@@ -1,4 +1,4 @@
-{*{get_browsed_products var=browsed_products limit=6}*}
+{get_browsed_products var=browsed_products limit=6}
 
 {if $browsed_products}
     <div class="sidebar__boxed browsed">

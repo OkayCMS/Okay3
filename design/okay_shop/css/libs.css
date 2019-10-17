@@ -508,9 +508,10 @@ blockquote cite:before {
 .owl-carousel .owl-nav {
     display: block;
     position: absolute;
-    top: calc(50% - 60px);
+    top: calc(50% - 30px);
     width: 100%;
     -webkit-tap-highlight-color: transparent;
+    color: #fff;
 }
 .fn_comparison_products.owl-carousel .owl-nav {
     top: 100px;
@@ -539,12 +540,24 @@ blockquote cite:before {
     border: none;
     outline: none;
     left: inherit;
-    background: #0003;
+    background: rgba(0,0,0,.5);
     text-align: center;
-    color: #222;
+    color: #eee;
     transition: all .2s ease-in-out 0s;
     margin: 0;
     position: absolute;
+}
+.owl-carousel .owl-nav .owl-prev span,
+.owl-carousel .owl-nav .owl-next span{
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: inherit;
+    position: relative;
+    top: -2px;
+    font-size: 54px;
 }
 .owl-carousel .owl-nav .owl-prev.disabled,
 .owl-carousel .owl-nav .owl-next.disabled{
@@ -1336,13 +1349,13 @@ blockquote cite:before {
 }
 
 /***** #Reedmore *****/
-.fn_reedmore + [data-readmore-toggle],
-.fn_reedmore[data-readmore] {
+.fn_readmore + [data-readmore-toggle],
+.fn_readmore[data-readmore] {
     display: inline-block;
     width: auto;
     position: relative;
 }
-.fn_reedmore[aria-expanded="false"]::after {
+.fn_readmore[aria-expanded="false"]::after {
     content: "";
     position: absolute;
     bottom: -10px;
@@ -1356,17 +1369,19 @@ blockquote cite:before {
     background: -ms-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
     background: linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
 }
-.fn_reedmore[data-readmore] {
+.fn_readmore[data-readmore] {
 	transition: height 500ms;
 	overflow: hidden;
     max-height: 215px;
+    display: block;
+    width: 100%;
 }
-.fn_reedmore + [data-readmore-toggle]{
+.fn_readmore + [data-readmore-toggle]{
     margin-top: 13px;
    text-decoration: none;
     transition: all 0.3s;
 }
-.fn_reedmore + [data-readmore-toggle] span{
+.fn_readmore + [data-readmore-toggle] span{
     color: var(--okay-button-color);
     background: transparent;
     border-color:  var(--okay-button-color);
@@ -1379,13 +1394,13 @@ blockquote cite:before {
     transition: all .3s;
     font-weight: 500;
 }
-.fn_reedmore + [data-readmore-toggle]:hover span{
+.fn_readmore + [data-readmore-toggle]:hover span{
     color: var(--okay-button-text);
     background:var(--okay-button-color);
     border-color:  var(--okay-button-color);
 }
-.fn_reedmore + [data-readmore-toggle]:hover,
-.fn_reedmore + [data-readmore-toggle]:focus{
+.fn_readmore + [data-readmore-toggle]:hover,
+.fn_readmore + [data-readmore-toggle]:focus{
     color: var(--okay-button-text);
     text-decoration: none;
 }

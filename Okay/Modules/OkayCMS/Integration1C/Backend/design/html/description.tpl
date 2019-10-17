@@ -1,4 +1,4 @@
-{$meta_title = $btr->rozetka_xml|escape scope=global}
+{$meta_title = $btr->okaycms__integration_ic__description_title|escape scope=global}
 
 {*Название страницы*}
 <div class="row">

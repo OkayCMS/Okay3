@@ -4,13 +4,14 @@
 namespace Okay\Core;
 
 
+use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Entities\VariantsEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\CouponsEntity;
 use Okay\Entities\ImagesEntity;
 use Okay\Entities\UsersEntity;
-use Okay\Logic\ProductsLogic;
-use Okay\Logic\MoneyLogic;
+use Okay\Helpers\ProductsHelper;
+use Okay\Helpers\MoneyHelper;
 
 class Cart
 {
@@ -20,14 +21,14 @@ class Cart
     private $imagesEntity;
     private $usersEntity;
     private $settings;
-    private $productsLogic;
-    private $moneyLogic;
+    private $productsHelper;
+    private $moneyHelper;
 
     public function __construct(
         EntityFactory $entityFactory,
         Settings      $settings,
-        ProductsLogic $productsLogic,
-        MoneyLogic    $moneyLogic
+        ProductsHelper $productsHelper,
+        MoneyHelper    $moneyHelper
     ){
         $this->productsEntity = $entityFactory->get(ProductsEntity::class);
         $this->variantsEntity = $entityFactory->get(VariantsEntity::class);
@@ -35,8 +36,8 @@ class Cart
         $this->imagesEntity   = $entityFactory->get(ImagesEntity::class);
         $this->usersEntity    = $entityFactory->get(UsersEntity::class);
         $this->settings       = $settings;
-        $this->productsLogic  = $productsLogic;
-        $this->moneyLogic     = $moneyLogic;
+        $this->productsHelper  = $productsHelper;
+        $this->moneyHelper     = $moneyHelper;
     }
 
     public function get() {
@@ -57,10 +58,10 @@ class Cart
             return $cart;
         }
         
-        $variants = $this->moneyLogic->convertVariantsPriceToMainCurrency($variants);
+        $variants = $this->moneyHelper->convertVariantsPriceToMainCurrency($variants);
         
         $products = $this->getProductsByVariants($variants);
-        $products = $this->productsLogic->attachImages($products);
+        $products = $this->productsHelper->attachImages($products);
 
         // TODO: собирать целостно в одном методе
         $items = $this->buildItemsByVariants($variants);
@@ -104,7 +105,7 @@ class Cart
         }
 
         $cart->total_price *= (100 - $cart->discount)/100;
-        return $cart;
+        return ExtenderFacade::execute(__METHOD__, $cart, func_get_args());
     }
 
     public function addItem($variantId, $amount = 1)
@@ -119,6 +120,8 @@ class Cart
             $amount = min($amount, ($variant->stock ? $variant->stock : min($this->settings->max_order_amount, $amount)));
             $_SESSION['shopping_cart'][$variantId] = intval($amount);
         }
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     public function updateItem($variantId, $amount = 1)
@@ -129,12 +132,16 @@ class Cart
             $amount = min($amount, ($variant->stock ? $variant->stock : min($this->settings->max_order_amount, $amount)));
             $_SESSION['shopping_cart'][$variantId] = intval($amount);
         }
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     /*Удаление товара из корзины*/
     public function deleteItem($variantId)
     {
         unset($_SESSION['shopping_cart'][$variantId]);
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     /*Очистка корзины*/
@@ -142,17 +149,21 @@ class Cart
     {
         unset($_SESSION['shopping_cart']);
         unset($_SESSION['coupon_code']);
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     /*Применение купона в корзине*/
-    public function applyCoupon($coupon_code)
+    public function applyCoupon($couponCode)
     {
-        $coupon = $this->couponsEntity->get((string)$coupon_code);
+        $coupon = $this->couponsEntity->get((string) $couponCode);
         if($coupon && $coupon->valid) {
             $_SESSION['coupon_code'] = $coupon->code;
         } else {
             unset($_SESSION['coupon_code']);
         }
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     private function getVariantsIdsByCart($sessionCart)

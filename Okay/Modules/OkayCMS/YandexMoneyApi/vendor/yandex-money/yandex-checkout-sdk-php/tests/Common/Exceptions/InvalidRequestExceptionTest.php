@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Exceptions;
+namespace Tests\YandexCheckout\Common\Exceptions;
 
 use PHPUnit\Framework\TestCase;
 use YandexCheckout\Common\AbstractRequest;

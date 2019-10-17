@@ -26,4 +26,9 @@ class ServiceLocator
     {
         return $this->DI->get($service);
     }
+    
+    public function hasService($service) // todo добавить type hint
+    {
+        return $this->DI->has($service);
+    }
 }

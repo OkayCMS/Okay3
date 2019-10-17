@@ -14,6 +14,7 @@ class Json extends AbstractResponse
         header('Pragma: no-cache');
         header('Expires: -1');
 
-        print $content;
+        // todo добавить json_encode()
+        print implode('', $content);
     }
 }

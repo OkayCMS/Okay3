@@ -6,17 +6,17 @@ namespace Okay\Core\SmartyPlugins\Plugins;
 
 use Okay\Core\SmartyPlugins\Func;
 use Okay\Core\Router;
-use Okay\Logic\FilterLogic;
+use Okay\Helpers\FilterHelper;
 
 class Furl extends Func
 {
     private $router;
-    private $filterLogic;
+    private $filterHelper;
 
-    public function __construct(Router $router, FilterLogic $filterLogic)
+    public function __construct(Router $router, FilterHelper $filterHelper)
     {
         $this->router = $router;
-        $this->filterLogic = $filterLogic;
+        $this->filterHelper = $filterHelper;
     }
 
     public function run($params)
@@ -36,7 +36,7 @@ class Furl extends Func
         
         $routeParams = $this->router->getCurrentRouteRequiredParams();
         $baseUrl = $this->router->generateUrl($routeName, $routeParams, $isAbsolute);
-        $chpuUrl = $this->filterLogic->filterChpuUrl($params);
+        $chpuUrl = $this->filterHelper->filterChpuUrl($params);
         
         $baseUrl = trim($baseUrl, '/');
         $chpuUrl = trim($chpuUrl, '/');

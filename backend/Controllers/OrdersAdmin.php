@@ -130,10 +130,9 @@ class OrdersAdmin extends IndexAdmin
         }
 
         // Отображение
-        $orders = [];
-        foreach($ordersEntity->find($filter) as $o) {
-            $orders[$o->id] = $o;
-            $orders[$o->id]->purchases = $purchasesEntity->find(['order_id'=>$o->id]);
+        $orders = $ordersEntity->mappedBy('id')->find($filter);
+        foreach($orders as $o) {
+            $o->purchases = $purchasesEntity->find(['order_id'=>$o->id]);
         }
         // Метки заказов
         if (!empty($orders)) {

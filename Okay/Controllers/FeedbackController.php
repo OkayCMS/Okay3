@@ -51,7 +51,7 @@ class FeedbackController extends AbstractController {
             $this->design->assign('meta_description', $this->page->meta_description);
         }
         
-        $this->response->setContent($this->design->fetch('feedback.tpl'));
+        $this->response->setContent('feedback.tpl');
     }
     
 }

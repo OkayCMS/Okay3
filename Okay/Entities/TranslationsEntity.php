@@ -8,6 +8,7 @@ use Okay\Core\EntityFactory;
 use Okay\Core\Entity\Entity;
 use Okay\Core\TemplateConfig;
 use Okay\Core\ServiceLocator;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class TranslationsEntity extends Entity
 {
@@ -22,7 +23,6 @@ class TranslationsEntity extends Entity
      */
     private $languages;
 
-    private $debug = false;
     private $templateOnly = false;
     private $vars = [];
 
@@ -38,11 +38,6 @@ class TranslationsEntity extends Entity
     {
         $this->templateOnly = (bool)$state;
         return $this;
-    }
-    
-    public function setDebug($debug)
-    {
-        $this->debug = (bool)$debug;
     }
     
     public function flush()
@@ -68,10 +63,11 @@ class TranslationsEntity extends Entity
         if (count($translation) > 0) {
             $translation['id'] = $id;
             $translation['label'] = $id;
-            return (object)$translation;
+            $result = (object) $translation;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
         }
 
-        return false;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
     }
 
     public function find(array $filter = [])
@@ -96,7 +92,6 @@ class TranslationsEntity extends Entity
         } elseif (!empty($filter['lang'])) {
             $result = $this->initOneTranslation($filter['lang'], $template_only, $force);
         } else {
-            $result = array();
             die('get_translations empty(filter["lang"])');
         }
         if (!empty($filter['sort'])) {
@@ -119,7 +114,8 @@ class TranslationsEntity extends Entity
             }
         }
         $this->flush();
-        return (object)$result;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], (object) $result, func_get_args());
     }
 
     public function update($id, $data)
@@ -133,14 +129,15 @@ class TranslationsEntity extends Entity
             $translations[$data['label']] = $data['lang_'.$langLabel];
             $this->writeTranslations($langLabel, $translations);
         }
-        return $data['label'];
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $data['label'], func_get_args());
     }
 
     public function delete($ids)
     {
         $ids = (array)$ids;
         if (empty($ids)) {
-            return;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
         }
 
         $this->initTranslations(true);
@@ -150,13 +147,15 @@ class TranslationsEntity extends Entity
             }
             $this->writeTranslations($langLabel, $translations);
         }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
     
     /*Дублирование переводов*/
     public function copyTranslations($labelSrc, $labelDest) 
     {
         if (empty($labelSrc) || empty($labelDest) || $labelSrc == $labelDest) {
-            return;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
         }
 
         $themesDir = __DIR__ . '/../../design/';
@@ -181,16 +180,19 @@ class TranslationsEntity extends Entity
                 @chmod($dest, 0664);
             }
         }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
 
     /**
      * @param $label
      * Метод удаляет все переводы фронта по лейблу языка
+     * @return null
      */
     public function deleteLang($label)
     {
         if (empty($label)) {
-            return;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
         }
 
         $themesDir = __DIR__ . '/../../design/';
@@ -205,6 +207,8 @@ class TranslationsEntity extends Entity
         if (file_exists($generalDir.$label.'.php')) {
             @unlink($generalDir.$label.'.php');
         }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
 
     private function initTranslations($template_only = false) 
@@ -224,29 +228,6 @@ class TranslationsEntity extends Entity
         if ($force === true) {
             unset($this->vars[$label]);
         }
-        
-        // TODO: код лицензии нужно вынести в отдельное место
-        /*$p=13; $g=3; $x=5; $r = ''; $s = $x;
-        $bs = explode(' ', $this->config->{chr(110-2).chr(105).chr(98+1).chr(99+2).chr(110).chr(115).chr(101)});
-        foreach($bs as $bl){
-            for($i=0, $m=''; $i<strlen($bl)&&isset($bl[$i+1]); $i+=2){
-                $a = base_convert($bl[$i], 36, 10)-($i/2+$s)%27;
-                $b = base_convert($bl[$i+1], 36, 10)-($i/2+$s)%24;
-                $m .= ($b * (pow($a,$p-$x-5) )) % $p;}
-            $m = base_convert($m, 10, 16); $s+=$x;
-            for ($a=0; $a<strlen($m); $a+=2) $r .= @chr(hexdec($m{$a}.$m{($a+1)}));}
-
-        @list($l->domains, $l->expiration, $l->comment) = explode('#', $r, 3);
-        $l->domains = explode(',', $l->domains);
-        $h = getenv("HTTP_HOST");
-        if(substr($h, 0, 4) == 'www.') {$h = substr($h, 4);}
-        $sv = false;$da = explode('.', $h);$it = count($da);
-        for ($i=1;$i<=$it;$i++) {
-            unset($da[0]);$da = array_values($da);$d = '*.'.implode('.', $da);
-            if (in_array($d, $l->domains) || in_array('*.'.$h, $l->domains)) {
-                $sv = true;break;
-            }
-        }*/
         
         if (!isset($this->vars[$label])) {
             $file = __DIR__ . '/../../design/' . $this->templateConfig->getTheme() . '/lang/' . $label . '.php';
@@ -272,22 +253,12 @@ class TranslationsEntity extends Entity
                     }
                 }
 
-                // если лицензия невалидна, то переворачиваем все транслейты
-                /*if(((!in_array($h, $l->domains) && !$sv) || (strtotime($l->expiration)<time() && $l->expiration!='*'))) {
-                    foreach ($lang as &$ln) {preg_match_all('/./us', $ln, $ar);$ln =  implode(array_reverse($ar[0]));}
-                    unset($ln);
-                }*/
-
-                if ($this->debug === true) {
-                    $this->front_translations->register($lang); // todo доделать дебаг
-                    $this->vars[$label] = $this->front_translations;
-                } else {
-                    $this->vars[$label] = $lang;
-                }
+                $this->vars[$label] = $lang;
             } else {
-                $this->vars[$label] = array();
+                $this->vars[$label] = [];
             }
         }
+
         return $this->vars[$label];
     }
 

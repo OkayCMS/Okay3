@@ -1,10 +1,8 @@
 <?php
 
-namespace Common\Exceptions;
+namespace Tests\YandexCheckout\Common\Exceptions;
 
 use YandexCheckout\Common\Exceptions\AuthorizeException;
-
-require_once __DIR__ . '/ApiExceptionTest.php';
 
 class AuthorizeExceptionTest extends ApiExceptionTest
 {

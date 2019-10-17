@@ -5,14 +5,13 @@ $startTime = microtime(true);
 use Okay\Core\Router;
 use Okay\Core\Request;
 use Okay\Core\Response;
-use Okay\Core\Modules\Modules;
+use Okay\Core\Config;
 use OkayLicense\License;
+use Okay\Core\Modules\Modules;
 
 try {
-    //ini_set('display_errors', 'on');
-    //error_reporting(E_ALL);
+    ini_set('display_errors', 'off');
 
-    $time_start = microtime(true);
     if (!empty($_SERVER['HTTP_USER_AGENT'])) {
         session_name(md5($_SERVER['HTTP_USER_AGENT']));
     }
@@ -22,6 +21,14 @@ try {
 
     $DI = include 'Okay/Core/config/container.php';
 
+    /** @var Config $config */
+    $config = $DI->get(Config::class);
+
+    if ($config->get('debug_mode') == true) {
+        ini_set('display_errors', 'on');
+        error_reporting(E_ALL);
+    }
+    
     /** @var Response $response */
     $response = $DI->get(Response::class);
 
@@ -29,11 +36,10 @@ try {
     /** @var Request $request */
     $request = $DI->get(Request::class);
     $request->setStartTime($startTime);
-    
+
     if (isset($_GET['logout'])) {
         unset($_SESSION['admin']);
         $response->redirectTo($request->getRootUrl());
-        exit();
     }
 
     /** @var License $license */
@@ -48,6 +54,19 @@ try {
     $router = $DI->get(Router::class);
     $router->run();
 
+    if ($response->getContentType() == RESPONSE_HTML) {
+        // Отладочная информация
+        print "<!--\r\n";
+        $timeEnd = microtime(true);
+        $execTime = $timeEnd - $startTime;
+
+        if (function_exists('memory_get_peak_usage')) {
+            print "memory peak usage: " . memory_get_peak_usage() . " bytes\r\n";
+        }
+        print "page generation time: " . $execTime . " seconds\r\n";
+        print "-->";
+    }
+    
 } catch (\Exception $e) {
     print $e->getMessage() . PHP_EOL;
     print $e->getTraceAsString();

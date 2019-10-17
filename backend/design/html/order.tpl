@@ -308,6 +308,7 @@
                                 {/if}
                             </div>
                         </div>
+                        {get_design_block block="order_purchases"}
                     </div>
                 </div>
             </div>
@@ -371,10 +372,11 @@
                                                     <select name="delivery_id" class="selectpicker">
                                                         <option value="0">{$btr->order_not_selected|escape}</option>
                                                         {foreach $deliveries as $d}
-                                                            <option value="{$d->id}" {if $d->id==$delivery->id}selected{/if}>{$d->name|escape}</option>
+                                                            <option value="{$d->id}" {if $d->id==$delivery->id}selected{/if} data-module_id="{$d->module_id}">{$d->name|escape}</option>
                                                         {/foreach}
                                                     </select>
                                                 </div>
+                                                {get_design_block block="order_delivery_info"}
                                             </div>
                                             <div class="okay_list_boding okay_list_ordfig_val">
                                                 <div class="input-group">
@@ -388,6 +390,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                {get_design_block block="order_common_info"}
                             </div>
                             <div class="row ">
                                 <div class="col-lg-4 col-md-12 mt-2">
@@ -396,7 +399,7 @@
                                         <select name="payment_method_id" class="selectpicker">
                                             <option value="0">{$btr->order_not_selected|escape}</option>
                                             {foreach $payment_methods as $pm}
-                                                <option value="{$pm->id}" {if $pm->id==$payment_method->id}selected{/if}>{$pm->name|escape}</option>
+                                                <option value="{$pm->id}" {if $pm->id==$payment_method->id}selected{/if} data-module_id="{$pm->module_id}">{$pm->name|escape}</option>
                                             {/foreach}
                                         </select>
                                     </div>
@@ -416,21 +419,27 @@
                             </div>
 
                             <div class="row">
-                            <div class="col-lg-12 col-md-12 mt-1">
-
-                                <label class="switch_label boxes_inline">{$btr->order_paid|escape}</label>
-                                <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
-                                    <input class="switch-input" name="paid" value='1' type="checkbox" id="paid" {if $order->paid}checked{/if}/>
-                                    <span class="switch-label"></span>
-                                    <span class="switch-handle"></span>
-                                </label>
-
+                                <div class="col-lg-12 col-md-12 mt-1">
+    
+                                    <label class="switch_label boxes_inline">{$btr->order_paid|escape}</label>
+                                    <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
+                                        <input class="switch-input" name="paid" value='1' type="checkbox" id="paid" {if $order->paid}checked{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                    {get_design_block block="order_payment_info"}
+                                </div>
                             </div>
-                        </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {$block = {get_design_block block="order_custom_block"}}
+            {if !empty($block)}
+                <div class="boxed fn_toggle_wrap">
+                    {$block}
+                </div>
+            {/if}
         </div>
         {*right_column*}
         {*Информация о заказчике/детали заказа*}
@@ -472,6 +481,7 @@
                             <div class="heading_label boxes_inline">{$btr->order_ip|escape} {if $order->id}<a href="https://who.is/whois-ip/ip-address/{$order->ip}" target="_blank"><i class="fa fa-map-marker"></i> whois</a>{/if}</div>
                             <div class="boxes_inline text_dark text_600">{$order->ip|escape}</div>
                         </div>
+                        {get_design_block block="order_contact"}
                     </div>
                     <div class="box_border_buyer">
                         <div class="mb-1">
@@ -490,7 +500,7 @@
                                         <input type="hidden" name="user_id" value="{$user->id}" />
                                         <div class="heading_label boxes_inline">
                                             {$btr->order_buyer|escape}
-                                            <a href="{url module=UserAdmin id=$user->id}" target=_blank>
+                                            <a href="{url controller=UserAdmin id=$user->id}" target=_blank>
                                                  {$user->name|escape}
                                             </a>
                                         </div>
@@ -506,6 +516,7 @@
                                 {/if}
                             </div>
                         </div>
+                        {get_design_block block="order_user_info"}
                     </div>
                     <div class="box_border_buyer">
                         <div class="mb-1">
@@ -522,6 +533,7 @@
                                 <textarea name="note" class="form-control short_textarea">{$order->note|escape}</textarea>
                             </div>
                         </div>
+                        {get_design_block block="order_additional_info"}
                     </div>
                 </div>
             </div>

@@ -15,6 +15,7 @@ use Okay\Entities\PurchasesEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\FeaturesValuesEntity;
 use Okay\Entities\FeaturesAliasesValuesEntity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class DataCleaner
 {
@@ -75,27 +76,32 @@ class DataCleaner
 
         $this->truncateTable('__related_blogs');
         $this->truncateTable('__import_log');
+
+        return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     public function clearResizeImages()
     {
-        $this->clearFilesDirs($this->config->resized_images_dir);
-        $this->clearFilesDirs($this->config->resized_blog_dir);
-        $this->clearFilesDirs($this->config->resized_brands_dir);
-        $this->clearFilesDirs($this->config->resized_categories_dir);
+        $this->clearFilesDirs($this->config->get('resized_images_dir'));
+        $this->clearFilesDirs($this->config->get('resized_blog_dir'));
+        $this->clearFilesDirs($this->config->get('resized_brands_dir'));
+        $this->clearFilesDirs($this->config->get('resized_categories_dir'));
+
+        return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
     
     public function clearAllCatalogImages()
     {
-        $this->clearFilesDirs($this->config->original_images_dir);
-        $this->clearFilesDirs($this->config->resized_images_dir);
+        $this->clearFilesDirs($this->config->get('original_images_dir'));
+        $this->clearFilesDirs($this->config->get('resized_images_dir'));
 
-        $this->clearFilesDirs($this->config->original_brands_dir);
-        $this->clearFilesDirs($this->config->resized_brands_dir);
+        $this->clearFilesDirs($this->config->get('original_brands_dir'));
+        $this->clearFilesDirs($this->config->get('resized_brands_dir'));
 
-        $this->clearFilesDirs($this->config->original_categories_dir);
-        $this->clearFilesDirs($this->config->resized_categories_dir);
+        $this->clearFilesDirs($this->config->get('original_categories_dir'));
+        $this->clearFilesDirs($this->config->get('resized_categories_dir'));
 
+        return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     private function clearFilesDirs($dir = '')

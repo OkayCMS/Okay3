@@ -6,7 +6,7 @@ namespace Okay\Modules\OkayCMS\PayKeeper;
 
 use Okay\Core\EntityFactory;
 use Okay\Core\Modules\AbstractModule;
-use Okay\Core\Modules\Payments\PaymentFormInterface;
+use Okay\Core\Modules\Interfaces\PaymentFormInterface;
 use Okay\Core\Money;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\PaymentsEntity;

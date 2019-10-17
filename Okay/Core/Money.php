@@ -5,6 +5,7 @@ namespace Okay\Core;
 
 
 use Okay\Entities\CurrenciesEntity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class Money
 {
@@ -40,7 +41,7 @@ class Money
             $coef = $currency->rate_from / $currency->rate_to;
         }
 
-        return $coef;
+        return ExtenderFacade::execute(__METHOD__, $coef, func_get_args());
     }
     
     public function convert($price, $currencyId = null, $format = true, $revers = false)
@@ -80,13 +81,16 @@ class Money
         } else {
             $result = round($result, $precision);
         }
-        return $result;
+
+        return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
     }
     
     public function configure($decimalsPoint, $thousandsSeparator)
     {
         $this->decimalsPoint = $decimalsPoint;
         $this->thousandsSeparator = $thousandsSeparator;
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
     
 }

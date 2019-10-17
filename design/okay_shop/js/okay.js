@@ -22,7 +22,7 @@ $(document).on('submit', '.fn_variants', function(e) {
     }
     /* ajax запрос */
     $.ajax( {
-        url: okay.router.cart_ajax_url,
+        url: okay.router['cart_ajax'],
         data: {
             action: 'add_citem',
             variant_id: variant,
@@ -64,41 +64,41 @@ $(document).on('change', '.fn_variant', function() {
     /* Цены */
     if( selected.data( 'cprice' ) ) {
         cprice.html( selected.data( 'cprice' ) );
-        cprice.parent().removeClass( 'hidden' );
+        cprice.parent().removeClass( 'hidden-xs-up' );
     } else {
-        cprice.parent().addClass( 'hidden' );
+        cprice.parent().addClass( 'hidden-xs-up' );
     }
     if( selected.data( 'discount' ) ) {
-        parent.find('.fn_discount_label').html(selected.data( 'discount' )).removeClass( 'hidden' );
+        parent.find('.fn_discount_label').html(selected.data( 'discount' )).removeClass( 'hidden-xs-up' );
     } else {
-        parent.find('.fn_discount_label').addClass( 'hidden' );
+        parent.find('.fn_discount_label').addClass( 'hidden-xs-up' );
     }
     /* Артикул */
     if( typeof(selected.data( 'sku' )) != 'undefined' ) {
         sku.text( selected.data( 'sku' ) );
-        sku.parent().removeClass( 'hidden' );
+        sku.parent().removeClass( 'hidden-xs-up' );
     } else {
         sku.text( '' );
-        sku.parent().addClass( 'hidden' );
+        sku.parent().addClass( 'hidden-xs-up' );
     }
     /* Наличие на складе */
     if (stock == 0) {
-        parent.find('.fn_not_stock').removeClass('hidden');
-        parent.find('.fn_in_stock').addClass('hidden');
+        parent.find('.fn_not_stock').removeClass('hidden-xs-up');
+        parent.find('.fn_in_stock').addClass('hidden-xs-up');
     } else {
-        parent.find('.fn_in_stock').removeClass('hidden');
-        parent.find('.fn_not_stock').addClass('hidden');
+        parent.find('.fn_in_stock').removeClass('hidden-xs-up');
+        parent.find('.fn_not_stock').addClass('hidden-xs-up');
     }
     /* Предзаказ */
     if (stock == 0 && okay.is_preorder) {
-        parent.find('.fn_is_preorder').removeClass('hidden');
-        parent.find('.fn_is_stock, .fn_not_preorder').addClass('hidden');
+        parent.find('.fn_is_preorder').removeClass('hidden-xs-up');
+        parent.find('.fn_is_stock, .fn_not_preorder').addClass('hidden-xs-up');
     } else if (stock == 0 && !okay.is_preorder) {
-        parent.find('.fn_not_preorder').removeClass('hidden');
-        parent.find('.fn_is_stock, .fn_is_preorder').addClass('hidden');
+        parent.find('.fn_not_preorder').removeClass('hidden-xs-up');
+        parent.find('.fn_is_stock, .fn_is_preorder').addClass('hidden-xs-up');
     } else {
-        parent.find('.fn_is_stock').removeClass('hidden');
-        parent.find('.fn_is_preorder, .fn_not_preorder').addClass('hidden');
+        parent.find('.fn_is_stock').removeClass('hidden-xs-up');
+        parent.find('.fn_is_preorder, .fn_not_preorder').addClass('hidden-xs-up');
     }
 
     if( typeof(units) != 'undefined' ) {
@@ -128,7 +128,7 @@ $(document).on('click', '.fn_comparison', function(e){
         product = parseInt( $( this ).data( 'id' ) );
     /* ajax запрос */
     $.ajax( {
-        url: okay.router.comparison_url,
+        url: okay.router['comparison_ajax'],
         data: { product: product, action: action },
         dataType: 'json',
         success: function(data) {
@@ -165,7 +165,7 @@ $(document).on('click', '.fn_wishlist', function(e){
         action = $( this ).hasClass( 'selected' ) ? 'delete' : '';
     /* ajax запрос */
     $.ajax( {
-        url: okay.router.wishlist_url,
+        url: okay.router['wishlist_ajax'],
         data: { id: $( this ).data( 'id' ), action: action },
         dataType: 'json',
         success: function(data) {
@@ -292,8 +292,9 @@ console.log(window.location.href.replace( /\/page-(\d{1,5})/, '' ))
 /* Document ready */
 $(function(){
 
+    update_delivery_module_data();
+    
     /* Мега меню */
-    if ($(window).width() > 767) {
         $('.fn_category_scroll').each(function() {
             if ($(this).children('li').length > 11) {
                 $(this).addClass('scroll');
@@ -338,6 +339,46 @@ $(function(){
                 }
             });
         }
+
+    /* Banner group1 */
+    if( $('.fn_banner_group1').length ) {
+        $('.fn_banner_group1').owlCarousel({
+            animateOut: "fadeOut",
+            loop:true,
+            lazyLoad:true,
+            autoplay: true,
+            smartSpeed:1500,
+            nav:false,
+            dotsEach:true,
+            items:1,
+            responsive:{
+                320:{
+                    autoHeight:true
+                },
+                768:{
+                    autoHeight:false
+                },
+            }
+        });
+    }
+
+    /* Carousel products */
+    if( $('.fn_products_slide').length ) {
+        $('.fn_products_slide').owlCarousel({
+            loop:false,
+            margin:0,
+            lazyLoad:true,
+            nav:false,
+            dotsEach:true,
+            responsive:{
+                320:{items:1},
+                360:{items:2},
+                576:{items:3},
+                768:{items:3},
+                992:{items:4},
+                1200:{items:5}
+            }
+        });
     }
 
     /* Mobile search */
@@ -350,7 +391,7 @@ $(function(){
     if( $('.lazy').length ) {
         var myLazyLoad = new LazyLoad({
             elements_selector: ".lazy",
-            load_delay: 300
+            load_delay: 100
         });
     }
 
@@ -375,8 +416,8 @@ $(function(){
     }
 
     /* Hiding blocks with great text */
-    if( $('.fn_reedmore').length ) {
-        $('.fn_reedmore').readmore({
+    if( $('.fn_readmore').length ) {
+        $('.fn_readmore').readmore({
             collapsedHeight: 215,
             lessLink: '<a href="#"><span>-</span></a>',
             moreLink: '<a href="#"><span>+</span></a>',
@@ -481,24 +522,6 @@ $(function(){
 
     /* Accordion */
     if( $('.fn_accordion').length ) {
-        // $(".fn_accordion > .accordion__item:eq(0) .accordion__title").addClass("active").next().slideDown();
-        //
-        // $(".fn_accordion .accordion__title").click(function(e) {
-        //     var dropDown = $(this).closest(".accordion__item").find(".accordion__content");
-        //
-        //     $(this).closest(".fn_accordion").find(".accordion__content").not(dropDown).slideUp();
-        //
-        //     if ($(this).hasClass("active")) {
-        //         $(this).removeClass("active");
-        //     } else {
-        //         $(this).closest(".accordion").find(".accordion__title.active").removeClass("active");
-        //         $(this).addClass("active");
-        //     }
-        //     dropDown.stop(false, true).slideToggle();
-        //     e.preventDefault();
-        // });
-
-
         $(".fn_accordion").on('click', '.accordion__title', function() {
             var outerBox = $(this).parents('.fn_accordion');
             var target = $(this).parents('.accordion__item');
@@ -549,36 +572,6 @@ $(function(){
             $(this).parent().addClass('filled');
         }
     });
-
-    /* Banner group1 */
-    if( $('.fn_banner_group1').length ) {
-        $('.fn_banner_group1').owlCarousel({
-            loop:false,
-            lazyLoad:true,
-            nav:false,
-            dotsEach:true,
-            items:1
-        });
-    }
-
-    /* Carousel products */
-    if( $('.fn_products_slide').length ) {
-        $('.fn_products_slide').owlCarousel({
-            loop:false,
-            margin:0,
-            lazyLoad:true,
-            nav:false,
-            dotsEach:true,
-            responsive:{
-                320:{items:1},
-                360:{items:2},
-                576:{items:3},
-                768:{items:3},
-                992:{items:4},
-                1200:{items:5}
-            }
-        });
-    }
 
     /* Gallery images for product */
     if( $('.xzoom4').length ) {
@@ -701,7 +694,7 @@ $(function(){
 
     /* Автозаполнитель поиска */
     $( ".fn_search" ).devbridgeAutocomplete( {
-        serviceUrl: okay.router.search_url,
+        serviceUrl: okay.router['ajax_search'],
         minChars: 1,
         appendTo: "#fn_search",
         maxHeight: 320,
@@ -761,7 +754,7 @@ $(function(){
         } );
     };
     /* Рейтинг товара */
-    $('.product__rating').rater({ postHref: okay.router.product_rating });
+    $('.product__rating').rater({ postHref: okay.router['ajax_product_rating'] });
 
     /* Переключатель способа оплаты */
     $( document ).on( 'click', '[name="payment_method_id"]', function() {
@@ -775,20 +768,30 @@ $(function(){
 function ajax_set_result(data) {
     $( '#cart_informer' ).html( data.cart_informer );
     $( '#fn_purchases' ).html( data.cart_purchases );
-    $( '#fn_ajax_deliveries' ).html( data.cart_deliveries );
+    
+    if (data.cart_coupon) {
+        $( '#fn_cart_coupon' ).html(data.cart_coupon);
+    }
+    if (data.deliveries_data) {
+        for (let i in data.deliveries_data) {
+            let delivery_data = data.deliveries_data[i];
+            let delivery_block = $('#deliveries_' + delivery_data.id).closest('.fn_delivery_item');
+            delivery_block.find('input[name="delivery_id"]').data('total_price', delivery_data.total_price_with_delivery)
+                .data('delivery_price', delivery_data.price)
+                .data('is_free_delivery', delivery_data.is_free_delivery);
+            delivery_block.find('.fn_delivery_price').html(delivery_data.delivery_price_text);
+        }
+    }
+    $('input[name="delivery_id"]:checked').trigger('change');
 }
 
 /* Аяксовое изменение кол-ва товаров в корзине */
 function ajax_change_amount(object, variant_id) {
-    var amount = $( object ).val(),
-        coupon_code = $( 'input[name="coupon_code"]' ).val(),
-        delivery_id = $( 'input[name="delivery_id"]:checked' ).val(),
-        payment_id = $( 'input[name="payment_method_id"]:checked' ).val();
+    let amount = $( object ).val();
     /* ajax запрос */
     $.ajax( {
-        url: okay.router.cart_ajax_url,
+        url: okay.router['cart_ajax'],
         data: {
-            coupon_code: coupon_code,
             action: 'update_citem',
             variant_id: variant_id,
             amount: amount
@@ -797,9 +800,6 @@ function ajax_change_amount(object, variant_id) {
         success: function(data) {
             if( data.result == 1 ) {
                 ajax_set_result( data );
-                $( '#deliveries_' + delivery_id ).trigger( 'click' );
-                $( '#payment_' + delivery_id + '_' + payment_id ).trigger( 'click' );
-                var sticky = new Sticky('.fn_cart_sticky');
             } else {
                 $( '#cart_informer' ).html( data.cart_informer );
                 $(".fn_ajax_content").html( data.content );
@@ -868,12 +868,10 @@ function transfer(informer, thisEl) {
 
 /* Аяксовый купон */
 function ajax_coupon() {
-    var coupon_code = $('input[name="coupon_code"]').val(),
-        delivery_id = $('input[name="delivery_id"]:checked').val(),
-        payment_id = $('input[name="payment_method_id"]:checked').val();
+    let coupon_code = $('input[name="coupon_code"]').val();
     /* ajax запрос */
     $.ajax( {
-        url: okay.router.cart_ajax_url,
+        url: okay.router['cart_ajax'],
         data: {
             coupon_code: coupon_code,
             action: 'coupon_apply'
@@ -882,10 +880,6 @@ function ajax_coupon() {
         success: function(data) {
             if( data.result == 1 ) {
                 ajax_set_result( data );
-                $( '#deliveries_' + delivery_id ).trigger( 'click' );
-                $( '#payment_' + delivery_id + '_' + payment_id ).trigger( 'click' );
-                /* Cart sticky */
-                var sticky = new Sticky('.fn_cart_sticky');
             } else {
                 $( '#cart_informer' ).html( data.cart_informer );
                 $(".fn_ajax_content").html( data.content );
@@ -894,25 +888,25 @@ function ajax_coupon() {
     } );
 }
 
-/* Изменение способа доставки */
-function change_payment_method($id) {
-    $( "#fn_delivery_payment_" + $id + " [name='payment_method_id']" ).first().trigger('click');
-    $( ".fn_delivery_payment" ).hide();
-    $( "#fn_delivery_payment_" + $id ).show();
-    $( 'input[name="delivery_id"]' ).parent().removeClass( 'active' );
-    $( '#deliveries_' + $id ).parent().addClass( 'active' );
+function update_delivery_module_data() {
+
+    let delivery_input = $('input[name="delivery_id"]:checked');
+    let delivery_id = delivery_input.val();
+    
+    $( '.fn_delivery_module_html input, .fn_delivery_module_html select, .fn_delivery_module_html textarea' ).attr('disabled', true);
+
+    let delivery_block = $( '#deliveries_' + delivery_id ).closest( '.delivery__item' );
+    $( delivery_block ).find('.fn_delivery_module_html input').attr('disabled', false);
+    $( delivery_block ).find('.fn_delivery_module_html select').attr('disabled', false);
+    $( delivery_block ).find('.fn_delivery_module_html textarea').attr('disabled', false);
 }
 
 /* Аяксовое удаление товаров в корзине */
 function ajax_remove(variant_id) {
-    var coupon_code = $('input[name="coupon_code"]').val(),
-        delivery_id = $('input[name="delivery_id"]:checked').val(),
-        payment_id = $('input[name="payment_method_id"]:checked').val();
     /* ajax запрос */
     $.ajax( {
-        url: okay.router.cart_ajax_url,
+        url: okay.router['cart_ajax'],
         data: {
-            coupon_code: coupon_code,
             action: 'remove_citem',
             variant_id: variant_id
         },
@@ -920,9 +914,6 @@ function ajax_remove(variant_id) {
         success: function(data) {
             if( data.result == 1 ) {
                 ajax_set_result( data );
-                $( '#deliveries_' + delivery_id ).trigger( 'click' );
-                $( '#payment_' + delivery_id + '_' + payment_id ).trigger( 'click' );
-                var sticky = new Sticky('.fn_cart_sticky');
             } else {
                 $( '#cart_informer' ).html( data.cart_informer );
                 $(".fn_ajax_content").html( data.content );
@@ -1038,3 +1029,4 @@ $.fn.rater.rate = function ($this, opts, rating) {
     });
 };
 
+$('.boxed__description').find('iframe').wrapAll('<p class="video"></p>');

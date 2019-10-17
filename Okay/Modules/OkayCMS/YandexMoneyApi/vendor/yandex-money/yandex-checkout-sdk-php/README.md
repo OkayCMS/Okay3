@@ -1,5 +1,11 @@
 # Yandex.Checkout API PHP Client Library
 
+[![Build Status](https://travis-ci.org/yandex-money/yandex-checkout-sdk-php.svg?branch=master)](https://travis-ci.org/yandex-money/yandex-checkout-sdk-php)
+[![Latest Stable Version](https://poser.pugx.org/yandex-money/yandex-checkout-sdk-php/v/stable)](https://packagist.org/packages/yandex-money/yandex-checkout-sdk-php)
+[![Total Downloads](https://poser.pugx.org/yandex-money/yandex-checkout-sdk-php/downloads)](https://packagist.org/packages/yandex-money/yandex-checkout-sdk-php)
+[![Monthly Downloads](https://poser.pugx.org/yandex-money/yandex-checkout-sdk-php/d/monthly)](https://packagist.org/packages/yandex-money/yandex-checkout-sdk-php)
+[![License](https://poser.pugx.org/yandex-money/yandex-checkout-sdk-php/license)](https://packagist.org/packages/yandex-money/yandex-checkout-sdk-php)
+
 Russian | [English](https://github.com/yandex-money/yandex-checkout-sdk-php/blob/master/README.en.md)
 
 Клиент для работы с платежами по [API Яндекс.Кассы](https://kassa.yandex.ru/docs/checkout-api/)
@@ -30,6 +36,10 @@ composer require yandex-money/yandex-checkout-sdk-php
 ```bash
 composer update
 ```
+3. В коде вашего проекта подключите автозагрузку файлов нашего клиента:
+```php
+require __DIR__ . '/vendor/autoload.php';
+```
 
 ### Вручную
 
@@ -41,17 +51,13 @@ require __DIR__ . '/lib/autoload.php';
 
 ## Начало работы
 
-1. Подключите зависимости
-```php
-require __DIR__ . '/vendor/autoload.php';
-```
-2. Импортируйте нужные классы
+1. Импортируйте нужные классы
 ```php
 use YandexCheckout\Client;
 ```
-3. Создайте экземпляр объекта клиента и задайте идентификатор магазина и секретный ключ (их можно получить в личном кабинете Яндекс.Кассы). [Как выпустить секретный ключ](https://yandex.ru/support/checkout/payments/keys.html)
+2. Создайте экземпляр объекта клиента и задайте идентификатор магазина и секретный ключ (их можно получить в личном кабинете Яндекс.Кассы). [Как выпустить секретный ключ](https://yandex.ru/support/checkout/payments/keys.html)
 ```php
 $client = new Client();
 $client->setAuth('shopId', 'secretKey');
 ```
-4. Вызовите нужный метод API. [Подробнее в документации к API Яндекс.Кассы](https://kassa.yandex.ru/docs/checkout-api/)
+3. Вызовите нужный метод API. [Подробнее в документации к API Яндекс.Кассы](https://kassa.yandex.ru/developers/api#%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%BF%D0%BB%D0%B0%D1%82%D0%B5%D0%B6%D0%B0)

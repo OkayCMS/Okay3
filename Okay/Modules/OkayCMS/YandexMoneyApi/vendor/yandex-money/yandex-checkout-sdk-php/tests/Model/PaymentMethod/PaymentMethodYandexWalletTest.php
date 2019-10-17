@@ -6,8 +6,6 @@ use YandexCheckout\Helpers\Random;
 use YandexCheckout\Model\PaymentMethod\PaymentMethodYandexWallet;
 use YandexCheckout\Model\PaymentMethodType;
 
-require_once __DIR__ . '/AbstractPaymentMethodPhoneTest.php';
-
 class PaymentMethodYandexWalletTest extends AbstractPaymentMethodTest
 {
     /**

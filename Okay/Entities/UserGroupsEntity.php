@@ -34,9 +34,7 @@ class UserGroupsEntity extends Entity
             $this->db->query($update);
         }
         
-        parent::delete($ids);
-        
-        return false;
+        return parent::delete($ids);
     }
     
 }

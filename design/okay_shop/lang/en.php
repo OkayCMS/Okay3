@@ -231,6 +231,7 @@ $lang['user_header'] = "My Account";
 $lang['user_change_password'] = "Change Password";
 $lang['form_save'] = "Save";
 $lang['user_logout'] = "Log out";
+$lang['user_my_orders'] = "My orders / Pre-orders";
 $lang['user_number_of_order'] = "Order number";
 $lang['user_order_date'] = "Date";
 $lang['user_order_number'] = "Order #";

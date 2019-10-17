@@ -231,6 +231,7 @@ $lang['user_header'] = "Особистий кабінет";
 $lang['user_change_password'] = "Змінити пароль";
 $lang['form_save'] = "Зберегти";
 $lang['user_logout'] = "Вийти";
+$lang['user_my_orders'] = "Мої замовлення / Попередні замовлення";
 $lang['user_number_of_order'] = "Номер замовлення";
 $lang['user_order_date'] = "Дата";
 $lang['user_order_number'] = "Замовлення №";

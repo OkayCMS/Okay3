@@ -4,35 +4,45 @@
 namespace Okay\Controllers;
 
 
+use Okay\Helpers\CartHelper;
+use Okay\Requests\CartRequest;
 use Okay\Core\Notify;
 use Okay\Core\Router;
+use Okay\Core\TemplateConfig;
 use Okay\Entities\DeliveriesEntity;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\CouponsEntity;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\PurchasesEntity;
-use Okay\Entities\PaymentsEntity;
 use Okay\Core\Request;
 use Okay\Core\Cart;
-use Okay\Core\Validator;
 use Okay\Core\Languages;
 use Okay\Core\Money;
+use Okay\Helpers\DeliveriesHelper;
+use Okay\Helpers\PaymentsHelper;
+use Okay\Helpers\ValidateHelper;
+use Okay\Helpers\OrdersHelper;
+use Psr\Log\LoggerInterface;
 
 class CartController extends AbstractController
 {
     /*Отображение заказа*/
     public function render(
         DeliveriesEntity $deliveriesEntity,
-        PaymentsEntity   $paymentsEntity,
         OrdersEntity     $ordersEntity,
         CouponsEntity    $couponsEntity,
         CurrenciesEntity $currenciesEntity,
         Languages        $languages,
         PurchasesEntity  $purchasesEntity,
-        Validator        $validator,
         Request          $request,
         Notify           $notify,
-        Cart             $cartCore
+        Cart             $cartCore,
+        DeliveriesHelper $deliveriesHelper,
+        PaymentsHelper   $paymentsHelper,
+        OrdersHelper      $ordersHelper,
+        CartRequest      $cartRequest,
+        CartHelper       $cartHelper,
+        ValidateHelper   $validateHelper
     ) {
 
         // Если передан id варианта, добавим его в корзину
@@ -41,53 +51,26 @@ class CartController extends AbstractController
             $this->response->redirectTo(Router::generateUrl('cart', [], true));
         }
 
-
+        $cart = $cartCore->get();
         /*Оформление заказа*/
         if (isset($_POST['checkout'])) {
-            $order = new \stdClass;
-            $order->payment_method_id = $this->request->post('payment_method_id', 'integer');
-            $order->delivery_id = $this->request->post('delivery_id', 'integer');
-            $order->name        = $this->request->post('name');
-            $order->email       = $this->request->post('email');
-            $order->address     = $this->request->post('address');
-            $order->phone       = $this->request->post('phone');
-            $order->comment     = $this->request->post('comment');
-            $order->ip          = $_SERVER['REMOTE_ADDR'];
-
-            $this->design->assign('delivery_id', $order->delivery_id);
-            $this->design->assign('name', $order->name);
-            $this->design->assign('email', $order->email);
-            $this->design->assign('phone', $order->phone);
-            $this->design->assign('address', $order->address);
-
-            $captchaCode =  $this->request->post('captcha_code', 'string');
+            $order = $cartRequest->postOrder();
 
             // Скидка
-            $cart = $cartCore->get();
             $order->discount = $cart->discount;
 
-            if($cart->coupon) {
+            if ($cart->coupon) {
                 $order->coupon_discount = $cart->coupon_discount;
                 $order->coupon_code     = $cart->coupon->code;
             }
 
-            if(!empty($this->user->id)) {
+            if (!empty($this->user->id)) {
                 $order->user_id = $this->user->id;
             }
 
             /*Валидация данных клиента*/
-            if(!$validator->isName($order->name, true)) {
-                $this->design->assign('error', 'empty_name');
-            } elseif(!$validator->isEmail($order->email, true)) {
-                $this->design->assign('error', 'empty_email');
-            } elseif(!$validator->isPhone($order->phone)) {
-                $this->design->assign('error', 'empty_phone');
-            } elseif(!$validator->isAddress($order->address)) {
-                $this->design->assign('error', 'empty_address');
-            } elseif(!$validator->isComment($order->comment)) {
-                $this->design->assign('error', 'empty_comment');
-            } elseif($this->settings->captcha_cart && !$validator->verifyCaptcha('captcha_cart', $captchaCode)) {
-                 $this->design->assign('error', 'captcha');
+            if ($error = $validateHelper->getCartValidateError($order)) {
+                $this->design->assign('error', $error);
             } else {
                 // Добавляем заказ в базу
                 $order->lang_id = $languages->getLangId();
@@ -112,18 +95,18 @@ class CartController extends AbstractController
                 $order = $ordersEntity->get(intval($orderId));
 
                 // Стоимость доставки
-                $delivery = $deliveriesEntity->get(intval($order->delivery_id));
-                if(!empty($delivery) && $delivery->free_from > $order->total_price) {
-                    $ordersEntity->update($order->id, [
-                        'delivery_price'    => $delivery->price, 
-                        'separate_delivery' => $delivery->separate_payment
-                    ]);
-                } elseif ($delivery->separate_payment) {
-                    $ordersEntity->update($order->id, [
-                        'separate_delivery' => $delivery->separate_payment
-                    ]);
+                if (!empty($order->delivery_id)) {
+                    $delivery = $deliveriesEntity->get(intval($order->delivery_id));
+                    $deliveryPriceInfo = $deliveriesHelper->prepareDeliveryPriceInfo($delivery, $order);
+                    
+                    // Обновим заказ дынными, которые вернула логика
+                    if (!empty($deliveryPriceInfo)) {
+                        $ordersEntity->update($order->id, $deliveryPriceInfo);
+                    }
                 }
 
+                $ordersHelper->finalCreateOrderProcedure($order);
+                
                 // Обновим итоговую стоимость заказа
                 $ordersEntity->updateTotalPrice($orderId);
                 
@@ -139,8 +122,8 @@ class CartController extends AbstractController
             }
         } else {
             // Если нам запостили amounts, обновляем их
-            if($amounts = $request->post('amounts')) {
-                foreach($amounts as $variantId=>$amount) {
+            if ($amounts = $request->post('amounts')) {
+                foreach ($amounts as $variantId=>$amount) {
                     $cartCore->updateItem($variantId, $amount);
                 }
 
@@ -160,56 +143,47 @@ class CartController extends AbstractController
                     }
                 }
             }
+
+            // Данные пользователя по умолчанию
+            $this->design->assign('request_data', $cartHelper->getDefaultCartData($this->user));
         }
 
-        // Способы доставки
-        $deliveries = $deliveriesEntity->find(['enabled'=>1]);
-        foreach($deliveries as $delivery) {
-            $delivery->payment_methods = $paymentsEntity->find(['delivery_id'=>$delivery->id, 'enabled'=>1]);
-        }
+        // Способы доставки и оплаты
+        $paymentMethods = $paymentsHelper->getCartPaymentsList($cart);
+        $deliveries     = $deliveriesHelper->getCartDeliveriesList($cart, $paymentMethods);
+        $activeDelivery = $deliveriesHelper->getActiveDeliveryMethod($deliveries);
+        $activePayment  = $paymentsHelper->getActivePaymentMethod($paymentMethods, $activeDelivery);
 
         $this->design->assign('all_currencies', $currenciesEntity->mappedBy('id')->find());
         $this->design->assign('deliveries', $deliveries);
+        $this->design->assign('payment_methods', $paymentMethods);
+        $this->design->assign('active_delivery', $activeDelivery);
+        $this->design->assign('active_payment', $activePayment);
         
-        // Данные пользователя
-        if ($this->user) {
-            $last_order = $ordersEntity->find(['user_id'=>$this->user->id, 'limit'=>1]);
-            $last_order = reset($last_order);
-            if ($last_order) {
-                $this->design->assign('name', $last_order->name);
-                $this->design->assign('email', $last_order->email);
-                $this->design->assign('phone', $last_order->phone);
-                $this->design->assign('address', $last_order->address);
-            } else {
-                $this->design->assign('name', $this->user->name);
-                $this->design->assign('email', $this->user->email);
-                $this->design->assign('phone', $this->user->phone);
-                $this->design->assign('address', $this->user->address);
-            }
-        }
-        
-        if($couponsEntity->count(['valid'=>1])>0) {
+        if ($couponsEntity->count(['valid'=>1])>0) {
             $this->design->assign('coupon_request', true);
         }
                 
         $this->design->assign('cart', $cartCore->get());
-        $this->response->setContent($this->design->fetch('cart.tpl'));
+        $this->response->setContent('cart.tpl');
     }
     
     public function cartAjax(
-        DeliveriesEntity $deliveriesEntity,
-        PaymentsEntity   $paymentsEntity,
         CouponsEntity    $couponsEntity,
         CurrenciesEntity $currenciesEntity,
         Request          $request,
         Cart             $cartCore,
-        Money            $moneyCore
+        Money            $moneyCore,
+        DeliveriesHelper $deliveriesHelper,
+        PaymentsHelper   $paymentsHelper,
+        TemplateConfig   $templateConfig,
+        LoggerInterface  $logger
     ) {
         $action     = $request->get('action');
         $variantId  = $request->get('variant_id', 'integer');
         $amount     = $request->get('amount', 'integer');
         
-        switch($action) {
+        switch ($action) {
             case 'update_citem':
                 $cartCore->updateItem($variantId, $amount);
                 break;
@@ -227,27 +201,24 @@ class CartController extends AbstractController
         $this->design->assign('cart', $cart);
 
         $this->design->assign('all_currencies', $currenciesEntity->find());
-        $deliveries = $deliveriesEntity->find(['enabled'=>1]);
-        $this->design->assign('deliveries', $deliveries);
-        foreach ($deliveries as $delivery) {
-            $delivery->payment_methods = $paymentsEntity->find(['delivery_id'=>$delivery->id, 'enabled'=>1]);
-        }
 
         /*Рабтаем с товарами в корзине*/
         if (count($cart->purchases) > 0) {
-            $couponCode = trim($request->get('coupon_code', 'string'));
-            if (empty($couponCode)) {
-                $cartCore->applyCoupon('');
-                if ($this->request->get('action') == 'coupon_apply') {
-                    $this->design->assign('coupon_error', 'empty');
-                }
-            } else {
-                $coupon = $couponsEntity->get((string)$couponCode);
-                if (empty($coupon) || !$coupon->valid) {
-                    $cartCore->applyCoupon($couponCode);
-                    $this->design->assign('coupon_error', 'invalid');
+            if (isset($_GET['coupon_code'])) {
+                $couponCode = trim($request->get('coupon_code', 'string'));
+                if (empty($couponCode)) {
+                    $cartCore->applyCoupon('');
+                    if ($this->request->get('action') == 'coupon_apply') {
+                        $this->design->assign('coupon_error', 'empty');
+                    }
                 } else {
-                    $cartCore->applyCoupon($couponCode);
+                    $coupon = $couponsEntity->get((string)$couponCode);
+                    if (empty($coupon) || !$coupon->valid) {
+                        $cartCore->applyCoupon($couponCode);
+                        $this->design->assign('coupon_error', 'invalid');
+                    } else {
+                        $cartCore->applyCoupon($couponCode);
+                    }
                 }
             }
 
@@ -258,19 +229,41 @@ class CartController extends AbstractController
             $cart = $cartCore->get();
             $this->design->assign('cart', $cart);
             
-            $result = ['result'=>1];
-            $result['cart_informer']   = $this->design->fetch('cart_informer.tpl');
-            $result['cart_purchases']  = $this->design->fetch('cart_purchases.tpl');
-            $result['cart_deliveries'] = $this->design->fetch('cart_deliveries.tpl');
+            $result = ['result' => 1];
+
+            $paymentMethods = $paymentsHelper->getCartPaymentsList($cart);
+            $deliveries = $deliveriesHelper->getCartDeliveriesList($cart, $paymentMethods);
+
+            $result['deliveries_data'] = $deliveries;
+            $result['payment_methods_data'] = $paymentMethods;
+            
+            if (is_file('design/' . $templateConfig->getTheme() . '/html/cart_coupon.tpl')) {
+                $result['cart_coupon'] = $this->design->fetch('cart_coupon.tpl');
+            } else {
+                $logger->error('File "design/' . $templateConfig->getTheme() . '/html/cart_coupon.tpl" not found');
+            }
+            
+            if (is_file('design/' . $templateConfig->getTheme() . '/html/cart_purchases.tpl')) {
+                $result['cart_purchases'] = $this->design->fetch('cart_purchases.tpl');
+            } else {
+                $logger->error('File "design/' . $templateConfig->getTheme() . '/html/cart_purchases.tpl" not found');
+            }
+            
+            $result['cart_deliveries'] = 'DEPRECATED DATA';
             $result['currency_sign']   = $this->currency->sign;
             $result['total_price']     = $moneyCore->convert($cart->total_price, $this->currency->id);
             $result['total_products']  = $cart->total_products;
         } else {
-            $result = ['result'=>0];
-            $result['cart_informer'] = $this->design->fetch('cart_informer.tpl');
+            $result = ['result' => 0];
             $result['content']       = $this->design->fetch('cart.tpl');
         }
 
+        if (is_file('design/' . $templateConfig->getTheme() . '/html/cart_informer.tpl')) {
+            $result['cart_informer'] = $this->design->fetch('cart_informer.tpl');
+        } else {
+            $logger->error('File "design/' . $templateConfig->getTheme() . '/html/cart_informer.tpl" not found');
+        }
+        
         $this->response->setContent(json_encode($result), RESPONSE_JSON);
     }
 

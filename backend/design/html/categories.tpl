@@ -20,6 +20,14 @@
 
 {*Главная форма страницы*}
 <div class="boxed fn_toggle_wrap">
+
+    {$block = {get_design_block block="categories_custom_block"}}
+    {if !empty($block)}
+        <div class="fn_toggle_wrap" style="height: 40px; margin-bottom: 5px;">
+            {$block}
+        </div>
+    {/if}
+
     {if $categories}
         <form method="post" class="fn_form_list fn_fast_button">
             <input type="hidden" name="session_id" value="{$smarty.session.id}" />
@@ -80,6 +88,7 @@
                                     <a class="link" href="{url controller=CategoryAdmin id=$category->id return=$smarty.server.REQUEST_URI}">
                                         {$category->name|escape}
                                     </a>
+                                    {get_design_block block="categories_list_name"}
                                 </div>
 
                                 <div class="okay_list_boding okay_list_status">
@@ -96,6 +105,8 @@
                                     <a href="../{url_generator route="category" url=$category->url}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
                                         {include file='svg_icon.tpl' svgId='icon_desktop'}
                                     </a>
+
+                                    {get_design_block block="categories_actions"}
                                 </div>
                                 <div class="okay_list_boding okay_list_close">
                                     {*delete*}
@@ -186,6 +197,16 @@
                             scrollSpeed: 10, // px
                         });
                     }
+
+                    {if $config->dev_mode}
+                        $('.fn_backend_block_name').parent().addClass('backend_block_parent_element');
+                        $('.fn_backend_block_name').on('mouseover', function () {
+                            $(this).parent().addClass('focus');
+                        });
+                        $('.fn_backend_block_name').on('mouseout', function () {
+                            $(this).parent().removeClass('focus');
+                        });
+                    {/if}
 
                 }
             });

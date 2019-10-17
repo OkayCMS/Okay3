@@ -31,6 +31,24 @@ class ModulesEntity extends Entity
     protected static $table = '__modules';
     protected static $tableAlias = 'm';
 
+    public function getByVendorModuleName($vendor, $moduleName)
+    {
+        if (empty($vendor) || empty($moduleName)) {
+            return null;
+        }
+
+        $this->setUp();
+
+        $filter['vendor'] = $vendor;
+        $filter['module_name'] = $moduleName;
+
+        $this->buildFilter($filter);
+        $this->select->cols($this->getAllFields());
+
+        $this->db->query($this->select);
+        return $this->getResult();
+    }
+    
     public function enable($ids)
     {
         return $this->update($ids, ['enabled'=>1]);

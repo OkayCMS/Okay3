@@ -29,7 +29,7 @@ class PageController extends AbstractController
         $this->design->assign('meta_keywords', $page->meta_keywords);
         $this->design->assign('meta_description', $page->meta_description);
         
-        $this->response->setContent($this->design->fetch('page.tpl'));
+        $this->response->setContent('page.tpl');
     }
     
 }

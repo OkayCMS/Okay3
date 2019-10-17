@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class MenuItemsEntity extends Entity
 {
@@ -43,13 +44,16 @@ class MenuItemsEntity extends Entity
         if (!isset($this->menuItemsTree)) {
             $this->initMenuItems();
         }
-        if ($menuId > 0) {
-            if (!isset($this->menuItemsTree[$menuId])) {
-                return array();
-            }
-            return $this->menuItemsTree[$menuId];
+
+        if ($menuId <= 0) {
+            return ExtenderFacade::execute([static::class, __FUNCTION__], $this->menuItemsTree, func_get_args());
         }
-        return $this->menuItemsTree;
+
+        if (!isset($this->menuItemsTree[$menuId])) {
+            return ExtenderFacade::execute([static::class, __FUNCTION__], [], func_get_args());
+        }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->menuItemsTree[$menuId], func_get_args());
     }
 
     public function getMenuItems()
@@ -57,7 +61,8 @@ class MenuItemsEntity extends Entity
         if (!isset($this->menuItemsTree)) {
             $this->initMenuItems();
         }
-        return $this->allMenuItems;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->allMenuItems, func_get_args());
     }
 
     public function add($menuItem)
@@ -143,6 +148,8 @@ class MenuItemsEntity extends Entity
             $this->menuItemsTree[$menu_id] = $tree->submenus;
             $this->allMenuItems = $this->allMenuItems+$pointers;
         }
+
+        ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
     
 }

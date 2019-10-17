@@ -58,11 +58,9 @@ class CreateCaptureRequestTest extends TestCase
         $receipt->addItem($item);
         self::assertFalse($instance->validate());
         $receipt->setPhone('123123');
-        self::assertFalse($instance->validate());
+        self::assertTrue($instance->validate());
         $item->setVatCode(3);
         self::assertTrue($instance->validate());
-        $item->setVatCode(null);
-        self::assertFalse($instance->validate());
         $receipt->setTaxSystemCode(4);
         self::assertTrue($instance->validate());
 

@@ -5,47 +5,85 @@ namespace Okay\Core\Modules;
 
 
 use Okay\Admin\Controllers\IndexAdmin;
+use Okay\Core\DesignBlocks;
 use Okay\Core\Database;
 use Okay\Core\Entity\Entity;
 use Okay\Core\EntityFactory;
+use Okay\Core\Image;
 use Okay\Core\Managers;
 use Okay\Core\QueryFactory;
 use Okay\Core\ServiceLocator;
 use Okay\Entities\ModulesEntity;
+use Okay\Core\ManagerMenu;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 abstract class AbstractInit
 {
     private $allowedTypes = [
         MODULE_TYPE_PAYMENT,
+        MODULE_TYPE_DELIVERY,
         MODULE_TYPE_XML,
     ];
 
-    /** @var EntityFactory $entityFactory */
+    /**
+     * @var EntityFactory
+     */
     private $entityFactory;
 
-    /** @var Module $module */
+    /**
+     * @var Module
+     */
     private $module;
     
-    /** @var Modules $modules */
+    /**
+     * @var Modules
+     */
     private $modules;
     
-    /** @var Managers $managers */
+    /**
+     * @var Managers
+     */
     private $managers;
     
-    /** @var Database $db */
+    /**
+     * @var Database
+     */
     private $db;
 
-    /** @var QueryFactory $queryFactory */
+    /**
+     * @var QueryFactory
+     */
     private $queryFactory;
     
-    /** @var ModulesEntitiesFilters $entitiesFilters */
+    /**
+     * @var ModulesEntitiesFilters
+     */
     private $entitiesFilters;
 
-    /** @var EntityMigrator $entityMigrator */
+    /**
+     * @var EntityMigrator
+     */
     private $entityMigrator;
 
-    /** @var UpdateObject $updateObject */
+    /**
+     * @var UpdateObject
+     */
     private $updateObject;
+
+    /**
+     * @var ExtenderFacade
+     */
+    private $extenderFacade;
+
+    /**
+     * @var ManagerMenu
+     */
+    private $managerMenu;
+
+    /**
+     * @var Image
+     */
+    private $image;
 
     /**
      * @var int id модуля в базе
@@ -73,6 +111,9 @@ abstract class AbstractInit
         $this->db              = $serviceLocator->getService(Database::class);
         $this->entitiesFilters = $serviceLocator->getService(ModulesEntitiesFilters::class);
         $this->updateObject    = $serviceLocator->getService(UpdateObject::class);
+        $this->extenderFacade  = $serviceLocator->getService(ExtenderFacade::class);
+        $this->managerMenu     = $serviceLocator->getService(ManagerMenu::class);
+        $this->image           = $serviceLocator->getService(Image::class);
         $this->moduleId        = $moduleId;
         $this->vendor          = $vendor;
         $this->moduleName      = $moduleName;
@@ -89,60 +130,223 @@ abstract class AbstractInit
     abstract public function init();
 
     /**
+     * Регистрация блока в админке. Чтобы узнать имя блока, к которому хотите зацепиться,
+     * нужно в конфиге включить директиву dev_mode = true,
+     * зайти в админку на нужную страницу и можно будет увидеть красные лейблы, при наведении на них мышкой
+     * они подсвечивают область, действия блока.
+     * Все данные из вашего tpl файла будут подставляться в конец выделеного блока.
+     *
+     * @param string $blockName название блока
+     * @param string $blockTplFile имя tpl файла блока из директории Backend/design/html модуля
+     * @throws \Exception
+     */
+    protected function addBackendBlock($blockName, $blockTplFile)
+    {
+        $blockTplFile = pathinfo($blockTplFile, PATHINFO_BASENAME);
+        $blockTplFile = $this->module->getModuleDirectory($this->vendor, $this->moduleName) . 'Backend/design/html/' . $blockTplFile;
+        $this->addDesignBlock($blockName, $blockTplFile);
+    }
+
+    /**
+     * Регистрация блока в дизайне клиентского шаблона. Чтобы узнать имя блока, к которому хотите зацепиться,
+     * нужно в конфиге включить директиву dev_mode = true,
+     * зайти в клиентской части сайта на нужную страницу и можно будет увидеть красные лейблы, при наведении на них мышкой
+     * они подсвечивают область, действия блока.
+     * Все данные из вашего tpl файла будут подставляться в конец выделеного блока.
+     *
+     * @param string $blockName название блока
+     * @param string $blockTplFile имя tpl файла блока из директории Backend/design/html модуля
+     * @throws \Exception
+     */
+    protected function addFrontBlock($blockName, $blockTplFile)
+    {
+        $blockTplFile = pathinfo($blockTplFile, PATHINFO_BASENAME);
+        $blockTplFile = $this->module->getModuleDirectory($this->vendor, $this->moduleName) . 'design/html/' . $blockTplFile;
+        $this->addDesignBlock($blockName, $blockTplFile);
+    }
+    
+    /**
      * Метод расширяет коллекцию объектов доступную для использования в файле ajax/update_object.php,
-     * который обновляет определенноую по алиасу сущность повредством AJAX запроса из админ панели сайта
+     * который обновляет определенную по алиасу сущность повредством AJAX запроса из админ панели сайта
      *
      * @param $alias - уникальный псевдоним, который идентифицирует сущность (указывается в атрибуте data-controller="алиас" тега в админ панели)
      * @param $permission - права доступа к псевдониму для менеджера
      * @param $entityClassName - полное имя сущности, которая будет обновляться
      * @throws \Exception
      */
-    protected function registerUpdateObject($alias, $permission, $entityClassName)
+    protected function extendUpdateObject($alias, $permission, $entityClassName)
     {
         $this->updateObject->register($alias, $permission, $entityClassName);
     }
 
+    /**
+     * @param string $originalImgDirDirective название директивы конфига, которая содержит путь к директории оригиналов изображений
+     * @param string $resizedImgDirDirective название директивы конфига, которая содержит путь к директории нарезок изображений
+     * @throws \Exception
+     */
+    protected function addResizeObject($originalImgDirDirective, $resizedImgDirDirective)
+    {
+        $this->image->addResizeObject($originalImgDirDirective, $resizedImgDirDirective);
+    }
+    
+    /**
+     * Данный метод позволяет расшинять меню админ панели посредством добавления новых пунктов меню в оную
+     *
+     * @param $firstLevelName - ленг корневого пункта меню. Если указать существуюзщий, то пункты меню второго уровня добавяться в конец списка внутри существующего пунта меню
+     * @param $menuItemsByControllers - ассоциативный массив с ленгами пунктов меню в качестве ключа и соответствующими им контроллерами в качестве значений
+     * @param $icon - путь к файлу относительно папки Backend модуля или текст svg картинки
+     * @throws \Exception
+     *
+     * @example $this->extendBackendMenu('first_level_menu_name', [
+            'lang_name_menu_item_1' => ['SomeOneAdmin'],
+            'lang_name_menu_item_2' => ['SomeTwoAdmin', 'SomeThreeAdmin'],
+        ], 'icon');
+     */
+    protected function extendBackendMenu($firstLevelName, array $menuItemsByControllers, $icon = null)
+    {
+        $moduleDirectory = $this->module->getModuleDirectory($this->vendor, $this->moduleName);
+
+        foreach($menuItemsByControllers as $item => $controllers) {
+            foreach($controllers as $key => $controller) {
+                $menuItemsByControllers[$item][$key] = $this->module->getBackendControllerName($this->vendor, $this->moduleName, $controller);
+            }
+        }
+
+        if (!empty($icon) && is_file($moduleDirectory.$icon)) {
+            $icon = $moduleDirectory.$icon;
+        }
+
+        $this->managerMenu->extendMenu($firstLevelName, $menuItemsByControllers, $icon);
+    }
+
+    /**
+     * Данный метод регистрирует новый обработчик для расширениия классов ядра.
+     * Подхватывает результат работы указанного метода класса системы
+     * и навешивает на него пост обработку. Если же на данный метод ядра уже навешены
+     * подобные обработки, то они исполнятся в порядке регистрации модулей
+     * и каждый последующий работает с результатами полученныйми от предыдущего обработчика.
+     *
+     * Рекомендуется в данном методе регистрировать исключительно чистые функции, в которых
+     * отсутствует интеграционная логика.
+     *
+     * Для процедур следует использовать метод AbstractInit::registerQueueHandler
+     *
+     * @param $expandable - ['class' => Имя_Расширяемого_Класса, 'method' => Метод_Расширяемого_Класса]
+     * @param $extension - ['class' => Имя_Класса_Расширения, 'method' => Метод_Расширения]
+     * @throws \Exception
+     */
+    protected function registerChainExtension($expandable, $extension)
+    {
+        $this->extenderFacade->newChainExtension($expandable, $extension);
+    }
+
+    /**
+     * Метод работает аналогично AbstractInit::registerChainHandler, за исключением того, что
+     * зарегестрированные в нем обработчики не модифицирует входящие данные, а лишь работает
+     * с данными, которые были преобразованы всеми исполнителями AbstractInit::registerChainHandler,
+     * подвязанными к указанному методу класса ядра, если же таких обработчиков нет, то в качестве
+     * данных принимается непреобразованное возвращаемое методом значение
+     *
+     * Рекомендуется в данном методе регистрировать процедуры, для функций с возвращаемыми значениями
+     * следует использовать AbstractInit::registerChainHandler
+     *
+     * @param $expandable ['class' => Имя_Расширяемого_Класса, 'method' => Метод_Расширяемого_Класса]
+     * @param $extension ['class' => Имя_Класса_Расширения, 'method' => Метод_Расширения]
+     * @throws \Exception
+     */
+    protected function registerQueueExtension($expandable, $extension)
+    {
+        $this->extenderFacade->newQueueExtension($expandable, $extension);
+    }
+
+    /**
+     * Регистрация фильтра для уже существующих в системе сущностей, расположенных в директории Okay\Entities
+     *
+     * @param $entityClassName - имя класса для когорого регистрируется новый фильтр
+     * @param $filterName - имя нового фильтра, которое будет использоваться в массиве совместно с остальным фильтрами
+     * @param $filterClassName - класс в котором описана реализация нового фильтра
+     * @param $filterMethod - метод описывающий реализацию нового фильтра
+     * @throws \Exception
+     */
     protected function registerEntityFilter($entityClassName, $filterName, $filterClassName, $filterMethod)
     {
         $this->entitiesFilters->registerFilter($entityClassName, $filterName, $filterClassName, $filterMethod);
     }
 
-    protected function migrateEntityTable($entityClassName, $field)
+    /**
+     * Создание таблицы новой сущности. Саму сущность регистрировать нигде не нужно,
+     * просто вызываем по неймспейсу из EntityFactory
+     *
+     * @var string $entityClassName Имя класса сущности, которая создается модулем
+     * @var array $fields массив объектов Okay\Core\Modules\EntityField, описывающих поля таблицы
+     * @throws \Exception
+     * 
+     * @example $this->migrateEntityTable(MyEntityClass::class, [
+            (new EntityField('id'))->setIndexPrimaryKey()->setTypeInt(11, false)->setAutoIncrement(),
+            (new EntityField('name'))->setTypeVarchar(255)->setIsLang(),
+            (new EntityField('visible'))->setTypeTinyInt(1),
+            (new EntityField('position'))->setTypeInt(11),
+        ])
+     */
+    protected function migrateEntityTable($entityClassName, array $fields)
     {
-        $this->entityMigrator->migrateTable($entityClassName, $field);
+        $this->entityMigrator->migrateEntityTable($entityClassName, $fields);
     }
 
-    protected function registerEntityField($entityClassName, EntityField $field)
+    /**
+     * @param string $tableName название таблицы
+     * @param array $fields массив объектов Okay\Core\Modules\EntityField, описывающих поля таблицы
+     * 
+     * Создание таблицы в БД. В основном используется для создания таблиц связей.
+     * Таблицы сущностей лучше создавать через migrateEntityTable()
+     */
+    protected function migrateCustomTable($tableName, array $fields)
     {
-        $this->entityMigrator->migrateField($entityClassName, $field);
+        $this->entityMigrator->migrateCustomTable($tableName, $fields);
+    }
 
+    /**
+     * Регистрация дополнительных полей к существующим сущностям
+     * (в базу не добавляются, только учавствуют в селекте и фильтрации)
+     * Вызывать метод нужно в методе init()
+     *
+     * @param string $entityClassName
+     * @param string $fieldName
+     * @param bool $isLang является ли это поле ленговым
+     * @throws \Exception
+     */
+    protected function registerEntityField($entityClassName, $fieldName, $isLang = false)
+    {
         /** @var Entity $entityClassName */
-        if ($field->isLangField()) {
-            $entityClassName::addLangField($field->getName());
+        if ($isLang === true) {
+            $entityClassName::addLangField($fieldName);
             return;
         }
 
-        $entityClassName::addField($field->getName());
+        $entityClassName::addField($fieldName);
     }
 
-    protected function registerEntityFields($entityClassName, $fields)
+    /**
+     * Добавление дополнительных полей в БД к существующим сущностям
+     * Вызывать метод стоит в методе install()
+     *
+     * @param string $entityClassName
+     * @param EntityField $field
+     * @throws \Exception
+     *
+     * @example $field = new EntityField('field_name');
+        $field->setTypeTinyInt(1);
+        $this->migrateEntityField(CategoriesEntity::class, $field);
+     */
+    protected function migrateEntityField($entityClassName, EntityField $field)
     {
-        /** @var Entity $entityClassName */
-        $this->entityMigrator->migrateFieldSet($entityClassName, (array) $fields);
-
-        /** @var EntityField $field */
-        foreach($fields as $field) {
-            if ($field->isLangField()) {
-                $entityClassName::addLangField($field->getName());
-            } else {
-                $entityClassName::addField($field->getName());
-            }
-        }
+        $this->entityMigrator->migrateField($entityClassName, $field);
     }
     
     /**
      * Имя контроллера, который будет в админке обрабатываться как основной.
      * Когда со списка модулей переход внутрь модуля, попадаем на этот контроллер
+     *
      * @param $className 
      * @throws \Exception
      */
@@ -155,19 +359,27 @@ abstract class AbstractInit
             $modulesEntity->update($this->moduleId, ['backend_main_controller' => $className]);
         }
     }
-    
-    public function getBackendControllers()
-    {
-        return $this->backendControllers;
-    }
-    
-    // todo documentation
+
+    /**
+     * Добавление разрешения, в общий массив разрешений для мереджеров.
+     * Нужно использовать если нужно разрешение, но контроллера для него нет.
+     *
+     * @param string $permission название разрешения
+     * @throws \Exception
+     */
     protected function addPermission($permission)
     {
         $this->managers->addModulePermission((string)$permission, $this->vendor . '/' . $this->moduleName);
     }
-    
-    // TODO хорошая валидация
+
+    /**
+     * Добавление связки разрешения и контроллера админки.
+     * Отдельно регистрировать разрешение через addPermission() не нужно
+     *
+     * @param string $controllerClass имя класса контроллера
+     * @param string $permission название разрешения
+     * @throws \Exception
+     */
     protected function addBackendControllerPermission($controllerClass, $permission)
     {
         if ($this->validateBackendController($controllerClass)) {
@@ -177,6 +389,15 @@ abstract class AbstractInit
         }
     }
 
+    /**
+     * Добавление контроллера админки в общий массив контроллеров.
+     * Контроллер должен находиться в Okay\Modules\Vendor\Module\Backend\Controllers\ControllerName
+     * должен наследоваться от Okay\Admin\Controllers\IndexAdmin
+     * и содержать метод fetch(), как стандартный контроллер админки
+     *
+     * @param string $controllerClass имя класса контроллера
+     * @throws \Exception
+     */
     protected function registerBackendController($controllerClass)
     {
         if (is_dir($this->module->getBackendControllersDirectory($this->vendor, $this->moduleName))) {
@@ -193,7 +414,17 @@ abstract class AbstractInit
             }
         }
     }
-    
+
+    /**
+     * Установки типа модуля. Типы влияют на группировку модулей (категоризация).
+     * Также модули нужного типа выводятся в определённых частях системы, например:
+     * Модули типа MODULE_TYPE_DELIVERY выводятся в админке в способе доставки, как выбор модуля доставки
+     * Модули типа MODULE_TYPE_PAYMENT выводятся в админке в способе оплаты, как выбор платёжного модуля.
+     * В системе есть константы, начинающиеся на MODULE_TYPE_*, нужно использовать только их!
+     *
+     * @param string $type
+     * @throws \Exception
+     */
     protected function setModuleType($type)
     {
         if (!in_array($type, $this->allowedTypes)) {
@@ -206,6 +437,23 @@ abstract class AbstractInit
         $modulesEntity->update($this->moduleId, ['type' => $type]);
     }
 
+    /**
+     * Метод возвращает массив котроллеров модулей для админки
+     *
+     * @return array
+     */
+    public function getBackendControllers()
+    {
+        return $this->backendControllers;
+    }
+
+    /**
+     * Валидация контроллера админки
+     *
+     * @param $className
+     * @return bool
+     * @throws \Exception
+     */
     private function validateBackendController($className)
     {
         $fullControllerName = $this->module->getBackendControllersDirectory($this->vendor, $this->moduleName) . $className . '.php';
@@ -223,5 +471,21 @@ abstract class AbstractInit
         }
         
         return true;
+    }
+
+    /**
+     * Метод регистрирует блок для нужной части дизайна
+     *
+     * @param $blockName
+     * @param $blockTplFile
+     * @throws \Exception
+     */
+    private function addDesignBlock($blockName, $blockTplFile)
+    {
+        $serviceLocator = new ServiceLocator();
+
+        /** @var DesignBlocks $designBlocks */
+        $designBlocks = $serviceLocator->getService(DesignBlocks::class);
+        $designBlocks->registerBlock($blockName, $blockTplFile);
     }
 }

@@ -99,7 +99,7 @@
                 <div class="form_wrap f_col-lg-7">
                     <div class="block_explanation">
                         <div class="block_explanation__header">
-                            <span data-language="">Мои заказы / Предзаказы</span>
+                            <span data-language="user_my_orders">{$lang->user_my_orders}</span>
                         </div>
                         <div class="block_explanation__body">
                             <div class="table_wrapper">

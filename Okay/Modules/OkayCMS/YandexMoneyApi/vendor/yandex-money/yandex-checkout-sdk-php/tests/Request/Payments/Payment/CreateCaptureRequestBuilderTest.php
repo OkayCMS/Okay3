@@ -7,6 +7,8 @@ use YandexCheckout\Helpers\Random;
 use YandexCheckout\Model\AmountInterface;
 use YandexCheckout\Model\CurrencyCode;
 use YandexCheckout\Model\MonetaryAmount;
+use YandexCheckout\Model\Receipt\PaymentMode;
+use YandexCheckout\Model\Receipt\PaymentSubject;
 use YandexCheckout\Model\ReceiptItem;
 use YandexCheckout\Request\Payments\Payment\CreateCaptureRequestBuilder;
 
@@ -14,6 +16,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
 {
     /**
      * @dataProvider validDataProvider
+     *
      * @param $options
      */
     public function testSetAmountValue($options)
@@ -32,6 +35,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
 
     /**
      * @dataProvider validAmountDataProvider
+     *
      * @param AmountInterface $amount
      */
     public function testSetAmount($amount)
@@ -46,7 +50,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
         self::assertEquals($amount->getCurrency(), $instance->getAmount()->getCurrency());
 
         $builder->setAmount(array(
-            'value' => $amount->getValue(),
+            'value'    => $amount->getValue(),
             'currency' => $amount->getCurrency(),
         ));
         $instance = $builder->build();
@@ -59,6 +63,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
     /**
      * @dataProvider invalidAmountDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $value
      */
     public function testSetInvalidAmount($value)
@@ -69,6 +74,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
 
     /**
      * @dataProvider validDataProvider
+     *
      * @param $options
      */
     public function testSetAmountCurrency($options)
@@ -85,6 +91,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
     /**
      * @dataProvider invalidCurrencyDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $value
      */
     public function testSetInvalidCurrency($value)
@@ -95,6 +102,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
 
     /**
      * @dataProvider validDataProvider
+     *
      * @param $options
      */
     public function testSetReceiptItems($options)
@@ -115,6 +123,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
 
     /**
      * @dataProvider validDataProvider
+     *
      * @param $options
      */
     public function testAddReceiptItems($options)
@@ -146,6 +155,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
 
     /**
      * @dataProvider validDataProvider
+     *
      * @param $options
      */
     public function testAddReceiptShipping($options)
@@ -178,6 +188,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
     /**
      * @dataProvider invalidItemsDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $items
      */
     public function testSetInvalidReceiptItems($items)
@@ -192,54 +203,55 @@ class CreateCaptureRequestBuilderTest extends TestCase
             array(
                 array(
                     array(
-                        'price' => 1,
+                        'price'    => 1,
                         'quantity' => 1.4,
-                        'vatCode' => 3,
+                        'vatCode'  => 3,
                     ),
-                )
+                ),
             ),
             array(
                 array(
                     array(
-                        'title' => 'test',
+                        'title'    => 'test',
                         'quantity' => 1.4,
-                        'vatCode' => 3,
+                        'vatCode'  => 3,
                     ),
-                )
-            ),
-            array(
-                array(
-                    array(
-                        'description' => 'test',
-                        'quantity' => 1.4,
-                        'vatCode' => 3,
-                    ),
-                )
-            ),
-            array(
-                array(
-                    array(
-                        'title' => 'test',
-                        'price' => 123,
-                        'quantity' => 1.4,
-                        'vatCode' => 7,
-                    ),
-                )
+                ),
             ),
             array(
                 array(
                     array(
                         'description' => 'test',
-                        'price' => 123,
-                        'quantity' => -1.4,
+                        'quantity'    => 1.4,
+                        'vatCode'     => 3,
                     ),
-                )
+                ),
+            ),
+            array(
+                array(
+                    array(
+                        'title'    => 'test',
+                        'price'    => 123,
+                        'quantity' => 1.4,
+                        'vatCode'  => 7,
+                    ),
+                ),
+            ),
+            array(
+                array(
+                    array(
+                        'description' => 'test',
+                        'price'       => 123,
+                        'quantity'    => -1.4,
+                    ),
+                ),
             ),
         );
     }
 
     /**
      * @dataProvider validDataProvider
+     *
      * @param $options
      */
     public function testSetReceiptEmail($options)
@@ -261,6 +273,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
     /**
      * @dataProvider invalidEmailDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $value
      */
     public function testSetInvalidEmail($value)
@@ -271,6 +284,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
 
     /**
      * @dataProvider validDataProvider
+     *
      * @param $options
      */
     public function testSetReceiptPhone($options)
@@ -293,6 +307,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
     /**
      * @dataProvider invalidPhoneDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $value
      */
     public function testSetInvalidPhone($value)
@@ -303,6 +318,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
 
     /**
      * @dataProvider validDataProvider
+     *
      * @param $options
      */
     public function testSetReceiptTaxSystemCode($options)
@@ -325,6 +341,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
     /**
      * @dataProvider invalidVatIdDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $value
      */
     public function testSetInvalidTaxSystemId($value)
@@ -336,18 +353,20 @@ class CreateCaptureRequestBuilderTest extends TestCase
     public function testSetReceipt()
     {
         $receipt = array(
-            'tax_system_code' => Random::int(1,6),
-            'email' => Random::str(10),
-            'phone' => Random::str(4, 15, '0123456789'),
-            'items' => array(
+            'tax_system_code' => Random::int(1, 6),
+            'email'           => Random::str(10),
+            'phone'           => Random::str(4, 15, '0123456789'),
+            'items'           => array(
                 array(
-                    'description' => 'test',
-                    'quantity' => 123,
-                    'amount' => array(
-                        'value' => 321,
+                    'description'     => 'test',
+                    'quantity'        => 123,
+                    'amount'          => array(
+                        'value'    => 321,
                         'currency' => 'USD',
                     ),
-                    'vat_code' => Random::int(1, 6),
+                    'vat_code'        => Random::int(1, 6),
+                    'payment_subject' => PaymentSubject::COMMODITY,
+                    'payment_mode'    => PaymentMode::PARTIAL_PREPAYMENT,
                 ),
             ),
         );
@@ -376,6 +395,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
     /**
      * @dataProvider invalidReceiptDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param mixed $value
      */
     public function testSetInvalidReceipt($value)
@@ -399,11 +419,12 @@ class CreateCaptureRequestBuilderTest extends TestCase
 
     /**
      * @dataProvider validDataProvider
+     *
      * @param $options
      */
     public function testBuild($options)
     {
-        $builder = new CreateCaptureRequestBuilder();
+        $builder  = new CreateCaptureRequestBuilder();
         $instance = $builder->build($options);
         if (!empty($options['amount'])) {
             self::assertNotNull($instance->getAmount());
@@ -425,34 +446,35 @@ class CreateCaptureRequestBuilderTest extends TestCase
         $result = array(
             array(
                 array(
-                    'amount'       => null,
-                    'currency'     => Random::value(CurrencyCode::getValidValues()),
-                    'receiptItems' => array(
+                    'amount'        => null,
+                    'currency'      => Random::value(CurrencyCode::getValidValues()),
+                    'receiptItems'  => array(
                         array(
-                            'title' => 'test',
+                            'title'    => 'test',
                             'quantity' => mt_rand(1, 100),
-                            'price' => mt_rand(1,100),
-                            'vatCode' => mt_rand(1, 6)
+                            'price'    => mt_rand(1, 100),
+                            'vatCode'  => mt_rand(1, 6),
                         ),
                         $receiptItem,
                     ),
-                    'receiptEmail' => Random::str(32),
-                    'receiptPhone' => null,
+                    'receiptEmail'  => Random::str(32),
+                    'receiptPhone'  => null,
                     'taxSystemCode' => null,
                 ),
             ),
         );
         for ($i = 0; $i < 10; $i++) {
-            $request = array(
-                'receiptItems' => array(),
-                'amount'       => Random::int(1, 1000000),
-                'currency'     => Random::value(CurrencyCode::getValidValues()),
-                'receiptEmail' => null,
-                'receiptPhone' => Random::str(10, '0123456789'),
+            $request  = array(
+                'receiptItems'  => array(),
+                'amount'        => Random::int(1, 1000000),
+                'currency'      => Random::value(CurrencyCode::getValidValues()),
+                'receiptEmail'  => null,
+                'receiptPhone'  => Random::str(10, '0123456789'),
                 'taxSystemCode' => Random::int(1, 6),
             );
             $result[] = array($request);
         }
+
         return $result;
     }
 
@@ -502,13 +524,10 @@ class CreateCaptureRequestBuilderTest extends TestCase
     public function invalidPhoneDataProvider()
     {
         return array(
+            array(new \stdClass()),
             array(array()),
             array(true),
             array(false),
-            array(new \stdClass()),
-            array(Random::str(1, '0123456789')),
-            array(Random::str(32)),
-            array(Random::str(18, '0123456789')),
         );
     }
 

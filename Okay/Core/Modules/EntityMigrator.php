@@ -33,7 +33,15 @@ class EntityMigrator
         $this->sqlPresentor = $sqlPresentor;
     }
 
-    public function migrateTable($entityClassName, $entityFields)
+    /**
+     * @param string $entityClassName
+     * @param array $entityFields
+     * @throws Exception
+     * 
+     * Метод создаёт таблицу в БД 
+     * Метод принимает название класса сущности и массив объектов класса Okay\Core\Modules\EntityField
+     */
+    public function migrateEntityTable($entityClassName, array $entityFields)
     {
         /** @var Entity $entityClassName */
         $tableName = $entityClassName::getTable();
@@ -41,9 +49,7 @@ class EntityMigrator
             return;
         }
 
-        $sql = $this->queryFactory->newSqlQuery();
-        $sql->setStatement($this->sqlPresentor->createTableQuery($tableName, $entityFields));
-        $this->db->query($sql);
+        $this->createTable($tableName, $entityFields);
 
         $langTableName = $entityClassName::getLangTable();
         if (empty($langTableName)) {
@@ -55,21 +61,41 @@ class EntityMigrator
             throw new \Exception("Property {$langObject} cannot be empty for creating lang table");
         }
 
+        $langObjectField = $langObject.'_id';
         $langEntityFields = [];
         /** @var EntityField $entityField */
-        $langEntityFields[] = (new EntityField($langObject.'_id'))->setTypeInt(11);
         $langEntityFields[] = (new EntityField('lang_id'))->setTypeInt(11);
-        foreach($entityFields as $entityField) {
+        $langEntityFields[] = (new EntityField($langObjectField))->setTypeInt(11);
+        foreach ($entityFields as $entityField) {
             if ($entityField->isLangField()) {
                 $langEntityFields[] = $entityField;
             }
         }
 
-        $sql = $this->queryFactory->newSqlQuery();
-        $sql->setStatement($this->sqlPresentor->createTableQuery("__lang_".$langTableName, $langEntityFields));
-        $this->db->query($sql);
+        $this->createTable($langTableName, $langEntityFields, $langObjectField);
+    }
+    
+    public function migrateCustomTable($tableName, array $entityFields)
+    {
+        if (empty($tableName)) {
+            return;
+        }
+        
+        $tableName = '__' . preg_replace('~(__)?(.+)~', '$2', $tableName);
+        $this->createTable($tableName, $entityFields);
     }
 
+    private function createTable($tableName, array $entityFields, $langObjectField = null)
+    {
+        if (empty($tableName)) {
+            return;
+        }
+        
+        $sql = $this->queryFactory->newSqlQuery();
+        $sql->setStatement($this->sqlPresentor->createTableQuery($tableName, $entityFields, $langObjectField));
+        $this->db->query($sql);
+    }
+    
     public function migrateFieldSet($entityClassName, $entityFields)
     {
         foreach($entityFields as $entityField) {
@@ -77,7 +103,15 @@ class EntityMigrator
         }
     }
 
-    public function migrateField($entityClassName, $entityField) {
+    /**
+     * @param string $entityClassName
+     * @param EntityField $entityField
+     * @throws Exception
+     * 
+     * Добавление одного поля в базу, к уже существующей таблице
+     */
+    public function migrateField($entityClassName, EntityField $entityField)
+    {
         if (!is_string($entityClassName) || !is_subclass_of($entityClassName, Entity::class)) {
             throw new Exception("\"$entityClassName\" must be class name subclass of \"" . Entity::class . "\"");
         }
@@ -97,7 +131,7 @@ class EntityMigrator
     {
         /** @var Entity $entityClassName */
         if ($field->isLangField()) {
-            $table = "__lang_{$entityClassName::getLangTable()}";
+            $table = $entityClassName::getLangTable();
         } else {
             $table = $entityClassName::getTable();
         }
@@ -119,7 +153,7 @@ class EntityMigrator
     {
         /** @var Entity $entityClassName */
         if ($field->isLangField()) {
-            $table = "__lang_{$entityClassName::getLangTable()}";
+            $table = $entityClassName::getLangTable();
         } else {
             $table = $entityClassName::getTable();
         }
@@ -162,7 +196,7 @@ class EntityMigrator
 
         if ($field->isLangField()) {
             $sqlStatement .= PHP_EOL;
-            $sqlStatement .= $this->sqlPresentor->addColumnQuery('__lang_'.$entityClassName::getLangTable(), $field);
+            $sqlStatement .= $this->sqlPresentor->addColumnQuery($entityClassName::getLangTable(), $field);
         }
 
         $sql = $this->queryFactory->newSqlQuery();
@@ -177,7 +211,7 @@ class EntityMigrator
 
         if ($field->isLangField()) {
             $sqlStatement .= PHP_EOL;
-            $sqlStatement .= $this->sqlPresentor->changeColumnQuery('__lang_'.$entityClassName::getLangTable(), $field);
+            $sqlStatement .= $this->sqlPresentor->changeColumnQuery($entityClassName::getLangTable(), $field);
         }
 
         $sql = $this->queryFactory->newSqlQuery();

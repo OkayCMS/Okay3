@@ -5,8 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
-
-
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class ImagesEntity extends Entity
 {
@@ -55,6 +54,8 @@ class ImagesEntity extends Entity
                 }
             }
         }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
 
 }

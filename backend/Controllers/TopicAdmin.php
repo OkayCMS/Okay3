@@ -46,7 +46,7 @@ class TopicAdmin extends IndexAdmin {
                     $this->design->assign('message_error', 'empty_comment');
                     $this->design->assign('topic_header', $topic->header);
                 } else {
-                    $manager = $this->design->get_var('manager');
+                    $manager = $this->design->getVar('manager');
                     $comment->manager = $manager->login;
                     if (empty($topic->id)) {
                         $result = $support->addTopic([

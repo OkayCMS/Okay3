@@ -1,10 +1,8 @@
 <?php
 
-namespace Common\Exceptions;
+namespace Tests\YandexCheckout\Common\Exceptions;
 
 use YandexCheckout\Common\Exceptions\BadApiRequestException;
-
-require_once __DIR__ . '/AbstractApiRequestExceptionTest.php';
 
 class BadApiRequestExceptionTest extends AbstractApiRequestExceptionTest
 {

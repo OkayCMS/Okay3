@@ -103,6 +103,20 @@ class Languages
         $this->langId = $_SESSION['lang_id'] = intval($id);
     }
 
+    public function getLangLabel($langId = null)
+    {
+        if ($langId === null) {
+            $langId = $this->getLangId();
+        }
+
+        if (!isset($this->languagesList[$langId])) {
+            return false;
+        }
+
+        $currentLanguage = $this->languagesList[$langId];
+        return $currentLanguage->label;
+    }
+    
     public function getLangLink($langId = null)
     {
         $langLink = '';
@@ -188,7 +202,7 @@ class Languages
         }
 
         if (!empty($lang) && $this->getLangId() !== null) {
-            $langJoin = '__lang_' . $langTable . ' AS ' . $langAlias;
+            $langJoin = $langTable . ' AS ' . $langAlias;
             $cond = $langAlias . '.' . $langObject . '_id = ' . $px . '.id AND ' . $langAlias.'.lang_id = '.(int)$lang;
         } else {
             $langJoin = '';
@@ -246,7 +260,7 @@ class Languages
     {
         $select = $this->queryFactory->newSelect();
         $select->cols(['count(*)' => 'count'])
-            ->from('__lang_' . $langTable)
+            ->from($langTable)
             ->where('lang_id = :action_object_lang_id')
             ->where($langObject . '_id = :action_object_id');
         
@@ -264,13 +278,13 @@ class Languages
             $objectField   = $langObject . '_id';
             $data->$objectField = $objectId;
             
-            $insert->into('__lang_' . $langTable)
+            $insert->into($langTable)
                 ->cols((array)$data);
             
             $this->db->query($insert);
         } elseif ($dataLang == 1) {
             $update = $this->queryFactory->newUpdate();
-            $update->table('__lang_' . $langTable)
+            $update->table($langTable)
                 ->cols((array)$data)
                 ->where('lang_id = :action_object_lang_id')
                 ->where($langObject . '_id = :action_object_id');

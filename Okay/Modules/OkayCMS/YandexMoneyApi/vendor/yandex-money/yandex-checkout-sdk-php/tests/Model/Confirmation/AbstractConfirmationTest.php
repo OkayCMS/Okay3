@@ -37,6 +37,10 @@ abstract class AbstractConfirmationTest extends TestCase
         new TestConfirmation($value);
     }
 
+    /**
+     * @return array
+     * @throws \Exception
+     */
     public function invalidTypeDataProvider()
     {
         return array(

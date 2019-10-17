@@ -1,11 +1,9 @@
 <?php
 
-namespace Common\Exceptions;
+namespace Tests\YandexCheckout\Common\Exceptions;
 
 use YandexCheckout\Common\Exceptions\InvalidPropertyException;
 use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-
-require_once __DIR__ . '/InvalidPropertyExceptionTest.php';
 
 class InvalidPropertyValueTypeExceptionTest extends InvalidPropertyExceptionTest
 {

@@ -72,7 +72,7 @@ class FeaturesAdmin extends IndexAdmin
                         }
                         break;
                     }
-                    case 'move_to_page': { // todo Просится в Logic
+                    case 'move_to_page': { // todo Просится в Helper
                         /*Переместить на страницу*/
                         $targetPage = $this->request->post('target_page', 'integer');
     

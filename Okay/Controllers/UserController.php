@@ -74,7 +74,7 @@ class UserController extends AbstractController
         $this->design->assign('orders', $orders);
 
         $this->design->assign('meta_title', $this->user->name);
-        $this->response->setContent($this->design->fetch('user.tpl'));
+        $this->response->setContent('user.tpl');
     }
     
     public function login(UsersEntity $usersEntity)
@@ -99,7 +99,7 @@ class UserController extends AbstractController
             }
         }
         
-        $this->response->setContent($this->design->fetch('login.tpl'));
+        $this->response->setContent('login.tpl');
     }
     
     public function register(UsersEntity $usersEntity, Validator $validator)
@@ -148,7 +148,7 @@ class UserController extends AbstractController
             }
         }
         
-        $this->response->setContent($this->design->fetch('register.tpl'));
+        $this->response->setContent('register.tpl');
     }
     
     public function logout()
@@ -203,7 +203,7 @@ class UserController extends AbstractController
             }
         }
         
-        $this->response->setContent($this->design->fetch('password_remind.tpl'));
+        $this->response->setContent('password_remind.tpl');
     }
     
 }

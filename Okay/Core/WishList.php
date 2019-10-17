@@ -7,7 +7,8 @@ namespace Okay\Core;
 use Okay\Entities\VariantsEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\ImagesEntity;
-use Okay\Logic\MoneyLogic;
+use Okay\Helpers\MoneyHelper;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class WishList
 {
@@ -20,21 +21,21 @@ class WishList
     /** @var ImagesEntity */
     private $imagesEntity;
 
-    /** @var MoneyLogic */
-    private $moneyLogic;
+    /** @var MoneyHelper */
+    private $moneyHelper;
 
     private $settings;
 
     public function __construct(
         EntityFactory $entityFactory,
         Settings $settings,
-        MoneyLogic $moneyLogic
+        MoneyHelper $moneyHelper
     ){
         $this->productsEntity = $entityFactory->get(ProductsEntity::class);
         $this->variantsEntity = $entityFactory->get(VariantsEntity::class);
         $this->imagesEntity   = $entityFactory->get(ImagesEntity::class);
         $this->settings       = $settings;
-        $this->moneyLogic     = $moneyLogic;
+        $this->moneyHelper     = $moneyHelper;
     }
 
     public function get()
@@ -45,7 +46,7 @@ class WishList
 
         $items = !empty($_COOKIE['wishlist']) ? json_decode($_COOKIE['wishlist']) : [];
         if (empty($items) || !is_array($items)) {
-            return $wishList;
+            return ExtenderFacade::execute(__METHOD__, $wishList, func_get_args());
         }
 
         $products = [];
@@ -56,7 +57,7 @@ class WishList
         }
 
         if (empty($products)) {
-            return $wishList;
+            return ExtenderFacade::execute(__METHOD__, $wishList, func_get_args());
         }
 
         $products_ids = array_keys($products);
@@ -67,7 +68,7 @@ class WishList
 
         $variants = $this->variantsEntity->find(['product_id'=>$products_ids]);
         foreach($variants as $variant) {
-            $products[$variant->product_id]->variants[] = $this->moneyLogic->convertVariantPriceToMainCurrency($variant);;
+            $products[$variant->product_id]->variants[] = $this->moneyHelper->convertVariantPriceToMainCurrency($variant);;
         }
 
         if (!empty($images_ids)) {
@@ -86,7 +87,7 @@ class WishList
         }
 
         $wishList->products = $products;
-        return $wishList;
+        return ExtenderFacade::execute(__METHOD__, $wishList, func_get_args());
     }
 
     public function addItem($productId)
@@ -98,6 +99,8 @@ class WishList
         }
         $_COOKIE['wishlist'] = json_encode($items);
         setcookie('wishlist', $_COOKIE['wishlist'], time()+30*24*3600, '/');
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     /*Удаление товара из корзины*/
@@ -114,6 +117,8 @@ class WishList
         $items = array_values($items);
         $_COOKIE['wishlist'] = json_encode($items);
         setcookie('wishlist', $_COOKIE['wishlist'], time()+30*24*3600, '/');
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
     
     /*Очистка списка сравнения*/
@@ -121,5 +126,7 @@ class WishList
     {
         unset($_COOKIE['wishlist']);
         setcookie('wishlist', '', time()-3600, '/');
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 }

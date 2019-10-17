@@ -78,11 +78,6 @@ class Response
         return $this->type;
     }
     
-    public function getContent()
-    {
-        return implode('', $this->content);
-    }
-    
     public function sendContent()
     {
         /** @var Adapters\Response\AbstractResponse $adapter */
@@ -94,7 +89,7 @@ class Response
 
         $this->license->setResponseType($this->type);
         
-        $adapter->send($this->getContent());
+        $adapter->send($this->content);
     }
 
     public function sendHeaders()
@@ -155,6 +150,50 @@ class Response
         }
 
         switch ($this->statusCode) {
+            // 5XX
+            case 521:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 521 Web Server Is Down');
+                break;
+            case 520:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 520 Unknown Error');
+                break;
+            case 511:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 511 Network Authentication Required');
+                break;
+            case 510:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 510 Not Extended');
+                break;
+            case 509:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 509 Bandwidth Limit Exceeded');
+                break;
+            case 508:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 508 Loop Detected');
+                break;
+            case 507:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 507 Insufficient Storage');
+                break;
+            case 506:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 506 Variant Also Negotiates');
+                break;
+            case 505:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 505 HTTP Version Not Supported');
+                break;
+            case 504:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 504 Gateway Timeout');
+                break;
+            case 503:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 503 Service Unavailable');
+                break;
+            case 502:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 502 Bad Gateway');
+                break;
+            case 501:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 501 Not Implemented');
+                break;
+            case 500:
+                $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 500 Internal Server Error');
+                break;
+
             // 4XX
             case 423:
                 $this->addHeader($_SERVER['SERVER_PROTOCOL'].' 423 Locked');

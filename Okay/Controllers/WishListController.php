@@ -11,7 +11,7 @@ class WishListController extends AbstractController
     
     public function render()
     {
-        $this->response->setContent($this->design->fetch('wishlist.tpl'));
+        $this->response->setContent('wishlist.tpl');
     }
     
     public function ajaxUpdate(WishList $wishList)

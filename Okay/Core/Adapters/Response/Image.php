@@ -11,6 +11,6 @@ class Image extends AbstractResponse
     {
         header('Content-type: image', true);
 
-        print $content;
+        print implode('', $content);
     }
 }

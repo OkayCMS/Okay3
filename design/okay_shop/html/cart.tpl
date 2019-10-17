@@ -16,10 +16,71 @@
                 <div class="f_row flex-column flex-lg-row" data-sticky-container> 
                     <div class="sticky f_col f_col-lg-6 f_col-xl-5">
 
-							{* The list of products in the cart *}
-							<div id="fn_purchases">
-								{include file='cart_purchases.tpl'}
-							</div>
+                        {* The list of products in the cart *}
+                        <div class="fn_cart_sticky block--cart_purchases block--boxed block--border" data-margin-top="75" data-sticky-for="1024" data-sticky-class="is-sticky">
+                            <div class="h6" data-language="cart_purchase_title">{$lang->cart_purchase_title}</div>
+
+                            <div id="fn_purchases" class="purchase">
+                                {include file='cart_purchases.tpl'}
+                            </div>
+
+                            <div class="purchase_detail">
+
+                                <div id="fn_cart_coupon">
+                                    {include file="cart_coupon.tpl"}
+                                </div>
+
+                                {* Discount *}
+                                {if $user->discount}
+                                    <div class="purchase_detail__item">
+                                        <div class="purchase_detail__column_name">
+                                            <div class="purchase_detail__name" data-language="cart_discount">{$lang->cart_discount}:</div>
+                                        </div>
+                                        <div class="purchase_detail__column_value">
+                                            <div class="purchase_detail__price">{$user->discount}%</div>
+                                        </div>
+                                    </div>
+                                {/if}
+                                
+                                {* Discount *}
+                                <div class="purchase_detail__item">
+                                    <div class="purchase_detail__column_name">
+                                        <div class="purchase_detail__name" data-language="cart_discount">Сумма заказа:</div>
+                                    </div>
+                                    <div class="purchase_detail__column_value">
+                                        <div id="fn_total_purchases_price" class="purchase_detail__price">{$cart->total_price|convert} {$currency->sign|escape}</div>
+                                    </div>
+                                </div>
+
+                                <div id="fn_total_delivery_price_block" class="purchase_detail__item">
+                                    <div class="purchase_detail__column_name">
+                                        <div class="purchase_detail__name" data-language="cart_discount">
+                                            Доставка<span id="fn_total_separate_delivery"{if !$active_delivery->separate_payment || $active_delivery->is_free_delivery === true} style="display: none;" {/if}> ({$lang->cart_paid_separate})</span>:
+                                        </div>
+                                    </div>
+                                    <div class="purchase_detail__column_value">
+                                        <div id="fn_total_delivery_price" class="purchase_detail__price"{if $active_delivery->is_free_delivery === true} style="display: none;"{/if}>
+                                            {$active_delivery->price|convert} {$currency->sign|escape}
+                                        </div>
+                                        <div id="fn_total_free_delivery" class="purchase_detail__price" data-language="cart_free"{if $active_delivery->is_free_delivery === false} style="display: none;"{/if}>
+                                            {$lang->cart_free}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="purchase_detail__item">
+                                    <div class="purchase_detail__column_name">
+                                        <div class="purchase_detail__name purchase_detail__name--total" data-language="cart_total_price">{$lang->cart_total_price}:</div>
+                                    </div>
+                                    <div class="purchase_detail__column_value">
+                                        <div class="purchase_detail__price purchase_detail__price--total">
+                                            {*Итоговую стоимость выводим с активной доставки*}
+                                            <span><span id="fn_cart_total_price">{$active_delivery->total_price_with_delivery|convert}</span> <span class="currency">{$currency->sign|escape}</span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
 					</div>
                     <div class="sticky f_col f_col-lg-6 f_col-xl-7 flex-lg-first">
@@ -58,7 +119,7 @@
                                             {* User's name *}
                                             <div class="f_col-md-6 f_col-lg-12 f_col-xl-6">
                                                 <div class="form__group ">
-                                                    <input class="form__input form__placeholder--focus" name="name" type="text" value="{$name|escape}" data-language="form_name" >
+                                                    <input class="form__input form__placeholder--focus" name="name" type="text" value="{$request_data.name|escape}" data-language="form_name" >
                                                     <span class="form__placeholder">{$lang->form_name}*</span>
                                                 </div>
                                             </div>
@@ -66,7 +127,7 @@
                                             {* User's phone *}
                                             <div class="f_col-md-6 f_col-lg-12 f_col-xl-6">
                                                 <div class="form__group">
-                                                    <input class="form__input form__placeholder--focus" name="phone" type="text" value="{$phone|escape}" data-language="form_phone" >
+                                                    <input class="form__input form__placeholder--focus" name="phone" type="text" value="{$request_data.phone|escape}" data-language="form_phone" >
                                                     <span class="form__placeholder">{$lang->form_phone}</span>
                                                 </div>
                                             </div>
@@ -74,7 +135,7 @@
                                             {* User's email *}
                                             <div class="f_col-md-6 f_col-lg-12 f_col-xl-6">
                                                 <div class="form__group">
-                                                    <input class="form__input form__placeholder--focus" name="email" type="text" value="{$email|escape}" data-language="form_email" >
+                                                    <input class="form__input form__placeholder--focus" name="email" type="text" value="{$request_data.email|escape}" data-language="form_email" >
                                                     <span class="form__placeholder">{$lang->form_email}*</span>
                                                 </div>
                                             </div>
@@ -82,7 +143,7 @@
                                             {* User's address *}
                                             <div class="f_col-md-6 f_col-lg-12 f_col-xl-6">
                                                 <div class="form__group">
-                                                    <input class="form__input form__placeholder--focus" name="address" type="text" value="{$address|escape}" data-language="form_address" >
+                                                    <input class="form__input form__placeholder--focus" name="address" type="text" value="{$request_data.address|escape}" data-language="form_address" >
                                                     <span class="form__placeholder">{$lang->form_address}</span>
                                                 </div>
                                             </div>
@@ -90,7 +151,7 @@
                                             {* User's message *}
                                             <div class="f_col-xl-12">
                                                 <div class="form__group form__group--last">
-                                                    <textarea class="form__textarea form__placeholder--focus" rows="3" name="comment" data-language="cart_order_comment">{$comment|escape}</textarea>
+                                                    <textarea class="form__textarea form__placeholder--focus" rows="3" name="comment" data-language="cart_order_comment">{$request_data.comment|escape}</textarea>
                                                     <span class="form__placeholder">{$lang->cart_order_comment}</span>
                                                 </div>
                                             </div>
@@ -107,20 +168,20 @@
                                     <div class="form__footer">
                                         {* Captcha *}
                                         {if $settings->captcha_cart}
-                                        {if $settings->captcha_type == "v2"}
-                                            <div class="captcha">
-                                                <div id="recaptcha1"></div>
-                                            </div>
-                                        {elseif $settings->captcha_type == "default"}
-                                            {get_captcha var="captcha_cart"}
-                                            <div class="captcha">
-                                                <div class="secret_number">{$captcha_cart[0]|escape} + ? =  {$captcha_cart[1]|escape}</div>
-                                                <div class="form__captcha">
-                                                    <input class="form__input form__input_captcha form__placeholder--focus" type="text" name="captcha_code" value="" />
-                                                    <span class="form__placeholder">{$lang->form_enter_captcha}*</span>
+                                            {if $settings->captcha_type == "v2"}
+                                                <div class="captcha">
+                                                    <div id="recaptcha1"></div>
                                                 </div>
-                                            </div>
-                                        {/if}
+                                            {elseif $settings->captcha_type == "default"}
+                                                {get_captcha var="captcha_cart"}
+                                                <div class="captcha">
+                                                    <div class="secret_number">{$captcha_cart[0]|escape} + ? =  {$captcha_cart[1]|escape}</div>
+                                                    <div class="form__captcha">
+                                                        <input class="form__input form__input_captcha form__placeholder--focus" type="text" name="captcha_code" value="" />
+                                                        <span class="form__placeholder">{$lang->form_enter_captcha}*</span>
+                                                    </div>
+                                                </div>
+                                            {/if}
                                         {/if}
 
                                         <input type="hidden" name="checkout" value="1">

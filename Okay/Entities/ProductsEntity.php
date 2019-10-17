@@ -6,6 +6,7 @@ namespace Okay\Entities;
 
 use Okay\Core\Entity\Entity;
 use Okay\Core\Money;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class ProductsEntity extends Entity
 {
@@ -48,7 +49,7 @@ class ProductsEntity extends Entity
     public function delete($ids)
     {
         if (empty($ids)) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
         $ids = (array)$ids;
@@ -60,7 +61,7 @@ class ProductsEntity extends Entity
 
         if (!empty($this->getLangTable()) && !empty($this->getLangObject())) {
             $delete = $this->queryFactory->newDelete();
-            $delete->from('__lang_' . $this->getLangTable())->where($this->getLangObject() . '_id IN (:lang_object_ids)');
+            $delete->from($this->getLangTable())->where($this->getLangObject() . '_id IN (:lang_object_ids)');
             $delete->bindValue('lang_object_ids', $ids);
             $this->db->query($delete);
         }
@@ -90,7 +91,7 @@ class ProductsEntity extends Entity
 
         $this->updateLastModify($ids);
 
-        return true;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
 
     private function unlinkImageFiles($productsIds, $imagesIds)
@@ -200,13 +201,14 @@ class ProductsEntity extends Entity
         $this->select->resetOrderBy();
 
         $this->db->query($this->select);
-        return $this->getResult();
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->getResult(), func_get_args());
     }
 
     public function getRelatedProducts($productsIds = [])
     {
         if (empty($productsIds)) {
-            return [];
+            return ExtenderFacade::execute([static::class, __FUNCTION__], [], func_get_args());
         }
 
         $select = $this->queryFactory->newSelect();
@@ -220,7 +222,7 @@ class ProductsEntity extends Entity
             ->bindValue('products_ids', (array)$productsIds);
         
         $this->db->query($select);
-        return $this->db->results();
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->db->results(), func_get_args());
     }
 
     /*Добавление связанных товаров*/
@@ -240,7 +242,7 @@ class ProductsEntity extends Entity
             ->ignore();
         
         $this->db->query($insert);
-        return $relatedId;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $relatedId, func_get_args());
     }
 
     /*Удаление связанных товаров*/
@@ -256,6 +258,8 @@ class ProductsEntity extends Entity
                 ->bindValue('related_id', (int)$relatedId);
         }
         $this->db->query($delete);
+
+        ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
 
     public function deleteRelatedProducts($productsIds, $relatedIds = null)
@@ -267,12 +271,13 @@ class ProductsEntity extends Entity
 
         if ($relatedIds === null) {
             $this->db->query($delete);
-            return;
+            ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
         }
 
         $delete->where('related_id IN(:related_ids)')
             ->bindValue('related_ids', (int)$relatedIds);
         $this->db->query($delete);
+        ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
 
     public function getNeighborsProducts($categoryId, $position)
@@ -328,7 +333,8 @@ class ProductsEntity extends Entity
                 $result[$pIds[$p->id]] = $p;
             }
         }
-        return $result;
+
+        ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
 
     public function duplicate($productId)
@@ -424,7 +430,7 @@ class ProductsEntity extends Entity
         }
 
         $this->multiDuplicateProduct($productId, $newProductId);
-        return $newProductId;
+        ExtenderFacade::execute([static::class, __FUNCTION__], $newProductId, func_get_args());
     }
 
     private function multiDuplicateProduct($productId, $newProductId) {
@@ -471,14 +477,11 @@ class ProductsEntity extends Entity
             }
         }
     }
-
-    protected function customOrder($order = null)
+    
+    protected function customOrder($order = null, array $orderFields = [], array $additionalData = [])
     {
         $coef = $this->serviceLocator->getService(Money::class)->getCoefMoney();
 
-        $orderFields = [];
-
-        // Пример, как реализовать кастомную сортировку.
         switch ($order) {
             case 'price' :
                 $orderFields = [
@@ -518,7 +521,12 @@ class ProductsEntity extends Entity
                 break;
         }
 
-        return $orderFields;
+        // Если передали флаг, что нужно сместить товары не в наличии в конец списка, добавим SQL запрос
+        if (!empty($orderFields) && isset($additionalData['in_stock_first']) && $additionalData['in_stock_first'] === true) {
+            array_unshift($orderFields, '((SELECT count(pv.id) FROM __variants pv WHERE (pv.stock IS NULL OR pv.stock>0) AND p.id = pv.product_id)>0) DESC');
+        }
+        
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $orderFields, func_get_args());
     }
 
     protected function filter__has_price($state)
@@ -610,7 +618,6 @@ class ProductsEntity extends Entity
         $this->select->groupBy(['p.id']);
     }
 
-    // TODO: работает сомнительно, потом перепроверить
     protected function filter__without_category($categoriesIds)
     {
         $this->select->where("(SELECT count(*)=0 FROM __products_categories pc WHERE pc.product_id=p.id)=:without_category");

@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class ManagersEntity extends Entity
 {
@@ -43,7 +44,8 @@ class ManagersEntity extends Entity
                 $m->menu = array();
             }
         }
-        return $managers;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $managers, func_get_args());
     }
 
     public function get($id)
@@ -53,10 +55,10 @@ class ManagersEntity extends Entity
             $manager->menu = unserialize($manager->menu);
 
             $managerCore->setManagerPermissions($manager);
-            
-            return $manager;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], $manager, func_get_args());
         }
-        return null;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
 
     /*Добавление менеджера*/
@@ -124,5 +126,7 @@ class ManagersEntity extends Entity
             ->where( 'id=:id')
             ->bindValue('id', $managerId);
         $this->db->query($update);
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
 }

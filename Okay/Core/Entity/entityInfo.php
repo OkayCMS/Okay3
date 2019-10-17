@@ -64,11 +64,15 @@ trait entityInfo
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     final public static function getLangTable()
     {
-        return (string)static::$langTable;
+        $table = (string)static::$langTable;
+        if (empty($table)) {
+            return null;
+        }
+        return '__lang_' . preg_replace('~(__lang_)?(.+)~', '$2', $table);
     }
 
     /**
@@ -76,7 +80,8 @@ trait entityInfo
      */
     final public static function getTable()
     {
-        return (string)static::$table;
+        $table = (string)static::$table;
+        return '__' . preg_replace('~(__)?(.+)~', '$2', $table);
     }
 
     /**

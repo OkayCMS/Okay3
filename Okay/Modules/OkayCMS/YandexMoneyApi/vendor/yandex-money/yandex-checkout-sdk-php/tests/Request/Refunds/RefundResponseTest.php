@@ -4,8 +4,6 @@ namespace Tests\YandexCheckout\Request\Refunds;
 
 use YandexCheckout\Request\Refunds\RefundResponse;
 
-require_once __DIR__ . '/AbstractRefundResponseTest.php';
-
 class RefundResponseTest extends AbstractRefundResponseTest
 {
     /**

@@ -49,7 +49,7 @@
                         </div>
                         <div class="okay_list_boding okay_list_delivery_name">
                             {if $module->backend_main_controller}
-                                <a href="{url controller=[{$module->vendor},{$module->module_name},{$module->backend_main_controller}] id=$module->id return=$smarty.server.REQUEST_URI}">
+                                <a href="{url controller=[{$module->vendor},{$module->module_name},{$module->backend_main_controller}] id=null return=$smarty.server.REQUEST_URI}">
                                     {$module->vendor|escape}/{$module->module_name|escape}
                                 </a>
                             {else}

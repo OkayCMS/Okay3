@@ -1,10 +1,8 @@
 <?php
 
-namespace Common\Exceptions;
+namespace Tests\YandexCheckout\Common\Exceptions;
 
 use YandexCheckout\Common\Exceptions\ResponseProcessingException;
-
-require_once __DIR__ . '/ApiExceptionTest.php';
 
 class ResponseProcessingExceptionTest extends ApiExceptionTest
 {

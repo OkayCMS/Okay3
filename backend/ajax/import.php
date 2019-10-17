@@ -5,7 +5,7 @@ use Okay\Entities\ManagersEntity;
 use Okay\Core\OkayContainer\OkayContainer;
 use Okay\Entities\FeaturesValuesEntity;
 use Okay\Core\QueryFactory;
-use Okay\Logic\FeaturesLogic;
+use Okay\Helpers\FeaturesHelper;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Core\EntityFactory;
@@ -97,9 +97,9 @@ class ImportAjax
     protected $productsCount = 100;
 
     /**
-     * @var FeaturesLogic
+     * @var FeaturesHelper
      */
-    protected $featuresLogic;
+    protected $featuresHelper;
 
     /**
      * @var ManagersEntity
@@ -133,7 +133,7 @@ class ImportAjax
         $this->brandsEntity         = $entityFactory->get(BrandsEntity::class);
         $this->imagesEntity         = $entityFactory->get(ImagesEntity::class);
         $this->queryBuilder         = $DI->get(QueryFactory::class);
-        $this->featuresLogic        = $DI->get(FeaturesLogic::class);
+        $this->featuresHelper       = $DI->get(FeaturesHelper::class);
         $this->languages            = $DI->get(Languages::class);
         $this->db                   = $DI->get(Database::class);
         $this->translit             = $DI->get(Translit::class);
@@ -584,7 +584,7 @@ class ImportAjax
             }
 
             if (!empty($features)) {
-                $this->featuresLogic->addFeatures($features, $productId, $categoryId);
+                $this->featuresHelper->addFeatures($features, $productId, $categoryId);
             }
 
             return $importedItem;

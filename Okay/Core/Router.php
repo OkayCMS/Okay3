@@ -3,15 +3,16 @@
 
 namespace Okay\Core;
 
-use Okay\Core\Modules\Module;
+use Okay\Core\Entity\Entity;
 use Bramus\Router\Router as BRouter;
 use OkayLicense\License;
+use Okay\Entities\PagesEntity;
 
 class Router {
 
     const DEFAULT_CONTROLLER_NAMESPACE = '\\Okay\\Controllers\\';
 
-    private $currentRouteName;
+    private static $currentRouteName;
     private $routeParams;
     private $routeRequiredParams;
     
@@ -59,6 +60,19 @@ class Router {
         
     }
 
+    public static function getFrontRoutes()
+    {
+        self::initializeRoutes();
+        $result = [];
+        foreach (self::$routes as $name=>$route) {
+            if (isset($route['to_front']) && $route['to_front'] === true) {
+                $result[$name] = $route;
+            }
+        }
+        
+        return $result;
+    }
+    
     public static function getRouteByName($name)
     {
         self::initializeRoutes();
@@ -125,7 +139,7 @@ class Router {
                 $pattern = $baseRoute . $this->getPattern($route);
                 
                 $router->all("{$pattern}", function(...$params) use ($router, $route, $request, $language, $baseRoute, $routeName) {
-                    $this->currentRouteName = $routeName;
+                    self::$currentRouteName = $routeName;
                     $this->request->setBasePath($router->getBasePath());
 
                     $this->request->setPageUrl($this->getCurrentUri( // todo это должен сам Request знать
@@ -141,11 +155,28 @@ class Router {
                         $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . $controllerName;
                     }
                     $method = $route['params']['method'];
-                    
+
+                    $this->license->registerSmartyPlugins();
                     $this->license->check();
-                    
+
+                    $settings = $this->serviceLocator->getService(Settings::class);
+                    $siteDisabled = $settings->get('site_work') === 'off' && empty($_SESSION['admin']) ? true : false;
+                    if ($siteDisabled) {
+                        $this->response->setStatusCode(503);
+                        $this->response->sendHeaders();
+                        exit();
+                    }
+
                     // Если язык выключен, отдадим 404
                     if (!$language->enabled && empty($_SESSION['admin'])) {
+                        $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController';
+                        $method = 'pageNotFound';
+                    }
+
+                    /** @var PagesEntity $pagesEntity */
+                    $pagesEntity   = $this->entityFactory->get(PagesEntity::class);
+                    $page = $pagesEntity->get((string) $_SERVER['REQUEST_URI']);
+                    if (!empty($page) && empty($page->visible)) {
                         $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController';
                         $method = 'pageNotFound';
                     }
@@ -200,7 +231,9 @@ class Router {
 
         // Передаем контроллеру, все, что запросили
         call_user_func_array([$controller, 'onInit'], $this->getMethodParams($controller, 'onInit', $params, $routeVars, $defaults));
-        return call_user_func_array([$controller, $methodName], $this->getMethodParams($controller, $methodName, $params, $routeVars, $defaults));
+        $controllerResult = call_user_func_array([$controller, $methodName], $this->getMethodParams($controller, $methodName, $params, $routeVars, $defaults));
+        call_user_func_array([$controller, 'afterController'], $this->getMethodParams($controller, 'afterController', $params, $routeVars, $defaults));
+        return $controllerResult;
     }
     
     /**
@@ -262,9 +295,14 @@ class Router {
         return $result;
     }
     
-    public function getCurrentRouteName()
+    /**
+     * @return string
+     *
+     * Метод возвращает имя текущего роута
+     */
+    public static function getCurrentRouteName()
     {
-        return $this->currentRouteName;
+        return self::$currentRouteName;
     }
 
     /**
@@ -326,11 +364,8 @@ class Router {
         foreach ($reflectionMethod->getParameters() as $parameter) {
             
             if ($parameter->getClass() !== null) { // если для аргумента указан type hint, передадим экземляр соответствующего класса
-                $class = new \ReflectionClass($parameter->getClass()->name);
-                $namespace = trim($class->getNamespaceName(), '\\');
-                
-                // Определяем namespace запрашиваемого типа, это Entity или сервис из DI
-                if ($namespace == 'Okay\Entities') {
+                // Определяем это Entity или сервис из DI
+                if (is_subclass_of($parameter->getClass()->name, Entity::class)) {
                     $methodParams[$parameter->getClass()->name] = $this->entityFactory->get($parameter->getClass()->name);
                 } else {
                     $methodParams[$parameter->getClass()->name] = $this->serviceLocator->getService($parameter->getClass()->name);

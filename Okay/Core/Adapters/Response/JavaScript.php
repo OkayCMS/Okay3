@@ -11,6 +11,6 @@ class JavaScript extends AbstractResponse
     {
         header('Content-type: text/javascript; charset=utf-8', true);
 
-        print $content;
+        print implode('', $content);
     }
 }

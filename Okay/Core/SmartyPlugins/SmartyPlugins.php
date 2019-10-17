@@ -15,21 +15,16 @@ use Okay\Core\Router;
 use Okay\Core\EntityFactory;
 use Okay\Core\Image;
 use Okay\Core\Settings;
+use Okay\Core\DesignBlocks;
 use Okay\Core\TemplateConfig;
 use Okay\Core\OkayContainer\Reference\ParameterReference as PR;
 use Okay\Core\OkayContainer\Reference\ServiceReference as SR;
-use Okay\Logic\FilterLogic;
-use Okay\Logic\ProductsLogic;
+use Okay\Helpers\FilterHelper;
+use Okay\Helpers\ProductsHelper;
 
 $DI = include 'Okay/Core/config/container.php';
 
 $plugins = [
-    Plugins\GetBanner::class => [
-        'class' => Plugins\GetBanner::class,
-        'arguments' => [
-            new SR(EntityFactory::class),
-        ],
-    ],
     Plugins\GetCaptcha::class => [
         'class' => Plugins\GetCaptcha::class,
     ],
@@ -49,21 +44,28 @@ $plugins = [
         'class' => Plugins\GetFeaturedProducts::class,
         'arguments' => [
             new SR(EntityFactory::class),
-            new SR(ProductsLogic::class),
+            new SR(ProductsHelper::class),
+        ],
+    ],
+    Plugins\GetBrowsedProducts::class => [
+        'class' => Plugins\GetBrowsedProducts::class,
+        'arguments' => [
+            new SR(EntityFactory::class),
+            new SR(ProductsHelper::class),
         ],
     ],
     Plugins\GetNewProducts::class => [
         'class' => Plugins\GetNewProducts::class,
         'arguments' => [
             new SR(EntityFactory::class),
-            new SR(ProductsLogic::class),
+            new SR(ProductsHelper::class),
         ],
     ],
     Plugins\GetDiscountedProducts::class => [
         'class' => Plugins\GetDiscountedProducts::class,
         'arguments' => [
             new SR(EntityFactory::class),
-            new SR(ProductsLogic::class),
+            new SR(ProductsHelper::class),
         ],
     ],
     Plugins\Convert::class => [
@@ -97,7 +99,7 @@ $plugins = [
         'class' => Plugins\Furl::class,
         'arguments' => [
             new SR(Router::class),
-            new SR(FilterLogic::class),
+            new SR(FilterHelper::class),
         ],
     ],
     Plugins\First::class => [
@@ -174,6 +176,14 @@ $plugins = [
             new PR('root_dir'),
         ],
     ],
+    Plugins\GetDesignBlock::class => [
+        'class' => Plugins\GetDesignBlock::class,
+        'arguments' => [
+            new SR(DesignBlocks::class),
+            new SR(Design::class),
+            new SR(Config::class),
+        ],
+    ],
 ];
 
 $DI->bindServices($plugins);
@@ -181,6 +191,6 @@ $DI->bindServices($plugins);
 // Регистрируем все плагины
 foreach ($plugins as $plugin) {
     $p = $DI->get($plugin['class']);
-    $p->register($DI->get(Design::class));
+    $p->register($DI->get(Design::class), $DI->get(Module::class));
 }
 

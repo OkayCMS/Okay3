@@ -6,8 +6,6 @@ use PHPUnit\Framework\TestCase;
 use YandexCheckout\Client\CurlClient;
 use YandexCheckout\Common\HttpVerb;
 
-require_once __DIR__ . '/ClientTest.php';
-
 class CurlClientTest extends TestCase
 {
     public function testConnectionTimeout()
@@ -22,6 +20,13 @@ class CurlClientTest extends TestCase
         $client = new CurlClient();
         $client->setTimeout(10);
         $this->assertEquals(10, $client->getTimeout());
+    }
+
+    public function testProxy()
+    {
+        $client = new CurlClient();
+        $client->setProxy('proxy_url:8889');
+        $this->assertEquals('proxy_url:8889', $client->getProxy());
     }
 
     /**
@@ -72,19 +77,6 @@ class CurlClientTest extends TestCase
         $client = new CurlClient();
         $client->call('', HttpVerb::HEAD, array('queryParam' => 'value'), array('httpBody' => 'testValue'),
             array('testHeader' => 'testValue'));
-    }
-
-    public function testHttpVerbException()
-    {
-        $curlClientMock = $this->getMockBuilder('YandexCheckout\Client\CurlClient')
-                               ->setMethods(array('setCurlOption'))
-                               ->getMock();
-        $curlClientMock->setBody(HttpVerb::OPTIONS, array());
-        $curlClientMock->setBody(HttpVerb::DELETE, array());
-        $curlClientMock->setBody(HttpVerb::PATCH, array());
-        $curlClientMock->setBody(HttpVerb::PUT, array());
-        $this->setExpectedException('YandexCheckout\Common\Exceptions\ApiException');
-        $curlClientMock->setBody('invalid verb', array());
     }
 
     public function curlErrorCodeProvider()

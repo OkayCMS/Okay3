@@ -5,7 +5,6 @@ namespace Tests\YandexCheckout\Model\Confirmation;
 use YandexCheckout\Model\Confirmation\ConfirmationExternal;
 use YandexCheckout\Model\ConfirmationType;
 
-require_once __DIR__ . '/AbstractConfirmationTest.php';
 
 class ConfirmationExternalTest extends AbstractConfirmationTest
 {

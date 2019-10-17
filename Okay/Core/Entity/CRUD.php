@@ -7,14 +7,28 @@ namespace Okay\Core\Entity;
 use Aura\SqlQuery\Common\Select;
 use Aura\SqlQuery\QueryFactory;
 use Okay\Core\Database;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 trait CRUD
 {
 
+    public function findOne(array $filter = [])
+    {
+        $filter['limit'] = 1;
+        
+        if (!$results = $this->find($filter)) {
+            return false;
+        }
+
+        $result = reset($results);
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
+    }
+    
     public function get($id)
     {
         if (empty($id)) {
-            return null;
+            $this->flush();
+            return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
         }
         
         $this->setUp();
@@ -29,7 +43,9 @@ trait CRUD
         $this->select->cols($this->getAllFields());
         
         $this->db->query($this->select);
-        return $this->getResult();
+
+        $result = $this->getResult();
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
 
     public function find(array $filter = [])
@@ -50,7 +66,8 @@ trait CRUD
             $field = reset($resultFields);
         }
 
-        return $this->getResults($field, $this->mappedBy);
+        $results = $this->getResults($field, $this->mappedBy);
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $results, func_get_args());
     }
 
     public function count(array $filter = [])
@@ -65,7 +82,9 @@ trait CRUD
         $this->select->resetOrderBy();
 
         $this->db->query($this->select);
-        return $this->getResult('count');
+
+        $count = $this->getResult('count');
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $count, func_get_args());
     }
 
     public function add($object)
@@ -94,7 +113,7 @@ trait CRUD
         $this->db->query($insert);
 
         if (!$id = $this->db->insertId()) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
         $update = $this->queryFactory->newUpdate();
@@ -112,7 +131,7 @@ trait CRUD
             $this->actionDescription($id, $result->description);
         }
 
-        return (int)$id;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], (int) $id, func_get_args());
     }
 
     public function update($ids, $object)
@@ -150,13 +169,14 @@ trait CRUD
         if (!empty($result->description)) {
             $this->actionDescription($ids, $result->description, $this->lang->getLangId());
         }
-        return true;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
 
     public function delete($ids)
     {
         if (empty($ids)) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
         $ids = (array)$ids;
         
@@ -167,11 +187,12 @@ trait CRUD
 
         if (!empty($this->getLangTable()) && !empty($this->getLangObject())) {
             $delete = $this->queryFactory->newDelete();
-            $delete->from('__lang_' . $this->getLangTable())->where($this->getLangObject() . '_id IN (:lang_object_ids)');
+            $delete->from($this->getLangTable())->where($this->getLangObject() . '_id IN (:lang_object_ids)');
             $delete->bindValue('lang_object_ids', $ids);
             $this->db->query($delete);
         }
-        return true;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
     
     final public function cols(array $cols)

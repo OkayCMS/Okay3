@@ -2,16 +2,11 @@
     {* Full base address *}
     <base href="{$base}/">
 
-    {literal}
+    {$ok_head}
+    
+    {strip}
     <script>
-        var okay = {};
-        okay.router = {};
-        okay.router.search_url = '{/literal}{url_generator route="ajax_search"}{literal}';
-        okay.router.cart_ajax_url = '{/literal}{url_generator route="cart_ajax"}{literal}';
-        okay.router.comparison_url = '{/literal}{url_generator route="comparison_ajax"}{literal}';
-        okay.router.wishlist_url = '{/literal}{url_generator route="wishlist_ajax"}{literal}';
-        okay.router.product_rating = '{/literal}{url_generator route="ajax_product_rating"}{literal}';
-        ut_tracker = {
+        const ut_tracker = {
             start: function(name) {
                 performance.mark(name + ':start');
             },
@@ -22,8 +17,8 @@
             }
         }
     </script>
-    {/literal}
-
+    {/strip}
+    
     {* Title *}
     {strip}
     <title>
@@ -236,14 +231,15 @@
     <link href="{$rootUrl}/{$config->design_images}{$settings->site_favicon}?v={$settings->site_favicon_version}" type="image/x-icon" rel="icon">
     <link href="{$rootUrl}/{$config->design_images}{$settings->site_favicon}?v={$settings->site_favicon_version}" type="image/x-icon" rel="shortcut icon">
 
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap&subset=cyrillic" rel="stylesheet">
-    <link href="https://cdn.materialdesignicons.com/3.8.95/css/materialdesignicons.min.css" rel="stylesheet">
+
+
+    {*<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap&subset=cyrillic" rel="stylesheet">
+    <link href="https://cdn.materialdesignicons.com/3.8.95/css/materialdesignicons.min.css" rel="stylesheet">*}
 
     {* JQuery *}
     <script>ut_tracker.start('parsing:page');</script>
 
     <script>ut_tracker.start('parsing:head:scripts');</script>
-    {$ok_head}
     {if $controller == "Products"}
     {js file='jquery-migrate-3.0.1.min.js' defer=true}
     {/if}

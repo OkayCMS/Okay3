@@ -5,8 +5,6 @@ namespace Tests\YandexCheckout\Model\ConfirmationAttributes;
 use YandexCheckout\Model\ConfirmationAttributes\ConfirmationAttributesCodeVerification;
 use YandexCheckout\Model\ConfirmationType;
 
-require_once __DIR__ . '/AbstractConfirmationAttributesTest.php';
-
 class ConfirmationAttributesCodeVerificationTest extends AbstractConfirmationAttributesTest
 {
     /**

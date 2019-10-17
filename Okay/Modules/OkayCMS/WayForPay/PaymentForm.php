@@ -6,7 +6,7 @@ namespace Okay\Modules\OkayCMS\WayForPay;
 
 use Okay\Core\EntityFactory;
 use Okay\Core\Modules\AbstractModule;
-use Okay\Core\Modules\Payments\PaymentFormInterface;
+use Okay\Core\Modules\Interfaces\PaymentFormInterface;
 use Okay\Core\Money;
 use Okay\Core\Router;
 use Okay\Core\Languages;
@@ -164,7 +164,7 @@ class PaymentForm extends AbstractModule implements PaymentFormInterface
 
         $hash = [];
         foreach ($keysForSignature as $dataKey) {
-            $variableDataKey = $this->design->get_var($dataKey);
+            $variableDataKey = $this->design->getVar($dataKey);
             if (empty($variableDataKey)) {
                 continue;
             }

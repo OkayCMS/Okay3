@@ -115,6 +115,7 @@
                                 </div>
                             </div>
                         </div>
+                        {get_design_block block="category_heading"}
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
@@ -134,6 +135,7 @@
                                 </div>
                             </div>
                         </div>
+                        {get_design_block block="category_switch_checkboxes"}
                     </div>
                 </div>
             </div>
@@ -178,6 +180,7 @@
                         </li>
                     </ul>
                 </div>
+                {get_design_block block="category_image"}
             </div>
         </div>
         <div class="col-lg-8 col-md-12">
@@ -227,6 +230,7 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="category_parameters"}
             </div>
         </div>
     </div>
@@ -268,9 +272,18 @@
                         <textarea name="meta_description" class="form-control okay_textarea fn_meta_field">{$category->meta_description|escape}</textarea>
                     </div>
                 </div>
+                {get_design_block block="category_meta_data"}
             </div>
         </div>
     </div>
+
+    {$block = {get_design_block block="category_custom_block"}}
+    {if !empty($block)}
+        <div class="boxed fn_toggle_wrap">
+            {$block}
+        </div>
+    {/if}
+
 
     {*Описание элемента*}
     <div class="row">

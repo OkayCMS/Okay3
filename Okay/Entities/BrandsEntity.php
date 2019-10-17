@@ -49,8 +49,6 @@ class BrandsEntity extends Entity
     {
         $this->select->distinct(true);
         $this->select->join('left', '__products AS p', 'p.brand_id=b.id');
-        //$this->select->groupBy(['b.id']);
-
         return parent::find($filter);
     }
     
@@ -166,6 +164,7 @@ class BrandsEntity extends Entity
         if (empty($brand->url)) {
             $brand->url = $translit->translitAlpha($brand->name);
         }
+
         $brand->url = preg_replace("/[\s]+/ui", '', $brand->url);
         $brand->url = strtolower(preg_replace("/[^0-9a-z]+/ui", '', $brand->url));
 
@@ -184,7 +183,7 @@ class BrandsEntity extends Entity
     {
         $ids = (array)$ids;
         if (empty($ids)) {
-            return false;
+            parent::delete($ids);
         }
 
         /** @var Image $imageCore */

@@ -175,7 +175,6 @@ try {
         $uploadConfig['upload_dir'] = $config['ftp_temp_folder'];
     }
 
-    //print_r($_FILES);die();
     $upload_handler = new UploadHandler($uploadConfig, true, $messages);
 } catch (Exception $e) {
     $return = array();

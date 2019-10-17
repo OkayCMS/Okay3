@@ -43,7 +43,7 @@ class Design
 
     /** @var string */
     private $useTemplateDir = self::TEMPLATES_DEFAULT;
-
+    
     /**
      * @var array
      */
@@ -141,6 +141,18 @@ class Design
         }
     }
 
+    /**
+     * Проверка существует ли данный файл шаблона
+     * 
+     * @param $tplFile
+     * @return bool
+     * @throws \SmartyException
+     */
+    public function templateExists($tplFile)
+    {
+        return $this->smarty->templateExists(trim(preg_replace('~[\n\r]*~', '', $tplFile)));
+    }
+    
     public function registerPlugin($type, $tag, $callback)
     {
         switch ($type) {
@@ -162,6 +174,18 @@ class Design
         }
         
         return $this->smarty->assign($var, $value);
+    }
+
+    /**
+     * @param $var
+     * @param $value
+     * 
+     * Метод позволяет передать переменную с PHP непосредственно в JS код
+     * Считать переменную можно будет как okay.var_name
+     */
+    public function assignJsVar($var, $value)
+    {
+        $_SESSION['common_js']['vars'][$var] = $value;
     }
 
     /*Отображение конкретного шаблона*/
@@ -249,8 +273,15 @@ class Design
     }
 
     /*Выборка переменой*/
-    public function get_var($name) {
+    public function getVar($name)
+    {
         return $this->smarty->getTemplateVars($name);
+    }
+    
+    public function get_var($name)
+    {
+        trigger_error('Method ' . __METHOD__ . ' is deprecated. Please use getVar', E_USER_DEPRECATED);
+        return $this->getVar($name);
     }
 
     /*Очитска кэша Smarty*/
@@ -275,16 +306,5 @@ class Design
     {
         $this->smarty->setTemplateDir($dir);
     }
-
-    public function getModuleVendor()
-    {
-        return preg_replace('~.*/?Okay/Modules/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/?.*~', '$1', $this->getModuleTemplatesDir());
-    }
-
-    public function getModuleName()
-    {
-        return preg_replace('~.*/?Okay/Modules/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/?.*~', '$2', $this->getModuleTemplatesDir());
-    }
-
 
 }

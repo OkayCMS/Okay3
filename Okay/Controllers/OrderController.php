@@ -10,7 +10,7 @@ use Okay\Entities\DeliveriesEntity;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\OrderStatusEntity;
 use Okay\Entities\PaymentsEntity;
-use Okay\Logic\OrdersLogic;
+use Okay\Helpers\OrdersHelper;
 
 class OrderController extends AbstractController
 {
@@ -22,7 +22,7 @@ class OrderController extends AbstractController
         DeliveriesEntity $deliveriesEntity,
         OrderStatusEntity $orderStatusEntity,
         CurrenciesEntity $currenciesEntity,
-        OrdersLogic $ordersLogic,
+        OrdersHelper $ordersHelper,
         $url
     ) {
         $order = $ordersEntity->get((string)$url);
@@ -31,7 +31,7 @@ class OrderController extends AbstractController
             return false;
         }
 
-        $purchases = $ordersLogic->getOrderPurchases(intval($order->id));
+        $purchases = $ordersHelper->getOrderPurchases(intval($order->id));
         if (!$purchases) {
             return false;
         }
@@ -84,7 +84,7 @@ class OrderController extends AbstractController
         $this->design->assign('all_currencies', $currenciesEntity->find());
         
         // Выводим заказ
-        $this->response->setContent($this->design->fetch('order.tpl'));
+        $this->response->setContent('order.tpl');
     }
     
 }

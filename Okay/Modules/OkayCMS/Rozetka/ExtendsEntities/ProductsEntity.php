@@ -8,7 +8,7 @@ use Okay\Core\Modules\AbstractModuleEntityFilter;
 
 class ProductsEntity extends AbstractModuleEntityFilter
 {
-    public function rozetka_only($categoriesIds, $filter)
+    public function filter__rozetka_only($categoriesIds, $filter)
     {
         $categoryFilter = '';
         if (!empty($categoriesIds)) {

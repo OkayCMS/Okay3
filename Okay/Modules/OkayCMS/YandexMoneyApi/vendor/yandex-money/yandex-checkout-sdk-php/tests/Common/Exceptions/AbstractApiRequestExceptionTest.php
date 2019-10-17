@@ -1,8 +1,6 @@
 <?php
 
-namespace Common\Exceptions;
-
-require_once __DIR__ . '/ApiExceptionTest.php';
+namespace Tests\YandexCheckout\Common\Exceptions;
 
 abstract class AbstractApiRequestExceptionTest extends ApiExceptionTest
 {
@@ -17,7 +15,7 @@ abstract class AbstractApiRequestExceptionTest extends ApiExceptionTest
         if (empty($tmp['description'])) {
             self::assertEquals('', $instance->getMessage());
         } else {
-            self::assertEquals($tmp['description'].'.', $instance->getMessage());
+            self::assertEquals($tmp['description'] . '.', $instance->getMessage());
         }
     }
 
@@ -41,7 +39,7 @@ abstract class AbstractApiRequestExceptionTest extends ApiExceptionTest
         if (empty($tmp['code'])) {
             self::assertEquals('', $instance->getMessage());
         } else {
-            self::assertEquals('Error code: '.$tmp['code'].'.', $instance->getMessage());
+            self::assertEquals('Error code: ' . $tmp['code'] . '.', $instance->getMessage());
         }
     }
 
@@ -65,7 +63,7 @@ abstract class AbstractApiRequestExceptionTest extends ApiExceptionTest
         if (empty($tmp['parameter'])) {
             self::assertEquals('', $instance->getMessage());
         } else {
-            self::assertEquals('Parameter name: '.$tmp['parameter'].'.', $instance->getMessage());
+            self::assertEquals('Parameter name: ' . $tmp['parameter'] . '.', $instance->getMessage());
         }
     }
 
@@ -137,15 +135,15 @@ abstract class AbstractApiRequestExceptionTest extends ApiExceptionTest
         $tmp = json_decode($body, true);
         $message = '';
         if (!empty($tmp['description'])) {
-            $message = $tmp['description'].'.';
+            $message = $tmp['description'] . '. ';
         }
         if (!empty($tmp['code'])) {
-            $message .= 'Error code: '.$tmp['code'].'.';
+            $message .= 'Error code: ' . $tmp['code'] . '. ';
         }
         if (!empty($tmp['parameter'])) {
-            $message .= 'Parameter name: '.$tmp['parameter'].'.';
+            $message .= 'Parameter name: ' . $tmp['parameter'] . '. ';
         }
-        self::assertEquals($message, $instance->getMessage());
+        self::assertEquals(trim($message), $instance->getMessage());
 
         if (empty($tmp['retry_after'])) {
             self::assertNull($instance->retryAfter);

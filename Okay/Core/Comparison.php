@@ -9,6 +9,7 @@ use Okay\Entities\FeaturesEntity;
 use Okay\Entities\VariantsEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\ImagesEntity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class Comparison
 {
@@ -144,7 +145,8 @@ class Comparison
                 $comparison->products = $products;
             }
         }
-        return $comparison;
+
+        return ExtenderFacade::execute(__METHOD__, $comparison,func_get_args());
     }
 
     public function addItem($productId)
@@ -159,6 +161,8 @@ class Comparison
         }
         $_COOKIE['comparison'] = json_encode($items);
         setcookie('comparison', $_COOKIE['comparison'], time()+30*24*3600, '/');
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     /*Удаление товара из корзины*/
@@ -166,6 +170,7 @@ class Comparison
     {
         $items = !empty($_COOKIE['comparison']) ? json_decode($_COOKIE['comparison']) : array();
         if (!is_array($items)) {
+            ExtenderFacade::execute(__METHOD__, null, func_get_args());
             return;
         }
         $i = array_search($productId, $items);
@@ -175,6 +180,8 @@ class Comparison
         $items = array_values($items);
         $_COOKIE['comparison'] = json_encode($items);
         setcookie('comparison', $_COOKIE['comparison'], time()+30*24*3600, '/');
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
     
     /*Очистка списка сравнения*/
@@ -182,5 +189,7 @@ class Comparison
     {
         unset($_COOKIE['comparison']);
         setcookie('comparison', '', time()-3600, '/');
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 }

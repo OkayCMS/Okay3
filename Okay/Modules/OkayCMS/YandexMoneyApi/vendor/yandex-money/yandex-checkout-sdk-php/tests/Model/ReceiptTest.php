@@ -6,6 +6,8 @@ use PHPUnit\Framework\TestCase;
 use YandexCheckout\Helpers\Random;
 use YandexCheckout\Model\MonetaryAmount;
 use YandexCheckout\Model\Receipt;
+use YandexCheckout\Model\Receipt\ReceiptItemAmount;
+use YandexCheckout\Model\ReceiptCustomer;
 use YandexCheckout\Model\ReceiptItem;
 
 class ReceiptTest extends TestCase
@@ -129,8 +131,8 @@ class ReceiptTest extends TestCase
         self::assertNull($instance->getPhone());
         self::assertNull($instance->phone);
 
-        $instance->setPhone($options['phone']);
-        if ($options['phone'] === null || $options['phone'] === '') {
+        $instance->setPhone(!empty($options['phone']) ? $options['phone'] : null);
+        if (empty($options['phone'])) {
             self::assertNull($instance->getPhone());
             self::assertNull($instance->phone);
         } else {
@@ -150,8 +152,8 @@ class ReceiptTest extends TestCase
         self::assertNull($instance->getPhone());
         self::assertNull($instance->phone);
 
-        $instance->phone = $options['phone'];
-        if ($options['phone'] === null || $options['phone'] === '') {
+        $instance->phone = !empty($options['phone']) ? $options['phone'] : null;
+        if (empty($options['phone'])) {
             self::assertNull($instance->getPhone());
             self::assertNull($instance->phone);
         } else {
@@ -182,8 +184,8 @@ class ReceiptTest extends TestCase
         self::assertNull($instance->getEmail());
         self::assertNull($instance->email);
 
-        $instance->setEmail($options['email']);
-        if ($options['email'] === null || $options['email'] === '') {
+        $instance->setEmail(!empty($options['email']) ? $options['email'] : null);
+        if (empty($options['email'])) {
             self::assertNull($instance->getEmail());
             self::assertNull($instance->email);
         } else {
@@ -203,8 +205,8 @@ class ReceiptTest extends TestCase
         self::assertNull($instance->getEmail());
         self::assertNull($instance->email);
 
-        $instance->email = $options['email'];
-        if ($options['email'] === null || $options['email'] === '') {
+        $instance->email = !empty($options['email']) ? $options['email'] : null;
+        if (empty($options['email'])) {
             self::assertNull($instance->getEmail());
             self::assertNull($instance->email);
         } else {
@@ -246,12 +248,42 @@ class ReceiptTest extends TestCase
                     'email'           => '',
                 ),
             ),
+            array(
+                array(
+                    'items'           => array(),
+                    'customer'        => array(
+                        'phone'           => '',
+                        'email'           => '',
+                    ),
+                    'tax_system_code' => '',
+                ),
+            ),
+            array(
+                array(
+                    'items'           => array(),
+                    'customer'        => array(
+                        'phone'           => '',
+                    ),
+                    'tax_system_code' => '',
+                    'email'           => '',
+                ),
+            ),
+            array(
+                array(
+                    'items'           => array(),
+                    'customer'        => array(
+                        'phone'           => '',
+                    ),
+                    'tax_system_code' => '',
+                    'email'           => '',
+                ),
+            ),
         );
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 1; $i < 6; $i++) {
             $receipt = array(
                 'items'           => array(),
-                'tax_system_code' => mt_rand(1, 6),
-                'phone'           => mt_rand(1000, 999999999999999),
+                'tax_system_code' => $i,
+                'phone'           => Random::str(10, 10, '1234567890'),
                 'email'           => uniqid() . '@' . uniqid(),
             );
             $result[] = array($receipt);
@@ -307,13 +339,9 @@ class ReceiptTest extends TestCase
     {
         return array(
             array(new \stdClass()),
-            array('invalid_value'),
-            array(324),
-            array(0),
+            array(array()),
             array(true),
             array(false),
-            array(1.43),
-            array(7),
         );
     }
 
@@ -614,12 +642,14 @@ class ReceiptTest extends TestCase
         $receiptItem->setDescription('test');
         $receiptItem->setQuantity(322);
         $receiptItem->setVatCode(4);
-        $receiptItem->setPrice(new MonetaryAmount(5, 'USD'));
+        $receiptItem->setPrice(new ReceiptItemAmount(5, 'USD'));
+
         return array(
             array(
                 array(),
                 array(),
             ),
+
             array(
                 array(
                     'taxSystemCode' => 2,
@@ -638,6 +668,7 @@ class ReceiptTest extends TestCase
                     ),
                 ),
             ),
+
             array(
                 array(
                     'tax_system_code' => 3,
@@ -675,7 +706,124 @@ class ReceiptTest extends TestCase
                         $receiptItem,
                     ),
                 ),
-            )
+                array(
+                    'taxSystemCode' => 3,
+                    'customer' => array(
+                        'phone' => '1234567890',
+                        'email' => 'test@tset',
+                    ),
+                    'items' => array(
+                        $receiptItem,
+                        new ReceiptItem(),
+                        $receiptItem,
+                    ),
+                ),
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider fromArrayCustomerDataProvider
+     * @param array $source
+     * @param array $expected
+     */
+    public function testCustomerFromArray($source, $expected)
+    {
+        $receipt = new Receipt();
+        $receipt->fromArray($source);
+
+        if (!empty($expected)) {
+            foreach ($expected as $property => $value) {
+                self::assertEquals($value, $receipt->offsetGet($property));
+            }
+        } else {
+            self::assertEquals(null, $receipt->getCustomer());
+        }
+    }
+
+    public function fromArrayCustomerDataProvider()
+    {
+        $customer = new ReceiptCustomer();
+        $customer->setFullName('John Doe');
+        $customer->setEmail('johndoe@yandex.ru');
+        $customer->setPhone('79000000000');
+        $customer->setInn('6321341814');
+
+        return array(
+
+            array(
+                array(),
+                array(),
+            ),
+
+            array(
+                array(
+                    'customer' => array(
+                        'fullName' => 'John Doe',
+                        'email' => 'johndoe@yandex.ru',
+                        'phone' => '79000000000',
+                        'inn' => '6321341814',
+                    ),
+                ),
+                array(
+                    'customer' => $customer
+                ),
+            ),
+
+            array(
+                array(
+                    'customer' => array(
+                        'full_name' => 'John Doe',
+                        'inn' => '6321341814',
+                        'email' => 'johndoe@yandex.ru',
+                        'phone' => '79000000000',
+                    ),
+                ),
+                array(
+                    'customer' => $customer
+                ),
+            ),
+
+            array(
+                array(
+                    'customer' => array(
+                        'full_name' => 'John Doe',
+                        'inn' => '6321341814',
+                    ),
+                    'email' => 'johndoe@yandex.ru',
+                    'phone' => '79000000000',
+                ),
+                array(
+                    'customer' => $customer
+                ),
+            ),
+
+            array(
+                array(
+                    'customer' => array(
+                        'full_name' => 'John Doe',
+                        'inn' => '6321341814',
+                        'email' => 'johndoe@yandex.ru',
+                    ),
+                    'phone' => '79000000000',
+                ),
+                array(
+                    'customer' => $customer
+                ),
+            ),
+            array(
+                array(
+                    'customer' => array(
+                        'full_name' => 'John Doe',
+                        'inn' => '6321341814',
+                        'phone' => '79000000000',
+                    ),
+                    'email' => 'johndoe@yandex.ru',
+                ),
+                array(
+                    'customer' => $customer
+                ),
+            ),
         );
     }
 }

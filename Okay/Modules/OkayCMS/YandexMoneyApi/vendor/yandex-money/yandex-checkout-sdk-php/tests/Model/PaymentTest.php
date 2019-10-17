@@ -4,14 +4,17 @@ namespace Tests\YandexCheckout\Model;
 
 use PHPUnit\Framework\TestCase;
 use YandexCheckout\Helpers\Random;
+use YandexCheckout\Model\CancellationDetails;
+use YandexCheckout\Model\CancellationDetailsPartyCode;
+use YandexCheckout\Model\CancellationDetailsReasonCode;
 use YandexCheckout\Model\Confirmation\ConfirmationRedirect;
 use YandexCheckout\Model\Metadata;
 use YandexCheckout\Model\MonetaryAmount;
 use YandexCheckout\Model\Payment;
 use YandexCheckout\Model\PaymentMethod\PaymentMethodQiwi;
+use YandexCheckout\Model\PaymentStatus;
 use YandexCheckout\Model\ReceiptRegistrationStatus;
 use YandexCheckout\Model\Recipient;
-use YandexCheckout\Model\Status;
 
 class PaymentTest extends TestCase
 {
@@ -571,6 +574,49 @@ class PaymentTest extends TestCase
      * @dataProvider validDataProvider
      * @param array $options
      */
+    public function testGetSetRefundable($options)
+    {
+        $instance = new Payment();
+
+        self::assertNull($instance->getRefundable());
+        self::assertNull($instance->refundable);
+
+        $instance->setRefundable($options['refundable']);
+        self::assertSame($options['refundable'], $instance->getRefundable());
+        self::assertSame($options['refundable'], $instance->refundable);
+
+        $instance = new Payment();
+        $instance->refundable = $options['refundable'];
+        self::assertSame($options['refundable'], $instance->getRefundable());
+        self::assertSame($options['refundable'], $instance->refundable);
+    }
+
+    /**
+     * @dataProvider invalidDataProvider
+     * @expectedException \InvalidArgumentException
+     * @param $value
+     */
+    public function testSetInvalidRefundable($value)
+    {
+        $instance = new Payment();
+        $instance->setRefundable($value['refundable']);
+    }
+
+    /**
+     * @dataProvider invalidDataProvider
+     * @expectedException \InvalidArgumentException
+     * @param $value
+     */
+    public function testSetterInvalidRefundable($value)
+    {
+        $instance = new Payment();
+        $instance->refundable = $value['refundable'];
+    }
+
+    /**
+     * @dataProvider validDataProvider
+     * @param array $options
+     */
     public function testGetSetReceiptRegistration($options)
     {
         $instance = new Payment();
@@ -673,10 +719,14 @@ class PaymentTest extends TestCase
     public function validDataProvider()
     {
         $result = array();
-        for ($i = 0; $i < 10; $i++) {
+        $cancellationDetailsParties = CancellationDetailsPartyCode::getValidValues();
+        $countCancellationDetailsParties = count($cancellationDetailsParties);
+        $cancellationDetailsReasons = CancellationDetailsReasonCode::getValidValues();
+        $countCancellationDetailsReasons = count($cancellationDetailsReasons);
+        for ($i = 0; $i < 20; $i++) {
             $payment = array(
                 'id' => Random::str(36),
-                'status' => Random::value(Status::getValidValues()),
+                'status' => Random::value(PaymentStatus::getValidValues()),
                 'recipient' => new Recipient(),
                 'amount' => new MonetaryAmount(Random::int(1, 10000), 'RUB'),
                 'description' => ($i == 0 ? null : ($i == 1 ? '' : ($i == 2 ? Random::str(Payment::MAX_LENGTH_DESCRIPTION)
@@ -691,8 +741,13 @@ class PaymentTest extends TestCase
                 'income' => new MonetaryAmount(),
                 'refunded_amount' => new MonetaryAmount(),
                 'paid' => $i % 2 ? true : false,
+                'refundable' => $i % 2 ? true : false,
                 'receipt_registration' => $i == 0 ? null : ($i == 1 ? '' : Random::value(ReceiptRegistrationStatus::getValidValues())),
                 'metadata' => new Metadata(),
+                'cancellation_details' => new CancellationDetails(
+                    $cancellationDetailsParties[$i % $countCancellationDetailsParties],
+                    $cancellationDetailsReasons[$i % $countCancellationDetailsReasons]
+                )
             );
             $result[] = array($payment);
         }
@@ -715,6 +770,7 @@ class PaymentTest extends TestCase
                     'income' => null,
                     'refunded_amount' => null,
                     'paid' => null,
+                    'refundable' => null,
                     'created_at' => null,
                     'captured_at' => array(),
                     'receipt_registration' => array(),
@@ -733,6 +789,7 @@ class PaymentTest extends TestCase
                     'income' => '',
                     'refunded_amount' => '',
                     'paid' => '',
+                    'refundable' => '',
                     'created_at' => array(),
                     'captured_at' => '23423-234-234',
                     'receipt_registration' => new \stdClass(),
@@ -752,6 +809,7 @@ class PaymentTest extends TestCase
                 'income' => 'test',
                 'refunded_amount' => 'test',
                 'paid' => $i == 0 ? array() : new \stdClass(),
+                'refundable' => $i == 0 ? array() : new \stdClass(),
                 'created_at' => $i == 0 ? '23423-234-32' : -Random::int(),
                 'captured_at' => -Random::int(),
                 'receipt_registration' => $i == 0 ? true : Random::str(5),
@@ -851,7 +909,7 @@ class PaymentTest extends TestCase
         $instance = new Payment();
         $instance->setDescription($options['description']);
 
-        if (empty($options['description'])) {
+        if (empty($options['description']) && ($options['description'] !== '0')) {
             self::assertNull($instance->getDescription());
         } else {
             self::assertEquals($options['description'], $instance->getDescription());
@@ -875,5 +933,35 @@ class PaymentTest extends TestCase
         $instance = new Payment();
         $description = Random::str(Payment::MAX_LENGTH_DESCRIPTION + 1);
         $instance->setDescription($description);
+    }
+
+    /**
+     * @dataProvider validDataProvider
+     * @param array $options
+     */
+    public function testGetSetCancellationDetails($options)
+    {
+        $instance = new Payment();
+
+        self::assertNull($instance->getCancellationDetails());
+        self::assertNull($instance->cancellationDetails);
+        self::assertNull($instance->cancellation_details);
+
+        $instance->setCancellationDetails($options['cancellation_details']);
+        self::assertSame($options['cancellation_details'], $instance->getCancellationDetails());
+        self::assertSame($options['cancellation_details'], $instance->cancellationDetails);
+        self::assertSame($options['cancellation_details'], $instance->cancellation_details);
+
+        $instance = new Payment();
+        $instance->cancellationDetails = $options['cancellation_details'];
+        self::assertSame($options['cancellation_details'], $instance->getCancellationDetails());
+        self::assertSame($options['cancellation_details'], $instance->cancellationDetails);
+        self::assertSame($options['cancellation_details'], $instance->cancellation_details);
+
+        $instance = new Payment();
+        $instance->cancellation_details = $options['cancellation_details'];
+        self::assertSame($options['cancellation_details'], $instance->getCancellationDetails());
+        self::assertSame($options['cancellation_details'], $instance->cancellationDetails);
+        self::assertSame($options['cancellation_details'], $instance->cancellation_details);
     }
 }

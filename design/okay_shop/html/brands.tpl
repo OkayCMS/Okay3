@@ -35,7 +35,7 @@
 			{* The page body *}
 			{if $page->description}
 			<div class="">
-				<div class="fn_reedmore">
+				<div class="fn_readmore">
 					<div class="page-description__text boxed__description">{$page->description}</div>
 				</div>
 			</div>

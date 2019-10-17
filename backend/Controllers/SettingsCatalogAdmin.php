@@ -30,6 +30,7 @@ class SettingsCatalogAdmin extends IndexAdmin
             $this->settings->comparison_count = $this->request->post('comparison_count');
             $this->settings->update('units', $this->request->post('units'));
             $this->settings->posts_num = $this->request->post('posts_num');
+            $this->settings->missing_products = $this->request->post('missing_products');
             
             if ($this->request->post('truncate_table_confirm') && ($pass = $this->request->post('truncate_table_password'))) {
                 $manager = $managersEntity->get($_SESSION['admin']);

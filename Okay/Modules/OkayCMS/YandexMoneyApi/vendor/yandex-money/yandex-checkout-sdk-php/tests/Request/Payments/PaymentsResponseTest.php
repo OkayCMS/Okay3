@@ -4,12 +4,14 @@ namespace Tests\YandexCheckout\Request\Payments;
 
 use PHPUnit\Framework\TestCase;
 use YandexCheckout\Helpers\Random;
+use YandexCheckout\Model\CancellationDetailsPartyCode;
+use YandexCheckout\Model\CancellationDetailsReasonCode;
 use YandexCheckout\Model\ConfirmationType;
 use YandexCheckout\Model\CurrencyCode;
 use YandexCheckout\Model\PaymentInterface;
 use YandexCheckout\Model\PaymentMethodType;
+use YandexCheckout\Model\PaymentStatus;
 use YandexCheckout\Model\ReceiptRegistrationStatus;
-use YandexCheckout\Model\Status;
 use YandexCheckout\Request\Payments\PaymentsResponse;
 
 class PaymentsResponseTest extends TestCase
@@ -32,6 +34,7 @@ class PaymentsResponseTest extends TestCase
             self::assertEquals($options['items'][$index]['created_at'], $item->getCreatedAt()->format(DATE_ATOM));
             self::assertEquals($options['items'][$index]['payment_method']['type'], $item->getPaymentMethod()->getType());
             self::assertEquals($options['items'][$index]['paid'], $item->getPaid());
+            self::assertEquals($options['items'][$index]['refundable'], $item->getRefundable());
         }
     }
 
@@ -76,7 +79,7 @@ class PaymentsResponseTest extends TestCase
                     'items' => array(
                         array(
                             'id' => Random::str(36),
-                            'status' => Status::SUCCEEDED,
+                            'status' => PaymentStatus::SUCCEEDED,
                             'amount' => array(
                                 'value' => Random::int(1, 100000),
                                 'currency' => CurrencyCode::EUR,
@@ -87,6 +90,7 @@ class PaymentsResponseTest extends TestCase
                                 'type' => PaymentMethodType::QIWI,
                             ),
                             'paid' => false,
+                            'refundable' => false,
                         )
                     ),
                     'next_page' => uniqid(),
@@ -97,7 +101,7 @@ class PaymentsResponseTest extends TestCase
                     'items' => array(
                         array(
                             'id' => Random::str(36),
-                            'status' => Status::SUCCEEDED,
+                            'status' => PaymentStatus::SUCCEEDED,
                             'amount' => array(
                                 'value' => Random::int(1, 100000),
                                 'currency' => CurrencyCode::EUR,
@@ -107,13 +111,14 @@ class PaymentsResponseTest extends TestCase
                                 'type' => PaymentMethodType::QIWI,
                             ),
                             'paid' => true,
+                            'refundable' => true,
                             'confirmation' => array(
                                 'type' => ConfirmationType::EXTERNAL,
                             ),
                         ),
                         array(
                             'id' => Random::str(36),
-                            'status' => Status::SUCCEEDED,
+                            'status' => PaymentStatus::SUCCEEDED,
                             'amount' => array(
                                 'value' => Random::int(1, 100000),
                                 'currency' => CurrencyCode::EUR,
@@ -124,6 +129,7 @@ class PaymentsResponseTest extends TestCase
                                 'type' => PaymentMethodType::QIWI,
                             ),
                             'paid' => false,
+                            'refundable' => false,
                             'recipient' => array(
                                 'account_id' => uniqid(),
                                 'gateway_id' => uniqid(),
@@ -134,6 +140,9 @@ class PaymentsResponseTest extends TestCase
                             'income' => array('value' => Random::int(1, 100000), 'currency' => CurrencyCode::USD),
                             'refunded' => array('value' => Random::int(1, 100000), 'currency' => CurrencyCode::EUR),
                             'metadata' => array('test_key' => 'test_value'),
+                            'cancellation_details' => array('party' => CancellationDetailsPartyCode::PAYMENT_NETWORK, 'reason' => CancellationDetailsReasonCode::INVALID_CSC),
+                            'authorization_details' => array('rrn' => Random::str(20), 'auth_code' => Random::str(20)),
+                            'refunded_amount' => array('value' => Random::int(1, 100000), 'currency' => CurrencyCode::RUB),
                             'confirmation' => array(
                                 'type' => ConfirmationType::EXTERNAL,
                             ),
@@ -148,7 +157,7 @@ class PaymentsResponseTest extends TestCase
                     'items' => array(
                         array(
                             'id' => Random::str(36),
-                            'status' => Status::SUCCEEDED,
+                            'status' => PaymentStatus::SUCCEEDED,
                             'amount' => array(
                                 'value' => Random::int(1, 100000),
                                 'currency' => CurrencyCode::EUR,
@@ -159,6 +168,7 @@ class PaymentsResponseTest extends TestCase
                                 'type' => PaymentMethodType::QIWI,
                             ),
                             'paid' => true,
+                            'refundable' => true,
                             'confirmation' => array(
                                 'type' => ConfirmationType::REDIRECT,
                                 'confirmation_url' => Random::str(10),

@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class ReportStatEntity extends Entity
 {
@@ -48,13 +49,11 @@ class ReportStatEntity extends Entity
         $this->select->resetOrderBy();
 
         $this->db->query($this->select);
-        return $this->getResult('count');
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->getResult('count'), func_get_args());
     }
 
-    protected function customOrder($order = null)
+    protected function customOrder($order = null, array $orderFields = [], array $additionalData = [])
     {
-        $orderFields = [];
-
         // Пример, как реализовать кастомную сортировку.
         switch ($order) {
             case 'price' :
@@ -79,7 +78,7 @@ class ReportStatEntity extends Entity
                 break;
         }
 
-        return $orderFields;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $orderFields, func_get_args());
     }
     
     protected function filter__status($statusId)
@@ -204,7 +203,8 @@ class ReportStatEntity extends Entity
         foreach ($this->db->results() as $v) {
             $result[$v->category_id] = $v;
         }
-        return $result;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
     
 }

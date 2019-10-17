@@ -133,7 +133,7 @@ class PaymentMethodFactoryTest extends TestCase
             ),
             array(
                 array(
-                    'type'     => PaymentMethodType::ANDROID_PAY,
+                    'type'     => PaymentMethodType::GOOGLE_PAY,
                     'id'       => Random::str(1, 64),
                     'saved'    => Random::int() % 2 ? true : false,
                     'title'    => Random::str(10, 20),
@@ -154,6 +154,7 @@ class PaymentMethodFactoryTest extends TestCase
                     'saved'       => Random::int() % 2 ? true : false,
                     'title'       => Random::str(10, 20),
                     'last4'       => Random::str(4, '0123456789'),
+                    'first6'      => Random::str(6, '0123456789'),
                     'expiryYear'  => Random::int(2000, 2200),
                     'expiryMonth' => Random::value(array('01','02','03','04','05','06','07','08','09','10','11','12')),
                     'cardType'    => Random::value(PaymentMethodCardType::getValidValues()),
@@ -166,6 +167,7 @@ class PaymentMethodFactoryTest extends TestCase
                     'saved'        => Random::int() % 2 ? true : false,
                     'title'        => Random::str(10, 20),
                     'last4'        => Random::str(4, '0123456789'),
+                    'first6'       => Random::str(6, '0123456789'),
                     'expiry_year'  => Random::int(2000, 2200),
                     'expiry_month' => Random::value(array('01','02','03','04','05','06','07','08','09','10','11','12')),
                     'card_type'    => Random::value(PaymentMethodCardType::getValidValues()),
@@ -225,7 +227,14 @@ class PaymentMethodFactoryTest extends TestCase
             ),
             array(
                 array(
-                    'type'           => PaymentMethodType::INSTALLMENTS,
+                    'type'           => PaymentMethodType::B2B_SBERBANK,
+                    'id'             => Random::str(1, 64),
+                    'saved'          => false,
+                ),
+            ),
+            array(
+                array(
+                    'type'           => PaymentMethodType::TINKOFF_BANK,
                     'id'             => Random::str(1, 64),
                     'saved'          => false,
                 ),

@@ -1,13 +1,21 @@
 <?php
 
-namespace Okay\Modules\OkayCMS\YandexMoneyApi;
+use Okay\Modules\OkayCMS\YandexMoneyApi\Controllers\CallbackController;
+use Okay\Modules\OkayCMS\YandexMoneyApi\Controllers\RequestController;
 
 return [
-    'OkayCMS_YandexMoneyApi_callback' => [
+    'OkayCMS.YandexMoneyApi.Callback' => [
         'slug' => 'payment/OkayCMS/YandexMoneyApi/callback',
         'params' => [
-            'controller' => __NAMESPACE__ . '\Controllers\CallbackController',
+            'controller' => CallbackController::class,
             'method' => 'payOrder',
+        ],
+    ],
+    'OkayCMS.YandexMoneyApi.SendPaymentRequest' => [
+        'slug' => 'payment/OkayCMS/YandexMoneyApi/sendPaymentRequest',
+        'params' => [
+            'controller' => RequestController::class,
+            'method' => 'sendPaymentRequest',
         ],
     ],
 ];

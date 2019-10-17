@@ -11,6 +11,6 @@ class Xml extends AbstractResponse
     {
         header('Content-type: text/xml; charset=UTF-8', true);
 
-        print $content;
+        print implode('', $content);
     }
 }

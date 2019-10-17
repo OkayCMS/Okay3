@@ -1,5 +1,9 @@
 <script>
     
+    {foreach $smarty.session.dynamic_js.js_vars as $var=>$value}
+        okay.{$var} = {$value|escape};
+    {/foreach}
+    
     okay.max_order_amount = {$settings->max_order_amount};
 
     /*Сброс фильтра*/
@@ -9,8 +13,6 @@
             document.cookie = "price_filter=; path=/; expires=" + date.toUTCString();
         });
     {/if}
-
-
 
     /* Mobile menu */
     $(function(){

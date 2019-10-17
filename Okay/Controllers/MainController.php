@@ -16,7 +16,7 @@ class MainController extends AbstractController
             $this->design->assign('meta_description', $this->page->meta_description);
         }
 
-        $this->response->setContent($this->design->fetch('main.tpl'));
+        $this->response->setContent('main.tpl');
     }
     
 }

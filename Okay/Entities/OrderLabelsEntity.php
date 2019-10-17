@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class OrderLabelsEntity extends Entity
 {
@@ -40,7 +41,7 @@ class OrderLabelsEntity extends Entity
     public function get($id)
     {
         if (empty($id)) {
-            return null;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
         }
         
         $this->select->join('LEFT', '__orders_labels AS ol', 'ol.label_id = lb.id');
@@ -76,7 +77,7 @@ class OrderLabelsEntity extends Entity
     public function getOrdersLabels($ordersIds = [])
     {
         if (empty($ordersIds)) {
-            return [];
+            return ExtenderFacade::execute([static::class, __FUNCTION__], [], func_get_args());
         }
 
         $select = $this->queryFactory->newSelect();
@@ -115,8 +116,8 @@ class OrderLabelsEntity extends Entity
                 }
             }
         }
-        
-        return $result;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
     
     /*Обновление меток заказа*/
@@ -138,6 +139,8 @@ class OrderLabelsEntity extends Entity
                 $this->db->query($insert);
             }
         }
+
+        ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
 
     /*Добавление меток к заказу*/
@@ -156,6 +159,8 @@ class OrderLabelsEntity extends Entity
                 $this->db->query($insert);
             }
         }
+
+        ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
 
     /*Удаление меток с заказа*/
@@ -170,6 +175,8 @@ class OrderLabelsEntity extends Entity
                 ->bindValue('label_ids', $labelsIds);
             $this->db->query($delete);
         }
+
+        ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
 
 }

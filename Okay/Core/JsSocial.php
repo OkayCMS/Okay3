@@ -19,7 +19,6 @@ class JsSocial
         "whatsapp",
         "viber",
         "messenger",
-        "vkontakte",
         "telegram",
         "line",
         "odnoklassniki",

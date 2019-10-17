@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class FeedbacksEntity extends Entity
 {
@@ -61,9 +62,8 @@ class FeedbacksEntity extends Entity
         $this->select->where('parent_id' . ($hasParent ? '>0' : '=0'));
     }
 
-    protected function customOrder($order = null)
+    protected function customOrder($order = null, array $orderFields = [], array $additionalData = [])
     {
-        $orderFields = [];
         if (!empty($order)) {
             switch ($order) {
                 case 'new_first':
@@ -71,7 +71,8 @@ class FeedbacksEntity extends Entity
                     break;
             }
         }
-        return $orderFields;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $orderFields, func_get_args());
     }
     
 }

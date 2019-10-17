@@ -8,6 +8,7 @@ use Okay\Core\Config;
 use Okay\Core\Database;
 use Okay\Core\Managers;
 use Okay\Core\Design;
+use Okay\Core\Router;
 use Okay\Core\Support;
 use Okay\Core\EntityFactory;
 use Okay\Core\Languages;
@@ -110,7 +111,8 @@ class IndexAdmin
         Managers $managers,
         ManagersEntity $managersEntity,
         Support $support,
-        SupportInfoEntity $supportInfoEntity
+        SupportInfoEntity $supportInfoEntity,
+        Router $router
     ) {
         $this->design        = $design;
         $this->request       = $request;
@@ -137,6 +139,8 @@ class IndexAdmin
         $supportInfo = $supportInfoEntity->getInfo();
         $this->design->assign('support_info', $supportInfo);
 
+        $this->design->assign('front_routes', $router->getFrontRoutes());
+        
         $isNotLocalServer = !in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '0:0:0:0:0:0:0:1']);
         if (empty($supportInfo->public_key) && !empty($supportInfo->is_auto) && $isNotLocalServer) {
             $supportInfoEntity->updateInfo(['is_auto' => 0]);
@@ -208,6 +212,9 @@ class IndexAdmin
         if ($request->method('post') && !empty($this->manager->id)) {
             $managersEntity->updateLastActivityDate($this->manager->id);
         }
+
+        $additionalSectionIcons = $managerMenu->getAdditionalSectionItems();
+        $this->design->assign('additional_section_icons', $additionalSectionIcons);
 
         if ($this->backendController === 'AuthAdmin' || $this->managers->access($this->managers->getPermissionByController($this->backendController), $this->manager)) {
             return true;

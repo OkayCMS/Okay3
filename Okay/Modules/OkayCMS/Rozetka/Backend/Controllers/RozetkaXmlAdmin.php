@@ -10,7 +10,7 @@ use Okay\Core\QueryFactory;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\ProductsEntity;
-use Okay\Logic\ProductsLogic;
+use Okay\Helpers\ProductsHelper;
 
 class RozetkaXmlAdmin extends IndexAdmin
 {
@@ -19,7 +19,7 @@ class RozetkaXmlAdmin extends IndexAdmin
         CategoriesEntity $categoriesEntity,
         BrandsEntity $brandsEntity,
         ProductsEntity $productsEntity,
-        ProductsLogic $productsLogic,
+        ProductsHelper $productsHelper,
         QueryFactory $queryFactory,
         Database $database
     ) {
@@ -86,8 +86,8 @@ class RozetkaXmlAdmin extends IndexAdmin
 
         $allCategories       = $categoriesEntity->getCategoriesTree();
         $allBrands           = $brandsEntity->find(['limit' => $brandsEntity->count()]);
-        $relatedProducts     = $productsLogic->getProductList(['to_rozetka' => 1]);
-        $notRelatedProducts  = $productsLogic->getProductList(['not_to_rozetka' => 1]);
+        $relatedProducts     = $productsHelper->getProductList(['to_rozetka' => 1]);
+        $notRelatedProducts  = $productsHelper->getProductList(['not_to_rozetka' => 1]);
         
         $this->design->assign('categories', $allCategories);
         $this->design->assign('brands', $allBrands);

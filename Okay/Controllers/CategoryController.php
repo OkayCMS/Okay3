@@ -12,9 +12,9 @@ use Okay\Entities\FeaturesValuesAliasesValuesEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\SEOFilterPatternsEntity;
-use Okay\Logic\CatalogLogic;
-use Okay\Logic\FilterLogic;
-use Okay\Logic\ProductsLogic;
+use Okay\Helpers\CatalogHelper;
+use Okay\Helpers\FilterHelper;
+use Okay\Helpers\ProductsHelper;
 
 class CategoryController extends AbstractController
 {
@@ -28,9 +28,9 @@ class CategoryController extends AbstractController
     public function render(
         BrandsEntity $brandsEntity,
         CategoriesEntity $categoriesEntity,
-        CatalogLogic $catalogLogic,
-        ProductsLogic $productsLogic,
-        FilterLogic $filterLogic,
+        CatalogHelper $catalogHelper,
+        ProductsHelper $productsHelper,
+        FilterHelper $filterHelper,
         ProductsEntity $productsEntity,
         FeaturesValuesEntity $featuresValuesEntity,
         $url,
@@ -39,7 +39,7 @@ class CategoryController extends AbstractController
         $filter['visible'] = 1;
         $sortProducts = null;
 
-        $filterLogic->setFiltersUrl($filtersUrl);
+        $filterHelper->setFiltersUrl($filtersUrl);
         
         $category = $categoriesEntity->get((string)$url);
         if (empty($category) || (!$category->visible && empty($_SESSION['admin']))) {
@@ -48,30 +48,30 @@ class CategoryController extends AbstractController
         $this->design->assign('category', $category);
         $filter['category_id'] = $category->children;
 
-        $filterLogic->setCategory($category);
-        $this->categoryFeatures = $filterLogic->getCategoryFeatures();
+        $filterHelper->setCategory($category);
+        $this->categoryFeatures = $filterHelper->getCategoryFeatures();
         
-        if (($currentBrandsIds = $filterLogic->getCurrentBrands($filtersUrl)) === false) {
+        if (($currentBrandsIds = $filterHelper->getCurrentBrands($filtersUrl)) === false) {
             return false;
         }
         
-        if (($currentOtherFilters = $filterLogic->getCurrentOtherFilters($filtersUrl)) === false) {
+        if (($currentOtherFilters = $filterHelper->getCurrentOtherFilters($filtersUrl)) === false) {
             return false;
         }
         
-        if (($currentPage = $filterLogic->getCurrentPage($filtersUrl)) === false) {
+        if (($currentPage = $filterHelper->getCurrentPage($filtersUrl)) === false) {
             return false;
         }
         
-        if (($currentFeatures = $filterLogic->getCurrentCategoryFeatures($filtersUrl)) === false) {
+        if (($currentFeatures = $filterHelper->getCurrentCategoryFeatures($filtersUrl)) === false) {
             return false;
         }
         
-        if (($currentSort = $filterLogic->getCurrentSort($filtersUrl)) === false) {
+        if (($currentSort = $filterHelper->getCurrentSort($filtersUrl)) === false) {
             return false;
         }
 
-        $filterLogic->changeLangUrls($filtersUrl);
+        $filterHelper->changeLangUrls($filtersUrl);
 
         // Если задан бренд, выберем его из базы
         if (!empty($currentBrandsIds)) {
@@ -84,7 +84,7 @@ class CategoryController extends AbstractController
             $this->design->assign('selected_other_filters', $currentOtherFilters);
         }
 
-        $filter['price'] = $catalogLogic->getPriceFilter($this->catalogType, $category->id);
+        $filter['price'] = $catalogHelper->getPriceFilter($this->catalogType, $category->id);
 
         // Сортировка товаров, сохраняем в сесси, чтобы текущая сортировка оставалась для всего сайта
         if (!empty($currentSort)) {
@@ -116,7 +116,7 @@ class CategoryController extends AbstractController
             $this->categoryBrands[$b->id] = $b;
         }
          
-        $metaArray = $filterLogic->getMetaArray($filtersUrl);
+        $metaArray = $filterHelper->getMetaArray($filtersUrl);
         // Если в строке есть параметры которые не должны быть в фильтре, либо параметры с другой категории, бросаем 404
         if (!empty($metaArray['features_values']) && array_intersect_key($metaArray['features_values'], $this->categoryFeatures) !== $metaArray['features_values'] ||
             !empty($metaArray['brand']) && array_intersect_key($metaArray['brand'], $this->categoryBrands) !== $metaArray['brand']) {
@@ -162,6 +162,12 @@ class CategoryController extends AbstractController
         }
         
         $featuresValuesFilter['visible'] = 1;
+
+        // Если скрываем из каталога товары не в наличии, значит и в фильтре их значения тоже не нужны будут
+        if ($this->settings->get('missing_products') === MISSING_PRODUCTS_HIDE) {
+            $featuresValuesFilter['in_stock'] = true;
+        }
+        
         if (!empty($this->categoryFeatures)) {
             $features_ids = array_keys($this->categoryFeatures);
             if (!empty($features_ids)) {
@@ -183,7 +189,6 @@ class CategoryController extends AbstractController
         
         if (isset($filter['features'])) {
             $featuresValuesFilter['features'] = $filter['features'];
-            $featuresValuesFilter['selected_features'] = $filter['features']; // todo
         }
         if (!empty($brand)) {
             $featuresValuesFilter['brand_id'] = $brand->id;
@@ -203,12 +208,12 @@ class CategoryController extends AbstractController
         $featuresValues = $featuresValuesEntity->find($featuresValuesFilter);
         foreach ($featuresValues as $featureValue) {
             if(isset($this->categoryFeatures[$featureValue->feature_id])) {
-                $filterLogic->setCategoryFeatureValue($featureValue);
+                $filterHelper->setCategoryFeatureValue($featureValue);
                 $this->categoryFeatures[$featureValue->feature_id]->features_values[$featureValue->id] = $featureValue;
             }
         }
         
-        $metaArray = $filterLogic->getMetaArray($filtersUrl);
+        $metaArray = $filterHelper->getMetaArray($filtersUrl);
         $selectedFeaturesValues = [];
         if (!empty($metaArray['features_values'])) {
             $selectedFeaturesValues = $metaArray['features_values'];
@@ -237,13 +242,13 @@ class CategoryController extends AbstractController
         $this->design->assign('features', $this->categoryFeatures);
         $this->design->assign('selected_filters', $selectedFeaturesValues);
 
-        $this->design->assign('other_filters', $catalogLogic->getOtherFilters($filter));
+        $this->design->assign('other_filters', $catalogHelper->getOtherFilters($filter));
         
-        $prices = $catalogLogic->getPrices($filter, $this->catalogType, $category->id);
+        $prices = $catalogHelper->getPrices($filter, $this->catalogType, $category->id);
         $this->design->assign('prices', $prices);
 
         
-        $paginate = $catalogLogic->paginate(
+        $paginate = $catalogHelper->paginate(
             $this->settings->get('products_num'),
             $currentPage,
             $filter,
@@ -256,7 +261,7 @@ class CategoryController extends AbstractController
         }
 
         // Товары
-        $products = $productsLogic->getProductList($filter, $sortProducts);
+        $products = $productsHelper->getProductList($filter, $sortProducts);
         $this->design->assign('products', $products);
         
         if ($this->request->get('ajax','boolean')) {
@@ -320,7 +325,7 @@ class CategoryController extends AbstractController
 
         $seoFilterPattern = null;
         $seoFilterPatterns = [];
-        $metaArray = $filterLogic->getMetaArray($filtersUrl);
+        $metaArray = $filterHelper->getMetaArray($filtersUrl);
         
         if (!empty($metaArray['brand']) && count($metaArray['brand']) == 1 && empty($metaArray['features_values'])) {
             $parts['{$brand}'] = reset($metaArray['brand']);
@@ -365,10 +370,10 @@ class CategoryController extends AbstractController
 
         $this->design->assign('seo_filter_pattern', $seoFilterPattern);
         
-        $filterAutoMeta = $filterLogic->getFilterAutoMeta($filtersUrl);
+        $filterAutoMeta = $filterHelper->getFilterAutoMeta($filtersUrl);
         $this->design->assign('filter_meta', $filterAutoMeta);
 
-        $this->design->assign('set_canonical', $filterLogic->isSetCanonical($filtersUrl));
+        $this->design->assign('set_canonical', $filterHelper->isSetCanonical($filtersUrl));
 
         // Устанавливаем мета-теги в зависимости от запроса
         if ($this->page) {
@@ -383,8 +388,8 @@ class CategoryController extends AbstractController
 
         $relPrevNext = $this->design->fetch('products_rel_prev_next.tpl');
         $this->design->assign('rel_prev_next', $relPrevNext);
-        $this->design->assign('sort_canonical', $filterLogic->getSortCanonical());
+        $this->design->assign('sort_canonical', $filterHelper->getSortCanonical());
 
-        $this->response->setContent($this->design->fetch('products.tpl'));
+        $this->response->setContent('products.tpl');
     }
 }

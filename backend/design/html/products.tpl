@@ -28,6 +28,7 @@
                     <span>{$btr->products_add|escape}</span>
                 </a>
             </div>
+            {*{get_design_block block="products_heading"}*}
         </div>
     </div>
     <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
@@ -76,7 +77,7 @@
                             <option value="{url keyword=null brand_id=null page=null limit=null category_id=-1}" {if $category_id==-1}selected{/if}>{$btr->products_without_category|escape}</option>
                             {function name=category_select level=0}
                                 {foreach $categories as $c}
-                                    <option value='{url keyword=null brand_id=null page=null limit=null category_id=$c->id}' {if $category->id == $c->id}selected{/if}>
+                                    <option value='{url keyword=null brand_id=null page=null limit=null category_id=$c->id}' {if $category_id == $c->id}selected{/if}>
                                         {section sp $level}- {/section}{$c->name|escape}
                                     </option>
                                     {category_select categories=$c->subcategories level=$level+1}
@@ -90,7 +91,7 @@
                             <option value="{url keyword=null brand_id=null page=null limit=null}" {if !$brand_id}selected{/if}>{$btr->general_all_brands|escape}</option>
                             <option value="{url keyword=null brand_id=-1 page=null limit=null}" {if $brand_id==-1}selected{/if}>{$btr->products_without_brand}</option>
                             {foreach $brands as $b}
-                                <option value="{url keyword=null page=null limit=null brand_id=$b->id}" brand_id="{$b->id}"  {if $brand->id == $b->id}selected{/if}>{$b->name}</option>
+                                <option value="{url keyword=null page=null limit=null brand_id=$b->id}" brand_id="{$b->id}"  {if $brand_id == $b->id}selected{/if}>{$b->name}</option>
                             {/foreach}
                         </select>
                     </div>
@@ -108,6 +109,14 @@
                 </div>
             </div>
             </div>
+
+            {$block = {get_design_block block="products_custom_block"}}
+            {if !empty($block)}
+                <div class="fn_toggle_wrap" style="height: 40px; margin-bottom: 5px;">
+                    {$block}
+                </div>
+            {/if}
+
         </div>
     </div>
     {if $products}
@@ -180,6 +189,8 @@
                                                     <i class="fn_icon_arrow fa fa-angle-down fa-lg m-t-2"></i>
                                                 </div>
                                             {/if}
+
+                                            {get_design_block block="products_list_name"}
                                         </div>
                                         <div class="okay_list_boding okay_list_price">
                                             <div class="input-group">
@@ -225,6 +236,12 @@
                                                 <button data-hint="{$btr->products_dublicate|escape}" type="button" class="setting_icon setting_icon_copy fn_copy hint-bottom-middle-t-info-s-small-mobile  hint-anim">
                                                     {include file='svg_icon.tpl' svgId='icon_copy'}
                                                 </button>
+
+                                                <span class="okay_list_setting okay_list_products_setting">
+                                                    {get_design_block block="products_variant_icon" vars=['variant'=>$product->variants[0]]}
+                                                </span>
+
+                                                {get_design_block block="products_icon" vars=['product'=>$product]}
                                             </div>
                                         </div>
                                         <div class="okay_list_boding okay_list_close">
@@ -246,6 +263,7 @@
                                                     <div class="okay_list_boding okay_list_photo"></div>
                                                     <div class="okay_list_boding okay_list_variant_name">
                                                         <span class="text_grey">{$variant->name|escape}</span>
+                                                        {get_design_block block="products_variant_list_name"}
                                                     </div>
                                                     <div class="okay_list_boding okay_list_price">
                                                         <div class="input-group">
@@ -267,9 +285,12 @@
                                                     </div>
                                                     <div class="okay_list_boding okay_list_status"></div>
                                                     <div class="okay_list_setting okay_list_products_setting">
+                                                        {get_design_block block="products_variant_icon" vars=['variant'=>$variant]}
                                                     </div>
                                                     <div class="okay_list_boding okay_list_close"></div>
                                                 </div>
+                                            {else}
+
                                             {/if}
                                         {/foreach}
                                         </div>
@@ -308,14 +329,14 @@
 
                                 <div class="fn_additional_params">
                                     <div class="fn_move_to_page col-lg-12 col-md-12 col-sm-12 hidden fn_hide_block">
-                                        <select name="target_page" class="selectpicker">
+                                        <select name="target_page" class="selectpicker dropup">
                                             {section target_page $pages_count}
                                                 <option value="{$smarty.section.target_page.index+1}">{$smarty.section.target_page.index+1}</option>
                                             {/section}
                                         </select>
                                     </div>
                                     <div class="fn_move_to_category col-lg-12 col-md-12 col-sm-12 hidden fn_hide_block">
-                                        <select name="target_category" class="selectpicker" data-live-search="true" data-size="10">
+                                        <select name="target_category" class="selectpicker dropup" data-live-search="true" data-size="10">
                                             {function name=category_select_btn level=0}
                                                 {foreach $categories as $category}
                                                     <option value='{$category->id}'>{section sp $level}&nbsp;&nbsp;&nbsp;&nbsp;{/section}{$category->name|escape}</option>
@@ -326,7 +347,7 @@
                                         </select>
                                     </div>
                                     <div class="fn_move_to_brand col-lg-12 col-md-12 col-sm-12 hidden fn_hide_block">
-                                        <select name="target_brand" class="selectpicker" data-live-search="true" data-size="{if $brands|count<10}{$brands|count}{else}10{/if}">
+                                        <select name="target_brand" class="selectpicker dropup" data-live-search="true" data-size="{if $brands|count<10}{$brands|count}{else}10{/if}">
                                             <option value="0">{$btr->general_not_set|escape}</option>
                                             {foreach $all_brands as $b}
                                                 <option value="{$b->id}">{$b->name|escape}</option>

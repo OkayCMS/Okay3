@@ -55,6 +55,7 @@ class Managers
         'category_stats',
         'modules',
         'theme',
+        'learning',
     ];
 
     // Соответсвие модулей и названий соответствующих прав
@@ -127,6 +128,7 @@ class Managers
         'TopicAdmin'                => 'support',
         'FeaturesAliasesAdmin'      => 'features_aliases',
         'ModulesAdmin'              => 'modules',
+        'LearningAdmin'             => 'learning',
     ];
     
     /**
@@ -141,7 +143,18 @@ class Managers
             $this->modulesPermissionsList[$permission] = $vendorModuleName;
         }
     }
-    
+
+    public function removeControllersPermissionByModuleName($moduleName)
+    {
+        unset($this->controllersPermissions[$moduleName]);
+    }
+
+    public function hasPermission($manager, $controller)
+    {
+        $controllersPermissions = $this->getControllersPermissions();
+        return in_array($controllersPermissions[$controller], $manager->permissions);
+    }
+
     // Метод возвращает все разрешения, которые были добавлены модулями
     public function getModulesPermissions()
     {
@@ -174,13 +187,15 @@ class Managers
         if (is_null($manager->permissions)) {
             $permissions = array_merge($this->permissionsList, array_keys($this->modulesPermissionsList));
             $manager->permissions = $permissions;
-            return;
+            return false;
         }
 
         $manager->permissions = explode(',', $manager->permissions);
         foreach ($manager->permissions as &$permission) {
             $permission = trim($permission);
         }
+
+        return true;
     }
     
     public function getAllPermissions()

@@ -109,8 +109,23 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-lg-8 col-md-6 mt-2">
-                            <div class="heading_label boxes_inline">{$btr->settings_catalog_not_in_stock|escape}</div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="heading_label">
+                                {$btr->settings_catalog_not_in_stock|escape}
+                                <i class="fn_tooltips" title="{$btr->tooltip_settings_catalog_not_in_stock|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </div>
+                            <div class="mb-1">
+                               <select name="missing_products" class="selectpicker">
+                                    <option value='{$smarty.const.MISSING_PRODUCTS_DEFAULT}' {if $settings->missing_products == $smarty.const.MISSING_PRODUCTS_DEFAULT}selected{/if}>{$btr->settings_catalog_missing_products_default|escape}</option>
+                                    <option value='{$smarty.const.MISSING_PRODUCTS_MOVE_END}' {if $settings->missing_products == $smarty.const.MISSING_PRODUCTS_MOVE_END}selected{/if}>{$btr->settings_catalog_missing_products_move_end|escape}</option>
+                                    <option value='{$smarty.const.MISSING_PRODUCTS_HIDE}' {if $settings->missing_products == $smarty.const.MISSING_PRODUCTS_HIDE}selected{/if}>{$btr->settings_catalog_missing_products_hide|escape}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mt-2">
+                            <div class="heading_label boxes_inline">{$btr->settings_catalog_preorder_not_in_stock|escape}</div>
                             <div class="boxes_inline">
                                <div class="okay_switch clearfix">
                                     <label class="switch switch-default">

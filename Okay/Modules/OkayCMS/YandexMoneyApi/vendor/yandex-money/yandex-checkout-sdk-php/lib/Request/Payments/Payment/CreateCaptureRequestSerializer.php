@@ -27,6 +27,7 @@
 namespace YandexCheckout\Request\Payments\Payment;
 
 use YandexCheckout\Model\AmountInterface;
+use YandexCheckout\Model\ReceiptItem;
 
 /**
  * Класс объекта осуществляющего сериализацию запроса к API на подтверждение заказа
@@ -37,7 +38,9 @@ class CreateCaptureRequestSerializer
 {
     /**
      * Сериализует объект запроса к API на подтверждение заказа в ассоциативный массив
+     *
      * @param CreateCaptureRequestInterface $request Сериализуемый объект запроса
+     *
      * @return array Ассоциативный массив содержащий информацию для отправки в API
      */
     public function serialize(CreateCaptureRequestInterface $request)
@@ -50,32 +53,53 @@ class CreateCaptureRequestSerializer
             $receipt = $request->getReceipt();
             if ($receipt->notEmpty()) {
                 $result['receipt'] = array();
+                /** @var ReceiptItem $item */
                 foreach ($receipt->getItems() as $item) {
-                    $vatId = $item->getVatCode();
-                    if ($vatId === null) {
-                        $vatId = $receipt->getTaxSystemCode();
-                    }
-                    $result['receipt']['items'][] = array(
-                        'description' => $item->getDescription(),
-                        'amount'      => $this->serializeAmount($item->getPrice()),
-                        'quantity'    => $item->getQuantity(),
-                        'vat_code'    => $vatId,
+                    $itemArray = array(
+                        'description'     => $item->getDescription(),
+                        'amount'          => array(
+                            'value'    => $item->getPrice()->getValue(),
+                            'currency' => $item->getPrice()->getCurrency(),
+                        ),
+                        'quantity'        => $item->getQuantity(),
+                        'vat_code'        => $item->getVatCode(),
                     );
+
+                    if ($value = $item->getPaymentSubject()) {
+                        $itemArray['payment_subject'] = $value;
+                    }
+
+                    if ($value = $item->getPaymentMode()) {
+                        $itemArray['payment_mode'] = $value;
+                    }
+
+                    $result['receipt']['items'][] = $itemArray;
                 }
-                $value = $receipt->getEmail();
-                if (!empty($value)) {
-                    $result['receipt']['email'] = $value;
+
+                if ($customer = $receipt->getCustomer()) {
+                    $customerArray = array();
+
+                    if ($value = $customer->getEmail()) {
+                        $customerArray['email'] = $value;
+                    }
+                    if ($value = $customer->getPhone()) {
+                        $customerArray['phone'] = $value;
+                    }
+                    if ($value = $customer->getFullName()) {
+                        $customerArray['full_name'] = $value;
+                    }
+                    if ($value = $customer->getInn()) {
+                        $customerArray['inn'] = $value;
+                    }
+                    $result['receipt']['customer'] = $customerArray;
                 }
-                $value = $receipt->getPhone();
-                if (!empty($value)) {
-                    $result['receipt']['phone'] = $value;
-                }
-                $value = $receipt->getTaxSystemCode();
-                if (!empty($value)) {
+
+                if ($value = $receipt->getTaxSystemCode()) {
                     $result['receipt']['tax_system_code'] = $value;
                 }
             }
         }
+
         return $result;
     }
 

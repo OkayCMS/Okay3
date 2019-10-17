@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class CurrenciesEntity extends Entity {
     
@@ -41,11 +42,11 @@ class CurrenciesEntity extends Entity {
             if ($currencies = $this->find()) {
                 $this->mainCurrency = reset($currencies);
             } else {
-                return false;
+                return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
             }
         }
-        
-        return $this->mainCurrency;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->mainCurrency, func_get_args());
     }
 
     public function delete($ids)

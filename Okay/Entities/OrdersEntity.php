@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class OrdersEntity extends Entity
 {
@@ -49,7 +50,7 @@ class OrdersEntity extends Entity
     public function get($id)
     {
         if (empty($id)) {
-            return null;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
         }
         
         $this->select->join('LEFT', '__orders_status AS os', 'o.status_id=os.id');
@@ -92,6 +93,7 @@ class OrdersEntity extends Entity
                 ->bindValue('order_ids', $ids);
             $this->db->query($delete);
         }
+
         return parent::delete($ids);
     }
 
@@ -118,7 +120,7 @@ class OrdersEntity extends Entity
             $this->open(intval($id));
         }
 
-        return $id;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $id, func_get_args());
     }
 
     /*Закрытие заказа(списание количества)*/
@@ -132,7 +134,7 @@ class OrdersEntity extends Entity
         
         $order = $this->get(intval($orderId));
         if (empty($order)) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
         if (!$order->closed) {
@@ -149,7 +151,7 @@ class OrdersEntity extends Entity
             foreach ($variantsAmounts as $id=>$amount) {
                 $variant = $variantsEntity->get($id);
                 if (empty($variant) || ($variant->stock<$amount)) {
-                    return false;
+                    return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
                 }
             }
             foreach ($purchases as $purchase) {
@@ -161,7 +163,8 @@ class OrdersEntity extends Entity
             }
             $this->update($order->id, ['closed'=>1]);
         }
-        return $order->id;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $order->id, func_get_args());
     }
 
     /*Открытие заказа (возвращение количества)*/
@@ -175,7 +178,7 @@ class OrdersEntity extends Entity
         
         $order = $this->get(intval($orderId));
         if (empty($order)) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
         if ($order->closed) {
@@ -189,14 +192,16 @@ class OrdersEntity extends Entity
             }
             $this->update($order->id, ['closed'=>0]);
         }
-        return $order->id;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $order->id, func_get_args());
     }
 
     public function getNeighborsOrders($filter)
     {
         if (empty($filter['id'])) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
+
         $prevSelect = $this->queryFactory->newSelect();
         $nextSelect = $this->queryFactory->newSelect();
 
@@ -243,14 +248,15 @@ class OrdersEntity extends Entity
                 $result[$ordersIds[$o->id]] = $o;
             }
         }
-        return $result;
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
 
     public function updateTotalPrice($orderId)
     {
         $order = $this->get(intval($orderId));
         if (empty($order)) {
-            return false;
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
         $update = $this->queryFactory->newUpdate();
@@ -260,7 +266,7 @@ class OrdersEntity extends Entity
             ->bindValue('id', $order->id);
 
         $this->db->query($update);
-        return $order->id;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $order->id, func_get_args());
     }
     
     protected function filter__modified_since($modified)

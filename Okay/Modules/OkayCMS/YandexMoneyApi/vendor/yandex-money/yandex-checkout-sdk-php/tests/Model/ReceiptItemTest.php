@@ -7,7 +7,9 @@ use YandexCheckout\Helpers\Random;
 use YandexCheckout\Helpers\StringObject;
 use YandexCheckout\Model\AmountInterface;
 use YandexCheckout\Model\CurrencyCode;
-use YandexCheckout\Model\MonetaryAmount;
+use YandexCheckout\Model\Receipt\PaymentMode;
+use YandexCheckout\Model\Receipt\PaymentSubject;
+use YandexCheckout\Model\Receipt\ReceiptItemAmount;
 use YandexCheckout\Model\ReceiptItem;
 
 class ReceiptItemTest extends TestCase
@@ -19,6 +21,7 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validDescriptionDataProvider
+     *
      * @param $value
      */
     public function testGetSetDescription($value)
@@ -33,11 +36,12 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validDescriptionDataProvider
+     *
      * @param $value
      */
     public function testSetterDescription($value)
     {
-        $instance = $this->getTestInstance();
+        $instance              = $this->getTestInstance();
         $instance->description = $value;
         self::assertEquals((string)$value, $instance->getDescription());
         self::assertEquals((string)$value, $instance->description);
@@ -58,6 +62,7 @@ class ReceiptItemTest extends TestCase
     /**
      * @dataProvider invalidDescriptionDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $value
      */
     public function testSetInvalidDescription($value)
@@ -68,6 +73,7 @@ class ReceiptItemTest extends TestCase
     /**
      * @dataProvider invalidDescriptionDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $value
      */
     public function testSetterInvalidDescription($value)
@@ -90,6 +96,7 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validQuantityDataProvider
+     *
      * @param $value
      */
     public function testGetSetQuantity($value)
@@ -105,6 +112,7 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validQuantityDataProvider
+     *
      * @param $value
      */
     public function testSetterQuantity($value)
@@ -132,6 +140,7 @@ class ReceiptItemTest extends TestCase
     /**
      * @dataProvider invalidQuantityDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $value
      */
     public function testSetInvalidQuantity($value)
@@ -142,6 +151,7 @@ class ReceiptItemTest extends TestCase
     /**
      * @dataProvider invalidQuantityDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $value
      */
     public function testSetterInvalidQuantity($value)
@@ -163,6 +173,7 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validVatCodeDataProvider
+     *
      * @param $value
      */
     public function testGetSetVatCode($value)
@@ -186,6 +197,7 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validVatCodeDataProvider
+     *
      * @param $value
      */
     public function testSetterVatCode($value)
@@ -206,6 +218,7 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validVatCodeDataProvider
+     *
      * @param $value
      */
     public function testSetterVat_code($value)
@@ -224,6 +237,90 @@ class ReceiptItemTest extends TestCase
         }
     }
 
+    /**
+     * @dataProvider validPaymentSubjectDataProvider
+     *
+     * @param $value
+     */
+    public function testSetterPayment_subject($value)
+    {
+        $instance = $this->getTestInstance();
+
+        $instance->payment_subject = $value;
+        if ($value === null || $value === '') {
+            self::assertNull($instance->getPaymentSubject());
+            self::assertNull($instance->payment_subject);
+            self::assertNull($instance->paymentSubject);
+        } else {
+            self::assertContains($instance->getPaymentSubject(), PaymentSubject::getValidValues());
+            self::assertContains($instance->payment_subject, PaymentSubject::getValidValues());
+            self::assertContains($instance->paymentSubject, PaymentSubject::getValidValues());
+        }
+    }
+
+    /**
+     * @dataProvider validPaymentSubjectDataProvider
+     *
+     * @param $value
+     */
+    public function testSetterPaymentSubject($value)
+    {
+        $instance = $this->getTestInstance();
+
+        $instance->paymentSubject = $value;
+        if ($value === null || $value === '') {
+            self::assertNull($instance->getPaymentSubject());
+            self::assertNull($instance->payment_subject);
+            self::assertNull($instance->paymentSubject);
+        } else {
+            self::assertContains($instance->getPaymentSubject(), PaymentSubject::getValidValues());
+            self::assertContains($instance->payment_subject, PaymentSubject::getValidValues());
+            self::assertContains($instance->paymentSubject, PaymentSubject::getValidValues());
+        }
+    }
+
+    /**
+     * @dataProvider validPaymentModeDataProvider
+     *
+     * @param $value
+     */
+    public function testSetterPayment_mode($value)
+    {
+        $instance = $this->getTestInstance();
+
+        $instance->payment_mode = $value;
+        if ($value === null || $value === '') {
+            self::assertNull($instance->getPaymentMode());
+            self::assertNull($instance->payment_mode);
+            self::assertNull($instance->paymentMode);
+        } else {
+            self::assertContains($instance->getPaymentMode(), PaymentMode::getValidValues());
+            self::assertContains($instance->payment_mode, PaymentMode::getValidValues());
+            self::assertContains($instance->paymentMode, PaymentMode::getValidValues());
+        }
+    }
+
+    /**
+     * @dataProvider validPaymentModeDataProvider
+     *
+     * @param $value
+     */
+    public function testSetterPaymentMode($value)
+    {
+        $instance = $this->getTestInstance();
+
+        $instance->paymentMode = $value;
+        if ($value === null || $value === '') {
+            self::assertNull($instance->getPaymentMode());
+            self::assertNull($instance->payment_mode);
+            self::assertNull($instance->paymentMode);
+        } else {
+            self::assertContains($instance->getPaymentMode(), PaymentMode::getValidValues());
+            self::assertContains($instance->payment_mode, PaymentMode::getValidValues());
+            self::assertContains($instance->paymentMode, PaymentMode::getValidValues());
+        }
+    }
+
     public function validVatCodeDataProvider()
     {
         return array(
@@ -238,9 +335,46 @@ class ReceiptItemTest extends TestCase
         );
     }
 
+    public function validPaymentSubjectDataProvider()
+    {
+        return array(
+            array(null),
+            array(''),
+            array(PaymentSubject::ANOTHER),
+            array(PaymentSubject::AGENT_COMMISSION),
+            array(PaymentSubject::PAYMENT),
+            array(PaymentSubject::GAMBLING_PRIZE),
+            array(PaymentSubject::GAMBLING_BET),
+            array(PaymentSubject::COMPOSITE),
+            array(PaymentSubject::INTELLECTUAL_ACTIVITY),
+            array(PaymentSubject::LOTTERY_PRIZE),
+            array(PaymentSubject::LOTTERY),
+            array(PaymentSubject::SERVICE),
+            array(PaymentSubject::JOB),
+            array(PaymentSubject::EXCISE),
+            array(PaymentSubject::COMMODITY),
+        );
+    }
+
+    public function validPaymentModeDataProvider()
+    {
+        return array(
+            array(null),
+            array(''),
+            array(PaymentMode::ADVANCE),
+            array(PaymentMode::CREDIT),
+            array(PaymentMode::CREDIT_PAYMENT),
+            array(PaymentMode::FULL_PAYMENT),
+            array(PaymentMode::FULL_PREPAYMENT),
+            array(PaymentMode::PARTIAL_PAYMENT),
+            array(PaymentMode::PARTIAL_PREPAYMENT),
+        );
+    }
+
     /**
      * @dataProvider invalidVatCodeDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $value
      */
     public function testSetInvalidVatCode($value)
@@ -251,6 +385,7 @@ class ReceiptItemTest extends TestCase
     /**
      * @dataProvider invalidVatCodeDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $value
      */
     public function testSetterInvalidVatCode($value)
@@ -261,6 +396,7 @@ class ReceiptItemTest extends TestCase
     /**
      * @dataProvider invalidVatCodeDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $value
      */
     public function testSetterInvalidVat_code($value)
@@ -284,6 +420,7 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validPriceDataProvider
+     *
      * @param AmountInterface $value
      */
     public function testGetSetPrice($value)
@@ -299,11 +436,12 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validPriceDataProvider
+     *
      * @param AmountInterface $value
      */
     public function testSetterPrice($value)
     {
-        $instance = $this->getTestInstance();
+        $instance        = $this->getTestInstance();
         $instance->price = $value;
         self::assertSame($value, $instance->getPrice());
         self::assertSame($value, $instance->price);
@@ -313,19 +451,20 @@ class ReceiptItemTest extends TestCase
     {
         return array(
             array(
-                new MonetaryAmount(
+                new ReceiptItemAmount(
                     Random::int(1, 100),
                     Random::value(CurrencyCode::getValidValues())
                 ),
             ),
             array(
-                new MonetaryAmount(),
+                new ReceiptItemAmount(),
             ),
         );
     }
 
     /**
      * @dataProvider invalidPriceDataProvider
+     *
      * @param $value
      */
     public function testSetInvalidPrice($value)
@@ -338,6 +477,7 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider invalidPriceDataProvider
+     *
      * @param $value
      */
     public function testSetterInvalidPrice($value)
@@ -360,11 +500,13 @@ class ReceiptItemTest extends TestCase
             array(array()),
             array(new \stdClass()),
         );
+
         return $result;
     }
 
     /**
      * @dataProvider validIsShippingDataProvider
+     *
      * @param $value
      */
     public function testGetSetIsShipping($value)
@@ -382,6 +524,7 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validIsShippingDataProvider
+     *
      * @param $value
      */
     public function testSetterIsShipping($value)
@@ -415,6 +558,7 @@ class ReceiptItemTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      * @dataProvider invalidIsShippingDataProvider
+     *
      * @param mixed $value
      */
     public function testInvalidSetIsShipping($value)
@@ -425,6 +569,7 @@ class ReceiptItemTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      * @dataProvider invalidIsShippingDataProvider
+     *
      * @param mixed $value
      */
     public function testInvalidSetterIsShipping($value)
@@ -444,6 +589,7 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validApplyDiscountCoefficientDataProvider
+     *
      * @param $baseValue
      * @param $coefficient
      * @param $expected
@@ -452,7 +598,7 @@ class ReceiptItemTest extends TestCase
     {
         $instance = $this->getTestInstance();
 
-        $instance->setPrice(new MonetaryAmount($baseValue));
+        $instance->setPrice(new ReceiptItemAmount($baseValue));
         $instance->applyDiscountCoefficient($coefficient);
         self::assertEquals($expected, $instance->getPrice()->getIntegerValue());
     }
@@ -473,13 +619,14 @@ class ReceiptItemTest extends TestCase
     /**
      * @dataProvider invalidApplyDiscountCoefficientDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param mixed $coefficient
      */
     public function testInvalidApplyDiscountCoefficient($coefficient)
     {
         $instance = $this->getTestInstance();
 
-        $instance->setPrice(new MonetaryAmount(Random::int(100)));
+        $instance->setPrice(new ReceiptItemAmount(Random::int(100)));
         $instance->applyDiscountCoefficient($coefficient);
     }
 
@@ -502,13 +649,14 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validAmountDataProvider
+     *
      * @param $price
      * @param $quantity
      */
     public function testGetAmount($price, $quantity)
     {
         $instance = $this->getTestInstance();
-        $instance->setPrice(new MonetaryAmount($price));
+        $instance->setPrice(new ReceiptItemAmount($price));
         $instance->setQuantity($quantity);
         $expected = (int)round($price * 100.0 * $quantity);
         self::assertEquals($expected, $instance->getAmount());
@@ -524,6 +672,7 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validIncreasePriceDataProvider
+     *
      * @param float $price
      * @param float $value
      * @param int $expected
@@ -531,7 +680,7 @@ class ReceiptItemTest extends TestCase
     public function testIncreasePrice($price, $value, $expected)
     {
         $instance = $this->getTestInstance();
-        $instance->setPrice(new MonetaryAmount($price));
+        $instance->setPrice(new ReceiptItemAmount($price));
         $instance->increasePrice($value);
         self::assertEquals($expected, $instance->getPrice()->getIntegerValue());
     }
@@ -548,13 +697,14 @@ class ReceiptItemTest extends TestCase
     /**
      * @dataProvider invalidIncreasePriceDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param float $price
      * @param float $value
      */
     public function testInvalidIncreasePrice($price, $value)
     {
         $instance = $this->getTestInstance();
-        $instance->setPrice(new MonetaryAmount($price));
+        $instance->setPrice(new ReceiptItemAmount($price));
         $instance->increasePrice($value);
     }
 
@@ -576,6 +726,7 @@ class ReceiptItemTest extends TestCase
 
     /**
      * @dataProvider validFetchItemDataProvider
+     *
      * @param $price
      * @param $quantity
      * @param $fetch
@@ -583,7 +734,7 @@ class ReceiptItemTest extends TestCase
     public function testFetchItem($price, $quantity, $fetch)
     {
         $instance = $this->getTestInstance();
-        $instance->setPrice(new MonetaryAmount($price));
+        $instance->setPrice(new ReceiptItemAmount($price));
         $instance->setQuantity($quantity);
 
         $fetched = $instance->fetchItem($fetch);
@@ -608,13 +759,14 @@ class ReceiptItemTest extends TestCase
     /**
      * @dataProvider invalidFetchItemDataProvider
      * @expectedException \InvalidArgumentException
+     *
      * @param $quantity
      * @param $fetch
      */
     public function testInvalidFetchItem($quantity, $fetch)
     {
         $instance = $this->getTestInstance();
-        $instance->setPrice(new MonetaryAmount(Random::int(1,100)));
+        $instance->setPrice(new ReceiptItemAmount(Random::int(1, 100)));
         $instance->setQuantity($quantity);
         $instance->fetchItem($fetch);
 
@@ -633,6 +785,355 @@ class ReceiptItemTest extends TestCase
             array(1, array()),
             array(1, new \stdClass()),
             array(1, 'test'),
+        );
+    }
+
+    ////////////////////////////////////////////////////////////////
+
+    /**
+     * @dataProvider validProductCodeDataProvider
+     *
+     * @param $value
+     */
+    public function testGetSetProductCode($value)
+    {
+        $instance = $this->getTestInstance();
+        self::assertNull($instance->getProductCode());
+        self::assertNull($instance->productCode);
+        self::assertNull($instance->product_code);
+        $instance->setProductCode($value);
+        self::assertEquals((string)$value, $instance->getProductCode());
+        self::assertEquals((string)$value, $instance->productCode);
+        self::assertEquals((string)$value, $instance->product_code);
+    }
+
+    /**
+     * @dataProvider validProductCodeDataProvider
+     *
+     * @param $value
+     */
+    public function testGetSetProduct_code($value)
+    {
+        $instance = $this->getTestInstance();
+        $instance->product_code = $value;
+        self::assertEquals((string)$value, $instance->getProductCode());
+        self::assertEquals((string)$value, $instance->productCode);
+        self::assertEquals((string)$value, $instance->product_code);
+    }
+
+    /**
+     * @dataProvider validProductCodeDataProvider
+     *
+     * @param $value
+     */
+    public function testSetterProductCode($value)
+    {
+        $instance = $this->getTestInstance();
+        $instance->productCode = $value;
+        self::assertEquals((string)$value, $instance->getProductCode());
+        self::assertEquals((string)$value, $instance->productCode);
+        self::assertEquals((string)$value, $instance->product_code);
+    }
+
+    public function validProductCodeDataProvider()
+    {
+        return array(
+            array(null),
+            array(''),
+            array(Random::str(2, 96, '0123456789ABCDEF ')),
+        );
+    }
+
+    /**
+     * @dataProvider invalidProductCodeDataProvider
+     * @expectedException \InvalidArgumentException
+     *
+     * @param $value
+     */
+    public function testSetInvalidProductCode($value)
+    {
+        $this->getTestInstance()->setProductCode($value);
+    }
+
+    /**
+     * @dataProvider invalidProductCodeDataProvider
+     * @expectedException \InvalidArgumentException
+     *
+     * @param $value
+     */
+    public function testSetterInvalidProductCode($value)
+    {
+        $this->getTestInstance()->productCode = $value;
+    }
+
+    public function invalidProductCodeDataProvider()
+    {
+        return array(
+            array(new StringObject('')),
+            array(true),
+            array(false),
+            array(new \stdClass()),
+            array(array()),
+            array(Random::str(2, 96, 'GHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=`~?><:"\'')),
+        );
+    }
+
+    ////////////////////////////////////////////////////////////////
+
+    /**
+     * @dataProvider validCountryOfOriginCodeDataProvider
+     *
+     * @param $value
+     */
+    public function testGetSetCountryOfOriginCode($value)
+    {
+        $instance = $this->getTestInstance();
+        self::assertNull($instance->getCountryOfOriginCode());
+        self::assertNull($instance->countryOfOriginCode);
+        self::assertNull($instance->country_of_origin_code);
+        $instance->setCountryOfOriginCode($value);
+        self::assertEquals((string)$value, $instance->getCountryOfOriginCode());
+        self::assertEquals((string)$value, $instance->countryOfOriginCode);
+        self::assertEquals((string)$value, $instance->country_of_origin_code);
+    }
+
+    /**
+     * @dataProvider validCountryOfOriginCodeDataProvider
+     *
+     * @param $value
+     */
+    public function testSetterCountryOfOrigin_code($value)
+    {
+        $instance = $this->getTestInstance();
+        $instance->country_of_origin_code = $value;
+        self::assertEquals((string)$value, $instance->getCountryOfOriginCode());
+        self::assertEquals((string)$value, $instance->countryOfOriginCode);
+        self::assertEquals((string)$value, $instance->country_of_origin_code);
+    }
+
+    /**
+     * @dataProvider validCountryOfOriginCodeDataProvider
+     *
+     * @param $value
+     */
+    public function testSetterCountryOfOriginCode($value)
+    {
+        $instance = $this->getTestInstance();
+        $instance->countryOfOriginCode = $value;
+        self::assertEquals((string)$value, $instance->getCountryOfOriginCode());
+        self::assertEquals((string)$value, $instance->countryOfOriginCode);
+        self::assertEquals((string)$value, $instance->country_of_origin_code);
+    }
+
+    public function validCountryOfOriginCodeDataProvider()
+    {
+        return array(
+            array(null),
+            array(''),
+            array(Random::str(2, 2, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')),
+        );
+    }
+
+    /**
+     * @dataProvider invalidCountryOfOriginCodeDataProvider
+     * @expectedException \InvalidArgumentException
+     *
+     * @param $value
+     */
+    public function testSetInvalidCountryOfOriginCode($value)
+    {
+        $this->getTestInstance()->setCountryOfOriginCode($value);
+    }
+
+    /**
+     * @dataProvider invalidCountryOfOriginCodeDataProvider
+     * @expectedException \InvalidArgumentException
+     *
+     * @param $value
+     */
+    public function testSetterInvalidCountryOfOriginCode($value)
+    {
+        $this->getTestInstance()->countryOfOriginCode = $value;
+    }
+
+    public function invalidCountryOfOriginCodeDataProvider()
+    {
+        return array(
+            array(new StringObject('')),
+            array(true),
+            array(false),
+            array(new \stdClass()),
+            array(array()),
+            array(Random::int()),
+            array(Random::str(1, 1)),
+            array(Random::str(3, null, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')),
+            array(Random::str(2, 2, '0123456789!@#$%^&*()_+-=`~?><:"\' ')),
+        );
+    }
+
+    /**
+     * @dataProvider validCustomsDeclarationNumberDataProvider
+     *
+     * @param $value
+     */
+    public function testGetSetCustomsDeclarationNumber($value)
+    {
+        $instance = $this->getTestInstance();
+        self::assertNull($instance->getCustomsDeclarationNumber());
+        self::assertNull($instance->customsDeclarationNumber);
+        self::assertNull($instance->customs_declaration_number);
+        $instance->setCustomsDeclarationNumber($value);
+        self::assertEquals((string)$value, $instance->getCustomsDeclarationNumber());
+        self::assertEquals((string)$value, $instance->customsDeclarationNumber);
+        self::assertEquals((string)$value, $instance->customs_declaration_number);
+    }
+
+    /**
+     * @dataProvider validCustomsDeclarationNumberDataProvider
+     *
+     * @param $value
+     */
+    public function testSetterCustomsDeclaration_number($value)
+    {
+        $instance = $this->getTestInstance();
+        $instance->customsDeclarationNumber = $value;
+        self::assertEquals((string)$value, $instance->getCustomsDeclarationNumber());
+        self::assertEquals((string)$value, $instance->customsDeclarationNumber);
+        self::assertEquals((string)$value, $instance->customs_declaration_number);
+    }
+
+    /**
+     * @dataProvider validCustomsDeclarationNumberDataProvider
+     *
+     * @param $value
+     */
+    public function testSetterCustomsDeclarationNumber($value)
+    {
+        $instance = $this->getTestInstance();
+        $instance->customsDeclarationNumber = $value;
+        self::assertEquals((string)$value, $instance->getCustomsDeclarationNumber());
+        self::assertEquals((string)$value, $instance->customsDeclarationNumber);
+        self::assertEquals((string)$value, $instance->customs_declaration_number);
+    }
+
+    public function validCustomsDeclarationNumberDataProvider()
+    {
+        return array(
+            array(null),
+            array(''),
+            array(Random::str(1)),
+            array(Random::str(2, 31)),
+            array(Random::str(32)),
+        );
+    }
+
+    /**
+     * @dataProvider invalidCustomsDeclarationNumberDataProvider
+     * @expectedException \InvalidArgumentException
+     *
+     * @param $value
+     */
+    public function testSetInvalidCustomsDeclarationNumber($value)
+    {
+        $this->getTestInstance()->setCustomsDeclarationNumber($value);
+    }
+
+    /**
+     * @dataProvider invalidCustomsDeclarationNumberDataProvider
+     * @expectedException \InvalidArgumentException
+     *
+     * @param $value
+     */
+    public function testSetterInvalidCustomsDeclarationNumber($value)
+    {
+        $this->getTestInstance()->customsDeclarationNumber = $value;
+    }
+
+    public function invalidCustomsDeclarationNumberDataProvider()
+    {
+        return array(
+            array(true),
+            array(false),
+            array(new \stdClass()),
+            array(array()),
+            array(Random::str(33, 64)),
+        );
+    }
+
+    /**
+     * @dataProvider validExciseDataProvider
+     *
+     * @param $value
+     */
+    public function testGetSetExcise($value)
+    {
+        $instance = $this->getTestInstance();
+
+        self::assertNull($instance->getExcise());
+        self::assertNull($instance->excise);
+        $instance->setExcise($value);
+        self::assertEquals((float)$value, $instance->getExcise());
+        self::assertEquals((float)$value, $instance->excise);
+    }
+
+    /**
+     * @dataProvider validExciseDataProvider
+     *
+     * @param $value
+     */
+    public function testSetterExcise($value)
+    {
+        $instance = $this->getTestInstance();
+
+        $instance->excise = $value;
+        self::assertEquals((float)$value, $instance->getExcise());
+        self::assertEquals((float)$value, $instance->excise);
+    }
+
+    public function validExciseDataProvider()
+    {
+        return array(
+            array(null),
+            array(''),
+            array(1),
+            array(1.3),
+            array(0.001),
+            array(10000.001),
+            array('3.1415'),
+            array(Random::float(0.001, 9999.999)),
+            array(Random::int(1, 9999)),
+        );
+    }
+
+    /**
+     * @dataProvider invalidExciseDataProvider
+     * @expectedException \InvalidArgumentException
+     *
+     * @param $value
+     */
+    public function testSetInvalidExcise($value)
+    {
+        $this->getTestInstance()->setExcise($value);
+    }
+
+    /**
+     * @dataProvider invalidExciseDataProvider
+     * @expectedException \InvalidArgumentException
+     *
+     * @param $value
+     */
+    public function testSetterInvalidExcise($value)
+    {
+        $this->getTestInstance()->excise = $value;
+    }
+
+    public function invalidExciseDataProvider()
+    {
+        return array(
+            array(0.0),
+            array(Random::float(-100, -0.001)),
+            array(array()),
+            array(new \stdClass()),
         );
     }
 }

@@ -22,16 +22,15 @@ class CallbackController extends AbstractController
     ) {
         $this->response->setContentType(RESPONSE_TEXT);
 
-        $request = $this->request->post();
-        if (empty($request)) {
+        if (empty($_POST)) {
             die('Request doesn\'t contain POST elements.');
         }
 
-        $theId       =  $request['id'];
-        $theSum      =  $request['sum'];
-        $theClientId =  $request['clientid'];
-        $theOrderId  =  intval($request['orderid']);
-        $theKey      =  $request['key'];
+        $theId       =  $this->request->post('id');
+        $theSum      =  $this->request->post('sum');
+        $theClientId =  $this->request->post('clientid');
+        $theOrderId  =  $this->request->post('orderid', 'integer');
+        $theKey      =  $this->request->post('key');
         
         if (empty($theOrderId) || strlen($theOrderId) > 50) {
             die('Missing or invalid order ID');
