@@ -19,7 +19,7 @@
             </div>
         {/if}
 
-        <div class="coupon__group">
+        <div class="d-flex align-items-center coupon__group">
             <div class="form__group form__group--coupon {if !$coupon_error}filled{/if}">
                 <input class="fn_coupon form__input form__input--coupon form__placeholder--focus" type="text" name="coupon_code" value="{$cart->coupon->code|escape}">
                 <span class="form__placeholder">{$lang->cart_coupon}</span>

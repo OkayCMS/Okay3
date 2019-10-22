@@ -380,7 +380,7 @@
 {if $settings->social_share_theme}
     <link type="text/css" class="fn_social_share_style" rel="stylesheet" href="{$rootUrl}/js_libraries/js_socials/css/jssocials-theme-{$settings->social_share_theme|escape}.css" />
 {/if}
-<script type="text/javascript" src="{$rootUrl}/backend/design/js/tinymce_jq/tinymce.min.js"></script>
+<script type="text/javascript" src="design/js/tinymce_jq/tinymce.min.js"></script>
 {literal}
     <script>
 
@@ -452,7 +452,7 @@
             tinyMCE.init({
                 selector: "textarea.editor_small",
                 height: '100',
-                plugins: ["code textcolor colorpicker"],
+                plugins: ["code"],
                 toolbar_items_size : 'small',
                 menubar:'',
                 toolbar1: "fontselect fontsizeselect | bold italic underline | alignleft aligncenter alignright alignjustify | forecolor backcolor | code",

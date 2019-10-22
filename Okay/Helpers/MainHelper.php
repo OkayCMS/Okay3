@@ -327,6 +327,7 @@ class MainHelper
             $route = $router->getRouteByName($routeName);
             $_SESSION['common_js']['controller'] = $route['params']['controller'];
         }
+        return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     /**
@@ -351,6 +352,7 @@ class MainHelper
             $response->redirectTo($prgSeoHide);
             exit;
         }
+        return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
     
     /**
@@ -381,6 +383,7 @@ class MainHelper
                 $design->useModuleDir();
             }
         }
+        return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
 

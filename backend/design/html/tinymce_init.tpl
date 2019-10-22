@@ -1,4 +1,4 @@
-<script type="text/javascript" src="design/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" src="design/js/tinymce_jq/tinymce.min.js"></script>
 
 <script>
     $(function(){

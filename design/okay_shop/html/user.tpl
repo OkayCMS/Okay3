@@ -13,7 +13,7 @@
         <div class="f_row flex-lg-row align-items-md-start">
             <div class="form_wrap f_col-lg-5">
                 <form method="post" class="fn_validate_register form form--boxed form--account">
-                    <div class="form__profile profile">
+                    <div class="d-flex align-items-center form__profile profile">
                         <div class="profile__image">
                             <div class="profile__icon">
                                 {include file="svg.tpl" svgId="comment-user_icon"}
@@ -25,7 +25,7 @@
                             </div>
                             {* Logout *}
                             <div class="profile__logout">
-                                <a href="{url_generator route="logout"}" class="button__logout">
+                                <a href="{url_generator route='logout'}" class="d-flex align-items-center button__logout">
                                     {include file="svg.tpl" svgId="exit_icon"}
                                     <span data-language="user_logout">{$lang->user_logout}</span>
                                 </a>

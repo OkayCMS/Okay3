@@ -56,6 +56,7 @@ $services = [
             new SR(License::class),
             new SR(EntityFactory::class),
             new SR(Languages::class),
+            new SR(Settings::class),
         ],
     ],
     Config::class => [

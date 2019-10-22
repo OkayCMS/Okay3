@@ -32,9 +32,7 @@ class Recaptcha
 
     public function check()
     {
-        
         $response = $this->request();
-        
         // В случае инвалидных ключей пропускаем пользователя
         if (isset($response['error-codes']) && reset($response['error-codes']) == 'invalid-input-secret') {
             return true; // TODO add to events list

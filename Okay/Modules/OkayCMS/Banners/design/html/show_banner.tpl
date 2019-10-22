@@ -1,23 +1,23 @@
 
-<div class="fn_banner_group_{$banner_data->id} banner_group banner_group--{$banner_data->id} block--border owl-carousel">
+<div class="fn_banner_group_{$banner_data->id} banner_group banner_group--{$banner_data->id} owl-carousel {if !$banner_data->settings.as_slider}no_js{/if}">
     {foreach $banner_data->items as $bi}
         {if $bi->settings.variant_show == Okay\Modules\OkayCMS\Banners\Entities\BannersImagesEntity::SHOW_DEFAULT}
-        <div class="banner_group__item banner_group__variant1">
+        <div class="banner_group__item block--border banner_group__variant1">
         {elseif $bi->settings.variant_show == Okay\Modules\OkayCMS\Banners\Entities\BannersImagesEntity::SHOW_DARK}
-        <div class="banner_group__item banner_group__variant2">
+        <div class="banner_group__item block--border banner_group__variant2">
         {elseif $bi->settings.variant_show == Okay\Modules\OkayCMS\Banners\Entities\BannersImagesEntity::SHOW_IMAGE_LEFT}
-        <div class="banner_group__item banner_group__variant3">
+        <div class="banner_group__item block--border banner_group__variant3">
         {elseif $bi->settings.variant_show == Okay\Modules\OkayCMS\Banners\Entities\BannersImagesEntity::SHOW_IMAGE_RIGHT}
-        <div class="banner_group__item banner_group__variant4">
+        <div class="banner_group__item block--border banner_group__variant4">
         {/if}
             {if $bi->url}
             <a class="banner_group__link" href="{$bi->url}" target="_blank"></a>
             {/if}
             <div class="banner_group__image">
                 <picture>
-                    <source class="owl-lazy" media="(min-width: 768px)" data-srcset="{$bi->image|resize:$bi->settings.desktop.w:$bi->settings.desktop.h:false:$config->resized_banners_images_dir:center:center}">
-                    <source class="owl-lazy" media="(max-width: 767px)" data-srcset="{$bi->image|resize:$bi->settings.mobile.w:$bi->settings.mobile.h:false:$config->resized_banners_images_dir}">
-                    <img class="owl-lazy" data-src="{$bi->image|resize:$bi->settings.desktop.w:$bi->settings.desktop.h:false:$config->resized_banners_images_dir:center:center}" alt="{$bi->alt}" title="{$bi->title}">
+                    <source media="(min-width: 768px)" data-srcset="{$bi->image|resize:$bi->settings.desktop.w:$bi->settings.desktop.h:false:$config->resized_banners_images_dir:center:center}">
+                    <source media="(max-width: 767px)" data-srcset="{$bi->image|resize:$bi->settings.mobile.w:$bi->settings.mobile.h:false:$config->resized_banners_images_dir}">
+                    <img src="{$bi->image|resize:$bi->settings.desktop.w:$bi->settings.desktop.h:false:$config->resized_banners_images_dir:center:center}" alt="{$bi->alt}" title="{$bi->title}">
                 </picture>
             </div>
             <div class="banner_group__content">

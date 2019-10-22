@@ -962,53 +962,99 @@ a.link_white:hover{
 
 
 /************************************************************************* Boxed  */
+
+.alert {
+    border-radius: 4px 4px 2px 2px;
+    background: #ccc;
+    border: 1px solid #777;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 0;
+    margin-bottom: 15px;
+}
+.alert:before {
+    content: "";
+    font: normal normal normal 14px/1 FontAwesome;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 50px;
+    -ms-flex: 0 0 50px;
+    flex: 0 0 50px;
+    max-width: 50px;
+    width: 50px;
+    position: relative;
+    z-index: 999;
+    text-align: center;
+    padding: 15px 0;
+    color: #fff;
+    font-size: 24px;
+}
+.alert-content {
+    padding: 15px;
+}
+.alert-title {
+    font-family: 'Open Sans Condensed', sans-serif;
+    color: rgb(43, 48, 59);
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 600;
+    margin: 0 0 10px;
+    padding: 0;
+}
+.alert-body p {
+    color: rgb(91, 91, 91);
+    margin: 0 0 10px;
+    font-size: 14px;
+    line-height: 1.3;
+}
+.alert-body p:last-child {
+    margin: 0;
+}
+.alert-error {
+    background-color: rgba(245, 87, 83, 0.1);
+    border-color: #F55753;
+}
+.alert-error:before {
+    content: "\f06a";
+    background-color: #F55753;
+}
+.alert-success {
+    background-color: rgba(126, 187, 122, 0.1);
+    border-color: #7ebb7a;
+}
+.alert-success:before {
+    content: "\f058";
+    background-color:#7ebb7a;
+}
+.alert-warning {
+    background-color: rgba(255, 200, 72, 0.1);
+    border-color: #ffc848;
+}
+.alert-warning:before {
+    content: "\f059";
+    background-color: #ffc848;
+}
+.alert-info {
+    background-color: rgba(90, 200, 250, 0.1);
+    border-color: #5ac8fa;
+}
+.alert-info:before {
+    content: "\f05a";
+    background-color: #5ac8fa;
+}
+
 .boxed{
     background: #FFF;
     border-radius: 4px 4px 2px 2px;
     border: 1px solid #e6e6e6;
+    color: rgb(43, 48, 59);
     padding: 15px;
     margin-bottom: 15px;
 }
-.boxed_learning--bg{
-    position: relative;
-    margin-top: 15px;
-    text-align: center;
-    background: linear-gradient(118deg,rgba(132, 115, 196,1),rgba(132, 115, 196,.7)) !important;
-}
-.boxed_learning--bg:before{
-    content: " ";
-    display: block;
-    background: url(../images/decor_learning1.png) left top no-repeat;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 20%;
-    height: 100%;
-}
-.boxed_learning--bg:after{
-    content: " ";
-    display: block;
-    background: url(../images/decor_learning2.png) right top no-repeat;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 20%;
-    height: 100%;
-}
-.boxed_learning--bg .heading_page,
-.boxed_learning--bg .heading_box{
-    color: #fff;
-}
-.boxed_learning--bg .heading_box {
-    margin-top: 20px;
-    color: #fff;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 1.4;
-    font-family: 'Open Sans', sans-serif !important;
-}
-
-
 .boxed_success,
 .boxed_warning,
 .boxed_attention{
@@ -1113,6 +1159,44 @@ a.link_white:hover{
     background-color: #fff;
     border-color: transparent;
     color: #0A7C71;
+}
+.boxed_learning--bg{
+    position: relative;
+    margin-top: 15px;
+    text-align: center;
+    background: linear-gradient(118deg,rgba(132, 115, 196,1),rgba(132, 115, 196,.7)) !important;
+}
+.boxed_learning--bg:before{
+    content: " ";
+    display: block;
+    background: url(../images/decor_learning1.png) left top no-repeat;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20%;
+    height: 100%;
+}
+.boxed_learning--bg:after{
+    content: " ";
+    display: block;
+    background: url(../images/decor_learning2.png) right top no-repeat;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20%;
+    height: 100%;
+}
+.boxed_learning--bg .heading_page,
+.boxed_learning--bg .heading_box{
+    color: #fff;
+}
+.boxed_learning--bg .heading_box {
+    margin-top: 20px;
+    color: #fff;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.4;
+    font-family: 'Open Sans', sans-serif !important;
 }
 
 
@@ -5934,8 +6018,9 @@ base::-moz-progress-bar,
     width: 100% !important;
 }
 .fn_disable_url{cursor:pointer;}
-div.mce-fullscreen {
-    top: 60px!important;
+div.tox-fullscreen {
+    top: 55px!important;
+    height: calc(100% - 55px);
     background: #fff!important;
 }
 .colorpicker {z-index: 100!important;}

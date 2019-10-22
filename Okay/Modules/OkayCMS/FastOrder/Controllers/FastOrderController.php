@@ -44,7 +44,7 @@ class FastOrderController extends AbstractController
 
         $order = new \stdClass();
         $order->name    = $this->request->post('name');
-        $order->name    = $this->request->post('phone');
+        $order->phone   = $this->request->post('phone');
         $order->email   = '';
         $order->address = '';
         $order->comment = 'Быстрый заказ';

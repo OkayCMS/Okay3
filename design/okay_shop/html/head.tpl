@@ -168,7 +168,7 @@
 
     {if $settings->captcha_type == "v3"}
         <script>ut_tracker.start('render:recaptcha');</script>
-        <script src="https://www.google.com/recaptcha/api.js?render={$settings->public_recaptcha_v3}" async defer></script>
+        <script src="https://www.google.com/recaptcha/api.js?render={$settings->public_recaptcha_v3}"></script>
         <script>
             grecaptcha.ready(function () {
                 {if $controller == 'ProductController' || $controller == 'BlogController'}
@@ -182,8 +182,8 @@
                 var all_captchеs = document.getElementsByClassName('fn_recaptchav3');
                 grecaptcha.execute('{$settings->public_recaptcha_v3}', { action: recaptcha_action })
                     .then(function (token) {
-                        for (var i=0; i<all_captchеs.length; i++) {
-                            all_captchеs[i].getElementsByClassName('fn_recaptcha_token')[0].value = token;
+                        for (capture of all_captchеs) {
+                            capture.value = token;
                         }
                     });
             });

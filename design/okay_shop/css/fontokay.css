@@ -84,7 +84,7 @@
 /***** #Okay fonts *****/
 @font-face {
   font-family: "OkayFonts";
-  font-display: auto;
+  font-display: block;
   src:url("../fonts/okay/okay.eot");
   src:url("../fonts/okay/okay.eot?#iefix") format("embedded-opentype"),
     url("../fonts/okay/okay.woff") format("woff"),

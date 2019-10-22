@@ -1,51 +1,6 @@
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';
 
-DROP TABLE IF EXISTS `ok_banners`;
-CREATE TABLE `ok_banners` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `group_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT '0',
-  `visible` tinyint(1) NOT NULL DEFAULT '1',
-  `show_all_pages` tinyint(1) NOT NULL DEFAULT '0',
-  `categories` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `pages` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `brands` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `position` (`position`),
-  KEY `visible` (`visible`),
-  KEY `show_all_pages` (`show_all_pages`),
-  KEY `category` (`categories`(100)),
-  KEY `pages` (`pages`(100)),
-  KEY `brands` (`brands`(100))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `ok_banners` (`id`, `group_id`, `name`, `position`, `visible`, `show_all_pages`, `categories`, `pages`, `brands`) VALUES
-(1,	'group1',	'Главный баннер',	1,	1,	0,	'0',	'1',	'0');
-
-DROP TABLE IF EXISTS `ok_banners_images`;
-CREATE TABLE `ok_banners_images` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `banner_id` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `alt` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `description` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT '0',
-  `visible` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`),
-  KEY `position` (`position`),
-  KEY `visible` (`visible`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `ok_banners_images` (`id`, `banner_id`, `name`, `alt`, `title`, `description`, `url`, `image`, `position`, `visible`) VALUES
-(2,	1,	'Баннер 2',	'Beat sound JBL',	'Beat sound JBL',	'- Создайте группу баннеров   в панели управления. - Выберите для неё разделы для показа. - Добавьте в группу рекламные блоки',	'catalog/smartfony',	'okay_banner2.png',	1,	1),
-(3,	1,	'Баннер3',	'',	'',	'',	'',	'okay_banner3.jpg',	3,	1),
-(4,	1,	'Баннер4',	'Samsung Gear Vertual Reality 3d',	'Samsung Gear Vertual Reality 3d',	'Мы предлагаем качественные товары  в нашем каталоге. Широкий выбор в сезон и не только. в нашем каталоге. Широкий выбор в сезон и не только. Пример текста',	'/',	'okay_banner4.jpg',	4,	1);
-
 DROP TABLE IF EXISTS `ok_blog`;
 CREATE TABLE `ok_blog` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -9201,4 +9156,3 @@ INSERT INTO `ok_variants` (`id`, `product_id`, `sku`, `name`, `weight`, `price`,
 (288,	48,	'',	'синий',	NULL,	5100.00,	0.00,	NULL,	288,	'',	4,	'',	NULL),
 (289,	48,	'',	'красный',	NULL,	5200.00,	0.00,	NULL,	289,	'',	4,	'',	NULL);
 
--- 2019-10-17 12:12:33

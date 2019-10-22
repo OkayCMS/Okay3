@@ -48,7 +48,11 @@
         <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="boxed boxed_warning">
                 <div class="heading_box">
-                    {$message_error|escape}
+                    {if $message_error=='shortcode_exists'}
+                        {$btr->banner_shortcode_exists|escape}
+                    {else}
+                        {$message_error|escape}
+                    {/if}
                 </div>
             </div>
         </div>
@@ -73,7 +77,7 @@
                             <input name="id" type="hidden" value="{$banner->id|escape}"/>
                         </div>
                         <div class="row">
-                            <div class="col-lg-6 col-sm-12">
+                            <div class="col-lg-4 col-sm-12">
                                 <div class="mt-h">
                                     <span class="boxes_inline">
                                         <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
@@ -85,11 +89,11 @@
                                     <span class="boxes_inline heading_label">{$btr->banner_show_group|escape}</span>
                                 </div>
                             </div>
-                            <div class="col-lg-6 col-sm-12">
+                            <div class="col-lg-4 col-sm-12">
                                 <div class="mt-h">
                                     <span class="boxes_inline">
                                         <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
-                                        <input class="switch-input" name="individual_shortcode" value='1' type="checkbox" {if $banner->individual_shortcode}checked=""{/if}/>
+                                        <input class="switch-input" name="use_individual_shortcode" value='1' type="checkbox" {if $banner->individual_shortcode}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>
@@ -102,6 +106,18 @@
                                     </span>
                                 </div>
                             </div>
+                            {if $banner->individual_shortcode}
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="mt-h">
+                                    <div class="input-group">
+                                        {*<span class="boxes_inline heading_label">{$btr->banner_id_enter|escape}</span>*}
+                                        <span class="boxes_inline bnr_id_grup">
+                                            <input type="text" class="form-control" name="individual_shortcode" value="{literal}{${/literal}{$banner->individual_shortcode}{literal}}{/literal}" />
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {/if}
                         </div>
                     </div>
                     {*Видимость элемента*}
@@ -125,25 +141,26 @@
     </div>
     <div class="row">
         <div class="col-md-12 ">
-            <div class="boxed boxed_attention">
-                <div class="heading_box">
-                    {$btr->banner_instruction_head|escape}
-                </div>
-                <div class="text_box">
-                    <div>
-                        {$btr->banner_instruction_global_shortcode_part_1|escape}
-                        <span style="background: #383838; color: #d8d8d8;">{literal}{$global_banners}{/literal}</span>.
-                        {$btr->banner_instruction_global_shortcode_part_2|escape}
+            <div class="alert alert-info">
+                <div class="alert-content">
+                    <div class="alert-title">
+                        {$btr->banner_instruction_head|escape}
                     </div>
-                    {if $banner->individual_shortcode}
-                    <div>
-                        {$btr->banner_instruction_shortcode_part_1|escape}
-                        <span style="background: #383838; color: #d8d8d8;">{literal}{${/literal}{$banner->individual_shortcode}{literal}}{/literal}</span>
-                        {$btr->banner_instruction_shortcode_part_2|escape}
-                        <br>
-                        {$btr->banner_instruction_shortcode_part_3|escape}
+                    <div class="alert-body">
+                        <p>
+                            {$btr->banner_instruction_global_shortcode_part_1|escape}
+                            <span style="background: #383838; color: #d8d8d8;">{literal}{$global_banners}{/literal}</span>.
+                            {$btr->banner_instruction_global_shortcode_part_2|escape}
+                        </p>
+                        {if $banner->individual_shortcode}
+                        <p>
+                            {$btr->banner_instruction_shortcode_part_1|escape}
+                            <span style="background: #383838; color: #d8d8d8;">{literal}{${/literal}{$banner->individual_shortcode}{literal}}{/literal}</span>
+                            {$btr->banner_instruction_shortcode_part_2|escape}
+                        </p>
+                        <p>{$btr->banner_instruction_shortcode_part_3|escape}</p>
+                        {/if}
                     </div>
-                    {/if}
                 </div>
             </div>
         </div>

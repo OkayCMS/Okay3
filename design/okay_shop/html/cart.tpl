@@ -13,6 +13,11 @@
 
         <div class="block__body">
             <form id="captcha_id" method="post" name="cart" class="fn_validate_cart">
+
+                {if $settings->captcha_type == "v3"}
+                    <input type="hidden" class="fn_recaptcha_token fn_recaptchav3" name="recaptcha_token" />
+                {/if}
+
                 <div class="f_row flex-column flex-lg-row" data-sticky-container> 
                     <div class="sticky f_col f_col-lg-6 f_col-xl-5">
 
@@ -45,7 +50,7 @@
                                 {* Discount *}
                                 <div class="purchase_detail__item">
                                     <div class="purchase_detail__column_name">
-                                        <div class="purchase_detail__name" data-language="cart_discount">Сумма заказа:</div>
+                                        <div class="purchase_detail__name" data-language="cart_order_price">{$lang->cart_order_price}:</div>
                                     </div>
                                     <div class="purchase_detail__column_value">
                                         <div id="fn_total_purchases_price" class="purchase_detail__price">{$cart->total_price|convert} {$currency->sign|escape}</div>
@@ -55,7 +60,8 @@
                                 <div id="fn_total_delivery_price_block" class="purchase_detail__item">
                                     <div class="purchase_detail__column_name">
                                         <div class="purchase_detail__name" data-language="cart_discount">
-                                            Доставка<span id="fn_total_separate_delivery"{if !$active_delivery->separate_payment || $active_delivery->is_free_delivery === true} style="display: none;" {/if}> ({$lang->cart_paid_separate})</span>:
+                                            <span data-language="cart_delivery_order_price">{$lang->cart_delivery_order_price}</span>
+                                            <span id="fn_total_separate_delivery"{if !$active_delivery->separate_payment || $active_delivery->is_free_delivery === true} style="display: none;" {/if}> ({$lang->cart_paid_separate})</span>:
                                         </div>
                                     </div>
                                     <div class="purchase_detail__column_value">

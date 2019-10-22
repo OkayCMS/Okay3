@@ -36,6 +36,9 @@ class Router {
     /** @var ServiceLocator */
     private $serviceLocator;
 
+    /** @var Settings */
+    private $settings;
+
     /** @var Languages */
     private static $languages;
 
@@ -45,7 +48,8 @@ class Router {
         Response $response,
         License $license,
         EntityFactory $entityFactory,
-        Languages $languages
+        Languages $languages,
+        Settings $settings
     ) {
         
         // SL будем использовать только для получения сервисов, которые запросили для контроллера
@@ -56,6 +60,7 @@ class Router {
         $this->response     = $response;
         $this->license      = $license;
         $this->entityFactory = $entityFactory;
+        $this->settings     = $settings;
         self::$languages     = $languages;
         
     }
@@ -105,6 +110,7 @@ class Router {
         $router = $this->router;
         $routes = self::$routes;
         $request = $this->request;
+        $settings = $this->settings;
         
         // Добавляем роуты по языкам в обратном порядке, т.к. первый язык не имеет приставки,
         // и роутер перехватывает $page с другого языка
@@ -138,7 +144,7 @@ class Router {
                 
                 $pattern = $baseRoute . $this->getPattern($route);
                 
-                $router->all("{$pattern}", function(...$params) use ($router, $route, $request, $language, $baseRoute, $routeName) {
+                $router->all("{$pattern}", function(...$params) use ($router, $route, $request, $settings, $language, $baseRoute, $routeName) {
                     self::$currentRouteName = $routeName;
                     $this->request->setBasePath($router->getBasePath());
 
@@ -148,6 +154,7 @@ class Router {
                     ));
                     
                     $request->setLangId($language->id);
+                    $settings->initMultiSettings($language->id);
                     $routeVars = [];
                     $controllerName = $route['params']['controller'];
 
@@ -174,8 +181,8 @@ class Router {
                     }
 
                     /** @var PagesEntity $pagesEntity */
-                    $pagesEntity   = $this->entityFactory->get(PagesEntity::class);
-                    $page = $pagesEntity->get((string) $_SERVER['REQUEST_URI']);
+                    $pagesEntity = $this->entityFactory->get(PagesEntity::class);
+                    $page = $pagesEntity->get((string) $this->request->getPageUrl());
                     if (!empty($page) && empty($page->visible)) {
                         $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController';
                         $method = 'pageNotFound';

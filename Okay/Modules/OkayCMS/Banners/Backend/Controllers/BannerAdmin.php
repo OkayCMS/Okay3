@@ -35,29 +35,37 @@ class BannerAdmin extends IndexAdmin
             $banner->pages = implode(",",$this->request->post('pages'));
             $banner->settings = serialize($this->request->post('settings'));
 
-            /*Добавляем/обновляем группу баннеров*/
-            if (empty($banner->id)) {
-                $banner->id = $bannersEntity->add($banner);
-                $banner = $bannersEntity->get($banner->id);
-                $this->design->assign('message_success', 'added');
-            } else {
-                $bannersEntity->update($banner->id, $banner);
-                $banner = $bannersEntity->get($banner->id);
-                $this->design->assign('message_success', 'updated');
+            if ($this->request->post('use_individual_shortcode', 'boolean') && ($individualShortCode = $this->request->post('individual_shortcode'))) {
+                $individualShortCode = preg_replace('~^{*\$*([\w]+?)}*$~', '$1', $individualShortCode);
+                $banner->individual_shortcode = $individualShortCode;
             }
 
-            if ($this->request->post('individual_shortcode', 'boolean')) {
-                if (empty($banner->individual_shortcode)) {
-                    $banner->individual_shortcode = 'banner_shortcode_group_' . $banner->id;
-                }
+            if (!empty($banner->individual_shortcode) && ($b = $bannersEntity->get($banner->individual_shortcode)) && $b->id!=$banner->id) {
+                $this->design->assign('message_error', 'shortcode_exists');
             } else {
-                $banner->individual_shortcode = '';
+                /*Добавляем/обновляем группу баннеров*/
+                if (empty($banner->id)) {
+                    $banner->id = $bannersEntity->add($banner);
+                    $banner = $bannersEntity->get($banner->id);
+                    $this->design->assign('message_success', 'added');
+                } else {
+                    $bannersEntity->update($banner->id, $banner);
+                    $banner = $bannersEntity->get($banner->id);
+                    $this->design->assign('message_success', 'updated');
+                }
+
+                if ($this->request->post('use_individual_shortcode', 'boolean')) {
+                    if (empty($individualShortCode)) {
+                        $banner->individual_shortcode = 'banner_shortcode_group_' . $banner->id;
+                    }
+                } else {
+                    $banner->individual_shortcode = '';
+                }
+                $bannersEntity->update($banner->id, $banner);
             }
-            $bannersEntity->update($banner->id, $banner);
-            
-            $banner->category_selected  = $this->request->post('categories');
-            $banner->brand_selected     = $this->request->post('brands');
-            $banner->page_selected      = $this->request->post('pages');
+            $banner->category_selected = $this->request->post('categories');
+            $banner->brand_selected = $this->request->post('brands');
+            $banner->page_selected = $this->request->post('pages');
         } else {
             /*Отображение группы баннеров*/
             $id = $this->request->get('id', 'integer');

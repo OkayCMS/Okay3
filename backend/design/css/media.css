@@ -31,13 +31,13 @@
     #admin_catalog:hover {
         transform: translate(210px, 0px);
     }
-    div.mce-fullscreen {
+    div.tox-fullscreen {
         position: fixed;
-        left: 76px!important;
-        width: calc(100% - 84px)!important;
+        left: 70px!important;
+        width: calc(100% - 85px)!important;
     }
-    body.menu-pin div.mce-fullscreen {
-        left: 287px !important;
+    body.menu-pin div.tox-fullscreen {
+        left: 280px !important;
         width: calc(100% - 295px) !important;
     }
     .boxed_learning--bg {

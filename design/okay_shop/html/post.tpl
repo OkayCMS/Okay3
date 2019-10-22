@@ -91,9 +91,9 @@
                                     {/if}
                                 </div>
                                 <div class="comment__boxed">
-                                    <div class="comment__header">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between comment__header">
                                         {* Comment name *}
-                                        <div class="comment__author">
+                                        <div class="d-flex flex-wrap align-items-center comment__author">
                                             <span class="comment__name">{$comment->name|escape}</span>
                                             {* Comment status *}
                                             {if !$comment->approved}
@@ -128,6 +128,10 @@
                 <div class="form_wrap f_col-lg-5">
                     {* Comment form *}
                     <form id="fn_blog_comment" class="fn_validate_post form form--boxed"  method="post" action="">
+                        {if $settings->captcha_type == "v3"}
+                            <input type="hidden" class="fn_recaptcha_token fn_recaptchav3" name="recaptcha_token" />
+                        {/if}
+
                         <div class="form__header">
                             <div class="form__title">
                                 {include file="svg.tpl" svgId="comment_icon"}

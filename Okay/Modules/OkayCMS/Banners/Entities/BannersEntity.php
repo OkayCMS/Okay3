@@ -28,6 +28,7 @@ class BannersEntity extends Entity
 
     protected static $table = 'okaycms__banners';
     protected static $tableAlias = 'b';
+    protected static $alternativeIdField = 'individual_shortcode';
 
     public function delete($ids)
     {

@@ -169,8 +169,10 @@ class Notify
         $this->design->assign('delivery', $delivery);
         
         $this->design->assign('order', $order);
-        $orderStatuses = $ordersStatusEntity->find(["status"=>intval($order->status_id)]);
-        $this->design->assign('order_status', reset($orderStatuses));
+        if (!empty($order->status_id)) {
+            $orderStatuses = $ordersStatusEntity->get(intval($order->status_id));
+            $this->design->assign('order_status', $orderStatuses);
+        }
         
         // Отправляем письмо
         // Если в шаблон не передавалась валюта, передадим
@@ -236,8 +238,10 @@ class Notify
         
         $this->design->assign('order', $order);
 
-        $orderStatuses = $ordersStatusEntity->find(["status"=>intval($order->status_id)]);
-        $this->design->assign('order_status', reset($orderStatuses));
+        if (!empty($order->status_id)) {
+            $orderStatuses = $ordersStatusEntity->get(intval($order->status_id));
+            $this->design->assign('order_status', $orderStatuses);
+        }
         
         // В основной валюте
         $this->design->assign('main_currency', $currenciesEntity->getMainCurrency());

@@ -204,7 +204,7 @@
 {if $subfolder !='/'}
     <script type="text/javascript" src="/{$subfolder}backend/design/js/tinymce_jq/tinymce.min.js"></script>
 {else}
-    <script type="text/javascript" src="/backend/design/js/tinymce_jq/tinymce.min.js"></script>
+    <script type="text/javascript" src="/design/js/tinymce_jq/tinymce.min.js"></script>
 {/if}
 <script>
     $(function(){
@@ -214,8 +214,8 @@
             plugins: [
                 "advlist autolink lists link image preview anchor responsivefilemanager",
                 "hr visualchars autosave noneditable searchreplace wordcount visualblocks",
-                "code fullscreen save textcolor colorpicker charmap nonbreaking",
-                "insertdatetime media table contextmenu paste imagetools"
+                "code fullscreen save charmap nonbreaking",
+                "insertdatetime media table paste imagetools"
             ],
             toolbar_items_size : 'small',
             menubar:'edit view format table',

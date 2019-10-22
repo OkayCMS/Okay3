@@ -67,7 +67,6 @@ class PagesEntity extends Entity
         $this->setUp();
 
         if (!is_int($id) && $this->getAlternativeIdField()) {
-            $id = $this->formattedUrl($id);
             $filter[$this->getAlternativeIdField()] = $id;
         } else {
             $filter['id'] = $id;
@@ -118,7 +117,7 @@ class PagesEntity extends Entity
         }
 
         $lastSymbolNumber = strlen($url) - 1;
-        if ($url[$lastSymbolNumber] == '/') {
+        if (isset($url[$lastSymbolNumber]) && $url[$lastSymbolNumber] == '/') {
             $url = substr($url, 0, -1);
         }
 

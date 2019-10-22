@@ -14,12 +14,13 @@ return [
     (new Css('font-awesome.min.css')),
     (new Css('fontokay.css')),
     (new Css('grid.css')),
-    (new Css('animate.css')),
-    (new Css('libs.css')),
+    (new Css('okay.css')),
+    (new Css('template.css')),
+    (new Css('select2.min.css')),
     (new Css('jquery.fancybox.min.css')),
     (new Css('jquery-ui.min.css')),
-    (new Css('okay.css')),
     (new Css('media.css')),
     (new Css('mobile_menu.css')),
+    (new Css('animate.css')),
 ];
 

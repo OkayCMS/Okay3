@@ -8,7 +8,17 @@
             {/if}
         </div>
         <div class="d-flex align-items-center f_col">
-            {include file="user_informer.tpl"}
+            {if $user}
+                <a class="account__link d-inline-flex align-items-center icon icon-perm-identity" href="{url_generator route="user"}">
+                <span class="account__text" data-language="index_account">{$lang->index_account} </span>
+                {$user->name|escape}
+            </a>
+            {else}
+                <a class="account__link d-inline-flex align-items-center icon icon-perm-identity" href="{url_generator route='login'}"  title="{$lang->index_login}">
+                <span class="account__text" data-language="index_account">{$lang->index_account} </span>
+                <span class="account__login" data-language="index_login">{$lang->index_login}</span>
+                </a>
+            {/if}
         </div>
     </li>
 </ul>
@@ -120,6 +130,28 @@
         </li>
     </ul>
 {/if}
+{/if}
+
+{if $settings->site_phones}
+{foreach $settings->site_phones as $phone}
+<ul>
+    <li>
+        <a class="phone icon icon-phone-callback" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
+            <span>{$phone|escape}</span>
+        </a>
+    </li>
+</ul>
+
+{/foreach}
+{/if}
+{if $settings->site_email}
+<ul>
+    <li>
+        <a class="email icon icon-mail-outline" href="mailto:{$settings->site_email|escape}">
+            <span>{$settings->site_email|escape}</span>
+        </a>
+    </li>
+</ul>
 {/if}
 
 

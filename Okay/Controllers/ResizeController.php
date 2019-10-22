@@ -67,7 +67,10 @@ class ResizeController extends AbstractController
             return;
         }
 
-        $resizedFilename = $image->resize($filename, $imageSizes, $originalImgDir, $resizedImgDir);
+        if (($resizedFilename = $image->resize($filename, $imageSizes, $originalImgDir, $resizedImgDir)) === false) {
+            return false;
+        }
+        
         if (is_readable($resizedFilename)) {
             $this->response->setContent(file_get_contents($resizedFilename), RESPONSE_IMAGE);
         }

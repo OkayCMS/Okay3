@@ -43,7 +43,6 @@ class BackendCategoriesHelper
     {
         $ids = array_keys($positions);
         sort($positions);
-        $positions = array_reverse($positions);
 
         return ExtenderFacade::execute(__METHOD__, [$ids, $positions], func_get_args());
     }

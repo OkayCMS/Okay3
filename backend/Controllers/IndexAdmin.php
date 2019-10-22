@@ -183,7 +183,8 @@ class IndexAdmin
             }
             
             $this->design->assign('current_language', $languagesList[$_SESSION['admin_lang_id']]);
-            $languages->setLangId($_SESSION['admin_lang_id']);
+            $languages->setLangId((int)$_SESSION['admin_lang_id']);
+            $this->settings->initMultiSettings((int)$_SESSION['admin_lang_id']);
         }
 
         $langId = $languages->getLangId();

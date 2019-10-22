@@ -105,7 +105,7 @@ class OrderAdmin extends IndexAdmin
             // Метки заказа
             $orderLabels = [];
             if (isset($order->id)) {
-                $orderLabels = $orderLabelsEntity->find(['order_id', $order->id]);
+                $orderLabels = $orderLabelsEntity->find(['order_id' => $order->id]);
                 if ($orderLabels) {
                     foreach ($orderLabels as $orderLabel) {
                         $orderLabels[] = $orderLabel->id;

@@ -15,7 +15,7 @@
 					{foreach $brands as $b}
 						<div class="brand__item col-xs-6 col-sm-4 col-lg-2">
 							<div class="brand__preview">
-								<a class="brand__link" data-brand="{$b->id}" href="{url_generator route='brand' url=$b->url}">
+								<a class="d-flex align-items-center justify-content-center brand__link" data-brand="{$b->id}" href="{url_generator route='brand' url=$b->url}">
 									{if $b->image}
 										<div class="brand__image">
 											<img class="brand_img lazy" data-src="{$b->image|resize:120:100:false:$config->resized_brands_dir}" src="{$b->image|resize:120:100:false:$config->resized_brands_dir}" alt="{$b->name|escape}" title="{$b->name|escape}">

@@ -92,7 +92,7 @@
                     <div class="col-lg-7 col-xl-8">
                         <div class="block__abouts_us">
                             <div class="block__header">
-                                <h1 class="about_us__heading">
+                                <h1 class="block__title">
                                     <span>{$page->name|escape}</span>
                                 </h1>
                             </div>
@@ -122,13 +122,13 @@
                             <div class="main_brands f_row no_gutters">
                                 {foreach $all_brands as $b}
                                 <div class="main_brands__item f_col-4 f_col-md-2 f_col-lg-4 f_col-xl-4">
-                                    <a class="main_brands__link " href="{url_generator route="brand" url=$b->url}" data-brand="{$b->id}">
+                                    <a class="d-flex align-items-center justify-content-center main_brands__link" href="{url_generator route="brand" url=$b->url}" data-brand="{$b->id}">
                                         {if $b->image}
-                                            <div class="main_brands__image">
+                                            <div class="d-flex align-items-center justify-content-center main_brands__image">
                                                 <img class="main_brands_img lazy" data-src="{$b->image|resize:100:50:false:$config->resized_brands_dir}" alt="{$b->name|escape}" title="{$b->name|escape}">
                                             </div>
                                         {else}
-                                            <div class="main_brands__name">
+                                            <div class="d-flex align-items-center justify-content-center main_brands__name">
                                                 <span>{$b->name|escape}</span>
                                             </div>
                                         {/if}

@@ -628,7 +628,7 @@ $(function() {
             new_item = new_purchase.clone().appendTo('#fn_purchase');
             new_item.removeAttr('id');
             new_item.find('.fn_new_product').html(suggestion.data.name);
-            new_item.find('.fn_new_product').attr('href', 'index.php?module=ProductAdmin&id='+suggestion.data.id);
+            new_item.find('.fn_new_product').attr('href', 'index.php?controller=ProductAdmin&id='+suggestion.data.id);
 
             // Добавляем варианты нового товара
             var variants_select = new_item.find("select.fn_new_variant");

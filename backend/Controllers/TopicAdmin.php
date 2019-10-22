@@ -14,7 +14,7 @@ class TopicAdmin extends IndexAdmin {
         $supportInfo = $supportInfoEntity->getInfo();
 
         if (empty($supportInfo->public_key)) {
-            $this->response->redirectTo($this->request->getRootUrl() . '/backend/index.php?module=SupportAdmin');
+            $this->response->redirectTo($this->request->getRootUrl() . '/backend/index.php?controller=SupportAdmin');
         }
 
         if (in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1', '0:0:0:0:0:0:0:1'))) {

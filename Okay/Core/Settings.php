@@ -7,6 +7,9 @@ namespace Okay\Core;
 /**
  * Управление настройками магазина, хранящимися в базе данных
  * В отличие от класса Config оперирует настройками доступными админу и хранящимися в базе данных.
+ * 
+ * ВНИМАНИЕ: мультиязычные настройки доступны уже после отработки роутера. Если же нужно получить ранее настройки,
+ * можно заюзать метод getSettings($langId) для получения настроек
  */
 class Settings
 {
@@ -113,10 +116,19 @@ class Settings
                 $this->vars[$result->param] = $result->value;
             }
         }
+    }
 
+    /**
+     * метод инициализирует мультиязычные настройки, вызывать его нужно после определения языка
+     * 
+     * @param $langId
+     * @throws \Exception
+     */
+    public function initMultiSettings($langId)
+    {
         // Выбираем из базы настройки с переводами к текущему языку
         $this->vars_lang = array();
-        $multi = $this->getSettings();
+        $multi = $this->getSettings($langId);
         if (is_array($multi)) {
             foreach ($multi as $s) {
                 if (!($this->vars_lang[$s->param] = @unserialize($s->value))) {
@@ -125,7 +137,7 @@ class Settings
             }
         }
     }
-
+    
     /**
      * Adding a new setting for all languages
      * @param string $param
@@ -241,13 +253,12 @@ class Settings
 
     /**
      * Getting settings.
-     * if $langId is not specified, a current language will be returned.
      * $langId = 0 is wrong, will be returned false.
-     * @param string $langId
-     * @return mixed
+     * @param int $langId
+     * @return array|bool
      * @throws \Exception
      */
-    public function getSettings($langId = null)
+    public function getSettings($langId)
     {
         $select = $this->queryFactory->newSelect();
         $select->from(\Okay\Entities\LanguagesEntity::getTable())
@@ -256,7 +267,7 @@ class Settings
             ->limit(1);
         $this->db->query($select);
         
-        if (!is_null($langId) && !$this->db->results('id')) {
+        if (is_null($langId) || !$this->db->results('id')) {
             return false;
         }
 
@@ -264,11 +275,9 @@ class Settings
         $select->from('__settings_lang')
             ->cols(['*']);
         
-        $langId  = !is_null($langId) ? $langId : $this->languages->getLangId();
-        if($langId) {
-            $select->where('lang_id=:action_object_lang_id');
-            $select->bindValues(['action_object_lang_id'=>$langId]);
-        }
+        $select->where('lang_id=:action_object_lang_id');
+        $select->bindValues(['action_object_lang_id'=>$langId]);
+        
         $this->db->query($select);
         return $this->db->results();
     }

@@ -112,7 +112,7 @@
                                                     {$svg_icon}
                                                 {else}
                                                     {$translation = {$btr->getTranslation({$section})}}
-                                                    <span class="manager_menu_section_icon">{$translation.0}</span>
+                                                    <span class="manager_menu_section_icon">{$translation|first_letter}</span>
                                                 {/if}
                                             {/if}
                                         </span>

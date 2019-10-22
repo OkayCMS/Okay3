@@ -77,12 +77,12 @@
                                 </span>
                                 {*Вывод количества голосов данного товара, скрыт ради микроразметки*}
                                 {if $product->rating > 0}
-                                <span class="rating_text hidden-xs-up" itemprop="reviewCount">{$product->votes|string_format:"%.0f"}</span>
-                                <span class="rating_text hidden-xs-up" itemprop="ratingValue">({$product->rating|string_format:"%.1f"})</span>
+                                <span class="rating_text" itemprop="reviewCount">( {$product->votes|string_format:"%.0f"} )</span>
+                                <span class="rating_text hidden" itemprop="ratingValue">({$product->rating|string_format:"%.1f"})</span>
                                 {*Вывод лучшей оценки товара для микроразметки*}
-                                <span class="rating_text hidden-xs-up" itemprop="bestRating" style="display:none;">5</span>
+                                <span class="rating_text hidden" itemprop="bestRating" style="display:none;">5</span>
                                 {else}
-                                <span class="rating_text hidden-xs-up">({$product->rating|string_format:"%.1f"})</span>
+                                <span class="rating_text hidden">({$product->rating|string_format:"%.1f"})</span>
                                 {/if}
                             </div>
                         </div>
@@ -154,15 +154,15 @@
                                 <span itemprop="name">{$settings->site_name}</span></span>
                             </span>
 
-                            <div class="details_boxed__price_amount">
-                                <div class="details_boxed__prices">
+                            <div class="d-flex flex-wrap align-items-center details_boxed__price_amount">
+                                <div class="d-flex align-items-center details_boxed__prices">
                                     {* Old price *}
-                                    <div class="details_boxed__old_price {if !$product->variant->compare_price} hidden-xs-up{/if}">
+                                    <div class="d-flex align-items-center details_boxed__old_price {if !$product->variant->compare_price} hidden-xs-up{/if}">
                                         <span class="fn_old_price">{$product->variant->compare_price|convert}</span>
                                         <span class="currency">{$currency->sign|escape}</span>
                                     </div>
                                     {* Price *}
-                                    <div class="details_boxed__price {if $product->variant->compare_price} price--red{/if}">
+                                    <div class="d-flex align-items-center details_boxed__price {if $product->variant->compare_price} price--red{/if}">
                                         <span class="fn_price" itemprop="price" content="{$product->variant->price|convert:'':false}">{$product->variant->price|convert}</span>
                                         <span class="currency" itemprop="priceCurrency" content="{$currency->code|escape}">{$currency->sign|escape}</span>
                                     </div>
@@ -180,7 +180,7 @@
                                         {*<div class="details_boxed__title" data-language="product_quantity">
                                         {$lang->product_quantity}<span class="fn_units">{if $product->variant->units}, {$product->variant->units|escape}{/if}</span>:
                                     </div>*}
-                                        <div class="fn_product_amount amount">
+                                        <div class="fn_product_amount  amount">
                                             <span class="fn_minus amount__minus">&minus;</span>
                                             <input class="amount__input" type="text" name="amount" value="1" data-max="{$product->variant->stock}">
                                             <span class="fn_plus amount__plus">&plus;</span>
@@ -189,25 +189,25 @@
                                 </div>
                             </div>
 
-                            <div class="details_boxed__buttons">
+                            <div class="d-flex align-items-center details_boxed__buttons">
                                 {if !$settings->is_preorder}
                                 {* No stock *}
-                                <p class="fn_not_preorder {if $product->variant->stock > 0} hidden{/if}">
+                                <p class="fn_not_preorder {if $product->variant->stock > 0} hidden-xs-up{/if}">
                                     <span class="product-page__button product-page__out_stock" data-language="product_out_of_stock">{$lang->product_out_of_stock}</span>
                                 </p>
                                 {else}
                                 {* Preorder *}
-                                <div class="fn_is_preorder {if $product->variant->stock > 0} hidden{/if}">
+                                <div class="fn_is_preorder {if $product->variant->stock > 0} hidden-xs-up{/if}">
                                     <button class="product-page__button product-page__button--preloader" type="submit" data-language="product_pre_order">{$lang->product_pre_order}</button>
                                 </div>
                                 {/if}
 
                                 {* Submit button *}
-                                <div class="fn_is_stock {if $product->variant->stock < 1} hidden{/if}">
+                                <div class="fn_is_stock {if $product->variant->stock < 1} hidden-xs-up{/if}">
                                     <button class=" product-page__button button--blick" type="submit" data-language="product_add_cart">{$lang->product_add_cart}</button>
                                 </div>
 
-                                 <div class="details_boxed__other">
+                                 <div class="d-flex align-items-center details_boxed__other">
 
                                      {fast_order_btn product=$product}
 
@@ -329,7 +329,7 @@
                         </div>
                         <ul class="features mobile_tab__content">
                             {foreach $product->features as $f}
-                            <li class="features__item">
+                            <li class="d-flex justify-content-start features__item">
                                 <div class="features__name"><span>{$f->name|escape}:</span>{if $f->description}<span title="{$f->description}" style="margin-left: 10px; cursor: pointer; background: lightgreen; padding: 5px; border-radius: 5px;">i</span>{/if}</div>
                                 <div class="features__value">
                                     {foreach $f->values as $value}
@@ -372,9 +372,9 @@
                                         {/if}
                                     </div>
                                     <div class="comment__boxed">
-                                        <div class="comment__header">
+                                        <div class="d-flex flex-wrap align-items-center justify-content-between comment__header">
                                             {* Comment name *}
-                                            <div class="comment__author">
+                                            <div class="d-flex flex-wrap align-items-center comment__author">
                                                 <span class="comment__name">{$comment->name|escape}</span>
                                                 {* Comment status *}
                                                 {if !$comment->approved}
@@ -410,8 +410,13 @@
                         <div class="form_wrap f_col-lg-5">
                             {* Comment form *}
                             <form id="captcha_id" class="form form--boxed fn_validate_product" method="post">
+
+                                {if $settings->captcha_type == "v3"}
+                                    <input type="hidden" class="fn_recaptcha_token fn_recaptchav3" name="recaptcha_token" />
+                                {/if}
+
                                 <div class="form__header">
-                                     <div class="form__title">
+                                    <div class="form__title">
                                         {include file="svg.tpl" svgId="comment_icon"}
                                         <span data-language="product_write_comment">{$lang->product_write_comment}</span>
                                     </div>
@@ -487,14 +492,14 @@
             <ol class="pager row">
                 <li class="col-xs-12{if $next_product} col-sm-6{else} col-sm-12{/if}">
                     {if $prev_product}
-                    <a class="" href="{url_generator route="product" url=$prev_product->url}">
+                    <a class="d-flex align-items-center justify-content-center" href="{url_generator route="product" url=$prev_product->url}">
                         {include file="svg.tpl" svgId="arrow_up_icon"}
                         <span>{$prev_product->name|escape}</span></a>
                     {/if}
                 </li>
                 <li class="col-xs-12 col-sm-6">
                     {if $next_product}
-                    <a href="{url_generator route="product" url=$next_product->url}">
+                    <a class="d-flex align-items-center justify-content-center" href="{url_generator route="product" url=$next_product->url}">
                         <span>{$next_product->name|escape}</span>
                         {include file="svg.tpl" svgId="arrow_up_icon"}
                     </a>

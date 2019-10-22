@@ -4,6 +4,7 @@
 namespace Okay\Core\Modules;
 
 
+use Okay\Core\Design;
 use Okay\Core\Database;
 use Okay\Core\QueryFactory;
 use Okay\Core\Config;
@@ -11,6 +12,8 @@ use Okay\Entities\ManagersEntity;
 use Okay\Entities\ModulesEntity;
 use Okay\Core\EntityFactory;
 use OkayLicense\License;
+use Okay\Core\ServiceLocator;
+use Okay\Core\OkayContainer\OkayContainer;
 
 class Modules // todo подумать, мож сюда переедит CRUD Entity/Modules
 {
@@ -96,18 +99,48 @@ class Modules // todo подумать, мож сюда переедит CRUD En
 
         $select = $this->queryFactory->newSelect()
             ->from(ModulesEntity::getTable())
-            ->cols(['id', 'vendor', 'module_name'])
+            ->cols(['id', 'vendor', 'module_name', 'enabled'])
             ->orderBy(['position ASC']);
-        
-        if ($activeOnly === true) {
-            $select->where('enabled = 1');
-        }
-        
+
         $this->db->query($select);
         $modules = $this->db->results();
 
+        $SL = new ServiceLocator();
+        /** @var Design $design */
+        $design = $SL->getService(Design::class);
+
         foreach ($modules as $module) {
-            
+
+
+            // TODO подумать над тем, чтобы перенести этот код отсюда
+            if ($activeOnly === true && (int) $module->enabled !== 1) {
+                $plugins = $this->module->getSmartyPlugins($module->vendor, $module->module_name);
+                foreach ($plugins as $plugin) {
+                    $reflector = new \ReflectionClass($plugin['class']);
+                    $props     = (object) $reflector->getDefaultProperties();
+                    $parentClass = $reflector->getParentClass();
+
+                    if (!empty($props->tag)) {
+                        $tag = $props->tag;
+                    } else {
+                        $tag = strtolower($reflector->getShortName());
+                    }
+
+                    $mock = function() {
+                        return '';
+                    };
+
+                    if ($parentClass->name === \Okay\Core\SmartyPlugins\Func::class) {
+                        $design->registerPlugin('function', $tag, $mock);
+                    }
+                    elseif ($parentClass->name === \Okay\Core\SmartyPlugins\Modifier::class) {
+                        $design->registerPlugin('modifier', $tag, $mock);
+                    }
+                }
+
+                continue;
+            }
+
             // Запоминаем какие модули мы запустили, они понадобятся чтобы активировать их js и css
             $this->runningModules[] = [
                 'vendor' => $module->vendor,

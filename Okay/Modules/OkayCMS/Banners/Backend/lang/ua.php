@@ -60,3 +60,4 @@ $lang['banner_settings_autoplay'] = 'Автоперегортання слайд
 $lang['banner_settings_nav'] = 'Стрілки навігації (наступний / попередній)';
 $lang['banner_settings_dots'] = 'Точки навігації слайдів';
 $lang['banner_settings_as_slider'] = 'Група банерів як слайдер';
+$lang['banner_shortcode_exists'] = 'Даний шорткод вже використовується';

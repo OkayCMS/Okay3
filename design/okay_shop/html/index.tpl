@@ -150,7 +150,7 @@
 
         {if !empty($global_banners)}
             <div class="container">
-                <div class="{if $controller == "MainController"}main_banner{/if}">
+                <div class="{if $controller == 'MainController'}d-flex main_banner{/if}">
                     {$global_banners}
                 </div>
             </div>
@@ -269,10 +269,10 @@
                             <span data-language="subscribe_promotext">{$lang->subscribe_promotext}</span>
                         </div>
                         <form class="subscribe_form fn_validate_subscribe" method="post">
-                            <div class="subscribe_form__group">
+                            <div class="d-flex align-items-center subscribe_form__group">
                                 <div class="form__group form__group--subscribe">
                                     <input type="hidden" name="subscribe" value="1"/>
-                                    <input class="form__input form__input--subscribe" type="email" name="subscribe_email" value="" data-format="email" placeholder="{$lang->form_email}"/>
+                                    <input class="form__input form__input_subscribe" type="email" name="subscribe_email" value="" data-format="email" placeholder="{$lang->form_email}"/>
                                 </div>
                                 <button class="form__button form__button--subscribe" type="submit"><span data-language="subscribe_button">{$lang->subscribe_button}</span></button>
                             </div>

@@ -579,16 +579,16 @@
         },
         {
             "name": "okaycms/license",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/OkayCMS/License.git",
-                "reference": "d23e8d6902e2de71db693ef1e76e1faded5e6829"
+                "reference": "1f9f32e8258665e3aa367fc2c65dc2c4d1cf7a0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OkayCMS/License/zipball/d23e8d6902e2de71db693ef1e76e1faded5e6829",
-                "reference": "d23e8d6902e2de71db693ef1e76e1faded5e6829",
+                "url": "https://api.github.com/repos/OkayCMS/License/zipball/1f9f32e8258665e3aa367fc2c65dc2c4d1cf7a0b",
+                "reference": "1f9f32e8258665e3aa367fc2c65dc2c4d1cf7a0b",
                 "shasum": ""
             },
             "require": {
@@ -612,7 +612,7 @@
                 }
             ],
             "description": "License checker for OkayCMS",
-            "time": "2019-10-15T12:08:37+00:00"
+            "time": "2019-10-22T09:04:08+00:00"
         },
         {
             "name": "phpmailer/phpmailer",

@@ -2,8 +2,8 @@
 <div class="product_preview fn_product">
     <div class="fn_transfer clearfix">
         <div class="product_preview__center">
-            <div class="product_preview__image fn_loader_image">
-                <a class="" href="{if $controller=='Comparison'}{$product->image->filename|resize:800:600:w}{else}{url_generator route='product' url=$product->url}{/if}" {if $controller=='Comparison'}data-fancybox="group" data-caption="{$product->name|escape}"{/if}>
+            <div class="d-flex product_preview__image fn_loader_image">
+                <a class="d-flex align-items-center justify-content-center" href="{if $controller=='Comparison'}{$product->image->filename|resize:800:600:w}{else}{url_generator route='product' url=$product->url}{/if}" {if $controller=='Comparison'}data-fancybox="group" data-caption="{$product->name|escape}"{/if}>
                     {if $product->image->filename}
                         <img class="fn_img preview_img lazy" data-src="{$product->image->filename|resize:300:180}" alt="{$product->name|escape}" title="{$product->name|escape}"/>
                     {else}
@@ -55,7 +55,7 @@
                     </div>
                 </a>
             </div>
-            <div class="product_preview__prices">
+            <div class="d-flex align-items-center product_preview__prices">
                 <div class="old_price {if !$product->variant->compare_price} hidden-xs-up{/if}">
                     <span class="fn_old_price">{$product->variant->compare_price|convert}</span> <span class="currency">{$currency->sign|escape}</span>
                 </div>
@@ -66,10 +66,10 @@
         </div>
         <div class="product_preview__bottom">
             <form class="fn_variants preview_form" action="{url_generator route="cart"}">
-                <div class="product_preview__buttons">
+                <div class="d-flex align-items-center justify-content-between product_preview__buttons">
                     {if !$settings->is_preorder}
                             {* Out of stock *}
-                            <p class="fn_not_preorder product_preview__out_stock {if $product->variant->stock > 0} hidden-xs-up{/if}">
+                            <p class="fn_not_preorder d-flex align-items-center product_preview__out_stock {if $product->variant->stock > 0} hidden-xs-up{/if}">
                                 <span data-language="out_of_stock">{$lang->out_of_stock}</span>
                             </p>
                     {else}
@@ -79,8 +79,7 @@
                         </button>
                     {/if}
                     {* Submit cart button *}
-                    <button class="product_preview__button product_preview__button--buy button--blick fn_is_stock{if $product->variant->stock < 1} hidden-xs-up{/if}" type="submit">
-                        <i class="icon icon-shopping-cart"></i>
+                    <button class="product_preview__button product_preview__button--buy button--blick icon icon-shopping-cart fn_is_stock{if $product->variant->stock < 1} hidden-xs-up{/if}" type="submit">
                         <span class="product_preview__button_text" data-language="add_to_cart">{$lang->add_to_cart}</span>
                     </button>
 
@@ -90,18 +89,14 @@
                     {if $controller != "ComparisonController"}
                         {if is_array($comparison->ids) && in_array($product->id, $comparison->ids)}
                             <a class="fn_comparison comparison_button icon icon-balance-scale selected" href="#" data-id="{$product->id}" title="{$lang->remove_comparison}" data-result-text="{$lang->add_comparison}"></a>
-                            
                         {else}
                             <a class="fn_comparison icon icon-balance-scale comparison_button" href="#" data-id="{$product->id}" title="{$lang->add_comparison}" data-result-text="{$lang->remove_comparison}"></a>
                         {/if}
                     {/if}
-                    
-
 
                     {if $controller == "ComparisonController"}
                         <a href="#" class="fn_comparison selected icon icon-clear comparison_button remove_link" title="{$lang->remove_comparison}" data-id="{$product->id}"></a>
                     {/if}
-
 
                 </div>
                 {* Product variants *}

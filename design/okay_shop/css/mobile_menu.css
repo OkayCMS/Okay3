@@ -263,6 +263,10 @@ body.hc-nav-open {
     height: 16px;
     margin-right: 10px;
 }
+.hc-offcanvas-nav a.icon:before{
+    font-size: 16px;
+    margin-right: 10px;
+}
 .hc-offcanvas-nav .nav-icon{
     display: -webkit-box;
     display: -webkit-flex;
@@ -469,7 +473,7 @@ body.hc-nav-open {
 }
 .hc-offcanvas-nav ul.top-nav .account__link{
     font-size: 12px;
-    padding: 12px 10px 12px 40px;
+    padding: 12px 10px 12px 14px;
     font-weight: 400;
     color: #eee;
     background: var(--okay-second-company);

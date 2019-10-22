@@ -60,3 +60,4 @@ $lang['banners_image_variant_1'] = 'Image without text';
 $lang['banners_image_variant_2'] = 'Text on tinted image';
 $lang['banners_image_variant_3'] = 'Text on the right, image on the left';
 $lang['banners_image_variant_4'] = 'Text to the left, image reference';
+$lang['banner_shortcode_exists'] = 'This shortcode is already in use.';
