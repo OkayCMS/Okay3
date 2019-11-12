@@ -187,7 +187,9 @@ class FeaturesValuesEntity extends Entity
 
     protected function filter__price(array $priceRange)
     {
-        $coef = $this->serviceLocator->getService(Money::class)->getCoefMoney();
+        /** @var Money $money */
+        $money = $this->serviceLocator->getService(Money::class);
+        $coef = $money->getCoefMoney();
 
         if (isset($priceRange['min'])) {
             $this->select->where("floor(IF(pv.currency_id=0 OR c.id is null,pv.price, pv.price*c.rate_to/c.rate_from)*{$coef})>=:price_min")

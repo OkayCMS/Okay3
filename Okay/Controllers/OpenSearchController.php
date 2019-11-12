@@ -9,7 +9,6 @@ use Okay\Entities\ProductsEntity;
 class OpenSearchController extends AbstractController
 {
     
-    
     public function renderXml() {
         $this->design->setTemplatesDir('Okay/xml');
         $this->design->setCompiledDir('Okay/xml/compiled');

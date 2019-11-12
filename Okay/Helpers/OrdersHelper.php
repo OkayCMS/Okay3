@@ -5,6 +5,8 @@ namespace Okay\Helpers;
 
 
 use Okay\Core\EntityFactory;
+use Okay\Entities\OrdersEntity;
+use Okay\Entities\PaymentsEntity;
 use Okay\Entities\PurchasesEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\VariantsEntity;
@@ -34,7 +36,20 @@ class OrdersHelper
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
     
-    public function getOrderPurchases($orderId)
+    public function getOrderPaymentMethodsList($order)
+    {
+        /** @var PaymentsEntity $paymentsEntity */
+        $paymentsEntity = $this->entityFactory->get(PaymentsEntity::class);
+        
+        $paymentMethods = $paymentsEntity->find([
+            'delivery_id' => $order->delivery_id,
+            'enabled' => 1,
+        ]);
+
+        return ExtenderFacade::execute(__METHOD__, $paymentMethods, func_get_args());
+    }
+    
+    public function getOrderPurchasesList($orderId)
     {
         /** @var PurchasesEntity $purchasesEntity */
         $purchasesEntity = $this->entityFactory->get(PurchasesEntity::class);
@@ -74,5 +89,43 @@ class OrdersHelper
 
         return ExtenderFacade::execute(__METHOD__, $purchases, func_get_args());
     }
-    
+
+    public function prepareAdd($order)
+    {
+        return ExtenderFacade::execute(__METHOD__, $order, func_get_args());
+    }
+
+    public function add($order)
+    {
+        $ordersEntity = $this->entityFactory->get(OrdersEntity::class);
+        $result = $ordersEntity->add($order);
+        return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
+    }
+
+    public function attachDiscountIfExists($order, $cart)
+    {
+        $order->discount = $cart->discount;
+        return ExtenderFacade::execute(__METHOD__, $order, func_get_args());
+    }
+
+    public function attachCouponIfExists($order, $cart)
+    {
+        $order->discount = $cart->discount;
+
+        if ($cart->coupon) {
+            $order->coupon_discount = $cart->coupon_discount;
+            $order->coupon_code     = $cart->coupon->code;
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $order, func_get_args());
+    }
+
+    public function attachUserIfLogin($order, $user)
+    {
+        if (!empty($user->id)) {
+            $order->user_id = $user->id;
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $order, func_get_args());
+    }
 }

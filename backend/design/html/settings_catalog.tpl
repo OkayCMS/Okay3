@@ -138,9 +138,17 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="settings_catalog_general"}
             </div>
         </div>
     </div>
+
+    {$block = {get_design_block block="settings_catalog_custom_block"}}
+    {if !empty($block)}
+        <div class="custom_block">
+            {$block}
+        </div>
+    {/if}
 
     <div class="row">
         <div class="col-lg-12 col-md-12">
@@ -180,6 +188,7 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="settings_catalog_truncate"}
             </div>
         </div>
     </div>
@@ -261,6 +270,7 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="settings_catalog_watermark"}
             </div>
         </div>
     </div>

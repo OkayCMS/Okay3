@@ -63,6 +63,12 @@
             </div>
         </div>
     </div>
+    {$block = {get_design_block block="users_custom_block"}}
+    {if $block}
+        <div class="custom_block">
+            {$block}
+        </div>
+    {/if}
     {if $users}
         {*Главная форма страницы*}
         <div class="row">
@@ -113,6 +119,7 @@
                                             <a href="{url controller=UserAdmin id=$user->id}">
                                                 {$user->name|escape}
                                             </a>
+                                            {get_design_block block="users_list_name" vars=['user' => $user]}
                                         </div>
 
                                         <div class="okay_list_boding okay_list_users_email">

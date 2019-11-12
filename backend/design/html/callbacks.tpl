@@ -60,8 +60,15 @@
                     </div>
                 </div>
             </div>
-            </div>
         </div>
+
+        {$block = {get_design_block block="callbacks_custom_block"}}
+        {if $block}
+            <div class="custom_block">
+                {$block}
+            </div>
+        {/if}
+
     </div>
     {if $callbacks}
         <div class="row">
@@ -124,6 +131,8 @@
                                                     <p><a href="javascript:;" class="fn_an_save">{$btr->general_apply|escape}</a></p>
                                                 </div>
                                             </div>
+
+                                            {get_design_block block="callbacks_item" vars=['callback' => $callback]}
                                         </div>
 
                                         <div class="okay_list_boding okay_list_comments_btn">
@@ -133,6 +142,8 @@
                                             <button type="button" class="btn btn_small btn-outline-warning fn_ajax_action fn_callbacks_toggle fn_active_class {if !$callback->processed}hidden{/if}" data-controller="callback" data-action="processed" data-id="{$callback->id}">
                                                 {$btr->general_unprocess|escape}
                                             </button>
+
+                                            {get_design_block block="callbacks_buttons" vars=['callback' => $callback]}
                                         </div>
 
                                         <div class="okay_list_boding okay_list_close">
@@ -169,10 +180,10 @@
                     </div>
                 </form>
             </div>
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm 12 txt_center">
-                    {include file='pagination.tpl'}
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm 12 txt_center">
+                {include file='pagination.tpl'}
             </div>
         </div>
     {else}

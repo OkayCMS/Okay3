@@ -6,7 +6,12 @@ namespace Okay\Core\Entity;
 
 trait order
 {
-    
+
+    /**
+     * @param string $order
+     * @param array $additionalData просто кастомный массив данных, который может понадобиться
+     * @return $this
+     */
     final public function order($order = null, array $additionalData = [])
     {
         $this->select->resetOrderBy();

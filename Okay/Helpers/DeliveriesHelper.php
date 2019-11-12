@@ -16,6 +16,7 @@ use Okay\Core\ServiceLocator;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\DeliveriesEntity;
 use Okay\Entities\ModulesEntity;
+use Okay\Entities\OrdersEntity;
 use Okay\Entities\PaymentsEntity;
 use Psr\Log\LoggerInterface;
 
@@ -132,5 +133,15 @@ class DeliveriesHelper
         }
 
         return ExtenderFacade::execute(__METHOD__, $activeDelivery, func_get_args());
+    }
+
+    public function updateDeliveryPriceInfo($deliveryPriceInfo, $order)
+    {
+        if (!empty($deliveryPriceInfo)) {
+            $ordersEntity = $this->entityFactory->get(OrdersEntity::class);
+            $ordersEntity->update($order->id, $deliveryPriceInfo);
+        }
+
+        return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 }

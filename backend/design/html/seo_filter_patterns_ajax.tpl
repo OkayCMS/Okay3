@@ -112,13 +112,13 @@
                             <div class="col-md-12">
                                 <div class="heading_label">Auto Meta-title</div>
                                 <div class="mb-1">
-                                    <input name="seo_filter_patterns[title][]" class="form-control mb-h fn_ajax_area" value="{$p->title|escape}" />
+                                    <input name="seo_filter_patterns[meta_title][]" class="form-control mb-h fn_ajax_area" value="{$p->meta_title|escape}" />
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="heading_label">Auto Meta-keywords</div>
                                 <div class="mb-1">
-                                    <input name="seo_filter_patterns[keywords][]" class="form-control fn_ajax_area" value="{$p->keywords|escape}" />
+                                    <input name="seo_filter_patterns[meta_keywords][]" class="form-control fn_ajax_area" value="{$p->meta_keywords|escape}" />
                                 </div>
                             </div>
                         </div>

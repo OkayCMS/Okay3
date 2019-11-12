@@ -53,25 +53,25 @@
 
                         {* User's name *}
                         <div class="form__group">
-                            <input class="form__input form__placeholder--focus" value="{$name|escape}" name="name" type="text" data-language="form_name" />
+                            <input class="form__input form__placeholder--focus" value="{$user->name|escape}" name="name" type="text" data-language="form_name" />
                             <span class="form__placeholder">{$lang->form_name}*</span>
                         </div>
 
                         {* User's email *}
                         <div class="form__group">
-                            <input class="form__input form__placeholder--focus" value="{$email|escape}" name="email" type="text" data-language="form_email" />
+                            <input class="form__input form__placeholder--focus" value="{$user->email|escape}" name="email" type="text" data-language="form_email" />
                             <span class="form__placeholder">{$lang->form_email}*</span>
                         </div>
 
                         {* User's phone *}
                         <div class="form__group">
-                            <input class="form__input form__placeholder--focus" value="{$phone|escape}" name="phone" type="text" data-language="form_phone" />
+                            <input class="form__input form__placeholder--focus" value="{$user->phone|escape}" name="phone" type="text" data-language="form_phone" />
                             <span class="form__placeholder">{$lang->form_phone}</span>
                         </div>
 
                         {* User's address *}
                         <div class="form__group">
-                            <input class="form__input form__placeholder--focus" value="{$address|escape}" name="address" type="text" data-language="form_address" />
+                            <input class="form__input form__placeholder--focus" value="{$user->address|escape}" name="address" type="text" data-language="form_address" />
                             <span class="form__placeholder">{$lang->form_address}</span>
                         </div>
 

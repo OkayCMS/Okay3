@@ -7,7 +7,7 @@ namespace Okay\Admin\Requests;
 use Okay\Core\Request;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
-class ProductAdminRequest
+class BackendProductsRequest
 {
     private $request;
 
@@ -58,6 +58,25 @@ class ProductAdminRequest
                 }
                 $productVariants[$i]->$n = $v;
             }
+        }
+
+        foreach($productVariants as $key => $variant) {
+            if (empty($variant->name)  &&
+                empty($variant->sku)   &&
+                empty((float) $variant->price) &&
+                empty($variant->compare_price)) {
+
+                unset($productVariants[$key]);
+            }
+        }
+
+        if (empty($productVariants)) {
+            $mockVariant = new \stdClass();
+            $mockVariant->name  = '';
+            $mockVariant->price = 0;
+            $mockVariant->sku   = '';
+
+            $productVariants[] = $mockVariant;
         }
 
         return ExtenderFacade::execute(__METHOD__, $productVariants, func_get_args());

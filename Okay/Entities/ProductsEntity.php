@@ -5,10 +5,11 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Entity\RelatedProductsInterface;
 use Okay\Core\Money;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
-class ProductsEntity extends Entity
+class ProductsEntity extends Entity implements RelatedProductsInterface
 {
     protected static $fields = [
         'id',
@@ -205,9 +206,9 @@ class ProductsEntity extends Entity
         return ExtenderFacade::execute([static::class, __FUNCTION__], $this->getResult(), func_get_args());
     }
 
-    public function getRelatedProducts($productsIds = [])
+    public function getRelatedProducts(array $filter = [])
     {
-        if (empty($productsIds)) {
+        if (empty($filter['product_id'])) {
             return ExtenderFacade::execute([static::class, __FUNCTION__], [], func_get_args());
         }
 
@@ -219,7 +220,7 @@ class ProductsEntity extends Entity
         ])->from('__related_products')
             ->where('product_id IN (:products_ids)')
             ->orderBy(['position'])
-            ->bindValue('products_ids', (array)$productsIds);
+            ->bindValue('products_ids', (array)$filter['product_id']);
         
         $this->db->query($select);
         return ExtenderFacade::execute([static::class, __FUNCTION__], $this->db->results(), func_get_args());
@@ -424,7 +425,7 @@ class ProductsEntity extends Entity
         }
 
         // Дублируем связанные товары
-        $related = $this->getRelatedProducts($productId);
+        $related = $this->getRelatedProducts(['product_id' => $productId]);
         foreach ($related as $r) {
             $this->addRelatedProduct($newProductId, $r->related_id, $r->position);
         }
@@ -629,9 +630,19 @@ class ProductsEntity extends Entity
         $this->select->where("(SELECT count(*)>0 FROM __variants pv WHERE pv.product_id=p.id AND (pv.stock IS NULL OR pv.stock>0) LIMIT 1) = 1");
     }
 
+    protected function filter__not_in_stock()
+    {
+        $this->select->where("(SELECT count(*)>0 FROM __variants pv WHERE pv.product_id=p.id AND (pv.stock IS NULL OR pv.stock>0) LIMIT 1) <> 1");
+    }
+
     protected function filter__has_images()
     {
         $this->select->where('(SELECT count(*)>0 FROM __images pi WHERE pi.product_id=p.id LIMIT 1) = 1');
+    }
+
+    protected function filter__has_no_images()
+    {
+        $this->select->where('(SELECT count(*)>0 FROM __images pi WHERE pi.product_id=p.id LIMIT 1) <> 1');
     }
 
     protected function filter__discounted($state)

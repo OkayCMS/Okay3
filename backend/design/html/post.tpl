@@ -64,6 +64,8 @@
                 <div class="heading_box">
                     {if $message_error == 'url_exists'}
                         {$btr->post_exists|escape}
+                    {elseif $message_error=='global_url_exists'}
+                        {$btr->global_url_exists|escape}
                     {elseif $message_error=='empty_name'}
                         {$btr->general_enter_title|escape}
                     {elseif $message_error == 'empty_url'}
@@ -115,6 +117,7 @@
                                 </div>
                             </div>
                         </div>
+                        {get_design_block block="post_general"}
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
@@ -129,6 +132,7 @@
                                 </div>
                             </div>
                         </div>
+                        {get_design_block block="post_switch_checkboxes"}
                     </div>
                 </div>
             </div>
@@ -169,6 +173,7 @@
                         </li>
                     </ul>
                 </div>
+                {get_design_block block="post_image"}
             </div>
         </div>
         {*Параметры элемента*}
@@ -209,68 +214,14 @@
         </div>
          <div class="col-lg-5 col-md-12">
             <div class="boxed fn_toggle_wrap min_height_210px">
-                <div class="heading_box">
-                    {$btr->general_recommended|escape}
-                    <div class="toggle_arrow_wrap fn_toggle_card text-primary">
-                        <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
-                    </div>
-                </div>
-                <div class="toggle_body_wrap on fn_card fn_sort_list">
-                    <div class="okay_list ok_related_list">
-                        <div class="okay_list_body sortable related_products ">
-                            {foreach $related_products as $related_product}
-                                <div class="fn_row okay okay_list_body_item fn_sort_item">
-                                    <div class="okay_list_row">
-                                        <div class="okay_list_boding okay_list_drag move_zone">
-                                            {include file='svg_icon.tpl' svgId='drag_vertical'}
-                                        </div>
-                                        <div class="okay_list_boding okay_list_related_photo">
-                                            <input type="hidden" name=related_products[] value='{$related_product->id}'>
-                                            <a href="{url controller=ProductAdmin id=$related_product->id}">
-                                                {if $related_product->image}
-                                                    <img class="product_icon" src='{$related_product->image->filename|resize:40:40}'>
-                                                {else}
-                                                    <img class="product_icon" src="design/images/no_image.png" width="40">
-                                                {/if}
-                                            </a>
-                                        </div>
-                                        <div class="okay_list_boding okay_list_related_name">
-                                            <a class="link" href="{url controller=ProductAdmin id=$related_product->id}">{$related_product->name|escape}</a>
-                                        </div>
-                                        <div class="okay_list_boding okay_list_close">
-                                            <button data-hint="{$btr->general_delete_product|escape}" type="button" class="btn_close fn_remove_item hint-bottom-right-t-info-s-small-mobile  hint-anim">
-                                                {include file='svg_icon.tpl' svgId='delete'}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            {/foreach}
-                            <div id="new_related_product" class="fn_row okay okay_list_body_item fn_sort_item" style='display:none;'>
-                                <div class="okay_list_row">
-                                    <div class="okay_list_boding okay_list_drag move_zone">
-                                        {include file='svg_icon.tpl' svgId='drag_vertical'}
-                                    </div>
-                                    <div class="okay_list_boding okay_list_related_photo">
-                                        <input type="hidden" name="related_products[]" value="">
-                                        <img class=product_icon src="">
-                                    </div>
-                                    <div class="okay_list_boding okay_list_related_name">
-                                        <a class="link related_product_name" href=""></a>
-                                    </div>
-                                    <div class="okay_list_boding okay_list_close">
-                                        <button data-hint="{$btr->general_delete_product|escape}" type="button" class="btn_close fn_remove_item hint-bottom-right-t-info-s-small-mobile  hint-anim">
-                                            {include file='svg_icon.tpl' svgId='delete'}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="heading_label">{$btr->general_recommended_add|escape}</div>
-                    <div class="autocomplete_arrow">
-                        <input type=text name=related id="related_products" class="form-control" placeholder='{$btr->general_add_product|escape}'>
-                    </div>
-                </div>
+                {backend_compact_product_list
+                    title=$btr->general_recommended
+                    name='related_products'
+                    products=$related_products
+                    label=$btr->general_recommended_add
+                    placeholder=$btr->general_recommended_add
+                }
+                {get_design_block block="post_related_products"}
             </div>
         </div>
     </div>
@@ -297,9 +248,18 @@
                         <textarea name="meta_description" class="form-control okay_textarea fn_meta_field">{$post->meta_description|escape}</textarea>
                     </div>
                 </div>
+                {get_design_block block="post_meta"}
             </div>
         </div>
     </div>
+
+    {$block = {get_design_block block="post_custom_block"}}
+    {if !empty($block)}
+        <div class="row custom_block">
+            {$block}
+        </div>
+    {/if}
+    
     {*Описание элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">

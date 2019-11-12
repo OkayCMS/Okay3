@@ -23,9 +23,9 @@
                 <div class="okay_list_boding okay_list_drag"></div>
                 <div class="okay_list_heading okay_list_check">
                     <input class="hidden_check fn_check_all" type="checkbox" id="check_all_1" name="" value=""/>
-                    <label class="okay_ckeckbox" for="check_all_1"></label>
                 </div>
-                <div class="okay_list_heading okay_list_delivery_name">{$btr->general_name|escape}</div>
+                <div class="okay_list_boding okay_list_photo"></div>
+                <div class="okay_list_heading okay_list_delivery_name"></div>
                 <div class="okay_list_heading okay_list_delivery_condit"></div>
                 <div class="okay_list_heading okay_list_delivery_photo">{$btr->module_type|escape}</div>
                 <div class="okay_list_heading okay_list_status">{$btr->general_enable|escape}</div>
@@ -47,6 +47,27 @@
                             <input class="hidden_check" type="checkbox" id="id_{$module->id}" name="check[]" value="{$module->id}"/>
                             <label class="okay_ckeckbox" for="id_{$module->id}"></label>
                         </div>
+
+                        <div class="okay_list_boding okay_list_photo">
+                            {if $module->preview}
+                                {if $module->backend_main_controller}
+                                    <a href="{url controller=[{$module->vendor},{$module->module_name},{$module->backend_main_controller}] id=null return=$smarty.server.REQUEST_URI}">
+                                        <img src="{$rootUrl}/{$module->preview}"/>
+                                    </a>
+                                {else}
+                                    <img src="{$rootUrl}/{$module->preview}"/>
+                                {/if}
+                            {else}
+                                {if $module->backend_main_controller}
+                                    <a href="{url controller=[{$module->vendor},{$module->module_name},{$module->backend_main_controller}] id=null return=$smarty.server.REQUEST_URI}">
+                                        <img height="55" width="55" src="design/images/no_image.png"/>
+                                    </a>
+                                {else}
+                                    <img height="55" width="55" src="design/images/no_image.png"/>
+                                {/if}
+                            {/if}
+                        </div>
+
                         <div class="okay_list_boding okay_list_delivery_name">
                             {if $module->backend_main_controller}
                                 <a href="{url controller=[{$module->vendor},{$module->module_name},{$module->backend_main_controller}] id=null return=$smarty.server.REQUEST_URI}">

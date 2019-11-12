@@ -87,6 +87,9 @@
                              <input name="discount" class="form-control" type="text" value="{$group->discount|escape}" />
                         </div>
                     </div>
+                    {get_design_block block="group_info"}
+                </div>
+                <div class="row">
                     <div class="col-lg-12 col-md-12 mt-1">
                         <button type="submit" class="btn btn_small btn_blue float-md-right">
                             {include file='svg_icon.tpl' svgId='checked'}

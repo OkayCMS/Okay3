@@ -4,15 +4,15 @@
 namespace Okay\Admin\Controllers;
 
 
-use Okay\Admin\Requests\CategoriesRequest;
+use Okay\Admin\Requests\BackendCategoriesRequest;
 use Okay\Admin\Helpers\BackendCategoriesHelper;
 
 class CategoriesAdmin extends IndexAdmin
 {
     
     public function fetch(
-        BackendCategoriesHelper $backendCategoriesHelper,
-        CategoriesRequest       $categoriesRequest
+        BackendCategoriesHelper  $backendCategoriesHelper,
+        BackendCategoriesRequest $categoriesRequest
     ) {
         if ($this->request->method('post')) {
 

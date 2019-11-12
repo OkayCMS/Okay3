@@ -31,7 +31,7 @@
                             </div>
                         </div>
                         <div class="message_success">
-                            <b>{$name|escape},</b> <span data-language="feedback_message_sent">{$lang->feedback_message_sent}.</span>
+                            <b>{$request_data.name|escape},</b> <span data-language="feedback_message_sent">{$lang->feedback_message_sent}.</span>
                         </div>
                     </div>
                 {else}
@@ -66,19 +66,19 @@
                     <div class="form__body">
                         {* User's name *}
                         <div class="form__group">
-                            <input class="form__input form__placeholder--focus" value="{if $user->name}{$user->name|escape}{else}{$name|escape}{/if}" name="name" type="text" data-language="form_name"/>
+                            <input class="form__input form__placeholder--focus" value="{if $request_data.name}{$request_data.name|escape}{elseif $user->name}{$user->name|escape}{/if}" name="name" type="text" data-language="form_name"/>
                             <span class="form__placeholder">{$lang->form_name}*</span>
                         </div>
 
                         {* User's email *}
                         <div class="form__group">
-                            <input class="form__input form__placeholder--focus" value="{if $user->email}{$user->email|escape}{else}{$email|escape}{/if}" name="email" type="text" data-language="form_email"/>
+                            <input class="form__input form__placeholder--focus" value="{if $request_data.email}{$request_data.email|escape}{elseif $user->email}{$user->email|escape}{/if}" name="email" type="text" data-language="form_email"/>
                             <span class="form__placeholder">{$lang->form_email}</span>
                         </div>
 
                         {* User's comment *}
                         <div class="form__group">
-                            <textarea class="form__textarea form__placeholder--focus" rows="3" name="message" data-language="form_enter_message">{$message|escape}</textarea>
+                            <textarea class="form__textarea form__placeholder--focus" rows="3" name="message" data-language="form_enter_message">{$request_data.message|escape}</textarea>
                             <span class="form__placeholder">{$lang->form_enter_message}*</span>
                         </div>
                     </div>
@@ -86,20 +86,20 @@
                     <div class="form__footer">
                         {* Captcha *}
                         {if $settings->captcha_feedback}
-                        {if $settings->captcha_type == "v2"}
-                        <div class="captcha" style="">
-                            <div id="recaptcha1"></div>
-                        </div>
-                        {elseif $settings->captcha_type == "default"}
-                        {get_captcha var="captcha_feedback"}
-                        <div class="captcha">
-                            <div class="secret_number">{$captcha_feedback[0]|escape} + ? =  {$captcha_feedback[1]|escape}</div>
-                            <span class="form__captcha">
-                                    <input class="form__input form__input_captcha form__placeholder--focus" type="text" name="captcha_code" value="" data-language="form_enter_captcha"/>
-                                    <span class="form__placeholder">{$lang->form_enter_captcha}*</span>
-                                </span>
-                        </div>
-                        {/if}
+                            {if $settings->captcha_type == "v2"}
+                            <div class="captcha" style="">
+                                <div id="recaptcha1"></div>
+                            </div>
+                            {elseif $settings->captcha_type == "default"}
+                            {get_captcha var="captcha_feedback"}
+                            <div class="captcha">
+                                <div class="secret_number">{$captcha_feedback[0]|escape} + ? =  {$captcha_feedback[1]|escape}</div>
+                                <span class="form__captcha">
+                                        <input class="form__input form__input_captcha form__placeholder--focus" type="text" name="captcha_code" value="" data-language="form_enter_captcha"/>
+                                        <span class="form__placeholder">{$lang->form_enter_captcha}*</span>
+                                    </span>
+                            </div>
+                            {/if}
                         {/if}
                         <input type="hidden" name="feedback" value="1">
 

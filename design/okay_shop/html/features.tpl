@@ -6,7 +6,7 @@
             <div class="filters filters_catalog">
                 <div class="fn_switch filter__name d-flex align-items-center justify-content-between">
                     <span data-language="features_catalog">{$lang->features_catalog}</span>
-                    <span class="d-flex align-items-center filter__name_arrow icon icon-keyboard-arrow-down"></span>
+                    <span class="d-flex align-items-center filter__name_arrow fa fa-chevron-down"></span>
                 </div>
                 <div class="filter__group">
                     {function name=categories_tree_sidebar}
@@ -54,7 +54,7 @@
                     <div class="level_1 filter__catalog_menu">
                         {foreach $brand->categories as $c}
                             <div class="filter__catalog_item has_child">
-                                <a class="filter__catalog_link" href="{url_generator route="category" url=$c->url}/brand-{$brand->url}" data-category="{$c->id}">
+                                <a class="filter__catalog_link" href="{url_generator route="category" url= $c->url|cat:'/brand-'|cat:$brand->url}" data-category="{$c->id}">
                                     <span>{$c->name|escape}</span>
                                     {include file="svg.tpl" svgId="arrow_right2"}
                                 </a>
@@ -75,18 +75,18 @@
             {if $prices->range->min != '' && $prices->range->max != ''}
                 <div class="fn_switch filter__name d-flex align-items-center justify-content-between">
                     <span data-language="features_price">{$lang->features_price}</span>
-                    <span class="d-flex align-items-center filter__name_arrow icon icon-keyboard-arrow-down"></span>
+                    <span class="d-flex align-items-center filter__name_arrow fa fa-chevron-down"></span>
                 </div>
 
                 <div class="filter__group">
                     {* Price range *}
                     <div class="d-flex align-items-center justify-content-between price_range">
                         <div class="d-flex align-items-center price_label">
-                            <input class="min_input" id="fn_slider_min" name="p[min]" value="{($prices->current->min|default:$prices->range->min)|escape}" data-price="{$prices->range->min}" type="text">
+                            <input class="min_input" id="fn_slider_min" aria-label="{$prices->range->min}" name="p[min]" value="{($prices->current->min|default:$prices->range->min)|escape}" data-price="{$prices->range->min}" type="text">
                         </div>
                         <div class="separator">-</div>
                         <div class="d-flex align-items-center price_label max_price">
-                            <input class="max_input" id="fn_slider_max" name="p[max]" value="{($prices->current->max|default:$prices->range->max)|escape}" data-price="{$prices->range->max}" type="text">
+                            <input class="max_input" id="fn_slider_max" name="p[max]" aria-label="{$prices->range->max}" value="{($prices->current->max|default:$prices->range->max)|escape}" data-price="{$prices->range->max}" type="text">
                         </div>
                         <div class="price_currency">
                             <span>{$currency->sign|escape}</span>
@@ -101,7 +101,7 @@
             {if $other_filters}
                 <div class="fn_switch filter__name d-flex align-items-center justify-content-between">
                     <span data-language="features_other_filter">{$lang->features_other_filter}</span>
-                    <span class="d-flex align-items-center filter__name_arrow icon icon-keyboard-arrow-down"></span>
+                    <span class="d-flex align-items-center filter__name_arrow icon fa fa-chevron-down"></span>
                 </div>
                 <div class="filter__group">
                     {* Display all brands *}
@@ -152,7 +152,7 @@
             {if $category->brands}
                 <div class="fn_switch filter__name d-flex align-items-center justify-content-between">
                     <span data-language="features_manufacturer">{$lang->features_manufacturer}</span>
-                    <span class="d-flex align-items-center filter__name_arrow icon icon-keyboard-arrow-down"></span>
+                    <span class="d-flex align-items-center filter__name_arrow fa fa-chevron-down"></span>
                 </div>
                 
                 <div class="fn_view_content filter__group feature_content">
@@ -211,7 +211,7 @@
                 {foreach $features as $key=>$f}
                     <div class="fn_switch filter__name d-flex align-items-center justify-content-between">
                         <span data-feature="{$f->id}">{$f->name|escape}</span>
-                        <span class="d-flex align-items-center filter__name_arrow icon icon-keyboard-arrow-down"></span>
+                        <span class="d-flex align-items-center filter__name_arrow fa fa-chevron-down"></span>
                     </div>
                     <div class="fn_view_content filter__group feature_content">
                         {* Display all features *}

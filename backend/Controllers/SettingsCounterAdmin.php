@@ -4,30 +4,25 @@
 namespace Okay\Admin\Controllers;
 
 
+use Okay\Admin\Helpers\BackendSettingsHelper;
+use Okay\Admin\Requests\BackendSettingsRequest;
+
 class SettingsCounterAdmin extends IndexAdmin
 {
-
-    /*Настройки счетчиков*/
-    public function fetch()
-    {
+    public function fetch(
+        BackendSettingsRequest $settingsRequest,
+        BackendSettingsHelper  $backendSettingsHelper
+    ){
         if ($this->request->method('POST')) {
-
-            if ($this->request->post('counters')) {
-                foreach ($this->request->post('counters') as $n=>$co) {
-                    foreach ($co as $i=>$c) {
-                        if (empty($counters[$i])) {
-                            $counters[$i] = new \stdClass;
-                        }
-                        $counters[$i]->$n = $c;
-                    }
-                }
-            }
-            $this->settings->counters = $counters;
+            $counters = $settingsRequest->postCounters();
+            $backendSettingsHelper->updateCounters($counters);
             $this->design->assign('message_success', 'saved');
         }
-        $this->design->assign('counters', $this->settings->counters);
-        $this->response->addHeader('X-XSS-Protection:0');
 
+        $counters = $backendSettingsHelper->findCounters();
+        $this->design->assign('counters', $counters);
+
+        $this->response->addHeader('X-XSS-Protection:0');
         $this->response->setContent($this->design->fetch('settings_counter.tpl'));
     }
 }

@@ -9,7 +9,7 @@
 
         <div class="form__body">
             <input id="fast_order_variant_id" value="" name="variant_id" type="hidden"/>
-            <input id="fast_order_variant_id" value="" name="amount" type="hidden"/>
+            <input value="" name="amount" type="hidden"/>
             <input type="hidden" name="IsFastOrder" value="true">
 
             <h6 id="fast_order_product_name"></h6>

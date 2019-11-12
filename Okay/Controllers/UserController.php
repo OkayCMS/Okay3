@@ -5,18 +5,21 @@ namespace Okay\Controllers;
 
 
 use Okay\Core\Notify;
-use Okay\Core\Validator;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\OrderStatusEntity;
 use Okay\Entities\UsersEntity;
 use Okay\Core\Router;
+use Okay\Helpers\UserHelper;
+use Okay\Helpers\ValidateHelper;
+use Okay\Requests\UserRequest;
 
 class UserController extends AbstractController
 {
     
     public function render(
         UsersEntity $usersEntity,
-        Validator $validator,
+        ValidateHelper $validateHelper,
+        UserRequest $userRequest,
         OrdersEntity $ordersEntity,
         OrderStatusEntity $orderStatusEntity
     ) {
@@ -24,46 +27,20 @@ class UserController extends AbstractController
             $this->response->redirectTo(Router::generateUrl('login', [], true));
         }
 
-        if ($this->request->method('post') && $this->request->post('user_save')) {
-            $user = new \stdClass();
-            $user->name       = $this->request->post('name');
-            $user->email      = $this->request->post('email');
-            $user->phone      = $this->request->post('phone');
-            $user->address    = $this->request->post('address');
-            $password         = $this->request->post('password');
-
-            $this->design->assign('name', $user->name);
-            $this->design->assign('email', $user->email);
-            $this->design->assign('phone', $user->phone);
-            $this->design->assign('address', $user->address);
-
+        if ($user = $userRequest->postProfileUser()) {
             /*Валидация данных*/
-            if (($u = $usersEntity->get((string)$user->email)) && $u->id != $this->user->id) {
-                $this->design->assign('error', 'user_exists');
-            } elseif(!$validator->isName($user->name, true)) {
-                $this->design->assign('error', 'empty_name');
-            } elseif(!$validator->isEmail($user->email, true)) {
-                $this->design->assign('error', 'empty_email');
-            } elseif(!$validator->isPhone($user->phone)) {
-                $this->design->assign('error', 'empty_phone');
-            } elseif(!$validator->isAddress($user->address)) {
-                $this->design->assign('error', 'empty_address');
-            } elseif($userId = $usersEntity->update($this->user->id, $user)) {
-                $this->user = $usersEntity->get(intval($userId));
+            if ($error = $validateHelper->getUserError($user, $this->user->id)) {
+                $this->design->assign('error', $error);
+            } elseif($usersEntity->update($this->user->id, $user)) {
+                $this->user = $usersEntity->get((int)$this->user->id);
                 $this->design->assign('user', $this->user);
             } else {
                 $this->design->assign('error', 'unknown error');
             }
 
-            if (!empty($password)) {
+            if ($password = $this->request->post('password')) {
                 $usersEntity->update($this->user->id, ['password'=>$password]);
             }
-        } else {
-            // Передаем в шаблон
-            $this->design->assign('name', $this->user->name);
-            $this->design->assign('email', $this->user->email);
-            $this->design->assign('phone', $this->user->phone);
-            $this->design->assign('address', $this->user->address);
         }
 
         /*Выборка истории заказов клиента*/
@@ -77,7 +54,27 @@ class UserController extends AbstractController
         $this->response->setContent('user.tpl');
     }
     
-    public function login(UsersEntity $usersEntity)
+    public function register(UserHelper $userHelper, UserRequest $userRequest, ValidateHelper $validateHelper)
+    {
+        if (!empty($this->user->id)) {
+            $this->response->redirectTo(Router::generateUrl('user', [], true));
+        }
+
+        if ($user = $userRequest->postRegisterUser()) {
+            /*Валидация данных клиента*/
+            if ($error = $validateHelper->getUserRegisterError($user)) {
+                $this->design->assign('error', $error);
+            } elseif ($userId = $userHelper->register($user)) {
+                $this->response->redirectTo(Router::generateUrl('user', [], true));
+            } else {
+                $this->design->assign('error', 'unknown error');
+            }
+        }
+        
+        $this->response->setContent('register.tpl');
+    }
+
+    public function login(UserHelper $userHelper)
     {
         if (!empty($this->user->id)) {
             $this->response->redirectTo(Router::generateUrl('user', [], true));
@@ -88,72 +85,20 @@ class UserController extends AbstractController
             $password = $this->request->post('password');
             $this->design->assign('email', $email);
 
-            if ($userId = $usersEntity->checkPassword($email, $password)) {
-                $_SESSION['user_id'] = $userId;
-                $usersEntity->update($userId, ['last_ip'=>$_SERVER['REMOTE_ADDR']]);
-
+            if ($userId = $userHelper->login($email, $password)) {
                 // Перенаправляем пользователя в личный кабинет
                 $this->response->redirectTo(Router::generateUrl('user', [], true));
             } else {
                 $this->design->assign('error', 'login_incorrect');
             }
         }
-        
+
         $this->response->setContent('login.tpl');
     }
     
-    public function register(UsersEntity $usersEntity, Validator $validator)
+    public function logout(UserHelper $userHelper)
     {
-        if (!empty($this->user->id)) {
-            $this->response->redirectTo(Router::generateUrl('user', [], true));
-        }
-
-        if ($this->request->method('post') && $this->request->post('register')) {
-            $user = new \stdClass();
-            $user->last_ip  = $_SERVER['REMOTE_ADDR'];
-            $user->name     = $this->request->post('name');
-            $user->email    = $this->request->post('email');
-            $user->phone    = $this->request->post('phone');
-            $user->address  = $this->request->post('address');
-            $user->password = $this->request->post('password');
-            $captcha_code   = $this->request->post('captcha_code');
-
-            $this->design->assign('name', $user->name);
-            $this->design->assign('email', $user->email);
-            $this->design->assign('phone', $user->phone);
-            $this->design->assign('address', $user->address);
-
-            $userExists = $usersEntity->count(['email'=>$user->email]);
-            
-            /*Валидация данных клиента*/
-            if ($userExists) {
-                $this->design->assign('error', 'user_exists');
-            } elseif (!$validator->isName($user->name, true)) {
-                $this->design->assign('error', 'empty_name');
-            } elseif (!$validator->isEmail($user->email, true)) {
-                $this->design->assign('error', 'empty_email');
-            } elseif (!$validator->isPhone($user->phone)) {
-                $this->design->assign('error', 'empty_phone');
-            } elseif (!$validator->isAddress($user->address)) {
-                $this->design->assign('error', 'empty_address');
-            } elseif (empty($user->password)) {
-                $this->design->assign('error', 'empty_password');
-            } elseif ($this->settings->captcha_register && !$validator->verifyCaptcha('captcha_register', $captcha_code)) {
-                $this->design->assign('error', 'captcha');
-            } elseif ($userId = $usersEntity->add($user)) {
-                $_SESSION['user_id'] = $userId;
-                $this->response->redirectTo(Router::generateUrl('user', [], true));
-            } else {
-                $this->design->assign('error', 'unknown error');
-            }
-        }
-        
-        $this->response->setContent('register.tpl');
-    }
-    
-    public function logout()
-    {
-        unset($_SESSION['user_id']);
+        $userHelper->logout();
         $this->response->redirectTo(Router::generateUrl('main', [], true));
         return;
     }
@@ -179,7 +124,6 @@ class UserController extends AbstractController
             // Залогиниваемся под пользователем и переходим в кабинет для изменения пароля
             $_SESSION['user_id'] = $user->id;
             $this->response->redirectTo(Router::generateUrl('user', [], true));
-            return;
         }
         
         // Если запостили email

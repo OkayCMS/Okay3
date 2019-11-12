@@ -4,7 +4,7 @@
         
         <div style="margin-bottom: 10px;">
             <label style="display: inline-block; width: 100px;"><span class="labelcity_novaposhta">{$lang->np_cart_city} </span></label>
-            <select data-placeholder="Выберите город" name="novaposhta_city" tabindex="1" class="city_novaposhta" style="width: 100%"></select>
+            <select data-placeholder="{$lang->np_select_city}" name="novaposhta_city" tabindex="1" class="city_novaposhta" style="width: 100%"></select>
         </div>
         <div style="padding: 5px 0;">
             <label for="redelivery">{$lang->np_cart_cod} </label>

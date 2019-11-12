@@ -61,6 +61,8 @@
                 <div class="heading_box">
                     {if $message_error=='url_exists'}
                         {$btr->brand_exists|escape}
+                    {elseif $message_error=='global_url_exists'}
+                        {$btr->global_url_exists|escape}
                     {elseif $message_error=='empty_name'}
                         {$btr->general_enter_title|escape}
                     {elseif $message_error == 'empty_url'}
@@ -113,6 +115,7 @@
                                 </div>
                             </div>
                         </div>
+                        {get_design_block block="brand_general"}
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
@@ -132,6 +135,7 @@
                                 </div>
                             </div>
                         </div>
+                        {get_design_block block="brand_switch_checkboxes"}
                     </div>
                 </div>
             </div>
@@ -174,6 +178,7 @@
                         </li>
                     </ul>
                 </div>
+                {get_design_block block="brand_image"}
             </div>
         </div>
         <div class="col-lg-8 col-md-12">
@@ -211,9 +216,17 @@
                         <textarea name="meta_description" class="form-control okay_textarea fn_meta_field">{$brand->meta_description|escape}</textarea>
                     </div>
                 </div>
+                {get_design_block block="brand_meta"}
             </div>
         </div>
     </div>
+
+    {$block = {get_design_block block="brand_custom_block"}}
+    {if !empty($block)}
+        <div class="row custom_block">
+            {$block}
+        </div>
+    {/if}
 
     {*Описание элемента*}
     <div class="row">

@@ -1,7 +1,23 @@
 <?php
 
-$lang['liq_pay_public_key'] = "Публічний ключ";
-$lang['liq_pay_private_key'] = "Приватний ключ";
-$lang['okaycms__liqpay__description_title'] = "Платіжна система LiqPay";
-$lang['okaycms__liqpay__description_part_1'] = "Для роботи модуля вам потрібно буде вказати посилання";
-$lang['okaycms__liqpay__description_part_2'] = "в особистому кабінеті на сторінці Налаштування - API в поля \"URL повідомлень сервер-сервер\" і \"URL повідомлень клієнт-сервер\" так як це зазначено на скріншоті. Потім вам потрібно буде в адмін. панелі в OkayCMS в розділі Налаштування - Способи оплати вибрати той спосіб оплати, до якого ви хочете підключити оплату через сервіс LiqPay, в поле \"Тип модуля:\". Вибрати зі списку \"OkayCMS / LiqPay\" і вказати в що з'явилися поля дані з особистого кабінету LiqPay, які також відзначені на скріншоті.";
+$lang['left_setting_np_title'] = 'Нова Пошта';
+$lang['settings_np'] = 'Налаштування Нової Пошти';
+$lang['settings_np_key'] = 'Ключ API доставки «Нова Пошта»';
+$lang['settings_np_weight'] = 'Вага за замовчуванням (кг)';
+$lang['settings_np_volume'] = 'Обсяг за замовчуванням (м<sup style="font-size: 8px;">3</sup>)';
+$lang['settings_np_city'] = 'Місто відправки';
+$lang['settings_np_service_type'] = 'Технологія доставки';
+$lang['settings_np_include_volume'] = 'Включити в розрахунок обсяг вантажу';
+$lang['settings_np_include_assessed'] = 'Включити в розрахунок оціночну вартість';
+$lang['settings_np_service_dd'] = 'Двері-Двері';
+$lang['settings_np_service_dw'] = 'Двері-Склад';
+$lang['settings_np_service_ww'] = 'Склад-Склад';
+$lang['settings_np_service_wd'] = 'Склад-Двері';
+$lang['payment_method_np_cod'] = 'Накладений платіж для НП';
+$lang['product_np_volume'] = 'Обсяг м<sup style="font-size: 8px;">3</sup>';
+$lang['order_np_term'] = 'Термін доставки (днів)';
+$lang['order_np_calc'] = 'Перерахувати ціну і терміни';
+$lang['order_np_redelivery'] = 'Накладений платіж';
+$lang['order_np_city'] = 'Місто';
+$lang['order_np_warehouse'] = 'Пункт видачі';
+$lang['settings_np_currency'] = 'Вкажіть валюту "гривні" для корректной роботи модуля';

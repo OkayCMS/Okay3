@@ -73,6 +73,14 @@
             </div>
         </div>
     </div>
+
+    {$block = {get_design_block block="comments_custom_block"}}
+    {if !empty($block)}
+        <div class="fn_toggle_wrap custom_block">
+            {$block}
+        </div>
+    {/if}
+
     {if $comments}
         <div class="row">
         {*Главная форма страницы*}
@@ -140,6 +148,7 @@
                                                     </button>
                                                 </div>
                                             </div>
+                                            {get_design_block block="comments_custom_block" vars=['comment' => $comment]}
                                         </div>
 
                                         <div class="okay_list_boding okay_list_comments_btn">
@@ -152,6 +161,7 @@
                                                 <button type="button" data-parent_id="{$comment->id}" data-user_name="{$comment->name|escape}" data-toggle="modal" data-target="#answer_popup" class="btn btn_small btn-outline-info fn_answer">
                                                     {$btr->general_answer|escape}
                                                 </button>
+                                                {get_design_block block="comments_buttons" vars=['comment' => $comment]}
                                             </div>
                                         </div>
 
@@ -195,12 +205,12 @@
                 </div>
             </form>
         </div>
-        <div class="row">
+    </div>
+    <div class="row">
             <div class="col-lg-12 col-md-12 col-sm 12 txt_center">
                 {include file='pagination.tpl'}
             </div>
         </div>
-    </div>
     {else}
         <div class="heading_box mt-1">
             <div class="text_grey">{$btr->comments_no|escape}</div>

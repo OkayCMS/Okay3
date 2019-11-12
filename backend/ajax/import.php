@@ -270,15 +270,9 @@ class ImportAjax
         if (isset($item['annotation'])) {
             $product['annotation'] = trim($item['annotation']);
         }
-        else {
-            $product['annotation'] = '';
-        }
         
         if (isset($item['description'])) {
             $product['description'] = trim($item['description']);
-        }
-        else {
-            $product['description'] = '';
         }
         
         if (isset($item['visible'])) {

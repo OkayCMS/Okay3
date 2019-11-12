@@ -19,11 +19,14 @@
                     {include file='svg_icon.tpl' svgId='icon_tooltips'}
                 </i>
                 <div class="box_btn_heading ml-1">
-                    <button type="button" class="btn btn_mini btn-info fn_add_status ">
+                    <button type="button" class="btn btn_mini btn-info btn_openSans fn_add_status ">
                         {include file='svg_icon.tpl' svgId='plus'}
                         <span>{$btr->order_settings_add_status|escape}</span>
                     </button>
                 </div>
+
+                {get_design_block block="order_settings_statuses_head"}
+
                 <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                     <a class="btn-minimize" href="javascript:;" ><i class="icon-arrow-down"></i></a>
                 </div>
@@ -80,6 +83,12 @@
                                                 {/if}
                                             </div>
                                         </div>
+                                        {$block = {get_design_block block="order_settings_status_item"}}
+                                        {if !empty($block)}
+                                            <div class="okay_list_row">
+                                                {$block}
+                                            </div>
+                                        {/if}
                                     </div>
                                 {/foreach}
                             {/if}
@@ -128,11 +137,14 @@
             <div class="heading_box">
                 {$btr->order_settings_labels|escape}
                 <div class="box_btn_heading ml-1">
-                    <button type="button" class="btn btn_mini btn-info fn_add_Label ">
+                    <button type="button" class="btn btn_mini btn-info btn_openSans fn_add_Label ">
                         {include file='svg_icon.tpl' svgId='plus'}
                         <span>{$btr->order_settings_add_label|escape}</span>
                     </button>
                 </div>
+
+                {get_design_block block="order_settings_labels_head"}
+
                 <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                     <a class="btn-minimize" href="javascript:;" ><i class="icon-arrow-down"></i></a>
                 </div>
@@ -178,6 +190,12 @@
                                             </button>
                                         </div>
                                     </div>
+                                    {$block = {get_design_block block="order_settings_label_item"}}
+                                    {if !empty($block)}
+                                        <div class="okay_list_row">
+                                            {$block}
+                                        </div>
+                                    {/if}
                                 </div>
                             {/foreach}
                             <div class="fn_row fn_new_label fn_sort_item okay_list_body_item">
@@ -212,6 +230,13 @@
         </div>
     </div>
 </div>
+
+{$block = {get_design_block block="order_settings_custom_block"}}
+{if !empty($block)}
+    <div class="custom_block fn_toggle_wrap">
+        {$block}
+    </div>
+{/if}
 
 {* On document load *}
 {literal}

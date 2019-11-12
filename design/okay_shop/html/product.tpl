@@ -7,7 +7,7 @@
     {* The product name *}
     <div class="block__header block__header--boxed block__header--border  {if $product->variant->sku}block__header--promo{/if}">
         <h1 class="block__heading">
-            <span data-product="{$product->id}" itemprop="name">{$product->name|escape} {if $product->variants|count == 1 && !empty($product->variant->name)}({$product->variant->name|escape}){/if}</span>
+            <span data-product="{$product->id}" itemprop="name">{$h1|escape}</span>
         </h1>
         <div class="block__header_promo product-page__sku{if !$product->variant->sku} hidden{/if}">
             <span data-language="product_sku">{$lang->product_sku}:</span>
@@ -108,7 +108,7 @@
 
                     {* Anchor form comments *}
                     <div class="details_boxed__anchor_comments">
-                        <a href="#fn_products_tab" class="fn_anchor_comments anchor_comments__link">
+                        <a href="#fn_products_tab" class="fn_anchor_comments d-inline-flex align-items-center anchor_comments__link">
                             {if $comments|count}
                                 {$comments|count}
                                 {$comments|count|plural:$lang->product_anchor_comment_plural1:$lang->product_anchor_comment_plural2:$lang->product_anchor_comment_plural3}
@@ -120,8 +120,8 @@
 
                     {* Product available *}
                     <div class="details_boxed__available">
-                        <div class="available__no_stock fn_not_stock{if $product->variant->stock > 0} hidden{/if}" data-language="product_out_of_stock">{$lang->product_out_of_stock}</div>
-                        <div class="available__in_stock fn_in_stock{if $product->variant->stock < 1} hidden{/if}" data-language="product_in_stock">{$lang->product_in_stock}</div>
+                        <div class="available__no_stock d-flex align-items-center icon icon-highlight-off fn_not_stock{if $product->variant->stock > 0} hidden-xs-up{/if}" data-language="product_out_of_stock">{$lang->product_out_of_stock}</div>
+                        <div class="available__in_stock d-flex align-items-center icon icon-check-circle-outline fn_in_stock{if $product->variant->stock < 1} hidden-xs-up{/if}" data-language="product_in_stock">{$lang->product_in_stock}</div>
                     </div>
                 </div>
 
@@ -214,28 +214,64 @@
                                     {* Wishlist *}
                                     {if is_array($wishlist->ids) && in_array($product->id, $wishlist->ids)}
                                         <a href="#" data-id="{$product->id}" class="fn_wishlist product-page__wishlist selected" title="{$lang->product_remove_favorite}" data-result-text="{$lang->product_add_favorite}" data-language="product_remove_favorite">
-                                            <i class="icon icon-favorite-border"></i>
+                                            <i class="fa fa-heart"></i>
                                         </a>
                                     {else}
                                         <a href="#" data-id="{$product->id}" class="fn_wishlist product-page__wishlist" title="{$lang->product_add_favorite}" data-result-text="{$lang->product_remove_favorite}" data-language="product_add_favorite">
-                                            <i class="icon icon-favorite-border"></i>
+                                            <i class="fa fa-heart-o"></i>
                                         </a>
                                     {/if}
 
                                     {* Comparison *}
                                     {if is_array($comparison->ids) && in_array($product->id, $comparison->ids)}
                                         <a class="fn_comparison product-page__compare selected" href="#" data-id="{$product->id}" title="{$lang->product_remove_comparison}" data-result-text="{$lang->product_add_comparison}" data-language="product_remove_comparison">
-                                            <i class="icon icon-balance-scale"></i>
+                                            <i class="fa fa-balance-scale"></i>
                                         </a>
                                     {else}
                                         <a class="fn_comparison product-page__compare" href="#" data-id="{$product->id}" title="{$lang->product_add_comparison}" data-result-text="{$lang->product_remove_comparison}" data-language="product_add_comparison">
-                                            <i class="icon icon-balance-scale"></i>
+                                            <i class="fa fa-balance-scale"></i>
                                         </a>
                                     {/if}
                                 </div>
                             </div>
                         </div>
                     </form>
+                </div>
+
+
+                <div class="fn_accordion accordion details_boxed__item details_boxed__item--inner">
+                    <div class="details_boxed__item">
+                        {* Delivery *}
+                        <div class="accordion__item visible">
+                            <div class="accordion__title active">
+                                <div class="accordion__header d-flex justify-content-between align-items-center">
+                                    <span data-language="product_delivery">{$lang->product_delivery}</span>
+                                    <span class="accordion__arrow fa fa-chevron-down"></span>
+                                </div>
+                            </div>
+                            <div class="accordion__content" style="display: block;">
+                                <div class="">
+                                    {$settings->product_deliveries}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="details_boxed__item">
+                        {* Payments *}
+                        <div class="accordion__item">
+                            <div class="accordion__title">
+                                <div class="accordion__header d-flex justify-content-between align-items-center">
+                                    <span data-language="product_payment">{$lang->product_payment}</span>
+                                    <span class="accordion__arrow fa fa-chevron-down"></span>
+                                </div>
+                            </div>
+                            <div class="accordion__content">
+                                <div class="">
+                                    {$settings->product_payments}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {* Share buttons *}
@@ -247,37 +283,6 @@
                         <div class="fn_share jssocials share__icons"></div>
                     </div>
                 </div>
-
-                <div class="details_boxed__item">
-                    <div class="fn_accordion accordion">
-                        {* Delivery *}
-                        <div class="accordion__item visible">
-                            <div class="accordion__title active">
-                                <div class="accordion__header">
-                                    <span data-language="product_delivery">{$lang->product_delivery}</span>
-                                </div>
-                            </div>
-                            <div class="accordion__content" style="display: block;">
-                                <div class="">
-                                    {$settings->product_deliveries}
-                                </div>
-                            </div>
-                        </div>
-                         {* Payments *}
-                        <div class="accordion__item">
-                            <div class="accordion__title">
-                                <div class="accordion__header">
-                                    <span data-language="product_payment">{$lang->product_payment}</span>
-                                </div>
-                            </div>
-                            <div class="accordion__content">
-                                <div class="">
-                                    {$settings->product_payments}
-                                </div>
-                            </div>
-                        </div>
-                    </div> 
-                </div>
             </div>
         </div>
     </div>
@@ -285,7 +290,7 @@
     <div id="fn_products_tab" class="product-page__tabs">
         <div class="block--border tabs">
             <div class="tabs__navigation hidden-sm-down">
-                {if $product->description}
+                {if $description}
                 <a class="tabs__link" href="#description">
                     <span data-language="product_description">{$lang->product_description}</span>
                 </a>
@@ -303,7 +308,7 @@
             </div>
 
             <div class="tabs__content">
-                {if $product->description}
+                {if $description}
                     <div id="description" class="tab product_description" itemprop="description">
                         <div class="fn_switch mobile_tab_navigation active hidden-md-up">
                             <div class="mobile_tab_title">
@@ -313,7 +318,7 @@
                         </div>
                         <div class="mobile_tab__content">
                             <div class="block__description block__description--style">
-                                {$product->description}
+                                {$description}
                             </div>
                          </div>
                     </div>
@@ -439,39 +444,39 @@
                                 <div class="form__body">
                                     {* User's name *}
                                     <div class="form__group">
-                                        <input class="form__input form__placeholder--focus" type="text" name="name" value="{$comment_name|escape}" />
+                                        <input class="form__input form__placeholder--focus" type="text" name="name" value="{$request_data.name|escape}" />
                                         <span class="form__placeholder">{$lang->form_name}*</span>
                                     </div>
 
                                     {* User's email *}
                                     <div class="form__group">
-                                        <input class="form__input form__placeholder--focus" type="text" name="email" value="{$comment_email|escape}" data-language="form_email" />
+                                        <input class="form__input form__placeholder--focus" type="text" name="email" value="{$request_data.email|escape}" data-language="form_email" />
                                         <span class="form__placeholder">{$lang->form_email}</span>
                                     </div>
                                     
                                     {* User's comment *}
                                     <div class="form__group">
-                                        <textarea class="form__textarea form__placeholder--focus" rows="3" name="text" >{$comment_text}</textarea>
+                                        <textarea class="form__textarea form__placeholder--focus" rows="3" name="text" >{$request_data.text}</textarea>
                                         <span class="form__placeholder">{$lang->form_enter_comment}*</span>
                                     </div>
                                 </div>
                                 <div class="form__footer">
                                     {* Captcha *}
-                                    {if $settings->captcha_product}
-                                    {if $settings->captcha_type == "v2"}
-                                        <div class="captcha">
-                                            <div id="recaptcha1"></div>
-                                        </div>
-                                    {elseif $settings->captcha_type == "default"}
-                                    {get_captcha var="captcha_product"}
-                                        <div class="captcha">
-                                            <div class="secret_number">{$captcha_product[0]|escape} + ? =  {$captcha_product[1]|escape}</div>
-                                            <div class="form__captcha">
-                                                <input class="form__input form__input_captcha form__placeholder--focus" type="text" name="captcha_code" value="" />
-                                                <span class="form__placeholder">{$lang->form_enter_captcha}*</span>
+                                    {if $settings->captcha_comment}
+                                        {if $settings->captcha_type == "v2"}
+                                            <div class="captcha">
+                                                <div id="recaptcha1"></div>
                                             </div>
-                                        </div>
-                                    {/if}
+                                        {elseif $settings->captcha_type == "default"}
+                                        {get_captcha var="captcha_comment"}
+                                            <div class="captcha">
+                                                <div class="secret_number">{$captcha_comment[0]|escape} + ? =  {$captcha_comment[1]|escape}</div>
+                                                <div class="form__captcha">
+                                                    <input class="form__input form__input_captcha form__placeholder--focus" type="text" name="captcha_code" value="" />
+                                                    <span class="form__placeholder">{$lang->form_enter_captcha}*</span>
+                                                </div>
+                                            </div>
+                                        {/if}
                                     {/if}
                                     
                                     <input type="hidden" name="comment" value="1">

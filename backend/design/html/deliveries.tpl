@@ -20,6 +20,12 @@
 
 {*Главная форма страницы*}
 <div class="boxed fn_toggle_wrap">
+    {$block = {get_design_block block="deliveries_custom_block"}}
+    {if $block}
+        <div class="custom_block">
+            {$block}
+        </div>
+    {/if}
     {if $deliveries}
         <form class="fn_form_list" method="post">
             <div class="okay_list products_list fn_sort_list">
@@ -68,6 +74,7 @@
                                     <a href="{url controller=DeliveryAdmin id=$delivery->id return=$smarty.server.REQUEST_URI}">
                                         {$delivery->name|escape}
                                     </a>
+                                    {get_design_block block="deliveries_list_name" vars=['delivery' => $delivery]}
                                     <div class="hidden-lg-up mt-q">
                                         {if $delivery->separate_payment}
                                             <div><span class="tag tag-primary">{$btr->general_paid_separately|escape}</span></div>
@@ -80,6 +87,7 @@
                                         {if $delivery->free_from > 0}
                                             <div><span class="tag tag-success">{$btr->deliveries_free_from|escape} {$delivery->free_from} {$currency->sign|escape}</span></div>
                                         {/if}
+                                        {get_design_block block="deliveries_list_additional_blok" vars=['delivery' => $delivery]}
                                     </div>
                                 </div>
 
@@ -95,6 +103,7 @@
                                     {if $delivery->free_from > 0}
                                         <div><span class="tag tag-success">{$btr->deliveries_free_from|escape} {$delivery->free_from} {$currency->sign|escape}</span></div>
                                     {/if}
+                                    {get_design_block block="deliveries_list_additional_blok" vars=['delivery' => $delivery]}
                                 </div>
 
                                 <div class="okay_list_boding okay_list_status">

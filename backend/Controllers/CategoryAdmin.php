@@ -4,22 +4,27 @@
 namespace Okay\Admin\Controllers;
 
 
+use Okay\Admin\Helpers\BackendValidateHelper;
+use Okay\Core\Entity\UrlUniqueValidator;
 use Okay\Entities\CategoriesEntity;
-use Okay\Admin\Requests\CategoriesRequest;
+use Okay\Admin\Requests\BackendCategoriesRequest;
 use Okay\Admin\Helpers\BackendCategoriesHelper;
 
 class CategoryAdmin extends IndexAdmin
 {
 
     public function fetch(
-        CategoriesEntity        $categoriesEntity,
-        CategoriesRequest       $categoriesRequest,
-        BackendCategoriesHelper $backendCategoriesHelper
+        CategoriesEntity         $categoriesEntity,
+        BackendCategoriesRequest $categoriesRequest,
+        BackendCategoriesHelper  $backendCategoriesHelper,
+        BackendValidateHelper    $backendValidateHelper
     ) {
         if ($this->request->method('post')) {
             $category = $categoriesRequest->postCategory();
 
-            if ($this->validateCategory($category, $categoriesEntity)) {
+            if ($error = $backendValidateHelper->getCategoryValidateError($category)) {
+                $this->design->assign('message_error', $error);
+            } else {
                 if (empty($category->id)) {
                     // Добавление категории
                     $category     = $backendCategoriesHelper->prepareAdd($category);
@@ -55,27 +60,4 @@ class CategoryAdmin extends IndexAdmin
         $this->design->assign('categories', $categories);
         $this->response->setContent($this->design->fetch('category.tpl'));
     }
-
-    private function validateCategory($category, CategoriesEntity $categoriesEntity)
-    {
-        if (($c = $categoriesEntity->get($category->url)) && $c->id != $category->id) {
-            $this->design->assign('message_error', 'url_exists');
-            return false;
-        }
-        elseif (empty($category->name)) {
-            $this->design->assign('message_error', 'empty_name');
-            return false;
-        }
-        elseif (empty($category->url)) {
-            $this->design->assign('message_error', 'empty_url');
-            return false;
-        }
-        elseif (substr($category->url, -1) == '-' || substr($category->url, 0, 1) == '-') {
-            $this->design->assign('message_error', 'url_wrong');
-            return false;
-        }
-
-        return true;
-    }
-
 }

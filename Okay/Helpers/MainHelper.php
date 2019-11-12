@@ -12,7 +12,6 @@ use Okay\Core\EntityFactory;
 use Okay\Core\FrontTranslations;
 use Okay\Core\JsSocial;
 use Okay\Core\Modules\Extender\ExtenderFacade;
-use Okay\Core\Modules\Extender\QueueExtender;
 use Okay\Core\Modules\Module;
 use Okay\Core\Request;
 use Okay\Core\Response;
@@ -29,10 +28,12 @@ use Okay\Entities\MenuItemsEntity;
 use Okay\Entities\PagesEntity;
 use Okay\Entities\UserGroupsEntity;
 use Okay\Entities\UsersEntity;
+use Okay\Helpers\MetadataHelpers\CommonMetadataHelper;
+use Okay\Helpers\MetadataHelpers\MetadataInterface;
 
 class MainHelper
 {
-    
+    private static $initialized = false;
     private $allLanguages;
     private $allCurrencies;
     private $currentLanguage;
@@ -98,11 +99,41 @@ class MainHelper
     /**
      * Метод, который можно расширять модулями. Выполняется он после работы контроллера
      * 
+     * @var MetadataInterface|null $metadataHelper
      * @throws \Exception
      */
-    public function afterControllerProcedure()
+    public function commonAfterControllerProcedure($metadataHelper)
     {
-        QueueExtender::execute(__METHOD__, null, func_get_args());
+        /** @var Design $design */
+        $design = $this->SL->getService(Design::class);
+
+        // Если в контроллере не передали хелпер метаданных, утановим стандартный
+        if ($metadataHelper === null) {
+            /** @var MetadataInterface $metadataHelper */
+            $metadataHelper = $this->SL->getService(CommonMetadataHelper::class);
+        }
+
+        if ($design->getVar('h1') === null) {
+            $design->assign('h1', $metadataHelper->getH1());
+        }
+        
+        if ($design->getVar('meta_title') === null) {
+            $design->assign('meta_title', $metadataHelper->getMetaTitle());
+        }
+        
+        if ($design->getVar('meta_keywords') === null) {
+            $design->assign('meta_keywords', $metadataHelper->getMetaKeywords());
+        }
+        
+        if ($design->getVar('meta_description') === null) {
+            $design->assign('meta_description', $metadataHelper->getMetaDescription());
+        }
+        
+        if ($design->getVar('description') === null) {
+            $design->assign('description', $metadataHelper->getDescription());
+        }
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
     
     /**
@@ -112,6 +143,10 @@ class MainHelper
      */
     public function setDesignDataProcedure()
     {
+        if (self::$initialized === true) {
+            return;
+        }
+        
         /** @var Design $design */
         $design = $this->SL->getService(Design::class);
         /** @var Request $request */
@@ -211,7 +246,9 @@ class MainHelper
             $design->assign('request_data', $requestData);
         }
 
-        QueueExtender::execute(__METHOD__, null, func_get_args());
+        self::$initialized = true;
+        
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     /**
@@ -317,7 +354,7 @@ class MainHelper
         $router = $this->SL->getService(Router::class);
         
         // Если пришли не за скриптом, очищаем все переменные для динамического JS
-        if (($routeName = $router->getCurrentRouteName()) != 'dynamic_js') {
+        if (($routeName = $router->getCurrentRouteName()) != 'dynamic_js' && $router->getCurrentRouteName() != 'common_js') {
             unset($_SESSION['dynamic_js']);
             $route = $router->getRouteByName($routeName);
             $_SESSION['dynamic_js']['controller'] = $route['params']['controller'];

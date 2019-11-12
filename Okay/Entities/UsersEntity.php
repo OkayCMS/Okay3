@@ -100,7 +100,7 @@ class UsersEntity extends Entity
             $update = $this->queryFactory->newUpdate();
             $update->table('__orders')
                 ->set('user_id', 0)
-                ->where('user_id=:user_id')
+                ->where('user_id IN (:user_id)')
                 ->bindValue('user_id', $ids);
             
             $this->db->query($update);
@@ -110,15 +110,21 @@ class UsersEntity extends Entity
         return parent::delete($ids);
     }
 
-    public function checkPassword($email, $password) {
+    /**
+     * @param string $email
+     * @param string $password
+     * @return int|false
+     */
+    public function checkPassword($email, $password)
+    {
         $encPassword = md5($this->salt . $password . md5($password));
-        $usersIds = $this->cols(['id'])->find([
+        $userId = $this->cols(['id'])->findOne([
             'email' => $email,
             'password' => $encPassword,
             'limit' => 1,
         ]);
-        if (!empty($usersIds)) {
-            $userId = reset($usersIds);
+        if (!empty($userId)) {
+            $userId = (int)$userId;
             return ExtenderFacade::execute([static::class, __FUNCTION__], $userId, func_get_args());
         }
 
@@ -139,7 +145,8 @@ class UsersEntity extends Entity
         return ExtenderFacade::execute([static::class, __FUNCTION__], $pass, func_get_args());
     }
 
-    public function getUloginUser($token) {
+    public function getULoginUser($token)
+    {
         $s = file_get_contents('https://ulogin.ru/token.php?token=' . $token . '&host=' . $_SERVER['HTTP_HOST']);
         $result = json_decode($s, true);
         return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());

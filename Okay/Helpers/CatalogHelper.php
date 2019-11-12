@@ -4,9 +4,10 @@
 namespace Okay\Helpers;
 
 
-use Okay\Core\Money as MoneyCore;// TODO: по какой-то причине вылаеет ошибка если не использовать алиас Fatal error: Cannot use Okay\Core\Money as Money because the name is already in use in C:\OpenServer\OSPanel\domains\okaycms3\Helpers\Catalog.php on line 7
+use Okay\Core\Money as MoneyCore;
 use Okay\Core\Design;
 use Okay\Core\EntityFactory;
+use Okay\Core\Settings;
 use Okay\Entities\TranslationsEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Core\Modules\Extender\ExtenderFacade;
@@ -16,15 +17,17 @@ class CatalogHelper
 
     private $money;
     private $entityFactory;
+    private $settings;
     private $otherFilters = [
         'discounted',
         'featured',
     ];
 
-    public function __construct(EntityFactory $entityFactory, MoneyCore $money)
+    public function __construct(EntityFactory $entityFactory, MoneyCore $money, Settings $settings)
     {
         $this->entityFactory = $entityFactory;
         $this->money = $money;
+        $this->settings = $settings;
     }
     
     public function getPriceFilter($catalogType, $objectId = null)
@@ -113,11 +116,21 @@ class CatalogHelper
         }
         
         // Вдруг вылезли за диапазон доступного...
-        if (isset($prices->current->min) && $prices->range->min !== '' && $prices->current->min < $prices->range->min) {
-            $prices->current->min = $filter['price']['min'] = $prices->range->min;
+        if (isset($prices->current->min) && $prices->range->min !== '') {
+            if ($prices->current->min < $prices->range->min) {
+                $prices->current->min = $filter['price']['min'] = $prices->range->min;
+            }
+            if ($prices->current->min > $prices->range->max) {
+                $prices->current->min = $filter['price']['min'] = $prices->range->max;
+            }
         }
-        if (isset($prices->current->max) && $prices->range->max !== '' && $prices->current->max > $prices->range->max) {
-            $prices->current->max = $filter['price']['max'] = $prices->range->max;
+        if (isset($prices->current->max) && $prices->range->max !== '') {
+            if ($prices->current->max > $prices->range->max) {
+                $prices->current->max = $filter['price']['max'] = $prices->range->max;
+            }
+            if ($prices->current->max < $prices->range->min) {
+                $prices->current->max = $filter['price']['max'] = $prices->range->min;
+            }
         }
 
         // Сохраняем фильтр в куки
@@ -158,12 +171,33 @@ class CatalogHelper
 
         return ExtenderFacade::execute(__METHOD__, $otherFilters, func_get_args());
     }
+
+    /**
+     * Метод возвращает данные для Ajax ответа при фильтрации
+     * 
+     * @param Design $design
+     * @return object
+     */
+    public function getAjaxFilterData(Design $design)
+    {
+        $result = new \stdClass;
+        $result->products_content = $design->fetch('products_content.tpl');
+        $result->products_pagination = $design->fetch('chpu_pagination.tpl');
+        $result->products_sort = $design->fetch('products_sort.tpl');
+        $result->features = $design->fetch('features.tpl');
+        $result->selected_features = $design->fetch('selected_features.tpl');
+        return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
+    }
     
     public function paginate($itemsPerPage, $currentPage, array &$filter, Design $design)
     {
 
         /** @var ProductsEntity $productsEntity */
         $productsEntity = $this->entityFactory->get(ProductsEntity::class);
+
+        if ($this->settings->get('missing_products') === MISSING_PRODUCTS_HIDE) {
+            $filter['in_stock'] = true;
+        }
         
         // Вычисляем количество страниц
         $productsCount = $productsEntity->count($filter);
@@ -178,6 +212,7 @@ class CatalogHelper
         // Если не задана, то равна 1
         $currentPage = max(1, (int)$currentPage);
         $design->assign('current_page_num', $currentPage);
+        $design->assign('is_all_pages', $allPages);
         
         $pagesNum = !empty($itemsPerPage) ? ceil($productsCount/$itemsPerPage) : 0;
         $design->assign('total_pages_num', $pagesNum);

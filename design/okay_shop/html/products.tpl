@@ -24,7 +24,7 @@
             {if $category}
                 <div class="sidebar__header--reset">
                     <form method="post">
-                        <button type="submit" name="prg_seo_hide" class="fn_filter_reset mobile_filter__reset" value="{url_generator route="category" url=$category->url}">
+                        <button type="submit" name="prg_seo_hide" class="fn_filter_reset mobile_filter__reset" value="{url_generator route="category" url=$category->url absolute=1}">
                             {include file="svg.tpl" svgId="reset_icon"}
                             <span>{$lang->mobile_filter_reset}</span>
                         </button>
@@ -33,7 +33,7 @@
             {elseif $brand}
                 <div class="sidebar__header--reset">
                     <form method="post">
-                        <button type="submit" name="prg_seo_hide" class="fn_filter_reset mobile_filter__reset" value="{url_generator route="brand" url=$brand->url}">
+                        <button type="submit" name="prg_seo_hide" class="fn_filter_reset mobile_filter__reset" value="{url_generator route="brand" url=$brand->url absolute=1}">
                             {include file="svg.tpl" svgId="reset_icon"}
                             <span>{$lang->mobile_filter_reset}</span>
                         </button>
@@ -58,28 +58,7 @@
 
     <div class="products_container d-flex flex-column">
         <div class="products_container__boxed">
-            {* The page heading *}
-            {if !empty($keyword)}
-                <h1 class="h1"><span data-language="products_search">{$lang->products_search}</span> {$keyword|escape}</h1>
-            {elseif $page}
-                <h1 class="h1">
-                    <span data-page="{$page->id}">{if $page->name_h1|escape}{$page->name_h1|escape}{else}{$page->name|escape}{/if}</span>
-                </h1>
-            {elseif !empty($seo_filter_pattern->h1)}
-                <h1 class="h1">{$seo_filter_pattern->h1|escape}</h1>
-            {else}
-                <h1 class="h1">
-                    {if !empty($category)}
-                        <span data-category="{$category->id}">{if !empty($category->name_h1)}{$category->name_h1|escape}{else}{$category->name|escape}{/if}</span>
-                    {/if}
-                    {if !empty($brand->name)}
-                        {$brand->name|escape}
-                    {/if}
-                    {if !empty($filter_meta->h1)}
-                        {$filter_meta->h1|escape}
-                    {/if}
-                </h1>
-            {/if}
+            <h1 class="h1"{if $category} data-category="{$category->id}"{/if}{if $brand} data-brand="{$brand->id}"{/if}>{$h1|escape}</h1>
 
             {if $current_page_num == 1 && (!empty($category->annotation) || !empty($brand->annotation)) && !$is_filter_page && !$smarty.get.page && !$smarty.get.sort}
                 <div class="boxed boxed--big">
@@ -127,41 +106,14 @@
                 </div>
             {/if}
 
-            {if $current_page_num == 1 && $page->description}
-            <div class="boxed boxed--big">
-                <div class="">
-                    <div class="fn_readmore">
-                        <div class="page-description__text boxed__description">{$page->description}</div>
+            {if $description}
+                <div class="boxed boxed--big">
+                    <div class="">
+                        <div class="fn_readmore">
+                            <div class="page-description__text boxed__description">{$description}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            {/if}
-
-            {if $current_page_num == 1}
-                {*SEO шаблон описания страницы фильтра*}
-                {if $seo_filter_pattern->description}
-                    <div class="boxed boxed--big">
-                        <div class="">
-                            <div class="fn_readmore">
-                                <div class="page-description__text boxed__description">{$seo_filter_pattern->description}</div>
-                            </div>
-                        </div>
-                    </div>
-                {elseif (empty($category) || empty($brand)) && ($category->description || $brand->description) && !$is_filter_page && !$smarty.get.page && !$smarty.get.sort}
-                    <div class="boxed boxed--big">
-                        <div class="">
-                            <div class="fn_readmore">
-                                <div class="page-description__text boxed__description">
-                                    {* Описание категории *}
-                                    {$category->description}
-
-                                    {* Описание бренда *}
-                                    {$brand->description}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {/if}
             {/if}
         </div>
     </div>

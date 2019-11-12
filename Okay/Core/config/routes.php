@@ -28,58 +28,30 @@
  *
  */
 
+use Okay\Core\Routes\ProductRoute;
+use Okay\Core\Routes\CategoryRoute;
+use Okay\Core\Routes\BrandRoute;
+use Okay\Core\Routes\BlogItemRoute;
+use Okay\Core\Routes\NewsItemRoute;
+
+$productRouteParams  = (new ProductRoute())->generateRouteParams();
+$categoryRouteParams = (new CategoryRoute())->generateRouteParams();
+$brandRouteParams    = (new BrandRoute())->generateRouteParams();
+$blogItemRouteParams = (new BlogItemRoute())->generateRouteParams();
+$newsItemRouteParams = (new NewsItemRoute())->generateRouteParams();
+
 return [
-    'blog' => [
-        'slug' => 'blog',
+    'main' => [
+        'slug' => '/',
         'params' => [
-            'controller' => 'BlogController',
-            'method' => 'fetchBlog',
-        ],
-        'defaults' => [
-            '{$typePost}' => 'blog',
-        ],
-    ],
-    'blog_item' => [
-        'slug' => 'blog/{$url}',
-        'params' => [
-            'controller' => 'BlogController',
-            'method' => 'fetchPost',
-        ],
-        'defaults' => [
-            '{$typePost}' => 'blog',
-        ],
-    ],
-    'news' => [
-        'slug' => 'news',
-        'params' => [
-            'controller' => 'BlogController',
-            'method' => 'fetchBlog',
-        ],
-        'defaults' => [
-            '{$typePost}' => 'news',
-        ],
-    ],
-    'news_item' => [
-        'slug' => 'news/{$url}',
-        'params' => [
-            'controller' => 'BlogController',
-            'method' => 'fetchPost',
-        ],
-        'defaults' => [
-            '{$typePost}' => 'news',
+            'controller' => 'MainController',
+            'method' => 'render',
         ],
     ],
     'contact' => [
         'slug' => '/contact',
         'params' => [
             'controller' => 'FeedbackController',
-            'method' => 'render',
-        ],
-    ],
-    'main' => [
-        'slug' => '/',
-        'params' => [
-            'controller' => 'MainController',
             'method' => 'render',
         ],
     ],
@@ -148,13 +120,6 @@ return [
         ],
         'to_front' => true,
     ],
-    'product' => [
-        'slug' => '/products/{$url}',
-        'params' => [
-            'controller' => 'ProductController',
-            'method' => 'render',
-        ],
-    ],
     'ajax_product_rating' => [
         'slug' => '/ajax/rating',
         'params' => [
@@ -162,34 +127,6 @@ return [
             'method' => 'rating',
         ],
         'to_front' => true,
-    ],
-    'category' => [
-        'slug' => '/catalog/{$url}{$filtersUrl}',
-        'patterns' => [
-            '{$filtersUrl}' => '/?(.*)',
-        ],
-        'params' => [
-            'controller' => 'CategoryController',
-            'method' => 'render',
-        ],
-    ],
-    'brands' => [
-        'slug' => 'brands',
-        'params' => [
-            'controller' => 'BrandsController',
-            'method' => 'render',
-        ],
-    ],
-    'brand' => [
-        'slug' => '/brand/{$url}{$filtersUrl}',
-        'patterns' => [
-            '{$url}' => '([^/]*)',
-            '{$filtersUrl}' => '/?(.*)',
-        ],
-        'params' => [
-            'controller' => 'BrandController',
-            'method' => 'render',
-        ],
     ],
     'search' => [
         'slug' => '/all-products{$filtersUrl}',
@@ -326,6 +263,78 @@ return [
             'controller' => 'SupportController',
             'method' => 'checkDomain',
         ],
+    ],
+    'brands' => [
+        'slug' => 'brands',
+        'params' => [
+            'controller' => 'BrandsController',
+            'method' => 'render',
+        ],
+    ],
+    'blog' => [
+        'slug' => 'blog',
+        'params' => [
+            'controller' => 'BlogController',
+            'method' => 'fetchBlog',
+        ],
+        'defaults' => [
+            '{$typePost}' => 'blog',
+        ],
+    ],
+    'news' => [
+        'slug' => 'news',
+        'params' => [
+            'controller' => 'BlogController',
+            'method' => 'fetchBlog',
+        ],
+        'defaults' => [
+            '{$typePost}' => 'news',
+        ],
+    ],
+    'product' => [
+        'slug' => $productRouteParams->getSlug(),
+        'patterns' => $productRouteParams->getPatterns(),
+        'params' => [
+            'controller' => 'ProductController',
+            'method' => 'render',
+        ],
+        'defaults' => $productRouteParams->getDefaults(),
+    ],
+    'category' => [
+        'slug' => $categoryRouteParams->getSlug(),
+        'patterns' => $categoryRouteParams->getPatterns(),
+        'params' => [
+            'controller' => 'CategoryController',
+            'method' => 'render',
+        ],
+        'defaults' => $categoryRouteParams->getDefaults()
+    ],
+    'brand' => [
+        'slug' => $brandRouteParams->getSlug(),
+        'patterns' => $brandRouteParams->getPatterns(),
+        'params' => [
+            'controller' => 'BrandController',
+            'method' => 'render',
+        ],
+        'defaults' => $brandRouteParams->getDefaults()
+    ],
+    'blog_item' => [
+        'slug' => $blogItemRouteParams->getSlug(),
+        'patterns' => $blogItemRouteParams->getPatterns(),
+        'params' => [
+            'controller' => 'BlogController',
+            'method' => 'fetchPost',
+        ],
+        'defaults' => $blogItemRouteParams->getDefaults()
+    ],
+    'news_item' => [
+        'slug' => $newsItemRouteParams->getSlug(),
+        'patterns' => $newsItemRouteParams->getPatterns(),
+        'params' => [
+            'controller' => 'BlogController',
+            'method' => 'fetchPost',
+        ],
+        'defaults' => $newsItemRouteParams->getDefaults(),
     ],
     'page' => [
         'slug' => '{$url}',

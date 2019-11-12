@@ -301,7 +301,7 @@ class BackendProductsHelper
         return ExtenderFacade::execute(__METHOD__, $relatedProducts, func_get_args());
     }
 
-    public function prepareFilterForProductsAdmin()
+    public function buildFilter()
     {
         // Пагинация
         $filter = [];
@@ -349,9 +349,9 @@ class BackendProductsHelper
             } elseif($f == 'hidden') {
                 $filter['visible'] = 0;
             } elseif($f == 'outofstock') {
-                $filter['in_stock'] = 0;
+                $filter['not_in_stock'] = 1;
             } elseif($f == 'without_images') {
-                $filter['has_images'] = 0;
+                $filter['has_no_images'] = 1;
             }
 
             $filter['filter'] = $f;
@@ -363,8 +363,6 @@ class BackendProductsHelper
         $keyword = $this->request->get('keyword');
         if (!empty($keyword)) {
             $filter['keyword'] = $keyword;
-        } else {
-            $filter['keyword'] = null;
         }
 
         if ($this->request->get('page') == 'all') {
@@ -374,7 +372,7 @@ class BackendProductsHelper
         return ExtenderFacade::execute(__METHOD__, $filter, func_get_args());
     }
 
-    public function actionsMoveToPage($ids, $filter)
+    public function moveToPage($ids, $filter)
     {
         /*Переместить на страницу*/
         $targetPage = $this->request->post('target_page', 'integer');

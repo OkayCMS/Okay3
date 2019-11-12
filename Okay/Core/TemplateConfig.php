@@ -4,6 +4,8 @@
 namespace Okay\Core;
 
 
+use axy\sourcemap\PosMap;
+use axy\sourcemap\SourceMap;
 use MatthiasMullie\Minify\JS;
 use Okay\Core\Modules\Module;
 use Okay\Core\Modules\Modules;
@@ -386,24 +388,29 @@ class TemplateConfig
         $result_file .= trim($oCssDocument->render(OutputFormat::createPretty())) . PHP_EOL;
         file_put_contents($this->settingsFile, $result_file);
     }
-    
+
+    /**
+     * метод компилирует индивидуальный CSS файл, который подключили через смарти плагин
+     * @param $filename
+     * @param null $dir
+     * @return string
+     */
     public function compileIndividualCss($filename, $dir = null)
     {
         if ($filename != $this->themeSettingsFileName && $this->checkFile($filename, 'css', $dir) === true) {
-            $file = $this->getFullPath($filename, 'css', $dir);
+            $fullFilePath = $this->getFullPath($filename, 'css', $dir);
             
-            $hash = md5_file($file) . md5_file($this->settingsFile);
-            $compiled_filename = $this->compileCssDir . $this->getTheme() . '.' . pathinfo($file, PATHINFO_BASENAME) . '.' . $hash . '.css';
+            $hash = md5(md5_file($fullFilePath) . md5_file($this->settingsFile));
+            $compiledFilename = $this->compileCssDir . $this->getTheme() . '.' . pathinfo($fullFilePath, PATHINFO_BASENAME) . '.' . $hash . '.css';
 
-            if (file_exists($compiled_filename)) {
+            if (file_exists($compiledFilename)) {
                 // Обновляем дату редактирования файла, чтобы он не инвалидировался
-                touch($compiled_filename);
+                touch($compiledFilename);
             } else {
-                $result_file = $this->compileCssFile($file);
-                $this->saveCompileFile($result_file, $compiled_filename);
+                $this->compileFile($fullFilePath, $compiledFilename);
             }
             
-            return !empty($compiled_filename) ? "<link href=\"{$compiled_filename}\" type=\"text/css\" rel=\"stylesheet\">" . PHP_EOL : '';
+            return !empty($compiledFilename) ? "<link href=\"{$compiledFilename}\" type=\"text/css\" rel=\"stylesheet\">" . PHP_EOL : '';
         }
         return '';
     }
@@ -517,17 +524,16 @@ class TemplateConfig
         $result = [];
         if (!empty($this->individualCss[$position])) {
 
-            foreach ($this->individualCss[$position] as $k=>$file) {
-                $hash = md5_file($file) . md5_file($this->settingsFile);
-                $compiled_filename = $this->compileCssDir . $this->getTheme() . '.' . pathinfo($file, PATHINFO_BASENAME) . '.' . $hash . '.css';
-                $result[] = $compiled_filename;
+            foreach ($this->individualCss[$position] as $k=>$fullFilePath) {
+                $hash = md5(md5_file($fullFilePath) . md5_file($this->settingsFile));
+                $compiledFilename = $this->compileCssDir . $this->getTheme() . '.' . pathinfo($fullFilePath, PATHINFO_BASENAME) . '.' . $hash . '.css';
+                $result[] = $compiledFilename;
                 
-                if (file_exists($compiled_filename)) {
+                if (file_exists($compiledFilename)) {
                     // Обновляем дату редактирования файла, чтобы он не инвалидировался
-                    touch($compiled_filename);
+                    touch($compiledFilename);
                 } else {
-                    $result_file = $this->compileCssFile($file);
-                    $this->saveCompileFile($result_file, $compiled_filename);
+                    $this->compileFile($fullFilePath, $compiledFilename);
                 }
                 // Удаляем скомпилированный файл из зарегистрированных, чтобы он повторно не компилировался
                 unset($this->individualJs[$position][$k]);
@@ -537,7 +543,7 @@ class TemplateConfig
     }
     
     /**
-     * @param $position //head|footer указание куда файл генерится
+     * @param string $position head|footer указание куда файл генерится
      * Метод компилирует все зарегистрированные, через метод registerCss(), CSS файлы
      * Собитаются они в одном общем выходном файле, в кеше
      * Также здесь подставляются значения переменных CSS.
@@ -546,35 +552,154 @@ class TemplateConfig
     private function compileRegisteredCss($position)
     {
         
-        $result_file = '';
-        $compiled_filename = '';
-        
+        $resultFile = [];
+        $compiledFilename = '';
         if (!empty($this->templateCss[$position])) {
 
             // Определяем название выходного файла, на основании хешей всех входящих файлов
             foreach ($this->templateCss[$position] as $file) {
-                $compiled_filename .= md5_file($file) . md5_file($this->settingsFile);
+                $compiledFilename .= md5_file($file) . md5_file($this->settingsFile);
             }
-            
-            $compiled_filename = $this->compileCssDir . $this->getTheme() . '.' . $position . '.' . md5($compiled_filename) . '.css';
 
-            // Если файл уже скомпилирован, отдаем его.
-            if (file_exists($compiled_filename)) {
-                // Обновляем дату редактирования файла, чтобы он не инвалидировался
-                touch($compiled_filename);
-                return $compiled_filename;
-            }
+            $mapFile = $this->getTheme() . '.' . $position . '.' . md5($compiledFilename) . '.css.map';
             
-            foreach ($this->templateCss[$position] as $k=>$file) {
-                $result_file .= $this->compileCssFile($file);
-                // Удаляем скомпилированный файл из зарегистрированных, чтобы он повторно не компилировался
-                unset($this->templateCss[$position][$k]);
+            $compiledFilename = $this->compileCssDir . $this->getTheme() . '.' . $position . '.' . md5($compiledFilename) . '.css';
+            // Если файл уже скомпилирован, отдаем его.
+            if (file_exists($compiledFilename)) {
+                // Обновляем дату редактирования файла, чтобы он не инвалидировался
+                touch($compiledFilename);
+                return $compiledFilename;
             }
+
+            $map = new SourceMap();
+            $lineNum = 0;
+            foreach ($this->templateCss[$position] as $k=>$fullFilePath) {
+                $inputFileName = pathinfo($fullFilePath, PATHINFO_BASENAME);
+                $tmpMapFile = $inputFileName . '.map';
+                
+                $tmpCompiledFilename = $this->compileCssDir . $inputFileName;
+                $this->compileFile($fullFilePath, $tmpCompiledFilename);
+                
+                $content = file_get_contents($tmpCompiledFilename);
+                $content = preg_replace('~/\*# sourceMappingURL.*\*/$~s', '', $content);
+                $content = rtrim($content);
+                $resultFile[] = $content;
+
+                $tmpMap = SourceMap::loadFromFile($this->compileCssDir . $tmpMapFile);
+                $map->concat($tmpMap, $lineNum);
+                unset($tmpMap);
+                $lineNum += 1;
+                $resultFile[] = PHP_EOL;
+                unlink($this->compileCssDir . $inputFileName);
+                unlink($this->compileCssDir . $tmpMapFile);
+            }
+            $resultFile[] = "\n/*# sourceMappingURL=".$mapFile." */\n";
+            $map->save($this->compileCssDir . $mapFile);
         }
         
-        $this->saveCompileFile($result_file, $compiled_filename);
+        $this->saveCompileFile(implode("", $resultFile), $compiledFilename);
         
-        return $compiled_filename;
+        return $compiledFilename;
+    }
+
+    private function compileFile($fullFilePath, $compiledFilename)
+    {
+        $map = new SourceMap();
+        $position = new PosMap(null);
+        $mapFile = $compiledFilename . '.map';
+        $map->file = $compiledFilename;
+        $generated = $position->generated;
+        $source = $position->source;
+
+        $generated->line = 0;
+        $generated->column = 0;
+        
+        $source->fileName = Request::getRootUrl() . '/' . str_replace($this->rootDir, '', $fullFilePath);
+        $sourceLine = 0;
+        $generatedLine = 0;
+        $blockComment = false;
+
+        foreach (file($fullFilePath) as $line) {
+            if ($line === '') {
+                continue;
+            }
+
+            // Проверяем что мы не в блоке комментариев
+            $clearLine = $line;
+            if (($posComment = strpos($line, '/*')) !== false) {
+                $blockComment = true;
+                $clearLine = substr($line, 0, $posComment);
+            }
+            
+            if ($blockComment === true && ($posComment = strpos($line, '*/')) !== false) {
+                $blockComment = false;
+                $clearLine = substr($line, $posComment+2);
+            }
+            
+            $line = $clearLine;
+            $line = rtrim($line);
+            
+            if (strtolower(pathinfo($fullFilePath, PATHINFO_EXTENSION)) == 'css') {
+                $line = $this->setCssVariables($line, $fullFilePath);
+            }
+
+            if ($blockComment === false) {
+                
+                if (strtolower(pathinfo($fullFilePath, PATHINFO_EXTENSION)) == 'js') {
+                    // todo доделать JS
+                    $generatedStrLen = 0;
+                    $sourceLenLine = 0;
+                } else {
+                    $lenPre = strlen($line);
+                    $line = ltrim($line);
+                    $generatedStrLen = strlen($line);
+                    $sourceLenLine = $lenPre - $generatedStrLen;
+                }
+                
+                $source->line = $sourceLine;
+                $source->column = $sourceLenLine;
+                
+                if (strtolower(pathinfo($fullFilePath, PATHINFO_EXTENSION)) == 'css') {
+                    $resultFile[] = $line;
+                }
+                
+                $map->addPosition(clone $position);
+                $generated->column += $generatedStrLen;
+                $generated->line = $generatedLine;
+                
+            }
+            $sourceLine++;
+        }
+        
+        $resultFile[] = "\n/*# sourceMappingURL=".pathinfo($mapFile, PATHINFO_BASENAME)." */\n";
+        $map->save($mapFile);
+        $this->saveCompileFile(implode("", $resultFile), $compiledFilename);
+    }
+    
+    private function setCssVariables($cssLine, $file)
+    {
+
+        if (empty($this->cssVariables)) {
+            $this->initCssVariables();
+        }
+
+        // Вычисляем директорию, для подключения ресурсов из css файла (background-image: url() etc.)
+        $subDir = trim(substr(pathinfo($file, PATHINFO_DIRNAME), strlen($this->rootDir)), "/\\");
+        $subDir = dirname($subDir);
+
+        // Переназначаем переменные из файла настроек шаблона
+        $var = trim(preg_replace('~^.+?\s*:\s*var\((.+)?\).*$~', '$1', $cssLine));
+
+        if (isset($this->cssVariables[trim($var)])) {
+            $cssLine = str_replace("var({$var})", $this->cssVariables[trim($var)], $cssLine);
+        }
+
+        // Перебиваем в файле все относительные пути
+        if (strpos($cssLine, 'url') !== false && strpos($cssLine, '..') !== false) {
+            $cssLine = strtr($cssLine, ['../' => '../../' . $subDir . '/']);
+        }
+        
+        return $cssLine;
     }
 
     /**
@@ -585,29 +710,29 @@ class TemplateConfig
     private function compileRegisteredJs($position)
     {
 
-        $result_file = '';
-        $compiled_filename = '';
+        $resultFile = '';
+        $compiledFilename = '';
         if (!empty($this->templateJs[$position])) {
 
             // Определяем название выходного файла, на основании хешей всех входящих файлов
             foreach ($this->templateJs[$position] as $file) {
-                $compiled_filename .= md5_file($file);
+                $compiledFilename .= md5_file($file);
             }
-            
-            $compiled_filename = $this->compileJsDir . $this->getTheme() . '.' . $position . '.' . md5($compiled_filename) . '.js';
+
+            $compiledFilename = $this->compileJsDir . $this->getTheme() . '.' . $position . '.' . md5($compiledFilename) . '.js';
 
             // Если файл уже скомпилирован, отдаем его.
-            if (file_exists($compiled_filename)) {
+            if (file_exists($compiledFilename)) {
                 // Обновляем дату редактирования файла, чтобы он не инвалидировался
-                touch($compiled_filename);
-                return $compiled_filename;
+                touch($compiledFilename);
+                return $compiledFilename;
             }
             
             foreach ($this->templateJs[$position] as $k=>$file) {
                 $filename = pathinfo($file, PATHINFO_BASENAME);
 
-                $result_file .= '/*! #File ' . $filename . ' */' . PHP_EOL;
-                $result_file .= file_get_contents($file) . PHP_EOL . PHP_EOL;
+                $resultFile .= '/*! #File ' . $filename . ' */' . PHP_EOL;
+                $resultFile .= file_get_contents($file) . PHP_EOL . PHP_EOL;
                 
                 // Удаляем скомпилированный файл из зарегистрированных, чтобы он повторно не компилировался
                 unset($this->templateJs[$position][$k]);
@@ -615,12 +740,12 @@ class TemplateConfig
         }
 
         $minifier = new JS();
-        $minifier->add($result_file);
-        $result_file = $minifier->minify();
+        $minifier->add($resultFile);
+        $resultFile = $minifier->minify();
         
-        $this->saveCompileFile($result_file, $compiled_filename);
+        $this->saveCompileFile($resultFile, $compiledFilename);
         
-        return $compiled_filename;
+        return $compiledFilename;
     }
     
     /**
@@ -654,46 +779,6 @@ class TemplateConfig
                 }
             }
         }
-    }
-    
-    private function compileCssFile($file)
-    {
-        
-        if (empty($this->cssVariables)) {
-            $this->initCssVariables();
-        }
-        
-        // Вычисляем директорию, для подключения ресурсов из css файла (background-image: url() etc.)
-        $sub_dir = trim(substr(pathinfo($file, PATHINFO_DIRNAME), strlen($this->rootDir)), "/\\");
-        $sub_dir = dirname($sub_dir);
-        
-        $oCssParser = new Parser(file_get_contents($file));
-        $oCssDocument = $oCssParser->parse();
-        foreach ($oCssDocument->getAllRuleSets() as $oBlock) {
-            foreach ($oBlock->getRules() as $r) {
-                $css_value = (string)$r->getValue();
-
-                // Переназначаем переменные из файла настроек шаблона
-                $var = preg_replace('~^var\((.+)?\)$~', '$1', $css_value);
-                
-                if (isset($this->cssVariables[$var])) {
-                    $r->setValue($this->cssVariables[$var]);
-                }
-
-                // Перебиваем в файле все относительные пути
-                if (strpos($css_value, 'url') !== false && strpos($css_value, '..') !== false) {
-                    $css_value = strtr($css_value, ['../' => '../../' . $sub_dir . '/']);
-                    $r->setValue($css_value);
-                }
-            }
-        }
-
-        $filename = pathinfo($file, PATHINFO_BASENAME);
-        $result_file = '/***** #File ' . $filename . ' *****/' . PHP_EOL;
-        
-        $result_file .= trim($oCssDocument->render(OutputFormat::createCompact())) . PHP_EOL;
-        unset($oCssParser);
-        return $result_file;
     }
     
     private function checkFile($filename, $type, $dir = null)

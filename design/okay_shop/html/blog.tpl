@@ -12,11 +12,9 @@
 
     {* The list of the blog posts *}
     <div class="block__body block--boxed block--border">
-        <div class="article_list row">
+        <div class="article_list f_row">
             {foreach $posts as $post}
-                <div class="article_item col-sm-6 col-md-6 col-lg-4 col-xl-3">
-                    {include 'post_list.tpl'}
-                 </div>
+                <div class="article_item f_col-sm-6 f_col-lg-3">{include 'post_list.tpl'}</div>
             {/foreach}
         </div>
         {* Pagination *}

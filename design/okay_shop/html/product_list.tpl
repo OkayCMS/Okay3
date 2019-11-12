@@ -3,7 +3,7 @@
     <div class="fn_transfer clearfix">
         <div class="product_preview__center">
             <div class="d-flex product_preview__image fn_loader_image">
-                <a class="d-flex align-items-center justify-content-center" href="{if $controller=='Comparison'}{$product->image->filename|resize:800:600:w}{else}{url_generator route='product' url=$product->url}{/if}" {if $controller=='Comparison'}data-fancybox="group" data-caption="{$product->name|escape}"{/if}>
+                <a class="d-flex align-items-center justify-content-center" aria-label="{$product->name|escape}" href="{if $controller=='Comparison'}{$product->image->filename|resize:800:600:w}{else}{url_generator route='product' url=$product->url}{/if}" {if $controller=='Comparison'}data-fancybox="group" data-caption="{$product->name|escape}"{/if}>
                     {if $product->image->filename}
                         <img class="fn_img preview_img lazy" data-src="{$product->image->filename|resize:300:180}" alt="{$product->name|escape}" title="{$product->name|escape}"/>
                     {else}
@@ -35,13 +35,13 @@
                 {* Wishlist *}
                 {if $controller != "WishListController"}
                     {if is_array($wishlist->ids) && in_array($product->id, $wishlist->ids)}
-                        <a href="#" data-id="{$product->id}" class="fn_wishlist wishlist_button icon icon-favorite selected" title="{$lang->remove_favorite}" data-result-text="{$lang->add_favorite}"></a>
+                        <a href="#" data-id="{$product->id}" class="fn_wishlist wishlist_button fa fa-heart selected" title="{$lang->remove_favorite}" data-result-text="{$lang->add_favorite}"></a>
                     {else}
-                        <a href="#" data-id="{$product->id}" class="fn_wishlist icon icon-favorite-border wishlist_button" title="{$lang->add_favorite}" data-result-text="{$lang->remove_favorite}"></a>
+                        <a href="#" data-id="{$product->id}" class="fn_wishlist fa fa-heart-o wishlist_button" title="{$lang->add_favorite}" data-result-text="{$lang->remove_favorite}"></a>
                     {/if}
                 {/if}
                 {if $controller == "WishListController"}
-                    <a href="#" class="fn_wishlist selected icon icon-clear wishlist_button__remove" title="{$lang->remove_favorite}" data-id="{$product->id}"></a>
+                    <a href="#" class="fn_wishlist selected fa fa-times wishlist_button__remove" title="{$lang->remove_favorite}" data-id="{$product->id}"></a>
                 {/if}
 
              </div>
@@ -79,7 +79,7 @@
                         </button>
                     {/if}
                     {* Submit cart button *}
-                    <button class="product_preview__button product_preview__button--buy button--blick icon icon-shopping-cart fn_is_stock{if $product->variant->stock < 1} hidden-xs-up{/if}" type="submit">
+                    <button class="product_preview__button product_preview__button--buy button--blick fa fa-shopping-cart fn_is_stock{if $product->variant->stock < 1} hidden-xs-up{/if}" type="submit">
                         <span class="product_preview__button_text" data-language="add_to_cart">{$lang->add_to_cart}</span>
                     </button>
 
@@ -88,14 +88,14 @@
                     {* Comparison *}
                     {if $controller != "ComparisonController"}
                         {if is_array($comparison->ids) && in_array($product->id, $comparison->ids)}
-                            <a class="fn_comparison comparison_button icon icon-balance-scale selected" href="#" data-id="{$product->id}" title="{$lang->remove_comparison}" data-result-text="{$lang->add_comparison}"></a>
+                            <a class="fn_comparison comparison_button fa fa-balance-scale selected" href="#" data-id="{$product->id}" title="{$lang->remove_comparison}" data-result-text="{$lang->add_comparison}"></a>
                         {else}
-                            <a class="fn_comparison icon icon-balance-scale comparison_button" href="#" data-id="{$product->id}" title="{$lang->add_comparison}" data-result-text="{$lang->remove_comparison}"></a>
+                            <a class="fn_comparison fa fa-balance-scale comparison_button" href="#" data-id="{$product->id}" title="{$lang->add_comparison}" data-result-text="{$lang->remove_comparison}"></a>
                         {/if}
                     {/if}
 
                     {if $controller == "ComparisonController"}
-                        <a href="#" class="fn_comparison selected icon icon-clear comparison_button remove_link" title="{$lang->remove_comparison}" data-id="{$product->id}"></a>
+                        <a href="#" class="fn_comparison selected fa fa-times comparison_button remove_link" title="{$lang->remove_comparison}" data-id="{$product->id}"></a>
                     {/if}
 
                 </div>

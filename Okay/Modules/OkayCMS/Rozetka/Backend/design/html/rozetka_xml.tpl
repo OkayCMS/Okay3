@@ -148,21 +148,29 @@
             </script>
         {/literal}
 
-        {backend_compact_product_list
-            title=$btr->products_for_upload
-            name='related_products'
-            products=$related_products
-            label=$btr->add_products
-            placeholder=$btr->select_products
-        }
+        <div class="col-lg-6 col-md-12">
+            <div class="boxed fn_toggle_wrap min_height_210px">
+                {backend_compact_product_list
+                    title=$btr->products_for_upload
+                    name='related_products'
+                    products=$related_products
+                    label=$btr->add_products
+                    placeholder=$btr->select_products
+                }
+            </div>
+        </div>
 
-        {backend_compact_product_list
-            title=$btr->products_not_for_upload
-            name='not_related_products'
-            products=$not_related_products
-            label=$btr->add_products
-            placeholder=$btr->select_products
-        }
+        <div class="col-lg-6 col-md-12">
+            <div class="boxed fn_toggle_wrap min_height_210px">
+                {backend_compact_product_list
+                    title=$btr->products_not_for_upload
+                    name='not_related_products'
+                    products=$not_related_products
+                    label=$btr->add_products
+                    placeholder=$btr->select_products
+                }
+            </div>
+        </div>
     </div>
 
     <div class="row" style="margin-bottom: 200px;">

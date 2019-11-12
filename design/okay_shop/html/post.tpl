@@ -6,7 +6,7 @@
 {* The page heading *}
 <div class="block__header block__header--boxed block__header--border block__header--promo">
     <h1 class="block__heading">
-        <span data-post="{$post->id}">{$post->name|escape}</span>
+        <span data-post="{$post->id}">{$h1|escape}</span>
     </h1>
     {* Post date *}
     <div class="block__header_promo{if !$post->date} hidden{/if}">
@@ -16,7 +16,7 @@
 <div class="block__body block--boxed block--border">
     {* Post content *}
     <div class="block__description block__description--style">
-        {$post->description}
+        {$description}
     </div>
 
     {* Social share *}
@@ -112,8 +112,8 @@
                                     </div>
                                 </div>
                             </div>
-                            {if isset($children[$comment->id])}
-                            {comments_tree comments=$children[$comment->id] level=$level+1}
+                            {if !empty($comment->children)}
+                            {comments_tree comments=$comment->children level=$level+1}
                             {/if}
                         </div>
                         {/foreach}
@@ -156,33 +156,33 @@
 
                             {* User's name *}
                             <div class="form__group">
-                                <input class="form__input form__placeholder--focus" type="text" name="name" value="{$comment_name|escape}" />
+                                <input class="form__input form__placeholder--focus" type="text" name="name" value="{$request_data.name|escape}" />
                                 <span class="form__placeholder">{$lang->form_name}*</span>
                             </div>
 
                             {* User's email *}
                             <div class="form__group">
-                                <input class="form__input form__placeholder--focus" type="text" name="email" value="{$comment_email|escape}" data-language="form_email" />
+                                <input class="form__input form__placeholder--focus" type="text" name="email" value="{$request_data.email|escape}" data-language="form_email" />
                                 <span class="form__placeholder">{$lang->form_email}</span>
                             </div>
 
                             {* User's comment *}
                             <div class="form__group">
-                                <textarea class="form__textarea form__placeholder--focus" rows="3" name="text" >{$comment_text}</textarea>
+                                <textarea class="form__textarea form__placeholder--focus" rows="3" name="text" >{$request_data.text}</textarea>
                                 <span class="form__placeholder">{$lang->form_enter_comment}*</span>
                             </div>
                         </div>
                         <div class="form__footer">
                             {* Captcha *}
-                            {if $settings->captcha_post}
+                            {if $settings->captcha_comment}
                                 {if $settings->captcha_type == "v2"}
                                     <div class="captcha">
                                         <div id="recaptcha1"></div>
                                     </div>
                                 {elseif $settings->captcha_type == "default"}
-                                    {get_captcha var="captcha_post"}
+                                    {get_captcha var="captcha_comment"}
                                     <div class="captcha">
-                                        <div class="secret_number">{$captcha_post[0]|escape} + ? =  {$captcha_post[1]|escape}</div>
+                                        <div class="secret_number">{$captcha_comment[0]|escape} + ? =  {$captcha_comment[1]|escape}</div>
                                         <div class="form__captcha">
                                             <input class="form__input form__input_captcha form__placeholder--focus" type="text" name="captcha_code" value="" />
                                             <span class="form__placeholder">{$lang->form_enter_captcha}*</span>

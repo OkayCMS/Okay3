@@ -20,6 +20,12 @@
 
 {*Главная форма страницы*}
 <div class="boxed fn_toggle_wrap">
+    {$block = {get_design_block block="payments_custom_block"}}
+    {if $block}
+        <div class="custom_block">
+            {$block}
+        </div>
+    {/if}
     {if $payment_methods}
         <form class="fn_form_list" method="post">
             <div class="okay_list products_list fn_sort_list">
@@ -68,6 +74,7 @@
                                     <a href="{url controller=PaymentMethodAdmin id=$payment_method->id return=$smarty.server.REQUEST_URI}">
                                         {$payment_method->name|escape}
                                     </a>
+                                    {get_design_block block="payments_list_name" vars=['payment_method' => $payment_method]}
                                 </div>
                                 <div class="okay_list_boding okay_list_delivery_condit"></div>
                                 <div class="okay_list_boding okay_list_status">

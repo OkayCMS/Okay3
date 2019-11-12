@@ -4,40 +4,36 @@
 namespace Okay\Admin\Controllers;
 
 
-use Okay\Entities\PagesEntity;
+use Okay\Admin\Helpers\BackendPagesHelper;
+use Okay\Admin\Requests\BackendPagesRequest;
 
 class PagesAdmin extends IndexAdmin
 {
     
-    public function fetch(PagesEntity $pagesEntity)
-    {
+    public function fetch(
+        BackendPagesRequest $pagesRequest,
+        BackendPagesHelper  $backendPagesHelper
+    ){
         // Обработка действий
         if ($this->request->method('post')) {
-            // Сортировка
-            $positions = $this->request->post('positions');
-            $ids = array_keys($positions);
-            sort($positions);
-            foreach ($positions as $i=>$position) {
-                $pagesEntity->update($ids[$i], array('position'=>$position));
-            }
+            $positions = $pagesRequest->postPositions();
+            $backendPagesHelper->sortPositions($positions);
 
             // Действия с выбранными
-            $ids = $this->request->post('check');
+            $ids    = $pagesRequest->postCheck();
+            $action = $pagesRequest->postAction();
             if (is_array($ids)) {
-                switch ($this->request->post('action')) {
+                switch ($action) {
                     case 'disable': {
-                        /*Выключить страницу*/
-                        $pagesEntity->update($ids, ['visible'=>0]);
+                        $backendPagesHelper->disable($ids);
                         break;
                     }
                     case 'enable': {
-                        /*Включить страницу*/
-                        $pagesEntity->update($ids, ['visible'=>1]);
+                        $backendPagesHelper->enable($ids);
                         break;
                     }
                     case 'delete': {
-                        /*Удалить страницу*/
-                        if (!$pagesEntity->delete($ids)) {
+                        if (!$backendPagesHelper->delete($ids)) {
                             $this->design->assign('message_error', 'url_system');
                         }
                         break;
@@ -47,7 +43,7 @@ class PagesAdmin extends IndexAdmin
         }
         
         // Отображение
-        $pages = $pagesEntity->find();
+        $pages = $backendPagesHelper->findPages();
         
         $this->design->assign('pages', $pages);
         $this->response->setContent($this->design->fetch('pages.tpl'));

@@ -340,41 +340,23 @@ $(function(){
             });
         }
 
-    /* Banner group1 */
-    if( $('.fn_banner_group1').length ) {
-        $('.fn_banner_group1').owlCarousel({
-            animateOut: "fadeOut",
-            loop:true,
-            lazyLoad:true,
-            autoplay: true,
-            smartSpeed:1500,
-            nav:false,
-            dotsEach:true,
-            items:1,
-            responsive:{
-                320:{
-                    autoHeight:true
-                },
-                768:{
-                    autoHeight:false
-                },
-            }
-        });
-    }
-
     /* Carousel products */
     if( $('.fn_products_slide').length ) {
         $('.fn_products_slide').owlCarousel({
             loop:false,
             margin:0,
             lazyLoad:true,
+            mouseDrag:false,
             nav:false,
             dotsEach:true,
             responsive:{
                 320:{items:1},
                 360:{items:2},
                 576:{items:3},
-                768:{items:3},
+                768:{
+                    mouseDrag:true,
+                    items:3
+                },
                 992:{items:4},
                 1200:{items:5}
             }
@@ -557,7 +539,6 @@ $(function(){
         $("html, body").animate({scrollTop: 0}, 500);
     });
 
-
     /* Checking fields for placeholders */
     $('.form__placeholder--focus').on('blur', function() {
         if( $(this).val().trim().length > 0 ) {
@@ -575,70 +556,64 @@ $(function(){
 
     /* Gallery images for product */
     if( $('.xzoom4').length ) {
-        $(".xzoom4, .xzoom-gallery4").xzoom({
-            tint: '#ffffff',
-            adaptive: 'false',
+        var xzoom = $('.xzoom4').xzoom({
+            zoomWidth: 600,
+            adaptive: 'true',
             position: "inside",
+            title: true,
+            tint: '#fff',
             Xoffset: 15
         });
 
-        /* Gallery images touch on mobile */
+        $('.xzoom-gallery4').each(function(){
+            xzoom.xappend($(this));
+        });
+
+        $(".fn_xzoom-fancy:first").bind('click', function(event) {
+            var xzoom = $(this).data('xzoom');
+            xzoom.closezoom();
+            var i, images = new Array();
+            var gallery = xzoom.gallery().ogallery;
+            var index = xzoom.gallery().index;
+            for (i in gallery) {
+                images[i] = {src: gallery[i]};
+            }
+            $.fancybox.open(images, {loop: false}, index);
+            event.preventDefault();
+        });
+
+        //Integration with hammer.js
         var isTouchSupported = 'ontouchstart' in window;
-
         if (isTouchSupported) {
-            $('.xzoom4').each(function() {
-                var xzoom = $(this).data('xzoom');
-                $(this).hammer().on("tap", function(event) {
-                    event.pageX = event.gesture.center.pageX;
-                    event.pageY = event.gesture.center.pageY;
-                    var s = 1, ls;
-
-                    xzoom.eventmove = function(element) {
-                        element.hammer().on('drag', function(event) {
-                            event.pageX = event.gesture.center.pageX;
-                            event.pageY = event.gesture.center.pageY;
-                            xzoom.movezoom(event);
-                            event.gesture.preventDefault();
-                        });
-                    }
-
-                    var counter = 0;
-                    xzoom.eventclick = function(element) {
-                        element.hammer().on('tap', function() {
-                            counter++;
-                            if (counter == 1) setTimeout(openfancy,300);
-                            event.gesture.preventDefault();
-                        });
-                    }
-
-                    function openfancy() {
-                        if (counter == 2) {
-                            xzoom.closezoom();
-                            $.fancybox.open(xzoom.gallery().cgallery);
-                        } else {
-                            xzoom.closezoom();
-                        }
-                        counter = 0;
-                    }
-                    xzoom.openzoom(event);
-                });
-            });
-        } else {
-
-            $(".fn_xzoom-fancy:first").bind('click', function(event) {
-                var xzoom = $(this).data('xzoom');
-                xzoom.closezoom();
-                var i, images = new Array();
-                var gallery = xzoom.gallery().ogallery;
-                var index = xzoom.gallery().index;
-                for (i in gallery) {
-                    images[i] = {src: gallery[i]};
+            xzoom.eventunbind();
+            var mc1 = new Hammer($('.xzoom4')[0]);
+            mc1.on("tap", function(event) {
+                event.pageX = event.srcEvent.pageX;
+                event.pageY = event.srcEvent.pageY;
+                xzoom.eventclick = function(element) {
+                    element.css('touch-action', 'pan-x');
                 }
-                $.fancybox.open(images, {loop: false}, index);
-                event.preventDefault();
+                xzoom.eventmove = function(element) {
+                    var mc2 = new Hammer(element[0]);
+                    mc2.get('pan').set({
+                        direction: Hammer.DIRECTION_ALL,
+                    });
+                    mc2.on('pan', function(event) {
+                        event.pageX = event.srcEvent.pageX;
+                        event.pageY = event.srcEvent.pageY;
+                        xzoom.movezoom(event);
+                        // event.srcEvent.preventDefault();
+                    });
+                }
+                xzoom.eventleave = function(element) {
+                    var mc3 = new Hammer(element[0]);
+                    mc3.on('tap', function(event) {
+                        xzoom.closezoom();
+                    });
+                }
+                xzoom.openzoom(event);
             });
-
-        };
+        }
     }
 
     $.fancybox.defaults.hash = false;
@@ -777,6 +752,7 @@ function ajax_set_result(data) {
                 .data('delivery_price', delivery_data.price)
                 .data('is_free_delivery', delivery_data.is_free_delivery);
             delivery_block.find('.fn_delivery_price').html(delivery_data.delivery_price_text);
+            var sticky = new Sticky('.fn_cart_sticky');
         }
     }
     $('input[name="delivery_id"]:checked').trigger('change');
@@ -850,7 +826,7 @@ function transfer(informer, thisEl) {
     thisEl.closest( '.fn_transfer' ).find( '.fn_img' ).effect( "transfer", {
         to: informer,
         className: "transfer_class"
-    }, distance );
+    }, 1500, distance );
 
     var container = $( '.transfer_class' );
     container.html( thisEl.closest( '.fn_transfer' ).find( '.fn_img' ).parent().html() );
@@ -858,7 +834,7 @@ function transfer(informer, thisEl) {
     container.find( '.fn_img' ).css( {
         'display': 'block',
         'height': '100%',
-        'z-index': '2',
+        'z-index': '200',
         'position': 'relative'
     } );
 }
@@ -950,4 +926,6 @@ if( $( '.fn_comparison_products' ).length ) {
 }
 
 /* Адаптивное видео tiny MCE */
-$('.boxed__description').find('iframe').wrapAll('<p class="video"></p>');
+if( $( '.boxed__description' ).length ) {
+    $('.boxed__description').find('iframe').wrapAll('<p class="video"></p>');
+}

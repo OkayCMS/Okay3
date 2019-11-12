@@ -137,4 +137,10 @@ class BackendCategoriesHelper
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
+
+    public function findCategories($filter = [])
+    {
+        $categories = $this->categoriesEntity->find($filter);
+        return ExtenderFacade::execute(__METHOD__, $categories, func_get_args());
+    }
 }

@@ -5,8 +5,10 @@ namespace Okay\Admin\Helpers;
 
 
 use Okay\Core\EntityFactory;
+use Okay\Core\Request;
 use Okay\Entities\DeliveriesEntity;
 use Okay\Entities\ImagesEntity;
+use Okay\Entities\OrderLabelsEntity;
 use Okay\Entities\OrdersEntity;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Entities\OrderStatusEntity;
@@ -31,6 +33,9 @@ class BackendOrdersHelper
     
     /** @var OrderStatusEntity */
     private $orderStatusEntity;
+
+    /** @var OrderLabelsEntity */
+    private $orderLabelsEntity;
     
     /** @var ProductsEntity */
     private $productsEntity;
@@ -52,20 +57,28 @@ class BackendOrdersHelper
     
     /** @var MoneyHelper */
     private $moneyHelper;
+
+    /** @var Request */
+    private $request;
     
-    public function __construct(EntityFactory $entityFactory, MoneyHelper $moneyHelper)
-    {
-        $this->ordersEntity = $entityFactory->get(OrdersEntity::class);
-        $this->variantsEntity = $entityFactory->get(VariantsEntity::class);
-        $this->purchasesEntity = $entityFactory->get(PurchasesEntity::class);
+    public function __construct(
+        EntityFactory $entityFactory,
+        MoneyHelper   $moneyHelper,
+        Request       $request
+    ){
+        $this->ordersEntity      = $entityFactory->get(OrdersEntity::class);
+        $this->variantsEntity    = $entityFactory->get(VariantsEntity::class);
+        $this->purchasesEntity   = $entityFactory->get(PurchasesEntity::class);
         $this->orderStatusEntity = $entityFactory->get(OrderStatusEntity::class);
-        $this->productsEntity = $entityFactory->get(ProductsEntity::class);
-        $this->imagesEntity = $entityFactory->get(ImagesEntity::class);
-        $this->deliveriesEntity = $entityFactory->get(DeliveriesEntity::class);
-        $this->paymentsEntity = $entityFactory->get(PaymentsEntity::class);
-        $this->usersEntity = $entityFactory->get(UsersEntity::class);
-        $this->userGroupsEntity = $entityFactory->get(UserGroupsEntity::class);
-        $this->moneyHelper = $moneyHelper;
+        $this->orderLabelsEntity = $entityFactory->get(OrderLabelsEntity::class);
+        $this->productsEntity    = $entityFactory->get(ProductsEntity::class);
+        $this->imagesEntity      = $entityFactory->get(ImagesEntity::class);
+        $this->deliveriesEntity  = $entityFactory->get(DeliveriesEntity::class);
+        $this->paymentsEntity    = $entityFactory->get(PaymentsEntity::class);
+        $this->usersEntity       = $entityFactory->get(UsersEntity::class);
+        $this->userGroupsEntity  = $entityFactory->get(UserGroupsEntity::class);
+        $this->moneyHelper       = $moneyHelper;
+        $this->request           = $request;
     }
 
     /**
@@ -257,5 +270,154 @@ class BackendOrdersHelper
         
         return ExtenderFacade::execute(__METHOD__, $purchases, func_get_args());
     }
-    
+
+    public function buildFilter()
+    {
+        $filter = [];
+        $filter['page'] = max(1, $this->request->get('page', 'integer'));
+        $filter['limit'] = 40;
+
+        // Поиск
+        $keyword = $this->request->get('keyword');
+        if (!empty($keyword)) {
+            $filter['keyword'] = $keyword;
+        }
+
+        // Фильтр по метке
+        $label = $this->orderLabelsEntity->get($this->request->get('label'));
+        if (!empty($label)) {
+            $filter['label'] = $label->id;
+        }
+
+        if (empty($keyword)) {
+            if ($this->request->get('status')) {
+                $filter['status_id'] = $statusId = $this->request->get('status', 'integer');
+            }
+        }
+
+        //Поиск до дате заказа
+        $fromDate = $this->request->get('from_date');
+        $toDate = $this->request->get('to_date');
+        if (!empty($fromDate) || !empty($toDate)){
+            $filter['from_date'] = $fromDate;
+            $filter['to_date'] = $toDate;
+        }
+
+        $ordersCount = $this->ordersEntity->count($filter);
+        // Показать все страницы сразу
+        if($this->request->get('page') == 'all') {
+            $filter['limit'] = $ordersCount;
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $filter, func_get_args());
+    }
+
+    public function delete($ids)
+    {
+        $this->ordersEntity->delete($ids);
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
+    public function changeStatus($ids)
+    {
+        if($this->request->post("change_status_id")) {
+            $newStatus = $this->orderStatusEntity->find(["status"=>$this->request->post("change_status_id","integer")]);
+            $errorOrders = [];
+            foreach($ids as $id) {
+                if($newStatus[0]->is_close == 1){
+                    if (!$this->ordersEntity->close(intval($id))) {
+                        $errorOrders[] = $id;
+                        //$this->design->assign('error_orders', $errorOrders);
+                        //$this->design->assign('message_error', 'error_closing');
+                    } else {
+                        $this->ordersEntity->update($id, ['status_id'=>$this->request->post("change_status_id","integer")]);
+                    }
+                } else {
+                    if ($this->ordersEntity->open(intval($id))) {
+                        $this->ordersEntity->update($id, ['status_id'=>$this->request->post("change_status_id","integer")]);
+                    }
+                }
+
+            }
+        }
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
+    public function setLabel($ids)
+    {
+        if($this->request->post("change_label_id")) {
+            foreach($ids as $id) {
+                $this->orderLabelsEntity->addOrderLabels($id, [$this->request->post("change_label_id","integer")]);
+            }
+        }
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
+    public function unsetLabel($ids)
+    {
+        if($this->request->post("change_label_id")) {
+            foreach($ids as $id) {
+                $this->orderLabelsEntity->deleteOrderLabels($id, [$this->request->post("change_label_id","integer")]);
+            }
+        }
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
+    public function findStatuses()
+    {
+        $statuses = $this->orderStatusEntity->mappedBy('id')->find();
+        return ExtenderFacade::execute(__METHOD__, $statuses, func_get_args());
+    }
+
+    public function attachLabels($orders)
+    {
+        // Метки заказов
+        if (!empty($orders)) {
+            $ordersLabels = $this->orderLabelsEntity->getOrdersLabels(array_keys($orders));
+            if ($ordersLabels) {
+                foreach ($ordersLabels as $ordersLabel) {
+                    $orders[$ordersLabel->order_id]->labels[] = $ordersLabel;
+                    $orders[$ordersLabel->order_id]->labels_ids[] = $ordersLabel->id;
+                }
+            }
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $orders, func_get_args());
+    }
+
+    public function findOrders($filter = [])
+    {
+        $orders = $this->ordersEntity->mappedBy('id')->find($filter);
+        foreach($orders as $o) {
+            $o->purchases = $this->purchasesEntity->find(['order_id'=>$o->id]);
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $orders, func_get_args());
+    }
+
+    public function count($filter)
+    {
+        $obj = new \ArrayObject($filter);
+        $copyFilter = $obj->getArrayCopy();
+
+        if (isset($copyFilter['limit'])) {
+            unset($copyFilter['limit']);
+        }
+
+        if (isset($copyFilter['page'])) {
+            unset($copyFilter['page']);
+        }
+
+        $count = $this->ordersEntity->count($copyFilter);
+        return ExtenderFacade::execute(__METHOD__, $count, func_get_args());
+    }
+
+    public function findLabels($filter = [])
+    {
+        $labels = $this->orderLabelsEntity->find($filter = []);
+        return ExtenderFacade::execute(__METHOD__, $labels, func_get_args());
+    }
 }

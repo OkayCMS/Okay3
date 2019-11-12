@@ -24,7 +24,6 @@ class Html extends AbstractResponse
         $resultContent = '';
         if (is_array($contents)) {
             foreach ($contents as $content) {
-                // todo Позже это нужно нужно будет это убрать
                 // Проверяем нам передали итоговую HTML или имя файла шаблона
                 if ($this->design->templateExists($content)) {
                     $resultContent .= $this->design->fetch($content);

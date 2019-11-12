@@ -4,6 +4,7 @@
 namespace Okay\Core\Modules;
 
 
+use Monolog\Logger;
 use Okay\Core\EntityFactory;
 use Okay\Core\ServiceLocator;
 use Okay\Entities\ModulesEntity;
@@ -20,6 +21,13 @@ class Module
 {
     const COMMON_MODULE_NAMESPACE = 'Okay\\Modules';
     const COMMON_MODULE_DIRECTORY = 'Okay/Modules/';
+
+    protected $logger;
+
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
 
     private static $modulesIds;
     
@@ -91,12 +99,21 @@ class Module
         }
         
         $dir = self::COMMON_MODULE_DIRECTORY.$vendor.'/'.$moduleName;
-
-        if (!is_dir($dir)) {
-            throw new \Exception('Module "'.$vendor.'/'.$moduleName.'" not exists');
-        }
-
         return rtrim($dir, '/') . '/';
+    }
+
+    public function moduleDirectoryNotExists($vendor, $moduleName)
+    {
+         $moduleDir = $this->getModuleDirectory($vendor, $moduleName);
+
+         if (is_dir($moduleDir)) {
+             return false;
+         }
+
+        $moduleNotExistsMsg = 'Module "'.$vendor.'/'.$moduleName.'" installed but not exists';
+        trigger_error($moduleNotExistsMsg, E_USER_WARNING);
+        $this->logger->addWarning($moduleNotExistsMsg);
+        return true;
     }
 
     /**
@@ -223,10 +240,11 @@ class Module
     }
 
     /**
+     * Метод принимает по сути имя любого класса модуля, и возвращает id этого модуля в БД
+     *
      * @param $namespace
      * @return int|bool id модуля в системе, или false в случае ошибки
      * @throws \Exception
-     * Метод принимает по сути имя любого класса модуля, и возвращает id этого модуля в БД
      */
     public function getModuleIdByNamespace($namespace)
     {
@@ -248,5 +266,36 @@ class Module
             return self::$modulesIds[$vendor][$moduleName] = $module->id;
         }
         return false;
+    }
+
+    /**
+     * Метод возвращает изображение модуля, которое соответствует файлу с названием preview.* в корне модуля
+     *
+     * @throws \Exception
+     * @param $vendor
+     * @param $moduleName
+     * @return mixed
+     */
+    public function findModulePreview($vendor, $moduleName)
+    {
+        $moduleDir = $this->getModuleDirectory($vendor, $moduleName);
+        $matchedFiles = glob ($moduleDir."preview.*");
+
+        if (empty($matchedFiles)) {
+            return false;
+        }
+
+        foreach($matchedFiles as $file) {
+            if ($this->fileHasAllowImageExtension($file)) {
+                return $file;
+            }
+        }
+
+        return false;
+    }
+
+    private function fileHasAllowImageExtension($file)
+    {
+        return preg_match('/\.(jpeg|jpg|png|gif|svg)$/ui', $file);
     }
 }

@@ -47,6 +47,13 @@
     </div>
 {/if}
 
+{$block = {get_design_block block="currency_custom_block"}}
+{if $block}
+    <div class="custom_block">
+        {$block}
+    </div>
+{/if}
+
 {*Главная форма страницы*}
 <div class="boxed fn_toggle_wrap">
     <div class="row">
@@ -92,7 +99,7 @@
                                             {if $is_mobile == true}
                                             <div class="hidden-md-up mt-q">
                                                 <div class="okay_list_currency_exchange_item">
-                                                    {if !$c@first}
+                                                    {*if !$c@first*}
                                                         <div class="input-group">
                                                             <div class="input-group-qw cur_input_exchange">
                                                                 <div class="input-group">
@@ -110,10 +117,10 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    {else}
+                                                    {*else}
                                                         <input name="currency[rate_from][{$c->id}]" type="hidden" value="{$c->rate_from|escape}"/>
                                                         <input name="currency[rate_to][{$c->id}]" type="hidden" value="{$c->rate_to|escape}"/>
-                                                    {/if}
+                                                    {/if*}
                                                 </div>
                                             </div>
                                             {/if}
@@ -127,7 +134,7 @@
                                         {if $is_mobile == false}
                                         <div class="okay_list_boding okay_list_currency_exchange">
                                             <div class="okay_list_currency_exchange_item">
-                                                {if !$c@first}
+                                                {*if !$c@first*}
                                                     <div class="input-group">
                                                         <div class="input-group-qw cur_input_exchange">
                                                             <div class="input-group">
@@ -145,11 +152,12 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                {else}
+                                                {*else}
                                                     <input name="currency[rate_from][{$c->id}]" type="hidden" value="{$c->rate_from|escape}"/>
                                                     <input name="currency[rate_to][{$c->id}]" type="hidden" value="{$c->rate_to|escape}"/>
-                                                {/if}
+                                                {/if*}
                                             </div>
+                                            {get_design_block block="currency_item" vars=['c' => $c]}
                                         </div>
                                         {/if}
                                         <div class="okay_list_boding okay_list_status hidden-md-down">

@@ -53,6 +53,7 @@
         {/literal}
     {/if}
     <!-- End Google Tag Manager -->
+
 </head>
 <body class="navbar-fixed {if $manager->menu_status && $is_mobile === false && $is_tablet === false}menu-pin{/if}">
     <!-- Google Tag Manager (noscript) -->
@@ -119,6 +120,11 @@
                                         {if $items|count >1}
                                             <span class="arrow"></span>
                                         {/if}
+                                        {if isset($menu_counters[$section]) && !empty($menu_counters[$section])}
+                                            <span class="menu_counter">
+                                                {$menu_counters[$section]}
+                                            </span>
+                                        {/if}
                                     </a>
                                     {if $items|count > 1}
                                         <ul class="fn_submenu_toggle submenu fn_sort_menu_item">
@@ -127,6 +133,14 @@
                                                     <input type="hidden" name="manager_menu[{$section|escape}][{$title|escape}]" value="{$mod|escape}" />
                                                     <a class="nav-link" href="index.php?controller={$mod}">
                                                         <span class="icon-thumbnail">
+                                                            {if (isset($menu_counters[$title]) && !empty($menu_counters[$title])) || $config->dev_mode}
+                                                                <span class="menu_counter">
+                                                                    {if $config->dev_mode}
+                                                                        <div class="fn_backend_menu_section menu_counter_name" data-section_name="{$title}">{$title}</div>
+                                                                    {/if}
+                                                                    {$menu_counters[$title]}
+                                                                </span>
+                                                            {/if}
                                                             {$btr->getTranslation({$title})|first_letter}
                                                         </span>
                                                         <span class="{$title} title">{$btr->getTranslation({$title})}</span>
@@ -355,6 +369,7 @@
 </body>
 
 {*main scripts*}
+
 <script>
     $(function(){
 
@@ -362,6 +377,7 @@
             // При нажатии на лейбл под названием секции меню происходит копирование в буфер обмена
             (function copyToBufferMenuSections() {
                 $('.fn_backend_menu_section').on('click', function(e) {
+                    e.preventDefault();
                     var sectionName = $(this).data('section_name'),
                         code = document.querySelector('.fn_backend_menu_section[data-section_name="' + sectionName + '"]'),
                         range = document.createRange();

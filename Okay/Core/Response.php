@@ -34,7 +34,7 @@ class Response
      * @return void
      * @throws \Exception
      */
-    public function redirectTo($resource, $responseCode = 302)
+    public static function redirectTo($resource, $responseCode = 302)
     {
         $responseCode = (int) $responseCode;
 

@@ -6,10 +6,14 @@ namespace Okay\Controllers;
 
 use Okay\Core\Image;
 use Okay\Core\Money;
+use Okay\Core\Request;
 use Okay\Core\Router;
 use Okay\Entities\ProductsEntity;
 use Okay\Helpers\CatalogHelper;
 use Okay\Helpers\FilterHelper;
+use Okay\Helpers\MetadataHelpers\AllProductsMetadataHelper;
+use Okay\Helpers\MetadataHelpers\BestsellersMetadataHelper;
+use Okay\Helpers\MetadataHelpers\DiscountedMetadataHelper;
 use Okay\Helpers\ProductsHelper;
 
 class ProductsController extends AbstractController
@@ -23,6 +27,9 @@ class ProductsController extends AbstractController
         ProductsEntity $productsEntity,
         FilterHelper $filterHelper,
         Router $router,
+        DiscountedMetadataHelper $discountedMetadataHelper,
+        BestsellersMetadataHelper $bestsellersMetadataHelper,
+        AllProductsMetadataHelper $allProductsMetadataHelper,
         $filtersUrl = ''
     ) {
         
@@ -30,18 +37,13 @@ class ProductsController extends AbstractController
         
         switch ($this->catalogType) {
             case 'bestsellers':
-                $filter['featured'] = true;
+                $this->setMetadataHelper($bestsellersMetadataHelper);
                 break;
             case 'discounted':
-                $filter['discounted'] = true;
+                $this->setMetadataHelper($discountedMetadataHelper);
                 break;
             case 'search':
-                // Если задано ключевое слово
-                $keyword = $this->request->get('keyword');
-                if (!empty($keyword)) {
-                    $this->design->assign('keyword', $keyword);
-                    $filter['keyword'] = $keyword;
-                }
+                $this->setMetadataHelper($allProductsMetadataHelper);
                 break;
         }
         
@@ -102,14 +104,30 @@ class ProductsController extends AbstractController
         
         $prices = $catalogHelper->getPrices($filter, $this->catalogType);
         $this->design->assign('prices', $prices);
-
+        
+        switch ($this->catalogType) {
+            case 'bestsellers':
+                $filter = $filterHelper->getFeaturedProductsFilter($filter);
+                break;
+            case 'discounted':
+                $filter = $filterHelper->getDiscountedProductsFilter($filter);
+                break;
+            case 'search':
+                // Если задано ключевое слово
+                $keyword = $this->request->get('keyword');
+                $filter = $filterHelper->getSearchProductsFilter($filter, $keyword);
+                if (!empty($keyword)) {
+                    $this->design->assign('keyword', $keyword);
+                }
+                break;
+        }
+        
         $paginate = $catalogHelper->paginate(
             $this->settings->get('products_num'),
             $currentPage,
             $filter,
             $this->design
         );
-        $this->design->assign('current_page', $currentPage);
         
         if (!$paginate) {
             return false;
@@ -121,14 +139,9 @@ class ProductsController extends AbstractController
 
         if ($this->request->get('ajax','boolean')) {
             $this->design->assign('ajax', 1);
-            $result = new \stdClass;
-            $result->products_content = $this->design->fetch('products_content.tpl');
-            $result->products_pagination = $this->design->fetch('chpu_pagination.tpl');
-            $result->products_sort = $this->design->fetch('products_sort.tpl');
-            $result->features = $this->design->fetch('features.tpl');
-            $result->selected_features = $this->design->fetch('selected_features.tpl');
+            $result = $catalogHelper->getAjaxFilterData($this->design);
             $this->response->setContent(json_encode($result), RESPONSE_JSON);
-            return;
+            return true;
         }
 
         //lastModify
@@ -149,15 +162,6 @@ class ProductsController extends AbstractController
         }
         $this->response->setHeaderLastModify(max($lastModify));
         //lastModify END
-        
-        // Устанавливаем мета-теги в зависимости от запроса
-        if ($this->page) {
-            $this->design->assign('meta_title', $this->page->meta_title);
-            $this->design->assign('meta_keywords', $this->page->meta_keywords);
-            $this->design->assign('meta_description', $this->page->meta_description);
-        } elseif (isset($keyword)) {
-            $this->design->assign('meta_title', $keyword);
-        }
 
         $relPrevNext = $this->design->fetch('products_rel_prev_next.tpl');
         $this->design->assign('rel_prev_next', $relPrevNext);

@@ -71,6 +71,14 @@
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <form method="post" class="fn_form_list">
+                    {$block = {get_design_block block="feedbacks_custom_block"}}
+                    {if !empty($block)}
+                        <div class="row custom_block">
+                            {$block}
+                        </div>
+                    {/if}
+
+
                     <input type="hidden" name="session_id" value="{$smarty.session.id}">
                     <div class="post_wrap okay_list">
                         {*Шапка таблицы*}
@@ -122,6 +130,8 @@
                                                         </button>
                                                     </div>
                                                  </div>
+
+                                                {get_design_block block="feedbacks_item" vars=['feedback' => $feedback]}
                                                 
                                             </div>
 
@@ -136,6 +146,8 @@
                                                         {$btr->general_answer|escape}
                                                     </button>
                                                 </div>
+
+                                                {get_design_block block="feedbacks_buttons" vars=['feedback' => $feedback]}
                                             </div>
                                             <div class="okay_list_boding okay_list_close">
                                                 {*delete*}
@@ -175,12 +187,12 @@
                     </div>
                 </form>
             </div>
-            <div class="row">
+        </div>
+        <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm 12 txt_center">
                     {include file='pagination.tpl'}
                 </div>
             </div>
-        </div>
     {else}
         <div class="heading_box mt-1">
             <div class="text_grey">{$btr->feedbacks_no|escape}</div>

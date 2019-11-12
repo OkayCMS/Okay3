@@ -68,6 +68,14 @@
     </div>
 {/if}
 
+{$block = {get_design_block block="coupons_custom_block"}}
+{if !empty($block)}
+    <div class="fn_toggle_wrap custom_block">
+        {$block}
+    </div>
+{/if}
+
+
 {*Главная форма страницы*}
 {if $coupons}
     <div class="boxed fn_toggle_wrap">
@@ -170,6 +178,8 @@
                                         </div>
 
                                     </div>
+
+                                    {get_design_block block="coupons_item" vars=['coupon' => $coupon]}
                                 </div>
                                 <div class="okay_list_boding okay_list_coupon_sale">
                                     {$coupon->value*1}

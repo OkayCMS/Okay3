@@ -49,6 +49,7 @@ class FastOrderController extends AbstractController
         $order->address = '';
         $order->comment = 'Быстрый заказ';
         $order->lang_id = $languages->getLangId();
+        $order->ip      = $_SERVER['REMOTE_ADDR'];
 
         /** @var OrdersEntity $ordersEntity */
         $ordersEntity = $entityFactory->get(OrdersEntity::class);

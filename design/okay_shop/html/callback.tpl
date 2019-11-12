@@ -33,19 +33,19 @@
 
             {* User's name *}
             <div class="form__group">
-                <input class="form__input form__placeholder--focus" type="text" name="name" value="{if $callname}{$callname|escape}{else}{$user->name|escape}{/if}" data-language="form_name">
+                <input class="form__input form__placeholder--focus" type="text" name="name" value="{if $request_data.name}{$request_data.name|escape}{elseif $user->name}{$user->name|escape}{/if}" data-language="form_name">
                 <span class="form__placeholder">{$lang->form_name}*</span>
             </div>
 
             {* User's phone *}
             <div class="form__group">
-                <input class="form__input form__placeholder--focus" type="text" name="phone" value="{if $callphone}{$callphone|escape}{else}{$user->phone|escape}{/if}" data-language="form_phone">
+                <input class="form__input form__placeholder--focus" type="text" name="phone" value="{if $request_data.phone}{$request_data.phone|escape}{elseif $user->phone}{$user->phone|escape}{/if}" data-language="form_phone">
                 <span class="form__placeholder">{$lang->form_phone}*</span>
             </div>
 
             {* User's message *}
             <div class="form__group">
-                <textarea class="form__textarea form__placeholder--focus" rows="3" name="message" data-language="form_enter_message">{$callmessage|escape}</textarea>
+                <textarea class="form__textarea form__placeholder--focus" rows="3" name="message" data-language="form_enter_message">{if $request_data.message}{$request_data.message|escape}{/if}</textarea>
                 <span class="form__placeholder">{$lang->form_enter_message}</span>
             </div>
         </div>
@@ -65,7 +65,7 @@
                         <input class="form__input form__input_captcha form__placeholder--focus" type="text" name="captcha_code" value="" >
                         <span class="form__placeholder">{$lang->form_enter_captcha}*</span>
                     </span>
-            </div>
+                </div>
             {/if}
             {/if}
             <input name="callback" type="hidden" value="1">

@@ -4,12 +4,14 @@
 namespace Okay\Core;
 
 
+use Okay\Core\Entity\UrlUniqueValidator;
 use Okay\Core\Modules\ModulesEntitiesFilters;
 use Okay\Core\OkayContainer\Reference\ParameterReference as PR;
 use Okay\Core\OkayContainer\Reference\ServiceReference as SR;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Okay\Core\Routes\RouteFactory;
 use OkayLicense\License;
 use Psr\Log\LoggerInterface;
 use Bramus\Router\Router as BRouter;
@@ -57,6 +59,7 @@ $services = [
             new SR(EntityFactory::class),
             new SR(Languages::class),
             new SR(Settings::class),
+            new SR(RouteFactory::class),
         ],
     ],
     Config::class => [
@@ -313,6 +316,9 @@ $services = [
     ],
     Module::class => [
         'class' => Module::class,
+        'arguments' => [
+            new SR(LoggerInterface::class),
+        ],
     ],
     Modules::class => [
         'class' => Modules::class,
@@ -373,6 +379,16 @@ $services = [
             new SR(Design::class),
         ],
     ],
+    UrlUniqueValidator::class => [
+        'class' => UrlUniqueValidator::class,
+        'arguments' => [
+            new SR(EntityFactory::class),
+        ],
+    ],
+    RouteFactory::class => [
+        'class' => RouteFactory::class,
+        'arguments' => [],
+    ]
 ];
 
 $adapters = include __DIR__ . '/../Adapters/adapters.php';

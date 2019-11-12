@@ -20,5 +20,5 @@ $lang['order_np_calc'] = 'Пересчитать цену и сроки';
 $lang['order_np_redelivery'] = 'Наложенный платеж';
 $lang['order_np_city'] = 'Город';
 $lang['order_np_warehouse'] = 'Пункт выдачи';
-$lang['settings_np_currency'] = 'Укажите валюту гривны';
+$lang['settings_np_currency'] = 'Укажите валюту "гривны" для корректной работы модуля';
 

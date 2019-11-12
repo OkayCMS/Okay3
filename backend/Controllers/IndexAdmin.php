@@ -4,6 +4,7 @@
 namespace Okay\Admin\Controllers;
 
 
+use Okay\Admin\Helpers\BackendMainHelper;
 use Okay\Core\Config;
 use Okay\Core\Database;
 use Okay\Core\Managers;
@@ -112,7 +113,8 @@ class IndexAdmin
         ManagersEntity $managersEntity,
         Support $support,
         SupportInfoEntity $supportInfoEntity,
-        Router $router
+        Router $router,
+        BackendMainHelper $backendMainHelper
     ) {
         $this->design        = $design;
         $this->request       = $request;
@@ -163,7 +165,7 @@ class IndexAdmin
         /** @var CurrenciesEntity $currenciesEntity */
         $currenciesEntity = $this->entityFactory->get(CurrenciesEntity::class);
         $this->design->assign("currency", $currenciesEntity->getMainCurrency());
-        $this->evensCounters();
+        $backendMainHelper->evensCounters();
         
         // Язык
         $languagesList = $languagesEntity->find();
@@ -217,48 +219,22 @@ class IndexAdmin
         $additionalSectionIcons = $managerMenu->getAdditionalSectionItems();
         $this->design->assign('additional_section_icons', $additionalSectionIcons);
 
+        $menuCounters = $managerMenu->getCounters();
+        $this->design->assign('menu_counters', $menuCounters);
+
+        $backendMainHelper->commonBeforeControllerProcedure();
+        $backendMainHelper->beforeControllerProcedure(static::class);
+
+        if (isset($_SESSION['show_learn'])) {
+            unset($_SESSION['show_learn']);
+            $response->redirectTo($this->request->getRootUrl() . '/backend/index.php?controller=LearningAdmin');
+        }
+
         if ($this->backendController === 'AuthAdmin' || $this->managers->access($this->managers->getPermissionByController($this->backendController), $this->manager)) {
             return true;
         }
 
         return false;
-    }
-    
-    private function evensCounters()
-    {
-        /** @var OrderStatusEntity $orderStatusesEntity */
-        $orderStatusesEntity = $this->entityFactory->get(OrderStatusEntity::class);
-        
-        /** @var OrdersEntity $ordersEntity */
-        $ordersEntity = $this->entityFactory->get(OrdersEntity::class);
-        
-        /** @var CommentsEntity $commentsEntity */
-        $commentsEntity = $this->entityFactory->get(CommentsEntity::class);
-        
-        /** @var FeedbacksEntity $feedbacksEntity */
-        $feedbacksEntity = $this->entityFactory->get(FeedbacksEntity::class);
-        
-        /** @var CallbacksEntity $callbacksEntity */
-        $callbacksEntity = $this->entityFactory->get(CallbacksEntity::class);
-
-        $newOrdersCounter = 0;
-        if ($statusId = $orderStatusesEntity->order('position_asc')->cols(['id'])->find(['limit' => 1])) {
-            $statusId = reset($statusId);
-
-            $newOrdersCounter = $ordersEntity->count(['status_id' => $statusId]);
-            $this->design->assign("new_orders_counter", $newOrdersCounter);
-        }
-
-        $newCommentsCounter = $commentsEntity->count(['approved'=>0]);
-        $this->design->assign("new_comments_counter", $newCommentsCounter);
-
-        $newFeedbacksCounter = $feedbacksEntity->count(['processed'=>0]);
-        $this->design->assign("new_feedbacks_counter", $newFeedbacksCounter);
-
-        $newCallbacksCounter = $callbacksEntity->count(['processed'=>0]);
-        $this->design->assign("new_callbacks_counter", $newCallbacksCounter);
-
-        $this->design->assign("all_counter", $newOrdersCounter+$newCommentsCounter+$newFeedbacksCounter+$newCallbacksCounter);
     }
 
     public function __construct($manager, $backendController)

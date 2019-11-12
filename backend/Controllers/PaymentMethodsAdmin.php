@@ -4,53 +4,48 @@
 namespace Okay\Admin\Controllers;
 
 
+use Okay\Admin\Helpers\BackendPaymentsHelper;
+use Okay\Admin\Requests\BackendPaymentsRequest;
 use Okay\Entities\PaymentsEntity;
 
 class PaymentMethodsAdmin extends IndexAdmin
 {
-    
-    public function fetch(PaymentsEntity $paymentsEntity)
+
+    public function fetch(BackendPaymentsHelper $backendPaymentsHelper, BackendPaymentsRequest $backendPaymentsRequest)
     {
         // Обработка действий
         if ($this->request->method('post')) {
-            // Сортировка
-            $positions = $this->request->post('positions');
-            $ids = array_keys($positions);
-            sort($positions);
-            foreach ($positions as $i=>$position) {
-                $paymentsEntity->update($ids[$i], ['position'=>$position]);
-            }
-            
-            // Действия с выбранными
-            $ids = $this->request->post('check');
-            
+            $ids = $backendPaymentsRequest->postCheck();
+
+            $positions = $backendPaymentsRequest->postPositions();
+            $backendPaymentsHelper->sortPositions($positions);
+
             if (is_array($ids)) {
-                switch ($this->request->post('action')) {
+                switch ($backendPaymentsRequest->postAction()) {
                     case 'disable': {
-                        /*Выключение способ оплаты*/
-                        $paymentsEntity->update($ids, ['enabled'=>0]);
+                        $backendPaymentsHelper->disable($ids);
                         break;
                     }
                     case 'enable': {
-                        /*Включение способа оплаты*/
-                        $paymentsEntity->update($ids, ['enabled'=>1]);
+                        $backendPaymentsHelper->enable($ids);
                         break;
                     }
                     case 'delete': {
-                        /*Удаление способа оплаты*/
-                        $paymentsEntity->delete($ids);
+                        $backendPaymentsHelper->delete($ids);
                         break;
                     }
                 }
             }
         }
-        
+
         // Отображение
-        $paymentMethods = $paymentsEntity->find();
+        $filter          = $backendPaymentsHelper->buildPaymentMethodsFilter();
+        $paymentMethods  = $backendPaymentsHelper->findPaymentMethods($filter);
+        $paymentMethodsCount = $backendPaymentsHelper->getPaymentMethodsCount($filter);
+
         $this->design->assign('payment_methods', $paymentMethods);
+        $this->design->assign('payment_methods_count', $paymentMethodsCount);
         $this->response->setContent($this->design->fetch('payment_methods.tpl'));
     }
     
 }
-
-?>

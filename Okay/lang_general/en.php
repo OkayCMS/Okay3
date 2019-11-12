@@ -51,3 +51,7 @@ $lang_general['date_FR_9'] = "September";
 $lang_general['date_FR_10'] = "October";
 $lang_general['date_FR_11'] = "November";
 $lang_general['date_FR_12'] = "December";
+$lang_general['cart_title'] = "Checkout";
+$lang_general['general_search'] = "Search";
+$lang_general['meta_page'] = ", page";
+$lang_general['order_title'] = "Your Order No.";

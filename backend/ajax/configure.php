@@ -50,6 +50,8 @@ $managersEntity = $entityFactory->get(ManagersEntity::class);
 
 $manager = $managersEntity->get($_SESSION['admin']);
 
+$settings->initMultiSettings((int)$_SESSION['admin_lang_id']);
+
 if (!$manager) {
     trigger_error('Need to login', E_USER_ERROR); // todo 403
 }

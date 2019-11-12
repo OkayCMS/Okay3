@@ -67,6 +67,7 @@
                                                 <span class="switch-handle"></span>
                                             </label>
                                         </div>
+                                        {get_design_block block="settings_theme_logo_checkboxes"}
                                     </div>
                                 </div>
                             </div>
@@ -113,6 +114,7 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="settings_theme_site_logo"}
             </div>
         </div>
         <div class="col-lg-6 col-md-6">
@@ -170,9 +172,17 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="settings_theme_favicon"}
             </div>
         </div>
     </div>
+
+    {$block = {get_design_block block="settings_theme_custom_block"}}
+    {if !empty($block)}
+        <div class="row fn_toggle_wrap custom_block">
+            {$block}
+        </div>
+    {/if}
 
     <div class="row">
         <div class="col-lg-6 col-md-12">
@@ -196,6 +206,7 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="settings_theme_deliveries"}
             </div>
         </div>
         <div class="col-lg-6 col-md-12">
@@ -219,6 +230,7 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="settings_theme_payments"}
             </div>
         </div>
     </div>
@@ -264,6 +276,7 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="settings_theme_contacts"}
             </div>
         </div>
         <div class="col-lg-6 col-md-12">
@@ -308,7 +321,6 @@
                                 </div>
                             </div>
                         </div>
-                        
                         <div class="col-lg-12 col-md-12 ">
                             <button type="submit" class="btn btn_small btn_blue float-md-right">
                                 {include file='svg_icon.tpl' svgId='checked'}
@@ -317,6 +329,7 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="settings_theme_general"}
             </div>
         </div>
     </div>
@@ -366,6 +379,7 @@
                         
                     </div>
                 </div>
+                {get_design_block block="settings_theme_css_colors"}
             </div>
         </div>
     </div>

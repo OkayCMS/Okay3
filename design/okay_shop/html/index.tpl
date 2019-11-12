@@ -16,6 +16,7 @@
     {/if}
 
     <header class="header">
+        {if $is_mobile == false || $is_tablet == true}
         <div class="header__top hidden-md-down">
             <div class="container">
                 <div class="f_row align-items-center flex-nowrap justify-content-between">
@@ -25,7 +26,8 @@
                     </div>
                     <div class="d-flex align-items-center f_col justify-content-end">
                         {* Callback *}
-                        <a class="fn_callback callback d-inline-flex align-items-center icon icon-phone-callback" href="#fn_callback" data-language="index_back_call">
+                        <a class="fn_callback callback d-inline-flex align-items-center" href="#fn_callback" data-language="index_back_call">
+                            {include file="svg.tpl" svgId="support_icon"}
                             <span>{$lang->index_back_call}</span>
                         </a>
                         {* Language & Currency *}
@@ -42,9 +44,9 @@
                     {* Menu button*}
                     <div class="fn_menu_switch menu_switcher"></div>
                     {* Logo *}
-                    <div class="logo header__logo ">
+                    <div class="header__logo logo">
                         {if !empty({$settings->site_logo})}
-                        <a class="logo__link " href="{if $controller=='MainController'}javascript:;{else}{url_generator route="main"}{/if}">
+                        <a class="logo__link " href="{if $controller=='MainController'}javascript:;{else}{url_generator route='main'}{/if}">
                             <img src="{$rootUrl}/{$config->design_images}{$settings->site_logo}?v={$settings->site_logo_version}" alt="{$settings->site_name|escape}"/>
                         </a>
                         {/if}
@@ -58,30 +60,25 @@
                         <div class="header-contact__inner">
                             {if $settings->site_phones}
                                 {foreach $settings->site_phones as $phone}
-                                    <div class="header-contact__item{if $phone@first} header-contact__item--visible{/if}">
-                                        <div class="header-contact__phone">
-                                            <a class="header-contact__section icon icon-phone-in-talk" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
-                                                <span>{$phone|escape}</span>
-                                            </a>
-                                        </div>
+                                    <div class="header-contact__item header-contact--phone{if $phone@first} header-contact__item--visible{/if}">
+                                        <a class="d-flex align-items-center header-contact__section" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
+                                            {include file="svg.tpl" svgId="phone_icon"}
+                                            <span>{$phone|escape}</span>
+                                        </a>
                                     </div>
                                 {/foreach}
                             {/if}
                             {if $settings->site_email}
-                                <div class="header-contact__item">
-                                    <div class="header-contact__email">
-                                        <a class="header-contact__section icon icon-mail-outline" href="mailto:{$settings->site_email|escape}" >
-                                            <span>{$settings->site_email|escape}</span>
-                                        </a>
-                                    </div>
+                                <div class="header-contact__item header-contact--email">
+                                    <a class="d-flex align-items-center header-contact__section" href="mailto:{$settings->site_email|escape}" >
+                                        <span>{$settings->site_email|escape}</span>
+                                    </a>
                                 </div>
                             {/if}
                             {if $settings->site_working_hours}
-                                <div class="header-contact__item">
-                                    <div class="header-contact__time">
-                                        <div class="header-contact__section icon icon-schedule">
-                                            <div class="header-contact__title-s">{$settings->site_working_hours}</div>
-                                        </div>
+                                <div class="header-contact__item header-contact--time">
+                                    <div class="d-flex align-items-center header-contact__section">
+                                        <div class="header-contact__title-s">{$settings->site_working_hours}</div>
                                     </div>
                                 </div>
                             {/if}
@@ -90,6 +87,7 @@
                 </div>
             </div>
         </div>
+        {/if}
         <div class="header__bottom">
             <div class="{if $controller != 'MainController'}fn_header__sticky {/if}" data-margin-top="0" data-sticky-for="1024" data-sticky-class="is-sticky">
                 <div class="container">
@@ -97,14 +95,14 @@
                         {* Mobile menu button*}
                         <div class="fn_menu_switch menu_switcher hidden-lg-up">
                             <div class="menu_switcher__heading d-flex align-items-center">
-                                <i class="icon icon-reorder catalog_icon"></i>
+                                <i class="fa fa-bars catalog_icon"></i>
                                 <span class="" data-language="index_categories">{$lang->index_mobile_menu}</span>
                             </div>
                         </div>
                         {* Catalog heading *}
                         <div class="{if $controller != 'MainController' || empty($global_banners)}fn_catalog_switch button--blick{/if} catalog_button d-lg-flex hidden-md-down ">
                             <div class="catalog_button__heading d-flex align-items-center ">
-                                <i class="icon icon-reorder catalog_icon"></i>
+                                <i class="fa fa-bars catalog_icon"></i>
                                 <span class="" data-language="index_categories">{$lang->index_categories}</span>
                                 {if $controller != 'MainController' || empty($global_banners)}
                                     <span class="catalog_button__arrow">{include file="svg.tpl" svgId="arrow_right"}</span>
@@ -113,24 +111,18 @@
                          </div>
                         {* Search form *}
                         <form id="fn_search" class="fn_search_mob search d-md-flex" action="{url_generator route='search'}">
-                            <input class="fn_search search__input" type="text" name="keyword" value="{$keyword|escape}" data-language="index_search" placeholder="{$lang->index_search}"/>
-                            <button class="search__button icon icon-search d-flex align-items-center justify-content-center" type="submit"></button>
+                            <input class="fn_search search__input" type="text" name="keyword" value="{$keyword|escape}" aria-label="search" data-language="index_search" placeholder="{$lang->index_search}"/>
+                            <button class="search__button d-flex align-items-center justify-content-center" aria-label="search" type="submit"></button>
                         </form>
                         <div class="header_informers d-flex align-items-center">
                             {* Mobile search toggle *}
-                            <div class="fn_search_toggle header_informers__item d-flex align-items-center justify-content-center icon icon-search hidden-md-up"></div>
+                            <div class="fn_search_toggle header_informers__item d-flex align-items-center justify-content-center hidden-md-up">{include file="svg.tpl" svgId="search_icon"}</div>
                             {* Wishlist informer *}
-                            <div id="wishlist" class="header_informers__item d-flex align-items-center justify-content-center">
-                                {include file="wishlist_informer.tpl"}
-                            </div>
+                            <div id="wishlist" class="header_informers__item d-flex align-items-center justify-content-center">{include file="wishlist_informer.tpl"}</div>
                             {* Comparison informer *}
-                            <div id="comparison" class="header_informers__item d-flex align-items-center justify-content-center">
-                                {include "comparison_informer.tpl"}
-                            </div>
+                            <div id="comparison" class="header_informers__item d-flex align-items-center justify-content-center">{include "comparison_informer.tpl"}</div>
                             {* Cart informer*}
-                            <div id="cart_informer" class="header_informers__item d-flex align-items-center justify-content-center">
-                                {include file='cart_informer.tpl'}
-                            </div>
+                            <div id="cart_informer" class="header_informers__item d-flex align-items-center justify-content-center">{include file='cart_informer.tpl'}</div>
                         </div>
                         {* Categories menu *}
                         {if $is_mobile == false && $is_tablet == false}
@@ -146,8 +138,7 @@
 
     {* Тело сайта *}
     <div id="fn_content" class="main">
-        {* Banners *}
-
+        {* Include module banner *}
         {if !empty($global_banners)}
             <div class="container">
                 <div class="{if $controller == 'MainController'}d-flex main_banner{/if}">
@@ -195,7 +186,8 @@
                         {if $settings->site_phones}
                             {foreach $settings->site_phones as $phone}
                                 <div class="footer__contact_item">
-                                    <a class="phone icon icon-phone-callback" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
+                                    <a class="d-flex align-items-start phone" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
+                                        {include file="svg.tpl" svgId="phone_icon"}
                                         <span>{$phone|escape}</span>
                                     </a>
                                 </div>
@@ -203,25 +195,23 @@
                         {/if}
                         {if $settings->site_email}
                             <div class="footer__contact_item">
-                                <a class="email icon icon-mail-outline" href="mailto:{$settings->site_email|escape}">
+                                <a class="d-flex align-items-start email " href="mailto:{$settings->site_email|escape}">
+                                    {include file="svg.tpl" svgId="email_icon"}
                                     <span>{$settings->site_email|escape}</span>
                                 </a>
                             </div>
                         {/if}
                         {if $settings->site_working_hours}
                             <div class="footer__contact_item">
-                                <span class="open_hours icon icon-schedule">
+                                <span class="d-flex align-items-start open_hours">
+                                    {include file="svg.tpl" svgId="time_icon"}
                                     {$settings->site_working_hours}
                                 </span>
                             </div>
                         {/if}
-                        {*<div class="footer__contact_item">
-                            <span class="location mdi mdi-map-marker-outline" data-language="company_email">
-                                <div data-language="company_location">{$lang->company_location}</div>
-                            </span>
-                        </div>*}
                         <div class="footer__contact_item">
-                            <a class="fn_callback callback d-inline-flex align-items-center icon icon-phone-callback" href="#fn_callback" data-language="index_back_call">
+                            <a class="fn_callback callback d-inline-flex align-items-center" href="#fn_callback" data-language="index_back_call">
+                                {include file="svg.tpl" svgId="support_icon"}
                                 <span>{$lang->index_back_call}</span>
                             </a>
                         </div>
@@ -272,7 +262,7 @@
                             <div class="d-flex align-items-center subscribe_form__group">
                                 <div class="form__group form__group--subscribe">
                                     <input type="hidden" name="subscribe" value="1"/>
-                                    <input class="form__input form__input_subscribe" type="email" name="subscribe_email" value="" data-format="email" placeholder="{$lang->form_email}"/>
+                                    <input class="form__input form__input_subscribe" aria-label="subscribe" type="email" name="subscribe_email" value="" data-format="email" placeholder="{$lang->form_email}"/>
                                 </div>
                                 <button class="form__button form__button--subscribe" type="submit"><span data-language="subscribe_button">{$lang->subscribe_button}</span></button>
                             </div>
@@ -313,8 +303,8 @@
                             {foreach $settings->site_social_links as $social_link}
                             {$social_domain = preg_replace('~(https?://)?(www\.)?([^\.]+)?\..*~', '$3', $social_link)}
                             {if isset($social_aliases.$social_domain) || $social_domain}
-                            <a class="social__link {if isset($social_aliases.$social_domain)}{$social_aliases.$social_domain}{else}{$social_domain}{/if}" href="{if !preg_match('~^https?://.*$~', $social_link)}https://{/if}{$social_link|escape}" target="_blank" title="{$social_domain}">
-                                <i class="icon icon-{if isset($social_aliases.$social_domain)}{$social_aliases.$social_domain}{else}{$social_domain}{/if}"></i>
+                            <a class="social__link {if isset($social_aliases.$social_domain)}{$social_aliases.$social_domain}{else}{$social_domain}{/if}" rel="noreferrer" aria-label="{$social_domain}" href="{if !preg_match('~^https?://.*$~', $social_link)}https://{/if}{$social_link|escape}" target="_blank" title="{$social_domain}">
+                                <i class="fa fa-{if isset($social_aliases.$social_domain)}{$social_aliases.$social_domain}{else}{$social_domain}{/if}"></i>
                             </a>
                             {/if}
                             {/foreach}
@@ -350,7 +340,7 @@
                     {* Copyright *}
                     <div class="f_col-md flex-md-first copyright">
                         <span>© {$smarty.now|date_format:"%Y"}</span>
-                        <a href="https://okay-cms.com" target="_blank">
+                        <a href="https://okay-cms.com" rel="noreferrer" target="_blank">
                         <span data-language="index_copyright">{$lang->index_copyright}</span>
                         </a>
                     </div>
@@ -399,6 +389,5 @@
     <div>
         {get_design_block block="front_after_footer_content"}
     </div>
-
 </body>
 </html>

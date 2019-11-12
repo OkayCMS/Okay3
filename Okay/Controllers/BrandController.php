@@ -9,6 +9,7 @@ use Okay\Entities\ProductsEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Helpers\CatalogHelper;
 use Okay\Helpers\FilterHelper;
+use Okay\Helpers\MetadataHelpers\BrandMetadataHelper;
 use Okay\Helpers\ProductsHelper;
 
 class BrandController extends AbstractController
@@ -25,12 +26,15 @@ class BrandController extends AbstractController
         ProductsHelper $productsHelper,
         ProductsEntity $productsEntity,
         FilterHelper $filterHelper,
+        BrandMetadataHelper $brandMetadataHelper,
         $url,
         $filtersUrl = ''
     ) {
         
         $filterHelper->setFiltersUrl($filtersUrl);
 
+        $this->setMetadataHelper($brandMetadataHelper);
+        
         $sortProducts = null;
         $filter['visible'] = 1;
 
@@ -87,19 +91,20 @@ class BrandController extends AbstractController
 
         if ((!empty($filter['price']) && $filter['price']['min'] !== '' && $filter['price']['max'] !== '' && $filter['price']['min'] !== null) || !empty($filter['other_filter'])) {
             $this->isFilterPage = true;
-            $this->design->assign('is_filter_page', $this->isFilterPage);
         }
+        $this->design->assign('is_filter_page', $this->isFilterPage);
         
         $prices = $catalogHelper->getPrices($filter, $this->catalogType, $brand->id);
         $this->design->assign('prices', $prices);
 
+        $filter = $filterHelper->getBrandProductsFilter($filter);
+        
         $paginate = $catalogHelper->paginate(
             $this->settings->get('products_num'),
             $currentPage,
             $filter,
             $this->design
         );
-        $this->design->assign('current_page', $currentPage);
         
         if (!$paginate) {
             return false;
@@ -111,14 +116,9 @@ class BrandController extends AbstractController
 
         if ($this->request->get('ajax','boolean')) {
             $this->design->assign('ajax', 1);
-            $result = new \stdClass;
-            $result->products_content = $this->design->fetch('products_content.tpl');
-            $result->products_pagination = $this->design->fetch('chpu_pagination.tpl');
-            $result->products_sort = $this->design->fetch('products_sort.tpl');
-            $result->features = $this->design->fetch('features.tpl');
-            $result->selected_features = $this->design->fetch('selected_features.tpl');
+            $result = $catalogHelper->getAjaxFilterData($this->design);
             $this->response->setContent(json_encode($result), RESPONSE_JSON);
-            return;
+            return true;
         }
 
         //lastModify
@@ -137,17 +137,6 @@ class BrandController extends AbstractController
 
         if ($this->isFilterPage === true) {
             $this->design->assign('set_canonical', 1);
-        }
-        
-        // Устанавливаем мета-теги в зависимости от запроса
-        if ($this->page) {
-            $this->design->assign('meta_title', $this->page->meta_title);
-            $this->design->assign('meta_keywords', $this->page->meta_keywords);
-            $this->design->assign('meta_description', $this->page->meta_description);
-        } elseif (isset($brand)) {
-            $this->design->assign('meta_title', $brand->meta_title);
-            $this->design->assign('meta_keywords', $brand->meta_keywords);
-            $this->design->assign('meta_description', $brand->meta_description);
         }
 
         $relPrevNext = $this->design->fetch('products_rel_prev_next.tpl');

@@ -56,6 +56,7 @@ class Managers
         'modules',
         'theme',
         'learning',
+        'router',
     ];
 
     // Соответсвие модулей и названий соответствующих прав
@@ -129,6 +130,7 @@ class Managers
         'FeaturesAliasesAdmin'      => 'features_aliases',
         'ModulesAdmin'              => 'modules',
         'LearningAdmin'             => 'learning',
+        'SettingsRouterAdmin'       => 'router',
     ];
     
     /**

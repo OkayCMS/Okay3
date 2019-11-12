@@ -98,6 +98,14 @@
         </div>
     </div>
 
+    {$block = {get_design_block block="category_stats_custom_block"}}
+    {if !empty($block)}
+        <div class="boxed fn_toggle_wrap">
+            {$block}
+        </div>
+    {/if}
+
+
     <form method="post" class="fn_form_list">
         <input type="hidden" name="session_id" value="{$smarty.session.id}" />
         <div class="okay_list products_list fn_sort_list">
@@ -124,6 +132,7 @@
                                                 </span>
                                             </span>
                                         </div>
+                                        {get_design_block block="category_stats_list_name"}
                                     </div>
                                     <div class="okay_list_boding okay_list_categorystats_total">
                                         {if $category->price}<span class="text_dark">{$category->price} {$currency->sign}</span>{else}{$category->price} {$currency->sign}{/if}

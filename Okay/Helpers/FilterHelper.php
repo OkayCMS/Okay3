@@ -45,8 +45,6 @@ class FilterHelper
         'featured',
     ];
 
-    private $metaDelimiter = ', ';
-
     private $featureValuesCache = [];
 
     public function __construct(
@@ -73,6 +71,36 @@ class FilterHelper
         $this->maxFilterDepth = $settings->max_filter_depth;
     }
 
+    public function getBrandProductsFilter(array $filter = [])
+    {
+        return ExtenderFacade::execute(__METHOD__, $filter, func_get_args());
+    }
+
+    public function getCategoryProductsFilter(array $filter = [])
+    {
+        return ExtenderFacade::execute(__METHOD__, $filter, func_get_args());
+    }
+
+    public function getDiscountedProductsFilter(array $filter = [])
+    {
+        $filter['discounted'] = true;
+        return ExtenderFacade::execute(__METHOD__, $filter, func_get_args());
+    }
+
+    public function getFeaturedProductsFilter(array $filter = [])
+    {
+        $filter['featured'] = true;
+        return ExtenderFacade::execute(__METHOD__, $filter, func_get_args());
+    }
+
+    public function getSearchProductsFilter(array $filter = [], $keyword = null)
+    {
+        if ($keyword !== null) {
+            $filter['keyword'] = $keyword;
+        }
+        return ExtenderFacade::execute(__METHOD__, $filter, func_get_args());
+    }
+    
     public function setCategory($category)
     {
         $this->category = $category;
@@ -97,7 +125,70 @@ class FilterHelper
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
-    
+
+    /**
+     * Метод подготавлявает фильтр для поиска брендов категории
+     * 
+     * @param $category
+     * @param array $filter
+     * @return array
+     */
+    public function prepareFilterGetCategoryBrands($category, array $filter)
+    {
+        $brandsFilter = [
+            'category_id'   => $category->children,
+            'visible'       => 1,
+            'product_visible' => 1
+        ];
+
+        if (!empty($filter['features'])) {
+            $brandsFilter['features'] = $filter['features'];
+        }
+
+        if (!empty($filter['other_filter'])) {
+            $brandsFilter['other_filter'] = $filter['other_filter'];
+        }
+
+        if (!empty($filter['price']) && $filter['price']['min'] != '' && $filter['price']['max'] != '') {
+            $brandsFilter['price'] = $filter['price'];
+        }
+
+        // В выборку указываем выбранные бренды, чтобы достать еще и все выбранные бренды, чтобы их можно было отменить
+        if (!empty($currentBrandsIds)) {
+            $brandsFilter['selected_brands'] = $currentBrandsIds;// todo проверить, корректно ли работает
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $brandsFilter, func_get_args());
+    }
+
+    /**
+     * Возвращает бренды для текущей категории, для фильтра
+     * 
+     * @param $brandsFilter
+     * @param $currentBrandsIds
+     * @return array
+     * @throws \Exception
+     */
+    public function getCategoryBrands($brandsFilter, $currentBrandsIds)
+    {
+        /** @var BrandsEntity $brandsEntity */
+        $brandsEntity = $this->entityFactory->get(BrandsEntity::class);
+        $brands = $brandsEntity->mappedBy('id')->find($brandsFilter);
+        // Если в фильтре только один бренд и он не выбран, тогда вообще не выводим фильтр по бренду
+        if (($firstBrand = reset($brands)) && count($brands) <= 1 && !in_array($firstBrand->id, $currentBrandsIds)) {
+            $brands = [];
+        }
+        return ExtenderFacade::execute(__METHOD__, $brands, func_get_args());
+    }
+
+    /**
+     * Метод возвращает свойства текущей категории
+     * Также он заполняет два массива categoryFeaturesByUrl и featuresUrls,
+     * но когда будут сделаны кеши для entities, думаю от этого можно будет уйти
+     * 
+     * @return array
+     * @throws \Exception
+     */
     public function getCategoryFeatures()
     {
         if (!empty($this->categoryFeatures)) {
@@ -114,9 +205,119 @@ class FilterHelper
             }
         }
 
-        return ExtenderFacade::execute(__METHOD__, $this->categoryFeatures);
+        return ExtenderFacade::execute(__METHOD__, $this->categoryFeatures, func_get_args());
     }
 
+    /**
+     * Метод возвращает базовые значения свойств категоии (без учёта фильтрации)
+     * Используется на странице фильтра, и нужно чтобы определить у фильтра один вириант значения (который нужно скрыть)
+     * или изначально было много значени, тогда такой фильтр остаётся
+     * 
+     * @param $category
+     * @param $missingProducts
+     * @return array
+     * @throws \Exception
+     */
+    public function getCategoryBaseFeaturesValues($category, $missingProducts)
+    {
+
+        /** @var FeaturesValuesEntity $featuresValuesEntity */
+        $featuresValuesEntity = $this->entityFactory->get(FeaturesValuesEntity::class);
+        
+        $featuresValuesFilter['visible'] = 1;
+
+        // Если скрываем из каталога товары не в наличии, значит и в фильтре их значения тоже не нужны будут
+        if ($missingProducts === MISSING_PRODUCTS_HIDE) {
+            $featuresValuesFilter['in_stock'] = true;
+        }
+
+        if (!empty($this->categoryFeatures)) {
+            $features_ids = array_keys($this->categoryFeatures);
+            if (!empty($features_ids)) {
+                $featuresValuesFilter['feature_id'] = $features_ids;
+            }
+        }
+        $featuresValuesFilter['category_id'] = $category->children;
+
+        /**
+         * Получаем значения свойств для категории, чтобы на страницах фильтров убрать фильтры
+         * у которых изначально был только один вариант выбора
+         */
+        $baseFeaturesValues = [];
+        foreach ($featuresValuesEntity->find($featuresValuesFilter) as $fv) {
+            $baseFeaturesValues[$fv->feature_id][$fv->id] = $fv;
+        }
+        
+        return ExtenderFacade::execute(__METHOD__, $baseFeaturesValues, func_get_args());
+    }
+
+    /**
+     * Метод возвращает фильтр, который передадим в FeaturesValuesEntity::find()
+     * 
+     * @param $category
+     * @param $missingProducts
+     * @param array $filter
+     * @return array
+     */
+    public function prepareFilterGetFeaturesValues($category, $missingProducts, array $filter = [])
+    {
+        $featuresValuesFilter['visible'] = 1;
+
+        // Если скрываем из каталога товары не в наличии, значит и в фильтре их значения тоже не нужны будут
+        if ($missingProducts === MISSING_PRODUCTS_HIDE) {
+            $featuresValuesFilter['in_stock'] = true;
+        }
+
+        if (!empty($this->categoryFeatures)) {
+            $features_ids = array_keys($this->categoryFeatures);
+            if (!empty($features_ids)) {
+                $featuresValuesFilter['feature_id'] = $features_ids;
+            }
+        }
+        $featuresValuesFilter['category_id'] = $category->children;
+
+        if (isset($filter['features'])) {
+            $featuresValuesFilter['features'] = $filter['features'];
+        }
+
+        if (isset($filter['brand_id'])) {
+            $featuresValuesFilter['brand_id'] = $filter['brand_id'];
+        }
+
+        if (!empty($filter['other_filter'])) {
+            $featuresValuesFilter['other_filter'] = $filter['other_filter'];
+        }
+
+        if (!empty($filter['price']) && $filter['price']['min'] != '' && $filter['price']['max'] != '') {
+            $featuresValuesFilter['price'] = $filter['price'];
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $featuresValuesFilter, func_get_args());
+    }
+
+    /**
+     * Метод возвращает текущие свойства для фильтра
+     * 
+     * @param array $featuresValuesFilter
+     * @return array
+     * @throws \Exception
+     */
+    public function getCategoryFeaturesValues(array $featuresValuesFilter = [])
+    {
+        /** @var FeaturesValuesEntity $featuresValuesEntity */
+        $featuresValuesEntity = $this->entityFactory->get(FeaturesValuesEntity::class);
+        
+        $featuresValuesEntity->addHighPriority('category_id');
+        $featuresValues = $featuresValuesEntity->find($featuresValuesFilter);
+        return ExtenderFacade::execute(__METHOD__, $featuresValues, func_get_args());
+    }
+
+    /**
+     * Возвращает номер текущей страницы пагинации
+     * 
+     * @param $filtersUrl
+     * @return string|bool
+     */
     public function getCurrentPage($filtersUrl)
     {
         $currentPage = '';
@@ -265,7 +466,7 @@ class FilterHelper
         return ExtenderFacade::execute(__METHOD__, $currentFeatures, func_get_args());
     }
 
-    public function getMetaArray($filtersUrl)
+    public function getMetaArray()
     {
         /** @var TranslationsEntity $translationsEntity */
         $translationsEntity = $this->entityFactory->get(TranslationsEntity::class);
@@ -277,7 +478,7 @@ class FilterHelper
         
         $metaArray = [];
         //определение текущего положения и выставленных параметров
-        $uriArray = $this->parseFilterUrl($filtersUrl);
+        $uriArray = $this->parseFilterUrl($this->filtersUrl);
         foreach ($uriArray as $k => $v) {
             if (empty($v)) {
                 continue;
@@ -341,8 +542,12 @@ class FilterHelper
         return ExtenderFacade::execute(__METHOD__, $metaArray, func_get_args());
     }
     
-    public function isSetCanonical($filtersUrl)
+    public function isSetCanonical($filtersUrl = null)
     {
+        if ($filtersUrl === null) {
+            $filtersUrl = $this->filtersUrl;
+        }
+        
         $setCanonical = false;
         $metaArray = $this->getMetaArray($filtersUrl);
         $categoryFeatures = $this->getCategoryFeatures();
@@ -396,52 +601,6 @@ class FilterHelper
         $baseUrl = trim($baseUrl, '/');
         $chpuUrl = trim($chpuUrl, '/');
         return ExtenderFacade::execute(__METHOD__, $baseUrl . (!empty($chpuUrl) ? '/' . $chpuUrl : ''), func_get_args());
-    }
-    
-    public function getFilterAutoMeta($filtersUrl)
-    {
-        $autoMeta = [
-            'h1' => '',
-            'title' => '',
-            'keywords' => '',
-            'description' => '',
-        ];
-        if ($this->isSetCanonical($filtersUrl) === true) {
-            return ExtenderFacade::execute(__METHOD__, $autoMeta, [$filtersUrl]);
-        }
-        
-        $metaArray = $this->getMetaArray($filtersUrl);
-        if (!empty($metaArray)) {
-            foreach ($metaArray as $type=>$_meta_array) {
-                switch($type) {
-                    case 'brand': // no break
-                    case 'filter': {
-                        $autoMeta['h1'] = $autoMeta['title'] = $autoMeta['keywords'] = $autoMeta['description'] = implode($this->metaDelimiter,$_meta_array);
-                        break;
-                    }
-                    case 'features_values': {
-                        foreach($_meta_array as $f_id=>$f_array) {
-                            $autoMeta['h1']           .= (!empty($autoMeta['h1'])           ? $this->metaDelimiter : '') . implode($this->metaDelimiter,$f_array);
-                            $autoMeta['title']        .= (!empty($autoMeta['title'])        ? $this->metaDelimiter : '') . implode($this->metaDelimiter,$f_array);
-                            $autoMeta['keywords']     .= (!empty($autoMeta['keywords'])     ? $this->metaDelimiter : '') . implode($this->metaDelimiter,$f_array);
-                            $autoMeta['description']  .= (!empty($autoMeta['description'])  ? $this->metaDelimiter : '') . implode($this->metaDelimiter,$f_array);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-        if (!empty($autoMeta['h1'])) {
-            $autoMeta['h1'] = ' ' . $autoMeta['h1'];
-        }
-        if (!empty($autoMeta['title'])) {
-            $autoMeta['title'] = ' ' . $autoMeta['title'];
-        }
-        if (!empty($autoMeta['keywords'])) {
-            $autoMeta['keywords'] = ' ' . $autoMeta['keywords'];
-        }
-
-        return ExtenderFacade::execute(__METHOD__, (object) $autoMeta, [$filtersUrl]);
     }
     
     public function changeLangUrls($filtersUrl)
@@ -656,7 +815,7 @@ class FilterHelper
         return ExtenderFacade::execute(__METHOD__, $resultString, func_get_args());
     }
 
-    private function parseFilterUrl($filtersUrl)
+    public function parseFilterUrl($filtersUrl)
     {
         return explode('/', $filtersUrl);
     }

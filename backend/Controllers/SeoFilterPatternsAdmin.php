@@ -47,14 +47,16 @@ class SeoFilterPatternsAdmin extends IndexAdmin
                         }
                     }
 
-                    $featuresIds = array_unique($featuresIds);
-                    foreach ($featuresEntity->find(['id'=>$featuresIds]) as $f) {
-                        $features[$f->id] = $f;
-                    }
+                    if (!empty($featuresIds)) {
+                        $featuresIds = array_unique($featuresIds);
+                        foreach ($featuresEntity->find(['id' => $featuresIds]) as $f) {
+                            $features[$f->id] = $f;
+                        }
 
-                    foreach ($patterns as $p) {
-                        if ($p->feature_id && isset($features[$p->feature_id])) {
-                            $p->feature = $features[$p->feature_id];
+                        foreach ($patterns as $p) {
+                            if ($p->feature_id && isset($features[$p->feature_id])) {
+                                $p->feature = $features[$p->feature_id];
+                            }
                         }
                     }
                     $this->design->assign('patterns', $patterns);

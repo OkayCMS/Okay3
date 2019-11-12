@@ -51,3 +51,7 @@ $lang_general['date_FR_9'] = "Вересня";
 $lang_general['date_FR_10'] = "Жовтня";
 $lang_general['date_FR_11'] = "Листопада";
 $lang_general['date_FR_12'] = "Груднья";
+$lang_general['cart_title'] = "Оформлення замовлення";
+$lang_general['general_search'] = "Пошук";
+$lang_general['meta_page'] = ", сторінка";
+$lang_general['order_title'] = "Ваше замовлення №";

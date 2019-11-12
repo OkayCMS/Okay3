@@ -202,7 +202,7 @@
                                     <span class="font-weight-bold">{$btr->general_categories|escape}</span>
                                 </div>
                                 <div class="banner_card_block">
-                                    <select name="categories[]" class="selectpicker" multiple="multiple" data-selected-text-format="count">
+                                    <select name="categories[]" class="selectpicker fn_select_all_categories" multiple="multiple" data-selected-text-format="count">
                                         <option value='0' {if !$banner->category_selected || 0|in_array:$banner->category_selected}selected{/if}>{$btr->banner_hide|escape}</option>
                                         {function name=category_select level=0}
                                             {foreach from=$categories item=category}
@@ -212,6 +212,17 @@
                                         {/function}
                                         {category_select categories=$categories selected=$banner->category_selected}
                                     </select>
+
+                                    <div class="boxes_inline">
+                                        <div class="okay_switch clearfix">
+                                            <label class="switch switch-default">
+                                                <input class="switch-input" id="select_all_categories" name="select_all_categories" value='1' type="checkbox" />
+                                                <span class="switch-label"></span>
+                                                <span class="switch-handle"></span>
+                                            </label>
+                                            <span class="boxes_inline heading_label">Выбрать все категории</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -221,12 +232,23 @@
                                     <span class="font-weight-bold">{$btr->general_brands|escape}</span>
                                 </div>
                                 <div class="banner_card_block">
-                                    <select name="brands[]" class="selectpicker" multiple="multiple" data-selected-text-format="count">
+                                    <select name="brands[]" class="selectpicker fn_select_all_brands" multiple="multiple" data-selected-text-format="count">
                                         <option value='0' {if !$banner->brand_selected || 0|in_array:$banner->brand_selected}selected{/if}>{$btr->banner_hide|escape}</option>
                                         {foreach from=$brands item=brand}
                                             <option value='{$brand->id}' {if $banner->brand_selected && $brand->id|in_array:$banner->brand_selected}selected{/if}>{$brand->name|escape}</option>
                                         {/foreach}
                                     </select>
+
+                                    <div class="boxes_inline">
+                                        <div class="okay_switch clearfix">
+                                            <label class="switch switch-default">
+                                                <input class="switch-input" id="select_all_brands" name="select_all_categories" value='1' type="checkbox" />
+                                                <span class="switch-label"></span>
+                                                <span class="switch-handle"></span>
+                                            </label>
+                                            <span class="boxes_inline heading_label">Выбрать все бренды</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -321,3 +343,17 @@
     </div>
 
 </form>
+
+<script>
+
+    $(document).on('change', '#select_all_categories', function () {
+        $('.fn_select_all_categories option').prop("selected", $(this).is(':checked'));
+        $('.fn_select_all_categories').selectpicker('refresh');
+    });
+
+    $(document).on('change', '#select_all_brands', function () {
+        $('.fn_select_all_brands option').prop("selected", $(this).is(':checked'));
+        $('.fn_select_all_brands').selectpicker('refresh');
+    });
+
+</script>

@@ -5,10 +5,11 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Entity\RelatedProductsInterface;
 use Okay\Core\Image;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
-class BlogEntity extends Entity
+class BlogEntity extends Entity implements RelatedProductsInterface
 {
     
     protected static $fields = [
@@ -162,14 +163,14 @@ class BlogEntity extends Entity
         $this->db->query($select);
         $nextId = $this->db->result('id');
 
-        if($nextId) {
+        if ($nextId) {
             return ExtenderFacade::execute([static::class, __FUNCTION__], $this->get((int) $nextId), func_get_args());
         }
 
         return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
     }
 
-    public function getRelatedProducts($filter = [])
+    public function getRelatedProducts(array $filter = [])
     {
         $select = $this->queryFactory->newSelect();
         $select->from('__related_blogs')

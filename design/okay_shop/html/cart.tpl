@@ -1,8 +1,5 @@
 {* The cart page template *}
 
-{* The page title *}
-{$meta_title = $lang->cart_title scope=global}
-
 {if $cart->purchases}
     <div class="block">
         <div class="block__header block__header--boxed block__header--border">
@@ -193,7 +190,7 @@
                                         <input type="hidden" name="checkout" value="1">
                                         {* Submit button *}
                                         <button class="form__button button--blick g-recaptcha" type="submit" name="checkout" {if $settings->captcha_type == "invisible"}data-sitekey="{$settings->public_recaptcha_invisible}" data-badge='bottomleft' data-callback="onSubmit"{/if} value="{$lang->cart_checkout}">
-                                            <span data-language="cart_checkout">{$lang->cart_checkout}</span>
+                                            <span data-language="cart_button">{$lang->cart_button}</span>
                                         </button>
                                     </div>
                                 </div>

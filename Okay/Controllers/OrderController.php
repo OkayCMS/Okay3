@@ -10,6 +10,7 @@ use Okay\Entities\DeliveriesEntity;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\OrderStatusEntity;
 use Okay\Entities\PaymentsEntity;
+use Okay\Helpers\MetadataHelpers\OrderMetadataHelper;
 use Okay\Helpers\OrdersHelper;
 
 class OrderController extends AbstractController
@@ -23,6 +24,7 @@ class OrderController extends AbstractController
         OrderStatusEntity $orderStatusEntity,
         CurrenciesEntity $currenciesEntity,
         OrdersHelper $ordersHelper,
+        OrderMetadataHelper $orderMetadataHelper,
         $url
     ) {
         $order = $ordersEntity->get((string)$url);
@@ -31,10 +33,25 @@ class OrderController extends AbstractController
             return false;
         }
 
-        $purchases = $ordersHelper->getOrderPurchases(intval($order->id));
+        $purchases = $ordersHelper->getOrderPurchasesList(intval($order->id));
         if (!$purchases) {
             return false;
         }
+
+        if (!empty($order->coupon_code)) {
+            $order->coupon = $couponsEntity->get((string)$order->coupon_code);
+            if ($order->coupon && $order->coupon->valid && $order->total_price >= $order->coupon->min_order_price) {
+                if ($order->coupon->type == 'absolute') {
+                    // Абсолютная скидка не более суммы заказа
+                    $order->coupon->coupon_percent = round(100 - ($order->total_price * 100) / ($order->total_price + $order->coupon->value), 2);
+                } else {
+                    $order->coupon->coupon_percent = $order->coupon->value;
+                }
+            }
+        }
+
+        $this->design->assign('order', $order);
+        $this->setMetadataHelper($orderMetadataHelper);
         
         /*Выбор другого способа оплаты*/
         if ($this->request->method('post')) {
@@ -47,24 +64,11 @@ class OrderController extends AbstractController
             }
         }
         
-        if (!empty($order->coupon_code)) {
-            $order->coupon = $couponsEntity->get((string)$order->coupon_code);
-            if ($order->coupon && $order->coupon->valid && $order->total_price >= $order->coupon->min_order_price) {
-                if ($order->coupon->type == 'absolute') {
-                    // Абсолютная скидка не более суммы заказа
-                    $order->coupon->coupon_percent = round(100 - ($order->total_price * 100) / ($order->total_price + $order->coupon->value), 2);
-                } else {
-                    $order->coupon->coupon_percent = $order->coupon->value;
-                }
-            }
-        }
-        
         // Способ доставки
         $delivery = $deliveriesEntity->get((int)$order->delivery_id);
         $this->design->assign('delivery', $delivery);
-        $orderStatus = $orderStatusEntity->find(["status"=>intval($order->status_id)]);
-        $this->design->assign('order_status', reset($orderStatus));
-        $this->design->assign('order', $order);
+        $orderStatuses = $orderStatusEntity->get(intval($order->status_id));
+        $this->design->assign('order_status', $orderStatuses);
         $this->design->assign('purchases', $purchases);
         
         // Способ оплаты
@@ -74,14 +78,11 @@ class OrderController extends AbstractController
         }
         
         // Варианты оплаты
-        $paymentMethods = $paymentsEntity->find([
-            'delivery_id'=>$order->delivery_id,
-            'enabled'=>1,
-        ]);
+        $paymentMethods = $ordersHelper->getOrderPaymentMethodsList($order);
         $this->design->assign('payment_methods', $paymentMethods);
         
         // Все валюты
-        $this->design->assign('all_currencies', $currenciesEntity->find());
+        $this->design->assign('all_currencies', $currenciesEntity->mappedBy('id')->find());
         
         // Выводим заказ
         $this->response->setContent('order.tpl');

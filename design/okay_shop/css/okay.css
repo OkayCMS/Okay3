@@ -75,7 +75,7 @@ h6,.h6{font-size: 18px;}
 
 /***** #Links ***************************************************************/
 a {
-    color: var(--okay-basic-company);
+    color: var(--okay-button-color);
     text-decoration: underline;
     background-color: transparent;
     -webkit-text-decoration-skip: objects;
@@ -83,7 +83,7 @@ a {
 }
 a:hover,
 a:focus{
-    color: var(--okay-basic-company);
+    color: var(--okay-button-color);
     outline-width: 0;
     text-decoration: none;
 }
@@ -447,6 +447,8 @@ blockquote cite:before {content: "\2014 \2009";}
     -ms-flex-item-align: center;
     -ms-grid-row_f-align: center;
     align-self: center;
+    height: auto;
+    max-width: 100%;
 }
 .block__description--style .table__cell--col-3{
     width:31%
@@ -1142,6 +1144,12 @@ select{
     overflow: visible;
     text-transform: none;
 }
+.select2-results__options{
+    margin-left: 0px!important;
+}
+.select2-results__option{
+    margin-bottom: 0px!important;
+}
 
 /***** #Group menu *****************************************************************/
 
@@ -1178,7 +1186,7 @@ select{
 }
 .menu_group__link[href^="discounted"],
 .menu_group__link[href^="discounted"]:hover{
-    color: rgb(247, 76, 76);
+    color: #b10707;
 }
 .header__menu{
     -webkit-flex-basis: 0;
@@ -1258,7 +1266,7 @@ select{
     line-height: 1;
 }
 .menu_group__link[href^="discounted"]{
-    color: rgb(247, 76, 76)!important;
+    color: #b10707!important;
 }
 .menu_group--header .menu_eventer .menu_group__link:after {
     content: "";
@@ -1340,80 +1348,43 @@ select{
     position: relative;
 }
 .accordion__title{
-    text-align: center;
-}
-.accordion__title:after {
-    content: "";
-    height: 1px;
-    background: #dbdbdb;
-    position: absolute;
-    top: 45%;
-    right: 0;
-    display: block;
-    width: 100%;
+    cursor: pointer;
 }
 .accordion__header {
-    display: -webkit-inline-box;
-    display: -webkit-inline-flex;
-    display: -ms-inline-flexbox;
-    display: inline-flex;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
     cursor: pointer;
     font-weight: 600;
     font-size: 16px;
     user-select: none;
-    padding: 5px 15px 5px 15px;
+    padding: 0;
     color: var(--okay-body-text);
     background: #fff;
     overflow: hidden;
     position: relative;
     z-index: 2;
-    margin: 0 auto;
+    margin: 0;
 }
-.accordion__title.active .accordion__header{
+.accordion__title.active{
     cursor: default;
 }
-.accordion__header .icon{
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-}
-.accordion__header .icon:before{
+.accordion__header.icon:before{
     font-size: 26px;
     line-height: 1;
+    margin-right: 10px;
 }
-.accordion__header:after {
-    width: 8px;
-    height: 8px;
-    border-right: 2px solid;
-    border-bottom: 2px solid;
-    border-color: var(--okay-body-text);
-    position: relative;
-    content: " ";
-    left: inherit;
-    margin-left: 10px;
-    transform: rotate(-135deg);
-    -webkit-transition: all 0.2s ease-in-out;
-    -moz-transition: all 0.2s ease-in-out;
+.accordion__arrow {
+    font-size: 14px;
+}
+.accordion__title.active .accordion__arrow {
+    transform: rotate(180deg);
     transition: all 0.2s ease-in-out;
 }
 .accordion__content {
     display: none;
-    padding: 10px 20px 20px;
     line-height: 1.3;
-    padding: 5px 0 5px 0;
+    padding: 10px 0 5px 0;
     text-align: left;
 }
-.accordion__title.active .accordion__header:after {
-    top: -2px;
-    transform: rotate(45deg);
-    -webkit-transition: all 0.2s ease-in-out;
-    -moz-transition: all 0.2s ease-in-out;
-    transition: all 0.2s ease-in-out;
-}
+
 
 /***** #Tabs *****************************************************************/
 
@@ -1519,8 +1490,8 @@ select{
     margin: 0 auto;
 }
 .mobile_tab_title svg{
-    width: 24px;
-    height: 24px;
+    width: 18px;
+    height: 18px;
     margin-right: 10px;
 }
 .mobile_tab_title:after {
@@ -1586,6 +1557,7 @@ th {
 
 /***** #Popup ****************************************************************/
 .popup {
+    padding: 20px!important;
     border-radius: 4px;
     box-shadow: inset 0 0 6px #0000004d;
     max-width: 500px!important;
@@ -1840,22 +1812,29 @@ th {
     top: 100px;
     left: 50%;
     z-index: 2;
-    border: 4px solid;
+    border: 6px solid;
     border-radius: 50%;
 }
 .fn_ajax_wait::before{
     width: 120px;
     height: 120px;
     margin-left: -60px;
-    border-color: transparent #38c0f3 #38c0f3 transparent;
+    border-left-color: transparent;
+    border-top-color: var(--okay-basic-company);
+    border-right-color: var(--okay-basic-company);
+    border-bottom: transparent;
     -webkit-animation: rotate-animation 1s linear 0s infinite;
     animation: rotate-animation 1s linear 0s infinite;
 }
 .fn_ajax_wait::after{
-    width: 82px;
-    height: 82px;
-    margin-left: -41px;
-    border-color: transparent #38c0f3 #38c0f3 transparent;
+    width: 80px;
+    height: 80px;
+    margin-top: 20px;
+    margin-left: -40px;
+    border-left-color: transparent;
+    border-top-color: var(--okay-basic-company);
+    border-right-color: var(--okay-basic-company);
+    border-bottom: transparent;
     -webkit-animation: anti-rotate-animation 0.85s linear 0s infinite;
     animation: anti-rotate-animation 0.85s linear 0s infinite;
 }

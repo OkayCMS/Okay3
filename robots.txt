@@ -35,6 +35,7 @@ Disallow: /*?keyword
 Disallow: /*?utm
 Disallow: /*&utm
 Disallow: /*?variant
+Disallow: /cart
 
 User-agent: Googlebot
 Allow: *.css

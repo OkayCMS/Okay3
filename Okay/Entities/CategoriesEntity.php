@@ -376,6 +376,13 @@ class CategoriesEntity extends Entity
                     $curr = $pointers[$category->id];
                     $pointers[$category->id]->path = array_merge((array)$pointers[$category->parent_id]->path, array($curr));
 
+                    // Путь к текущей категории в виде строки
+                    $pathUrl = '';
+                    foreach((array) $pointers[$category->id]->path as $singleCategoryInPath) {
+                        $pathUrl .= '/'.$singleCategoryInPath->url;
+                    }
+                    $pointers[$category->id]->path_url = $pathUrl;
+
                     // Уровень вложенности категории
                     $pointers[$category->id]->level = 1+$pointers[$category->parent_id]->level;
 

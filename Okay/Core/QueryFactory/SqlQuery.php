@@ -5,12 +5,53 @@ namespace Okay\Core\QueryFactory;
 
 
 use Aura\SqlQuery\QueryInterface;
+use Okay\Core\Database;
+use Okay\Core\ServiceLocator;
 
 class SqlQuery implements QueryInterface
 {
     private $bindValues = [];
 
     private $statement = '';
+
+    private $executed = false;
+
+    public function result($column = null)
+    {
+        $SL = new ServiceLocator();
+        $db = $SL->getService(Database::class);
+
+        if ($this->executed) {
+            return $db->result($column);
+        }
+
+        $db->query($this);
+        $this->executed = true;
+        return $db->result($column);
+    }
+
+    public function results($column = null, $mapped = null)
+    {
+        $SL = new ServiceLocator();
+        $db = $SL->getService(Database::class);
+
+        if ($this->executed) {
+            return $db->results($column, $mapped);
+        }
+
+        $db->query($this);
+        $this->executed = true;
+        return $db->results($column, $mapped);
+    }
+
+    public function execute()
+    {
+        $SL = new ServiceLocator();
+        $db = $SL->getService(Database::class);
+        $db->query($this);
+        $this->executed = true;
+        return $this;
+    }
 
     public function __toString()
     {

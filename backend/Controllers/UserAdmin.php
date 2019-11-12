@@ -4,56 +4,43 @@
 namespace Okay\Admin\Controllers;
 
 
-use Okay\Entities\OrdersEntity;
-use Okay\Entities\UserGroupsEntity;
-use Okay\Entities\UsersEntity;
+use Okay\Admin\Helpers\BackendUsersHelper;
+use Okay\Admin\Helpers\BackendValidateHelper;
+use Okay\Admin\Requests\BackendUsersRequest;
 
 class UserAdmin extends IndexAdmin
 {
     
-    public function fetch(UsersEntity $usersEntity, UserGroupsEntity $userGroups, OrdersEntity $ordersEntity)
-    {
+    public function fetch(
+        BackendUsersRequest $backendUsersRequest,
+        BackendValidateHelper $backendValidateHelper,
+        BackendUsersHelper $backendUsersHelper
+    ) {
         
         /*Прием данных о пользователе*/
         if ($this->request->method('post')) {
-            $user = new \stdClass;
-            $user->id = $this->request->post('id', 'integer');
-            $user->name = $this->request->post('name');
-            $user->email = $this->request->post('email');
-            $user->phone = $this->request->post('phone');
-            $user->address = $this->request->post('address');
-            $user->group_id = $this->request->post('group_id');
+            $user = $backendUsersRequest->postUser();
             
             /*Не допустить одинаковые email пользователей*/
-            if (empty($user->name)) {
-                $this->design->assign('message_error', 'empty_name');
-            } elseif (empty($user->email)) {
-                $this->design->assign('message_error', 'empty_email');
-            } elseif (($u = $usersEntity->get($user->email)) && $u->id!=$user->id) {
-                $this->design->assign('message_error', 'login_exists');
+            if ($error = $backendValidateHelper->getUsersValidateError($user)) {
+                $this->design->assign('message_error', $error);
             } else {
-                /*Обновление пользователя*/
-                $user->id = $usersEntity->update($user->id, $user);
-                $this->design->assign('message_success', 'updated');
-                $user = $usersEntity->get(intval($user->id));
+                $preparedUser = $backendUsersHelper->prepareUpdate($user);
+                $backendUsersHelper->update($preparedUser->id, $preparedUser);
             }
         }
-        
-        $id = $this->request->get('id', 'integer');
-        if (!empty($id)) {
-            $user = $usersEntity->get(intval($id));
-        }
-        
-        /*История заказов пользователя*/
+
         if (!empty($user)) {
-            $this->design->assign('user', $user);
-            
-            $orders = $ordersEntity->find(['user_id'=>$user->id]);
-            $this->design->assign('orders', $orders);
+            $userId = (int)$user->id;
+        } else {
+            $userId = $this->request->get('id', 'integer');
         }
         
-        $groups = $userGroups->find();
+        $user = $backendUsersHelper->getUser($userId);
+        
+        $groups = $backendUsersHelper->getAllGroups();
         $this->design->assign('groups', $groups);
+        $this->design->assign('user', $user);
         
         $this->response->setContent($this->design->fetch('user.tpl'));
     }

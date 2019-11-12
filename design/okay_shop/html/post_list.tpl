@@ -6,7 +6,7 @@
             {elseif $post->type_post == 'news'}
                 {$url = {url_generator route='news_item' url=$post->url}}
             {/if}
-            <a class="" href="{$url}">
+            <a class="" aria-label="{$post->name|escape}" href="{$url}">
                 {if $post->image}
                     <img class="lazy" data-src="{$post->image|resize:420:220:false:$config->resized_blog_dir:center:center}" alt="{$post->name|escape}" title="{$post->name|escape}"/>
                 {else}

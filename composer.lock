@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cc2e7433dbf91b99cc633c8a639cee8d",
+    "content-hash": "a33a3259f01ba0e4086d523a73d1baf6",
     "packages": [
         {
             "name": "aura/sql",
@@ -122,6 +122,182 @@
                 "update"
             ],
             "time": "2016-10-03T20:34:56+00:00"
+        },
+        {
+            "name": "axy/backtrace",
+            "version": "1.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/axypro/backtrace.git",
+                "reference": "c6c7d0f3497a07ae934f9e8511cbc2286db311c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/axypro/backtrace/zipball/c6c7d0f3497a07ae934f9e8511cbc2286db311c5",
+                "reference": "c6c7d0f3497a07ae934f9e8511cbc2286db311c5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "axy\\backtrace\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Oleg Grigoriev",
+                    "email": "go.vasac@gmail.com"
+                }
+            ],
+            "description": "Tracing in PHP",
+            "homepage": "https://github.com/axypro/backtrace",
+            "keywords": [
+                "Backtrace",
+                "debug",
+                "exception",
+                "trace"
+            ],
+            "time": "2019-02-02T15:52:44+00:00"
+        },
+        {
+            "name": "axy/codecs-base64vlq",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/axypro/codecs-base64vlq.git",
+                "reference": "53a1957f2cb773c6533ac615b3f1ac59e40e13cc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/axypro/codecs-base64vlq/zipball/53a1957f2cb773c6533ac615b3f1ac59e40e13cc",
+                "reference": "53a1957f2cb773c6533ac615b3f1ac59e40e13cc",
+                "shasum": ""
+            },
+            "require": {
+                "axy/errors": "~1.0.1",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "axy\\codecs\\base64vlq\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Oleg Grigoriev",
+                    "email": "go.vasac@gmail.com"
+                }
+            ],
+            "description": "Codec for VLQ (variable-length quantity) Base64 algorithm",
+            "homepage": "https://github.com/axypro/codecs-base64vlq",
+            "keywords": [
+                "Source map",
+                "VLQ",
+                "Variable length quantity",
+                "base64",
+                "codec"
+            ],
+            "time": "2015-11-23T07:08:52+00:00"
+        },
+        {
+            "name": "axy/errors",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/axypro/errors.git",
+                "reference": "2c64374ae2b9ca51304c09b6b6acc275557fc34f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/axypro/errors/zipball/2c64374ae2b9ca51304c09b6b6acc275557fc34f",
+                "reference": "2c64374ae2b9ca51304c09b6b6acc275557fc34f",
+                "shasum": ""
+            },
+            "require": {
+                "axy/backtrace": "~1.0.2",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "axy\\errors\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Oleg Grigoriev",
+                    "email": "go.vasac@gmail.com"
+                }
+            ],
+            "description": "Exceptions in PHP",
+            "homepage": "https://github.com/axypro/errors",
+            "keywords": [
+                "error",
+                "exception"
+            ],
+            "time": "2019-02-02T18:26:18+00:00"
+        },
+        {
+            "name": "axy/sourcemap",
+            "version": "0.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/axypro/sourcemap.git",
+                "reference": "f5793e5d166bf2a1735e27676007a21c121e20af"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/axypro/sourcemap/zipball/f5793e5d166bf2a1735e27676007a21c121e20af",
+                "reference": "f5793e5d166bf2a1735e27676007a21c121e20af",
+                "shasum": ""
+            },
+            "require": {
+                "axy/codecs-base64vlq": "~1.0.0",
+                "axy/errors": "~1.0.1",
+                "ext-json": "*",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "axy\\sourcemap\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Oleg Grigoriev",
+                    "email": "go.vasac@gmail.com"
+                }
+            ],
+            "description": "Work with JavaScript/CSS Source Map",
+            "homepage": "https://github.com/axypro/sourcemap",
+            "keywords": [
+                "Source map",
+                "css",
+                "javascript",
+                "sourcemap"
+            ],
+            "time": "2018-04-16T13:23:46+00:00"
         },
         {
             "name": "bramus/router",
@@ -823,16 +999,16 @@
         },
         {
             "name": "psr/log",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd"
+                "reference": "bf73deb2b3b896a9d9c75f3f0d88185d2faa27e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
-                "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/bf73deb2b3b896a9d9c75f3f0d88185d2faa27e2",
+                "reference": "bf73deb2b3b896a9d9c75f3f0d88185d2faa27e2",
                 "shasum": ""
             },
             "require": {
@@ -841,7 +1017,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
@@ -866,7 +1042,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2018-11-20T15:27:04+00:00"
+            "time": "2019-10-25T08:06:51+00:00"
         },
         {
             "name": "sabberworm/php-css-parser",

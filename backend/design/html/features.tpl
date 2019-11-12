@@ -60,6 +60,13 @@
         </div>
     </div>
 
+    {$block = {get_design_block block="features_custom_block"}}
+    {if !empty($block)}
+        <div class="row custom_block">
+            {$block}
+        </div>
+    {/if}
+
     {*Главная форма страницы*}
     {if $features}
         <form method="post" class="fn_form_list fn_fast_button">
@@ -100,6 +107,8 @@
                                 <a class="link" href="{url controller=FeatureAdmin id=$feature->id return=$smarty.server.REQUEST_URI}">
                                     {$feature->name|escape}
                                 </a>
+
+                                {get_design_block block="features_list_name"}
                             </div>
 
                             <div class="okay_list_boding okay_list_features_tag">

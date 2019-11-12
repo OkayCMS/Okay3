@@ -183,7 +183,7 @@ class ImportProducts extends AbstractImport
                         'in_filter' => 1,
                     ]);
                 } else {
-                    $featureId = $featuresEntity->update($featureId, [
+                    $featuresEntity->update($featureId, [
                         'name' => strval($xmlFeature->Наименование),
                     ]);
                 }
@@ -336,7 +336,7 @@ class ImportProducts extends AbstractImport
                 'name' => (string)$xmlProduct->Наименование,
                 'meta_title' => (string)$xmlProduct->Наименование,
                 'meta_keywords' => (string)$xmlProduct->Наименование,
-                'meta_description' => $description,
+                'meta_description' => (string)$xmlProduct->Наименование,
                 'annotation' => $description,
                 'description' => $description,
                 'visible' => 1,
@@ -359,7 +359,6 @@ class ImportProducts extends AbstractImport
                 $p = new \stdClass();
                 if (!empty($xmlProduct->Описание)) {
                     $description = strval($xmlProduct->Описание);
-                    $p->meta_description = $description;
                     $p->annotation = $description;
                     $p->description = $description;
                 }
@@ -368,8 +367,9 @@ class ImportProducts extends AbstractImport
                 $p->name = (string)$xmlProduct->Наименование;
                 $p->meta_title = (string)$xmlProduct->Наименование;
                 $p->meta_keywords = (string)$xmlProduct->Наименование;
+                $p->meta_description = (string)$xmlProduct->Наименование;
 
-                $productId = $productsEntity->update($productId, $p);
+                $productsEntity->update($productId, $p);
 
                 // Обновляем категории товара
                 if (!empty($productsCategoriesIds) && !empty($productId)) {
@@ -572,6 +572,7 @@ class ImportProducts extends AbstractImport
     /**
      * @param $xmlProduct \SimpleXMLElement()
      * @param $productId integer
+     * @throws \Exception
      */
     private function importImages($xmlProduct, $productId)
     {
@@ -590,17 +591,6 @@ class ImportProducts extends AbstractImport
             if (!empty($image) && is_file($this->integration1C->getTmpDir() . $image) && is_writable($this->integration1C->config->original_images_dir)) {
 
                 $filename = basename((string)$image);
-                $base = pathinfo($filename, PATHINFO_FILENAME);
-                $ext = pathinfo($filename, PATHINFO_EXTENSION);
-
-                while (file_exists($this->integration1C->config->root_dir.$this->integration1C->config->original_images_dir.$filename)) {
-                    $new_base = pathinfo($filename, PATHINFO_FILENAME);
-                    if (preg_match('/_([0-9]+)$/', $new_base, $parts)) {
-                        $filename = $base.'_'.($parts[1]+1).'.'.$ext;
-                    } else {
-                        $filename = $base.'_1.'.$ext;
-                    }
-                }
                 
                 $imgId = $imagesEntity->cols(['id'])->find([
                     'limit' => 1,
@@ -624,17 +614,6 @@ class ImportProducts extends AbstractImport
             foreach ($xmlProduct->Картинка as $img) {
                 $image = (string)$img;
                 $filename = basename($image);
-                $base = pathinfo($filename, PATHINFO_FILENAME);
-                $ext = pathinfo($filename, PATHINFO_EXTENSION);
-
-                while (file_exists($this->integration1C->config->root_dir.$this->integration1C->config->original_images_dir.$filename)) {
-                    $new_base = pathinfo($filename, PATHINFO_FILENAME);
-                    if (preg_match('/_([0-9]+)$/', $new_base, $parts)) {
-                        $filename = $base.'_'.($parts[1]+1).'.'.$ext;
-                    } else {
-                        $filename = $base.'_1.'.$ext;
-                    }
-                }
                 
                 $originalImagesDir = $this->integration1C->config->root_dir . $this->integration1C->config->original_images_dir;
                 if (!empty($filename) && is_file($this->integration1C->getTmpDir(). $image) && is_writable($originalImagesDir)) {

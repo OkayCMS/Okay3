@@ -23,7 +23,7 @@
 
     {$block = {get_design_block block="categories_custom_block"}}
     {if !empty($block)}
-        <div class="fn_toggle_wrap" style="height: 40px; margin-bottom: 5px;">
+        <div class="fn_toggle_wrap custom_block">
             {$block}
         </div>
     {/if}

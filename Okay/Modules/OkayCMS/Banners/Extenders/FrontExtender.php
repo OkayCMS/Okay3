@@ -17,15 +17,30 @@ class FrontExtender implements ExtensionInterface
     private $entityFactory;
     private $design;
     private $module;
+    private $totalBannersHtml = '';
+    private $shortCodesParts = [];
     
     public function __construct(EntityFactory $entityFactory, Design $design, Module $module)
     {
         $this->entityFactory = $entityFactory;
         $this->design = $design;
         $this->module = $module;
+        
+        $this->init();
     }
 
     public function assignCurrentBanners()
+    {
+        $this->design->assign('global_banners', $this->totalBannersHtml);
+    }
+    
+    public function metadataGetParts(array $parts = [])
+    {
+        $parts = array_merge($parts, $this->shortCodesParts);
+        return $parts;
+    }
+    
+    public function init()
     {
 
         // Устанавливаем директорию HTML из модуля
@@ -52,9 +67,6 @@ class FrontExtender implements ExtensionInterface
         if ($page = $this->design->getVar('page')) {
             $showOnFilter['pages'] = $page->id;
         }
-
-        $post = $this->design->getVar('post');
-        $product = $this->design->getVar('product');
         
         $this->design->assign('page', $page);
         $bannersFilter = [
@@ -97,7 +109,6 @@ class FrontExtender implements ExtensionInterface
                 }
             }
             
-            $totalBannersHtml = '';
             foreach ($banners as $banner) {
 
                 if (!empty($banner->settings)) {
@@ -108,35 +119,11 @@ class FrontExtender implements ExtensionInterface
                 // Если баннер отмечен как шорткод, передадим такую переменную в дизайн
                 if (!empty($banner->individual_shortcode)) {
                     $bannerHtml = $this->design->fetch('show_banner.tpl');
-                    $shortCodeParts = ['{$' . $banner->individual_shortcode . '}' => $bannerHtml];
-                    
-                    // Вставляем баннер в описание сущностей
-                    if (!empty($category->description)) {
-                        $category->description = strtr($category->description, $shortCodeParts);
-                    }
-                    
-                    if (!empty($brand->description)) {
-                        $brand->description = strtr($brand->description, $shortCodeParts);
-                    }
-                    
-                    if (!empty($post->description)) {
-                        $post->description = strtr($post->description, $shortCodeParts);
-                    }
-                    
-                    if (!empty($product->description)) {
-                        $product->description = strtr($product->description, $shortCodeParts);
-                    }
-                    
-                    if (!empty($page->description)) {
-                        $page->description = strtr($page->description, $shortCodeParts);
-                    }
-                    
-                    $this->design->assign($banner->individual_shortcode, $bannerHtml);
+                    $this->shortCodesParts['{$' . $banner->individual_shortcode . '}'] = $bannerHtml;
                 } else {
-                    $totalBannersHtml .= $this->design->fetch('show_banner.tpl');
+                    $this->totalBannersHtml .= $this->design->fetch('show_banner.tpl');
                 }
             }
-            $this->design->assign('global_banners', $totalBannersHtml);
         }
         
         // Вернём обратно стандартную директорию шаблонов

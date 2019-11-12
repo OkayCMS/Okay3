@@ -5,6 +5,8 @@ namespace Okay\Controllers;
 
 
 use Okay\Helpers\CartHelper;
+use Okay\Helpers\CouponHelper;
+use Okay\Helpers\MetadataHelpers\CartMetadataHelper;
 use Okay\Requests\CartRequest;
 use Okay\Core\Notify;
 use Okay\Core\Router;
@@ -13,7 +15,6 @@ use Okay\Entities\DeliveriesEntity;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\CouponsEntity;
 use Okay\Entities\OrdersEntity;
-use Okay\Entities\PurchasesEntity;
 use Okay\Core\Request;
 use Okay\Core\Cart;
 use Okay\Core\Languages;
@@ -28,21 +29,22 @@ class CartController extends AbstractController
 {
     /*Отображение заказа*/
     public function render(
-        DeliveriesEntity $deliveriesEntity,
-        OrdersEntity     $ordersEntity,
-        CouponsEntity    $couponsEntity,
-        CurrenciesEntity $currenciesEntity,
-        Languages        $languages,
-        PurchasesEntity  $purchasesEntity,
-        Request          $request,
-        Notify           $notify,
-        Cart             $cartCore,
-        DeliveriesHelper $deliveriesHelper,
-        PaymentsHelper   $paymentsHelper,
-        OrdersHelper      $ordersHelper,
-        CartRequest      $cartRequest,
-        CartHelper       $cartHelper,
-        ValidateHelper   $validateHelper
+        DeliveriesEntity   $deliveriesEntity,
+        OrdersEntity       $ordersEntity,
+        CouponsEntity      $couponsEntity,
+        CurrenciesEntity   $currenciesEntity,
+        Languages          $languages,
+        Request            $request,
+        Notify             $notify,
+        Cart               $cartCore,
+        DeliveriesHelper   $deliveriesHelper,
+        PaymentsHelper     $paymentsHelper,
+        OrdersHelper       $ordersHelper,
+        CartRequest        $cartRequest,
+        CartHelper         $cartHelper,
+        ValidateHelper     $validateHelper,
+        CouponHelper       $couponHelper,
+        CartMetadataHelper $cartMetadataHelper
     ) {
 
         // Если передан id варианта, добавим его в корзину
@@ -51,64 +53,41 @@ class CartController extends AbstractController
             $this->response->redirectTo(Router::generateUrl('cart', [], true));
         }
 
+        $this->setMetadataHelper($cartMetadataHelper);
+        
         $cart = $cartCore->get();
         /*Оформление заказа*/
         if (isset($_POST['checkout'])) {
             $order = $cartRequest->postOrder();
+            $order = $ordersHelper->attachDiscountIfExists($order, $cart);
+            $order = $ordersHelper->attachCouponIfExists($order, $cart);
+            $order = $ordersHelper->attachUserIfLogin($order, $this->user);
 
-            // Скидка
-            $order->discount = $cart->discount;
-
-            if ($cart->coupon) {
-                $order->coupon_discount = $cart->coupon_discount;
-                $order->coupon_code     = $cart->coupon->code;
-            }
-
-            if (!empty($this->user->id)) {
-                $order->user_id = $this->user->id;
-            }
-
-            /*Валидация данных клиента*/
             if ($error = $validateHelper->getCartValidateError($order)) {
                 $this->design->assign('error', $error);
             } else {
                 // Добавляем заказ в базу
                 $order->lang_id = $languages->getLangId();
-                $orderId        = $ordersEntity->add($order);
+                $preparedOrder  = $ordersHelper->prepareAdd($order);
+                $orderId        = $ordersHelper->add($preparedOrder);
                 $_SESSION['order_id'] = $orderId;
 
-                // Если использовали купон, увеличим количество его использований
-                if($cart->coupon) {
-                    $couponsEntity->update($cart->coupon->id, [
-                        'usages'=>$cart->coupon->usages+1
-                    ]);
-                }
+                $couponHelper->registerUseIfExists($cart->coupon);
 
-                // Добавляем товары к заказу
-                foreach ($request->post('amounts') as $variantId=>$amount) {
-                    $purchasesEntity->add([
-                        'order_id'   =>$orderId, 
-                        'variant_id' =>intval($variantId), 
-                        'amount'     =>intval($amount)
-                    ]);
-                }
-                $order = $ordersEntity->get(intval($orderId));
-
-                // Стоимость доставки
+                $order = $ordersEntity->get((int) $orderId);
                 if (!empty($order->delivery_id)) {
-                    $delivery = $deliveriesEntity->get(intval($order->delivery_id));
+                    $delivery          = $deliveriesEntity->get((int) $order->delivery_id);
                     $deliveryPriceInfo = $deliveriesHelper->prepareDeliveryPriceInfo($delivery, $order);
-                    
-                    // Обновим заказ дынными, которые вернула логика
-                    if (!empty($deliveryPriceInfo)) {
-                        $ordersEntity->update($order->id, $deliveryPriceInfo);
+                    $deliveriesHelper->updateDeliveryPriceInfo($deliveryPriceInfo, $order);
+
+                    if (isset($deliveryPriceInfo['delivery_price'])) {
+                        $cart->total_price += $deliveryPriceInfo['delivery_price'];
                     }
                 }
 
+                $preparedCart = $cartHelper->prepareCart($cart, $orderId);
+                $cartHelper->cartToOrder($preparedCart, $orderId);
                 $ordersHelper->finalCreateOrderProcedure($order);
-                
-                // Обновим итоговую стоимость заказа
-                $ordersEntity->updateTotalPrice($orderId);
                 
                 // Отправляем письмо пользователю
                 $notify->emailOrderUser($order->id);
@@ -127,7 +106,7 @@ class CartController extends AbstractController
                     $cartCore->updateItem($variantId, $amount);
                 }
 
-                $couponCode = trim($request->post('coupon_code', 'string'));
+                $couponCode = $cartRequest->postCoupon();
                 if(empty($couponCode)) {
                     $cartCore->applyCoupon('');
                     $this->response->redirectTo(Router::generateUrl('cart', [], true));
@@ -200,7 +179,7 @@ class CartController extends AbstractController
         $cart = $cartCore->get();
         $this->design->assign('cart', $cart);
 
-        $this->design->assign('all_currencies', $currenciesEntity->find());
+        $this->design->assign('all_currencies', $currenciesEntity->mappedBy('id')->find());
 
         /*Рабтаем с товарами в корзине*/
         if (count($cart->purchases) > 0) {

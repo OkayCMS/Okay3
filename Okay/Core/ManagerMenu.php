@@ -69,6 +69,7 @@ class ManagerMenu
             'left_seo_patterns_title'    => ['SeoPatternsAdmin'],
             'left_seo_filter_patterns_title' => ['SeoFilterPatternsAdmin'],
             'left_feature_aliases_title'     => ['FeaturesAliasesAdmin'],
+            'left_setting_router_title'  => ['SettingsRouterAdmin'],
         ],
         'left_design' => [
             'left_theme_title'           => ['ThemeAdmin'],
@@ -89,7 +90,7 @@ class ManagerMenu
             'left_managers_title'        => ['ManagersAdmin', 'ManagerAdmin'],
             'left_languages_title'       => ['LanguagesAdmin', 'LanguageAdmin'],
             'learning_title'             => ['LearningAdmin'],
-            'left_system_title'          => ['SystemAdmin']
+            'left_system_title'          => ['SystemAdmin'],
         ],
         'left_modules' => [
             'left_modules_list'          => ['ModulesAdmin'],
@@ -109,10 +110,12 @@ class ManagerMenu
      *
      * @var array
      */
-    private $modulesСontrollersHasOwnMenuItem = [];
+    private $modulesControllersHasOwnMenuItem = [];
 
     private $managers;
     private $module;
+    
+    private $menuCounters = [];
     
     public function __construct(Managers $managers, Module $module)
     {
@@ -128,7 +131,7 @@ class ManagerMenu
      */
     public function addCommonModuleController($vendorModuleController)
     {
-        if (in_array($vendorModuleController, $this->modulesСontrollersHasOwnMenuItem)) {
+        if (in_array($vendorModuleController, $this->modulesControllersHasOwnMenuItem)) {
             return;
         }
 
@@ -138,6 +141,27 @@ class ManagerMenu
         }
     }
 
+    public function addCounter($menuItemTitle, $counter)
+    {
+        $this->menuCounters[$menuItemTitle] = $counter;
+    }
+    
+    public function getCounters()
+    {
+        foreach ($this->leftMenu as $section=>$menu) {
+            foreach (array_keys($menu) as $menuItemTitle) {
+                if (isset($this->menuCounters[$menuItemTitle])) {
+                    if (!isset($this->menuCounters[$section])) {
+                        $this->menuCounters[$section] = $this->menuCounters[$menuItemTitle];
+                    } else {
+                        $this->menuCounters[$section] += $this->menuCounters[$menuItemTitle];
+                    }
+                }
+            }
+        }
+        return $this->menuCounters;
+    }
+    
     /**
      * Получить основное меню админ панели с учетом индивидуальной сортировки менеждера и прав доступа вышеупомянутого менеджера
      *
@@ -229,7 +253,7 @@ class ManagerMenu
             }
 
             $this->leftMenu[$section][$itemName] = $controllers;
-            $this->modulesСontrollersHasOwnMenuItem = array_merge($this->modulesСontrollersHasOwnMenuItem, $controllers);
+            $this->modulesControllersHasOwnMenuItem = array_merge($this->modulesControllersHasOwnMenuItem, $controllers);
 
             if (empty($icon)) {
                 continue;

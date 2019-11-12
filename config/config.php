@@ -27,7 +27,7 @@ db_charset = UTF8MB4
 db_names = utf8mb4
 
 ;Режим SQL
-db_sql_mode = "STRICT_TRANS_TABLES,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+db_sql_mode = "ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
 
 ;Смещение часового пояса
 ;db_timezone = +04:00

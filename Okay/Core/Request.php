@@ -33,6 +33,28 @@ class Request
         
     }
 
+    /**
+     * Возвращает массив $argv.
+     * Если параметры были переданы как key=value key2=value2 будет возвращен массив
+     * где ключ будет названием параметра
+     * @return array
+     */
+    public static function getArgv()
+    {
+        $result = [];
+        if (!empty($argv)) {
+            for ($i = 1; $i < count($argv); $i++) {
+                $arg = explode("=", $argv[$i]);
+                if (count($arg) == 2) {
+                    $result[trim($arg[0])] = trim($arg[1]);
+                } else {
+                    $result[] = trim($argv[$i]);
+                }
+            }
+        }
+        return $result;
+    }
+    
     public function getCurrentUrl()
     {
         return $this->getRootUrl().$_SERVER['REQUEST_URI'];

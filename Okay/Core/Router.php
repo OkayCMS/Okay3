@@ -5,8 +5,12 @@ namespace Okay\Core;
 
 use Okay\Core\Entity\Entity;
 use Bramus\Router\Router as BRouter;
+use Okay\Core\Routes\RouteFactory;
+use Okay\Entities\CategoriesEntity;
+use Okay\Entities\ProductsEntity;
 use OkayLicense\License;
 use Okay\Entities\PagesEntity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class Router {
 
@@ -42,6 +46,9 @@ class Router {
     /** @var Languages */
     private static $languages;
 
+    /** @var Languages */
+    private static $routeFactory;
+
     public function __construct(
         BRouter $router,
         Request $request,
@@ -49,20 +56,21 @@ class Router {
         License $license,
         EntityFactory $entityFactory,
         Languages $languages,
-        Settings $settings
+        Settings $settings,
+        RouteFactory $routeFactory
     ) {
         
         // SL будем использовать только для получения сервисов, которые запросили для контроллера
         $this->serviceLocator = new ServiceLocator();
         
-        $this->router       = $router;
-        $this->request      = $request;
-        $this->response     = $response;
-        $this->license      = $license;
+        $this->router        = $router;
+        $this->request       = $request;
+        $this->response      = $response;
+        $this->license       = $license;
         $this->entityFactory = $entityFactory;
-        $this->settings     = $settings;
+        $this->settings      = $settings;
+        self::$routeFactory  = $routeFactory;
         self::$languages     = $languages;
-        
     }
 
     public static function getFrontRoutes()
@@ -238,8 +246,10 @@ class Router {
 
         // Передаем контроллеру, все, что запросили
         call_user_func_array([$controller, 'onInit'], $this->getMethodParams($controller, 'onInit', $params, $routeVars, $defaults));
-        $controllerResult = call_user_func_array([$controller, $methodName], $this->getMethodParams($controller, $methodName, $params, $routeVars, $defaults));
-        call_user_func_array([$controller, 'afterController'], $this->getMethodParams($controller, 'afterController', $params, $routeVars, $defaults));
+        // На 404 не вызываем afterController
+        if (($controllerResult = call_user_func_array([$controller, $methodName], $this->getMethodParams($controller, $methodName, $params, $routeVars, $defaults))) !== false){
+            call_user_func_array([$controller, 'afterController'], $this->getMethodParams($controller, 'afterController', $params, $routeVars, $defaults));
+        }
         return $controllerResult;
     }
     
@@ -265,6 +275,11 @@ class Router {
     
     public static function generateUrl($routeName, $params = [], $isAbsolute = false, $langId = null) // todo наблюдать, нормально ли будет работать статически
     {
+        $route = self::$routeFactory->create($routeName);
+        if ($route !== false) {
+            $params['url'] = $route->generateSlugUrl($params['url']);
+        }
+
         if (empty($routeName)) {
             throw new \Exception('Empty param "route"');
         }
@@ -298,8 +313,8 @@ class Router {
         if ($isAbsolute === true) {
             $result = Request::getRootUrl() . '/' . $result;
         }
-        
-        return $result;
+
+        return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
     }
     
     /**

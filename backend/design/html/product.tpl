@@ -61,6 +61,8 @@
                 <div class="heading_box">
                     {if $message_error=='url_exists'}
                         {$btr->product_exists|escape}
+                    {elseif $message_error=='global_url_exists'}
+                        {$btr->global_url_exists|escape}
                     {elseif $message_error=='empty_name'}
                         {$btr->general_enter_title|escape}
                     {elseif $message_error == 'empty_url'}
@@ -69,6 +71,10 @@
                         {$btr->general_not_underscore|escape}
                     {elseif $message_error == 'empty_categories'}
                         {$btr->product_no_category|escape}
+                    {elseif $message_error == 'empty_variants'}
+                        {$btr->empty_variants|escape}
+                    {elseif $message_error == 'duplicate_variant_names'}
+                        {$btr->duplicate_variant_names|escape}
                     {else}
                         {$message_error|escape}
                     {/if}

@@ -7,23 +7,21 @@
 	<div class="block__header block__header--boxed block__header--border">
 		<h1 class="block__heading"><span data-page="{$page->id}">{if $page->name_h1|escape}{$page->name_h1|escape}{else}{$page->name|escape}{/if}</span></h1>
 	</div>
-	{if $brands || $page->description}
+	{if $brands}
 		<div class="block__body block--boxed block--border">
 			{* The list of the brands *}
 			{if $brands}
-				<div class="brand row">
+				<div class="brand f_row">
 					{foreach $brands as $b}
-						<div class="brand__item col-xs-6 col-sm-4 col-lg-2">
+						<div class="brand__item f_col-xs-6 f_col-sm-4 f_col-lg-2">
 							<div class="brand__preview">
 								<a class="d-flex align-items-center justify-content-center brand__link" data-brand="{$b->id}" href="{url_generator route='brand' url=$b->url}">
 									{if $b->image}
 										<div class="brand__image">
-											<img class="brand_img lazy" data-src="{$b->image|resize:120:100:false:$config->resized_brands_dir}" src="{$b->image|resize:120:100:false:$config->resized_brands_dir}" alt="{$b->name|escape}" title="{$b->name|escape}">
+											<img class="brand_img lazy" data-src="{$b->image|resize:120:100:false:$config->resized_brands_dir}" alt="{$b->name|escape}" title="{$b->name|escape}">
 										</div>
 									{else}
-										<div class="brand__name">
-											<span>{$b->name|escape}</span>
-										</div>
+										<div class="brand__name"><span>{$b->name|escape}</span></div>
 									{/if}
 								</a>
 							</div>
@@ -31,15 +29,17 @@
 					{/foreach}
 				</div>
 			{/if}
-
-			{* The page body *}
-			{if $page->description}
-			<div class="">
-				<div class="fn_readmore">
-					<div class="page-description__text boxed__description">{$page->description}</div>
-				</div>
-			</div>
-			{/if}
 		</div>
 	{/if}
 </div>
+
+{* The page body *}
+{if $page->description}
+<div class="block block--boxed block--border">
+	<div class="fn_readmore">
+		<div class="page-description__text boxed__description">{$page->description}</div>
+	</div>
+</div>
+{/if}
+
+

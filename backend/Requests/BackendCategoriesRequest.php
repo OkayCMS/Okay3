@@ -7,7 +7,7 @@ namespace Okay\Admin\Requests;
 use Okay\Core\Request;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
-class CategoriesRequest
+class BackendCategoriesRequest
 {
     private $request;
 

@@ -5,7 +5,7 @@ namespace Okay\Modules\OkayCMS\NovaposhtaCost\Init;
 
 
 use Okay\Admin\Helpers\BackendOrdersHelper;
-use Okay\Admin\Requests\ProductAdminRequest;
+use Okay\Admin\Requests\BackendProductsRequest;
 use Okay\Core\Modules\AbstractInit;
 use Okay\Core\Modules\EntityField;
 use Okay\Entities\VariantsEntity;
@@ -69,7 +69,7 @@ class Init extends AbstractInit
         );
 
         $this->registerChainExtension(
-            ['class' => ProductAdminRequest::class, 'method' => 'postVariants'],
+            ['class' => BackendProductsRequest::class, 'method' => 'postVariants'],
             ['class' => BackendExtender::class, 'method' => 'correctVariantsVolume']
         );
         

@@ -97,9 +97,17 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="settings_notify_general"}
             </div>
         </div>
     </div>
+
+    {$block = {get_design_block block="settings_notify_custom_block"}}
+    {if !empty($block)}
+        <div class="fn_toggle_wrap custom_block">
+            {$block}
+        </div>
+    {/if}
 
     <div class="row">
         <div class="col-lg-12 col-md-12">
@@ -165,6 +173,7 @@
                                 <div class="fn_test_smtp_status float-xs-left form-control"></div>
                             </div>
                         </div>
+                        {get_design_block block="settings_notify_smtp"}
                     </div>
                     <div class="row fn_row hidden">
                         <div class="col-md-12">

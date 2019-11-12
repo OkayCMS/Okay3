@@ -18,8 +18,8 @@ class SEOFilterPatternsEntity extends Entity
 
     protected static $langFields = [
         'h1',
-        'title',
-        'keywords',
+        'meta_title',
+        'meta_keywords',
         'meta_description',
         'description',
     ];

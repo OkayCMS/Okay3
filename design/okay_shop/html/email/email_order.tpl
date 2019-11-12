@@ -261,27 +261,18 @@
                                                     <table width="100%" cellspacing="0" cellpadding="0">
                                                         <tbody>
                                                         <tr>
-                                                            <td align="left">
-                                                                <p><br></p>
-                                                                <table style="width: 100%;" cellspacing="1" cellpadding="1" border="0">
-                                                                    <tbody>
-                                                                    <tr>
-                                                                        <td>
-                                                                            <a href="{url_generator route="product" url=$purchase->product->url absolute=1}" style="font-family: 'Trebuchet MS';font-size: 16px;color: #222;text-decoration: none;line-height: normal;">{$purchase->product_name|escape}</a><br />
-                                                                            <span class="es-p5t"><em><span style="color: rgb(128, 128, 128); font-size: 12px;">{$purchase->variant_name|escape}</span></em></span>
-                                                                            {if $purchase->variant->stock == 0}
-                                                                            <div class="es-p5t" style="color: #000; font-size: 12px;font-weight: 600">{$lang->product_pre_order}</div>
-                                                                            {/if}
-                                                                        </td>
-                                                                        <td style="text-align: center;" width="60">
-                                                                            {$purchase->amount} {if $purchase->units}{$purchase->units|escape}{else}{$settings->units}{/if}
-                                                                        </td>
-                                                                        <td style="text-align: center;" width="100">
-                                                                            <b>{$purchase->price|convert:$currency->id}&nbsp;{$currency->sign}</b>
-                                                                        </td>
-                                                                    </tr>
-                                                                    </tbody>
-                                                                </table>
+                                                            <td>
+                                                                <a href="{url_generator route='product' url=$purchase->product->url absolute=1}" style="font-family: 'Trebuchet MS';font-size: 16px;color: #222;text-decoration: none;line-height: normal;">{$purchase->product_name|escape}</a><br />
+                                                                <span class="es-p5t"><em><span style="color: rgb(128, 128, 128); font-size: 12px;">{$purchase->variant_name|escape}</span></em></span>
+                                                                {if $purchase->variant->stock == 0}
+                                                                <div class="es-p5t" style="color: #000; font-size: 12px;font-weight: 600">{$lang->product_pre_order}</div>
+                                                                {/if}
+                                                            </td>
+                                                            <td style="text-align: center;" width="60">
+                                                                {$purchase->amount} {if $purchase->units}{$purchase->units|escape}{else}{$settings->units}{/if}
+                                                            </td>
+                                                            <td style="text-align: center;" width="100">
+                                                                <b>{$purchase->price|convert:$currency->id}&nbsp;{$currency->sign}</b>
                                                             </td>
                                                         </tr>
                                                         </tbody>

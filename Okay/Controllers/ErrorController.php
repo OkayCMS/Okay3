@@ -15,9 +15,6 @@ class ErrorController extends AbstractController
         
         $page = $pagesEntity->get('404');
         $this->design->assign('page', $page);
-        $this->design->assign('meta_title', $page->meta_title);
-        $this->design->assign('meta_keywords', $page->meta_keywords);
-        $this->design->assign('meta_description', $page->meta_description);
 
         $this->response->setContent('page.tpl');
     }

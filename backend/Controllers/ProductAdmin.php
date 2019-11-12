@@ -4,16 +4,18 @@
 namespace Okay\Admin\Controllers;
 
 
+use Okay\Admin\Helpers\BackendValidateHelper;
 use \stdClass;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\CurrenciesEntity;
-use Okay\Admin\Requests\ProductAdminRequest;
+use Okay\Admin\Requests\BackendProductsRequest;
 use Okay\Admin\Helpers\BackendProductsHelper;
 use Okay\Admin\Helpers\BackendVariantsHelper;
 use Okay\Admin\Helpers\BackendFeaturesHelper;
 use Okay\Admin\Helpers\BackendSpecialImagesHelper;
+use Okay\Core\Entity\UrlUniqueValidator;
 
 class ProductAdmin extends IndexAdmin
 {
@@ -23,11 +25,12 @@ class ProductAdmin extends IndexAdmin
         CategoriesEntity           $categoriesEntity,
         BrandsEntity               $brandsEntity,
         CurrenciesEntity           $currenciesEntity,
-        ProductAdminRequest        $productRequest,
+        BackendProductsRequest     $productRequest,
         BackendProductsHelper      $backendProductsHelper,
         BackendVariantsHelper      $backendVariantsHelper,
         BackendFeaturesHelper      $backendFeaturesHelper,
-        BackendSpecialImagesHelper $backendSpecialImagesHelper
+        BackendSpecialImagesHelper $backendSpecialImagesHelper,
+        BackendValidateHelper      $backendValidateHelper
     ) {
 
         if ($this->request->method('post') && !empty($_POST)) {
@@ -36,7 +39,9 @@ class ProductAdmin extends IndexAdmin
             $productCategories = $productRequest->postCategories();
             $relatedProducts   = $productRequest->postRelatedProducts();
 
-            if ($this->validateProduct($product, $productsEntity, $productCategories)) {
+            if ($error = $backendValidateHelper->getProductValidateError($product, $productCategories)) {
+                $this->design->assign('message_error', $error);
+            } else {
                 // Товар
                 if (empty($product->id)) {
                     $preparedProduct = $backendProductsHelper->prepareAdd($product);
@@ -75,7 +80,14 @@ class ProductAdmin extends IndexAdmin
                 $featuresValuesText = $productRequest->postFeaturesValuesText();
                 $newFeaturesNames   = $productRequest->postNewFeaturesNames();
                 $newFeaturesValues  = $productRequest->postNewFeaturesValues();
-                $backendFeaturesHelper->updateProductFeatures($product, $featuresValues, $featuresValuesText, $newFeaturesNames, $newFeaturesValues);
+                $backendFeaturesHelper->updateProductFeatures(
+                    $product,
+                    $featuresValues,
+                    $featuresValuesText,
+                    $newFeaturesNames,
+                    $newFeaturesValues,
+                    $productCategories
+                );
 
                 // Связанные товары
                 $relatedProducts = $backendProductsHelper->prepareUpdateRelatedProducts($product, $relatedProducts);
@@ -124,7 +136,7 @@ class ProductAdmin extends IndexAdmin
         $this->response->setContent($this->design->fetch('product.tpl'));
     }
 
-    private function validateProduct($product, ProductsEntity $productsEntity, $productCategories)
+    private function validateProduct($product, ProductsEntity $productsEntity, $productCategories, UrlUniqueValidator $urlUniqueValidator)
     {
         if (empty($product->name)) {
             $this->design->assign('message_error', 'empty_name');
@@ -134,8 +146,12 @@ class ProductAdmin extends IndexAdmin
             $this->design->assign('message_error', 'empty_url');
             return false;
         }
-        elseif (($p = $productsEntity->get($product->url)) && $p->id!=$product->id) {
+        elseif (($p = $productsEntity->get($product->url)) && $p->id != $product->id) {
             $this->design->assign('message_error', 'url_exists');
+            return false;
+        }
+        elseif ($this->settings->get('global_unique_url') && !$urlUniqueValidator->validateGlobal($product->url, ProductsEntity::class, $product->id)) {
+            $this->design->assign('message_error', 'global_url_exists');
             return false;
         }
         elseif (substr($product->url, -1) == '-' || substr($product->url, 0, 1) == '-') {

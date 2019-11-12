@@ -6,6 +6,10 @@ namespace Okay\Core;
 
 use Aura\SqlQuery\QueryFactory as AuraQueryFactory;
 use Okay\Core\QueryFactory\SqlQuery;
+use Okay\Core\QueryFactory\Select;
+use Okay\Core\QueryFactory\Update;
+use Okay\Core\QueryFactory\Delete;
+use Okay\Core\QueryFactory\Insert;
 
 class QueryFactory
 {
@@ -18,22 +22,22 @@ class QueryFactory
 
     public function newSelect()
     {
-        return $this->auraQueryFactory->newSelect();
+        return new Select($this->auraQueryFactory->newSelect());
     }
 
     public function newUpdate()
     {
-        return $this->auraQueryFactory->newUpdate();
+        return new Update($this->auraQueryFactory->newUpdate());
     }
 
     public function newInsert()
     {
-        return $this->auraQueryFactory->newInsert();
+        return new Insert($this->auraQueryFactory->newInsert());
     }
 
     public function newDelete()
     {
-        return $this->auraQueryFactory->newDelete();
+        return new Delete($this->auraQueryFactory->newDelete());
     }
 
     public function newSqlQuery()

@@ -1,8 +1,5 @@
 {* Order page *}
 
-{* The page title *}
-{$meta_title = "`$lang->email_order_title` `$order->id`" scope=global}
-
 <div class="block">
     <div class="block__header block__header--boxed block__header--border">
         <div class="block__title block__title--order">
@@ -73,26 +70,25 @@
 
                         <div class="purchase_detail">
                             {* Discount *}
-                            {if $user->discount > 0}
+                            {if $order->discount > 0}
                             <div class="purchase_detail__item">
                                 <div class="purchase_detail__column_name">
                                     <div class="purchase_detail__name" data-language="cart_discount">{$lang->cart_discount}:</div>
                                 </div>
                                 <div class="purchase_detail__column_value">
-                                    <div class="purchase_detail__price">{$user->discount}%</div>
+                                    <div class="purchase_detail__price">{$order->discount}%</div>
                                 </div>
                             </div>
                             {/if}
 
-                            {if $cart->coupon_discount > 0}
+                            {if $order->coupon_discount > 0}
                             <div class="purchase_detail__item">
                                 <div class="purchase_detail__column_name">
                                     <div class="purchase_detail__name" data-language="cart_coupon">{$lang->cart_coupon}:</div>
                                 </div>
                                 <div class="purchase_detail__column_value">
                                     <div class="purchase_detail__price">
-                                        <i>{$cart->coupon->coupon_percent|escape} %</i>
-                                        &minus; {$cart->coupon_discount|convert} <span class="currency">{$currency->sign|escape}</span>
+                                        &minus; {$order->coupon_discount|convert} <span class="currency">{$currency->sign|escape}</span>
                                     </div>
                                 </div>
                             </div>
@@ -133,14 +129,12 @@
                 <div class="fn_cart_sticky block--boxed block--border d-flex justify-content-center" data-margin-top="15" data-sticky-for="1024" data-sticky-class="is-sticky">
                     <div class="order_boxeded">
                         {if !$order->paid}
-                            <div class="block form--boxed form form_cart">
-
-                                {* Payments *}
-                                <div class="h6">
-                                    <span data-language="order_payment_details">{$lang->order_payment_details}</span>
-                                </div>
-
-                                {if $payment_methods && !$payment_method && $order->total_price>0}
+                            {if $payment_methods && !$payment_method && $order->total_price>0}
+                               <div class="block form--boxed form form_cart">
+                                    {* Payments *}
+                                    <div class="h6">
+                                        <span data-language="order_payment_details">{$lang->order_payment_details}</span>
+                                    </div>
                                     <div class="delivery padding block">
                                         <form method="post">
                                             <div class="delivery form__group">
@@ -154,11 +148,6 @@
                                                         </svg>
 
                                                         <div class="delivery__name">
-                                                            {$total_price_with_delivery = $cart->total_price}
-                                                            {if !$delivery->separate_payment && $cart->total_price < $delivery->free_from}
-                                                                {$total_price_with_delivery = $cart->total_price + $delivery->price}
-                                                            {/if}
-
                                                             {$payment_method->name|escape} {$lang->cart_deliveries_to_pay}
                                                             <span class="delivery__name_price">{$order->total_price|convert:$payment_method->currency_id} {$all_currencies[$payment_method->currency_id]->sign}</span>
                                                         </div>
@@ -182,7 +171,14 @@
                                             <input type="submit" data-language="cart_checkout" value="{$lang->cart_checkout}" name="checkout" class="form__button">
                                         </form>
                                     </div>
-                                {elseif $payment_method}
+                                </div>
+                            {elseif $payment_method}
+                               <div class="block form--boxed form form_cart">
+
+                                {* Payments *}
+                                <div class="h6">
+                                    <span data-language="order_payment_details">{$lang->order_payment_details}</span>
+                                </div>
                                     {* Selected payment *}
                                     <div class="block_selected_payment">
                                         <div class="order_payment">
@@ -205,9 +201,10 @@
                                                 {checkout_payment_form order_id=$order->id module=$payment_method->module}
                                             </div>
                                         </div>
-                                     </div>
-                                {/if}
-                            </div>
+                                    </div>
+                                </div>
+                            {/if}
+                            
                         {/if}
                         <div class="block form form_cart">
                             <div class="h6" data-language="order_details">{$lang->order_details}</div>

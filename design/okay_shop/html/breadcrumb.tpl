@@ -4,7 +4,7 @@
 
         {* The link to the homepage *}
         <li class="d-inline-flex align-items-center breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
-            <a itemprop="url" href="{url_generator route="main"}" >
+            <a itemprop="url" aria-label="{$lang->breadcrumb_home}" href="{url_generator route='main'}" >
                 <span itemprop="title" data-language="breadcrumb_home" title="{$lang->breadcrumb_home}">
                     {include file="svg.tpl" svgId="home_icon"}
                 </span>
@@ -13,12 +13,12 @@
 
         {* Categories page *}
         {if $controller == "CategoryController"}
-            {if $category && empty($keyword)}
+            {if $category}
                 {foreach from=$category->path item=cat}
                     {if !$cat@last}
                         {if $cat->visible}
                             <li class="d-inline-flex align-items-center breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
-                                <a itemprop="url" href="{url_generator route="category" url=$cat->url}">
+                                <a itemprop="url" href="{url_generator route='category' url=$cat->url}">
                                     <span itemprop="title">{$cat->name|escape}</span>
                                 </a>
                             </li>
@@ -32,15 +32,15 @@
         {* Products list page *}
         {elseif $controller == "ProductsController"}
             {if !empty($keyword)}
-                <li class="d-inline-flex align-items-center breadcrumbs__item" data-language="breadcrumb_search">{$lang->breadcrumb_search}</li>
+                <li class="d-inline-flex align-items-center breadcrumbs__item" data-language="general_search">{$lang->general_search}</li>
             {else}
-                <li class="d-inline-flex align-items-center breadcrumbs__item">{$page->name|escape}</li>
+                <li class="d-inline-flex align-items-center breadcrumbs__item">{$h1|escape}</li>
             {/if}
             
         {* Brand list page *}
         {elseif $controller == "BrandController"}
             <li class="d-inline-flex align-items-center breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
-                <a itemprop="url" href="{url_generator route="brands"}" data-language="breadcrumb_brands">
+                <a itemprop="url" href="{url_generator route='brands'}" data-language="breadcrumb_brands">
                     <span itemprop="title">{$lang->breadcrumb_brands}</span>
                 </a>
             </li>
@@ -55,7 +55,7 @@
             {foreach from=$category->path item=cat}
                 {if $cat->visible}
                     <li class="d-inline-flex align-items-center breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
-                        <a itemprop="url" href="{url_generator route="category" url=$cat->url}">
+                        <a itemprop="url" href="{url_generator route='category' url=$cat->url}">
                             <span itemprop="title">{$cat->name|escape}</span>
                         </a>
                     </li>
@@ -127,7 +127,7 @@
                     <li class="d-inline-flex align-items-center breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
                         <a itemprop="url" href="{$url|escape}">
                             <span itemprop="title">{$name|escape}</span>
-                        </a
+                        </a>
                     </li>
                 {else}
                     <li class="d-inline-flex align-items-center breadcrumbs__item">{$name|escape}</li>

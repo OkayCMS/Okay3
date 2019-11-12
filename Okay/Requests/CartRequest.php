@@ -30,4 +30,10 @@ class CartRequest
 
         return ExtenderFacade::execute(__METHOD__, $order, func_get_args());
     }
+
+    public function postCoupon()
+    {
+        $couponCode = trim($this->request->post('coupon_code', 'string'));
+        return ExtenderFacade::execute(__METHOD__, $couponCode, func_get_args());
+    }
 }

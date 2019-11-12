@@ -6,10 +6,11 @@ namespace Okay\Admin\Controllers;
 
 use Okay\Core\Modules\Installer;
 use Okay\Entities\ModulesEntity;
+use Okay\Core\Modules\Module;
 
 class ModulesAdmin extends IndexAdmin
 {
-    public function fetch(ModulesEntity $modulesEntity, Installer $modulesInstaller)
+    public function fetch(ModulesEntity $modulesEntity, Installer $modulesInstaller, Module $moduleCore)
     {
         // Обработка действий
         if ($this->request->method('post')) {
@@ -48,6 +49,14 @@ class ModulesAdmin extends IndexAdmin
         }
 
         $modules = array_merge($modulesEntity->findNotInstalled(), $modulesEntity->find());
+
+        foreach($modules as $module) {
+            $preview = $moduleCore->findModulePreview($module->vendor, $module->module_name);
+            if (!empty($preview)) {
+                $module->preview = $preview;
+            }
+        }
+
         $this->design->assign('modules', $modules);
         $this->response->setContent($this->design->fetch('modules.tpl'));
     }

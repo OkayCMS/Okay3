@@ -20,6 +20,13 @@
 
 {*Главная форма страницы*}
 <div class="boxed fn_toggle_wrap">
+    {$block = {get_design_block block="groups_custom_block"}}
+    {if $block}
+        <div class="custom_block">
+            {$block}
+        </div>
+    {/if}
+    
     {if $groups}
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
@@ -51,12 +58,15 @@
                                             <a href="{url controller=UserGroupAdmin id=$group->id}">
                                                 {$group->name|escape}
                                             </a>
+                                            {get_design_block block="groups_list_name" vars=['group' => $group]}
                                         </div>
                                         <div class="okay_list_boding okay_list_usergroups_sale">
                                             <span class="tag tag-danger">{$btr->general_discount|escape} {$group->discount} %</span>
+                                            {get_design_block block="groups_list_discount" vars=['group' => $group]}
                                         </div>
                                         <div class="okay_list_boding okay_list_usergroups_counts">
                                             <span>{$group->cnt_users}</span>
+                                            {get_design_block block="groups_list_users_count" vars=['group' => $group]}
                                         </div>
                                         <div class="okay_list_boding okay_list_close">
                                             {*delete*}

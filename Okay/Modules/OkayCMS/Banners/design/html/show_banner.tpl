@@ -11,13 +11,17 @@
         <div class="banner_group__item block--border banner_group__variant4">
         {/if}
             {if $bi->url}
-            <a class="banner_group__link" href="{$bi->url}" target="_blank"></a>
+            <a class="banner_group__link" aria-label="{$bi->title}" href="{$bi->url}" target="_blank"></a>
             {/if}
             <div class="banner_group__image">
                 <picture>
                     <source media="(min-width: 768px)" data-srcset="{$bi->image|resize:$bi->settings.desktop.w:$bi->settings.desktop.h:false:$config->resized_banners_images_dir:center:center}">
                     <source media="(max-width: 767px)" data-srcset="{$bi->image|resize:$bi->settings.mobile.w:$bi->settings.mobile.h:false:$config->resized_banners_images_dir}">
-                    <img src="{$bi->image|resize:$bi->settings.desktop.w:$bi->settings.desktop.h:false:$config->resized_banners_images_dir:center:center}" alt="{$bi->alt}" title="{$bi->title}">
+                    {if $banner_data->settings.as_slider}
+                        <img class="owl-lazy" data-src="{$bi->image|resize:$bi->settings.desktop.w:$bi->settings.desktop.h:false:$config->resized_banners_images_dir:center:center}" alt="{$bi->alt}" title="{$bi->title}">
+                    {else}
+                        <img src="{$bi->image|resize:$bi->settings.desktop.w:$bi->settings.desktop.h:false:$config->resized_banners_images_dir:center:center}" alt="{$bi->alt}" title="{$bi->title}">
+                    {/if}
                 </picture>
             </div>
             <div class="banner_group__content">
@@ -50,7 +54,8 @@
             autoplayHoverPause: true,
             responsive: {
                 320: {
-                    autoHeight:true
+                    autoHeight:true,
+                    autoplay: false
                 },
                 991: {
                     autoHeight:false

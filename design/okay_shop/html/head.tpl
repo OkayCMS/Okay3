@@ -20,43 +20,19 @@
     {/strip}
     
     {* Title *}
-    {strip}
-    <title>
-        {if $seo_filter_pattern->title}
-            {$seo_filter_pattern->title|escape}
-        {else}
-            {$meta_title|escape}{$filter_meta->title|escape}
-        {/if}
-        {if $current_page && $current_page != 'all'}
-            {$lang->meta_page} {$current_page}
-        {/if}
-    </title>
-    {/strip}
+    <title>{$meta_title|escape}</title>
 
     {* Meta tags *}
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    {if (!empty($meta_description)
-    || !empty($meta_keywords)
-    || !empty($filter_meta->description)
-    || !empty($filter_meta->keywords)
-    || !empty($seo_filter_pattern->meta_description)
-    || !empty($seo_filter_pattern->keywords))&& !$current_page}
-        <meta name="description" content="{strip}
-        {if $seo_filter_pattern->meta_description}
-        {$seo_filter_pattern->meta_description|escape}
-        {else}
-        {$meta_description|escape}{$filter_meta->description|escape}
-        {/if}
-        {/strip}"/>
-        <meta name="keywords" content="{strip}
-        {if $seo_filter_pattern->keywords}
-        {$seo_filter_pattern->keywords|escape}
-        {else}
-        {$meta_keywords|escape}{$filter_meta->keywords|escape}
-        {/if}
-        {/strip}"/>
+    {if !empty($meta_keywords)}
+        <meta name="keywords" content="{$meta_keywords|escape}"/>
+    {/if}
+    
+    {if !empty($meta_description)}
+        <meta name="description" content="{$meta_description|escape}"/>
     {/if}
 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
     {if $controller == 'CategoryController' || $controller == 'BrandController' || $controller == 'ProductsController'}
         {if $set_canonical}
             <meta name="robots" content="noindex,nofollow">
@@ -71,6 +47,8 @@
         <meta name="robots" content="noindex,follow">
     {elseif $controller == "OrderController"}
         <meta name="robots" content="noindex,nofollow">
+    {elseif $controller == "CartController"}
+        <meta name="robots" content="noindex,follow">
     {else}
         <meta name="robots" content="index,follow">
     {/if}
@@ -230,8 +208,6 @@
     {* Favicon *}
     <link href="{$rootUrl}/{$config->design_images}{$settings->site_favicon}?v={$settings->site_favicon_version}" type="image/x-icon" rel="icon">
     <link href="{$rootUrl}/{$config->design_images}{$settings->site_favicon}?v={$settings->site_favicon_version}" type="image/x-icon" rel="shortcut icon">
-
-
 
     {*<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap&subset=cyrillic" rel="stylesheet">
     <link href="https://cdn.materialdesignicons.com/3.8.95/css/materialdesignicons.min.css" rel="stylesheet">*}

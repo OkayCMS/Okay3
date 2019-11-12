@@ -110,7 +110,9 @@ class Modules // todo подумать, мож сюда переедит CRUD En
         $design = $SL->getService(Design::class);
 
         foreach ($modules as $module) {
-
+            if ($this->module->moduleDirectoryNotExists($module->vendor, $module->module_name)) {
+                continue;
+            }
 
             // TODO подумать над тем, чтобы перенести этот код отсюда
             if ($activeOnly === true && (int) $module->enabled !== 1) {

@@ -61,6 +61,8 @@
                 <div class="heading_box">
                     {if $message_error=='url_exists'}
                         {$btr->category_exists|escape}
+                    {elseif $message_error=='global_url_exists'}
+                        {$btr->global_url_exists|escape}
                     {elseif $message_error == 'empty_name'}
                         {$btr->general_enter_title|escape}
                     {elseif $message_error == 'empty_url'}
@@ -279,7 +281,7 @@
 
     {$block = {get_design_block block="category_custom_block"}}
     {if !empty($block)}
-        <div class="boxed fn_toggle_wrap">
+        <div class="custom_block">
             {$block}
         </div>
     {/if}

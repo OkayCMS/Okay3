@@ -44,7 +44,6 @@ class ProductsHelper
     {
         /** @var ProductsEntity $productsEntity */
         $productsEntity = $this->entityFactory->get(ProductsEntity::class);
-
         
         if ($this->settings->get('missing_products') === MISSING_PRODUCTS_HIDE) {
             $filter['in_stock'] = true;

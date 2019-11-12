@@ -4,7 +4,7 @@
 namespace Okay\Core\Modules;
 
 
-use Aura\SqlQuery\Common\Select;
+use Okay\Core\QueryFactory\Select;
 
 abstract class AbstractModuleEntityFilter
 {

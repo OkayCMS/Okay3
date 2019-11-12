@@ -71,8 +71,21 @@ class Cart
                 $purchase = new \stdClass();
                 $purchase->product = $products[$item->variant->product_id];
                 $purchase->variant = $item->variant;
-                $purchase->amount = $item->amount;
-                
+                $purchase->amount  = $item->amount;
+
+                $purchase->product_id   = $item->variant->product_id;
+                $purchase->product_name = $products[$item->variant->product_id]->name;
+
+                $purchase->variant_id   = $item->variant->id;
+                $purchase->variant_name = $item->variant->name;
+                $purchase->price        = $item->variant->price;
+                $purchase->sku          = $item->variant->sku;
+                $purchase->units        = $item->variant->units;
+
+                $purchase->meta = (object) [
+                    'total_price' => $purchase->amount * $purchase->price
+                ];
+
                 $cart->purchases[] = $purchase;
                 $cart->total_price += $item->variant->price*$item->amount;
                 $cart->total_products += $item->amount;

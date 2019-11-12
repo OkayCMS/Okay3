@@ -1,7 +1,23 @@
 <?php
 
-$lang['liq_pay_public_key'] = "საჯარო გასაღები";
-$lang['liq_pay_private_key'] = "პირადი გასაღები";
-$lang['okaycms__liqpay__description_title'] = "გადახდის სისტემა LiqPay";
-$lang['okaycms__liqpay__description_part_1'] = "იმისათვის, რომ მოდული მუშაობდეს, თქვენ უნდა მიუთითოთ ბმული";
-$lang['okaycms__liqpay__description_part_2'] = "თქვენს ანგარიშში პარამეტრებში - API გვერდზე ველებში \"სერვერ-სერვერის შეტყობინების მისამართები\" და \"კლიენტი-სერვერის შეტყობინების URL\", როგორც ეს მოცემულია ეკრანის სურათში. შემდეგ თქვენ უნდა მოხვდეთ ადმინში. პანელები OkayCMS- ში პარამეტრებში - გადახდის მეთოდების განყოფილებაში, შეარჩიეთ გადახდის მეთოდი, რომელთანაც გსურთ დაკავშირება გადახდა LiqPay სერვისით \"მოდულის ტიპი:\" ველში. ჩამოსაშლელი სიიდან აირჩიეთ \"OkayCMS / LiqPay\" და მიუთითეთ მონაცემები LiqPay პერსონალური ანგარიშიდან იმ ველებში, რომლებიც გამოჩნდება, რომლებიც ასევე აღინიშნება ეკრანის სურათში.";
+$lang['left_setting_np_title'] = 'New Mail';
+$lang['settings_np'] = 'New Mail Settings';
+$lang['settings_np_key'] = 'New Mail Delivery API Key';
+$lang['settings_np_weight'] = 'Default weight (kg)';
+$lang['settings_np_volume'] = 'Default capacity (м<sup style="font-size: 8px;">3</sup>)';
+$lang['settings_np_city'] = 'City of dispatch';
+$lang['settings_np_service_type'] = 'Delivery technology';
+$lang['settings_np_include_volume'] = 'Include cargo capacity in the calculation';
+$lang['settings_np_include_assessed'] = 'Include estimated value in the calculation';
+$lang['settings_np_service_dd'] = 'Doors-Doors';
+$lang['settings_np_service_dw'] = 'Doors-Warehouse';
+$lang['settings_np_service_ww'] = 'Warehouse-Warehouse';
+$lang['settings_np_service_wd'] = 'Warehouse-Doors';
+$lang['payment_method_np_cod'] = 'Cash on delivery for NP';
+$lang['product_np_volume'] = 'Сapacity м<sup style="font-size: 8px;">3</sup>';
+$lang['order_np_term'] = 'Delivery time (days)';
+$lang['order_np_calc'] = 'Recalculate price and terms';
+$lang['order_np_redelivery'] = 'C.O.D';
+$lang['order_np_city'] = 'City';
+$lang['order_np_warehouse'] = 'Point of issue';
+$lang['settings_np_currency'] = 'შეიყვანეთ ვალუტა "hryvnia" მოდულის სწორი მუშაობისთვის';

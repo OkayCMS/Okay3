@@ -14,6 +14,10 @@
         {
             "name": "Vavilin Aleksandr",
             "email": "synsvavilin@gmail.com"
+        },
+        {
+            "name": "Hleb Vasylenko",
+            "email": "glebvs93@gmail.com"
         }
     ],
     "require": {
@@ -33,7 +37,8 @@
         "aura/sqlquery": "^2.7",
         "aura/sql": "^3.0",
         "haydenpierce/class-finder": "^0.3.3",
-        "okaycms/license": "~1.1.0"
+        "okaycms/license": "~1.1.0",
+        "axy/sourcemap": "^0.1.4"
     },
     "autoload": {
         "psr-4": {

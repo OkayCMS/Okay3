@@ -81,6 +81,7 @@
         color: var(--okay-basic-company);
     }
     .account__link:hover{
+        color: var(--okay-basic-company);
         opacity: 1;
     }
     .switcher__visible:hover .switcher__name:after {
@@ -152,8 +153,8 @@
     .header-contact__inner:hover .header-contact__item--visible a:hover {
         color: var(--okay-basic-company);
     }
-    .header-contact__phone a:hover,
-    .header-contact__email a:hover{
+    .header-contact--phone a:hover,
+    .header-contact--email a:hover{
         color: var(--okay-basic-company);
     }
     .header_informers__item:hover{
@@ -246,7 +247,7 @@
         display: block;
     }
     .article__button:hover{
-        color: var(--okay-basic-company);
+        color: var(--okay-button-color);
     }
     .article_item:hover .article__preview {
         background: rgb(255, 255, 255);
@@ -394,6 +395,7 @@
     }
     .sidebar__header.opened {
         right: 5px;
+        z-index: 5;
     }
     .sidebar__header--close{
         display: -webkit-inline-box;
@@ -627,8 +629,9 @@
         display: inline-block;
         position: relative;
     }
-    .menu_switcher__heading .catalog_icon::before {
-        font-size: 23px;
+    .menu_switcher__heading .catalog_icon svg {
+        width: 20px;
+        height: 20px;
     }
     .main_banner .banner_group__item,
     .main_banner {
@@ -682,8 +685,8 @@
         height: 30px;
     }
     .header_informers__item svg {
-        width: 28px;
-        height: 28px;
+        width: 24px;
+        height: 24px;
     }
     #wishlist svg {
         width: 26px;
@@ -1245,6 +1248,9 @@
     .product_preview__prices {
         margin-top: 10px;
     }
+    .product-page__button {
+        font-size: 12px;
+    }
     .header_informers__item .compare_counter,
     .header_informers__item .wishlist_counter,
     .header_informers__item .cart_counter {
@@ -1275,6 +1281,9 @@
     .product_preview__buttons .comparison_button,
     .product_preview__buttons .fast_order_button {
         margin-left: 3px;
+    }
+    .header_informers__link i.fa-balance-scale:before{
+        font-size: 24px;
     }
 }
 

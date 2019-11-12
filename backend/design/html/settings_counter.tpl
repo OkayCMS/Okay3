@@ -37,6 +37,13 @@
 <form method="post" enctype="multipart/form-data" class="fn_fast_button">
     <input type=hidden name="session_id" value="{$smarty.session.id}">
 
+    {$block = {get_design_block block="settings_counter_custom_block"}}
+    {if !empty($block)}
+        <div class="custom_block">
+            {$block}
+        </div>
+    {/if}
+
     <div class="row">
         <div class="col-lg-12 col-md-12">
             <div class="boxed fn_toggle_wrap">
@@ -84,6 +91,8 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        {get_design_block block="settings_catalog_counter_item" vars=['c' => $c]}
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12 ">
@@ -141,17 +150,13 @@
                         </div>
                     </div>
 
-
-                    <div class="box_btn_heading mt-1">
-                        <button type="button" class="btn btn_mini btn-info fn_add_counter">
-                            {include file='svg_icon.tpl' svgId='plus'}
-                            <span>{$btr->counters_add_counter|escape}</span>
-                        </button>
-                    </div>
-
                     <div class="row">
                         <div class="col-lg-12 col-md-12 ">
-                            <button type="submit" class="btn btn_small btn_blue float-md-right">
+                            <button type="button" class="btn btn_small btn-info mt-h fn_add_counter">
+                                {include file='svg_icon.tpl' svgId='plus'}
+                                <span>{$btr->counters_add_counter|escape}</span>
+                            </button>
+                            <button type="submit" class="btn btn_small btn_blue mt-h float-md-right">
                                 {include file='svg_icon.tpl' svgId='checked'}
                                 <span>{$btr->general_apply|escape}</span>
                             </button>

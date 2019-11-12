@@ -32,7 +32,7 @@
         </li>
     {/if}
     <li>
-        <a href="javascript:;">
+        <a>
             {include file="svg.tpl" svgId="catalog_icon"}
             <span data-language="mobile_menu_category">{$lang->mobile_menu_category}</span>
         </a>

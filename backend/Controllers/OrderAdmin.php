@@ -5,7 +5,7 @@ namespace Okay\Admin\Controllers;
 
 
 use Okay\Admin\Helpers\BackendOrdersHelper;
-use Okay\Admin\Requests\OrdersRequest;
+use Okay\Admin\Requests\BackendOrdersRequest;
 use Okay\Core\Notify;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\DeliveriesEntity;
@@ -18,15 +18,15 @@ class OrderAdmin extends IndexAdmin
 {
     
     public function fetch(
-        OrdersEntity $ordersEntity,
-        OrderLabelsEntity $orderLabelsEntity,
-        OrderStatusEntity $orderStatusEntity,
-        DeliveriesEntity $deliveriesEntity,
-        PaymentsEntity $paymentsEntity,
-        CurrenciesEntity $currenciesEntity,
-        Notify $notify,
-        OrdersRequest $ordersRequest,
-        BackendOrdersHelper $backendOrdersHelper
+        OrdersEntity         $ordersEntity,
+        OrderLabelsEntity    $orderLabelsEntity,
+        OrderStatusEntity    $orderStatusEntity,
+        DeliveriesEntity     $deliveriesEntity,
+        PaymentsEntity       $paymentsEntity,
+        CurrenciesEntity     $currenciesEntity,
+        Notify               $notify,
+        BackendOrdersRequest $ordersRequest,
+        BackendOrdersHelper  $backendOrdersHelper
     ) {
         
         /*Прием информации о заказе*/
@@ -96,7 +96,7 @@ class OrderAdmin extends IndexAdmin
                     }
                 }
 
-                // По умолчанию метод ничего не делает, но через него можно зацепиться моделем
+                // По умолчанию метод ничего не делает, но через него можно зацепиться модулем
                 $backendOrdersHelper->executeCustomPost($order);
             }
         } else {

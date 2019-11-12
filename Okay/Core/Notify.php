@@ -89,7 +89,11 @@ class Notify
             $this->PHPMailer->AddAddress($to);
         }
 
-        if ($this->PHPMailer->Send()) {
+        $success = $this->PHPMailer->Send();
+
+        $this->PHPMailer->clearAddresses();
+
+        if ($success) {
             return;
         }
 
@@ -161,7 +165,7 @@ class Notify
         }
         /*/lang_modify...*/
         
-        $purchases = $this->ordersHelper->getOrderPurchases($order->id);
+        $purchases = $this->ordersHelper->getOrderPurchasesList($order->id);
         $this->design->assign('purchases', $purchases);
         
         // Способ доставки
@@ -225,7 +229,7 @@ class Notify
             return false;
         }
         
-        $purchases = $this->ordersHelper->getOrderPurchases($order->id);
+        $purchases = $this->ordersHelper->getOrderPurchasesList($order->id);
         $this->design->assign('purchases', $purchases);
         
         // Способ доставки

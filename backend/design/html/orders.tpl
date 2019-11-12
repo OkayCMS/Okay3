@@ -135,6 +135,12 @@
                 </div>
             </div>
             </div>
+            {$block = {get_design_block block="orders_custom_block"}}
+            {if !empty($block)}
+                <div class="custom_block">
+                    {$block}
+                </div>
+            {/if}
         </div>
     </div>
 
@@ -189,6 +195,8 @@
                                         </div>
                                         <div class="mt-q"><span class="hidden-md-down">{$btr->orders_order_in|escape}</span>
                                         <span class="tag tag-default">{$order->date|date} | {$order->date|time}</span></div>
+
+                                        {get_design_block block="orders_list_name"}
                                     </div>
 
                                     <div class="okay_list_boding okay_list_order_status">

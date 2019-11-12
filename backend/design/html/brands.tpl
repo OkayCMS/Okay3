@@ -47,6 +47,13 @@
             </div>
         </div>
 
+        {$block = {get_design_block block="brands_custom_block"}}
+        {if $block}
+            <div class="custom_block">
+                {$block}
+            </div>
+        {/if}
+
         <form method="post" class="fn_form_list fn_fast_button">
             <input type="hidden" name="session_id" value="{$smarty.session.id}" />
 
@@ -94,6 +101,8 @@
                                     <a href="{url controller=BrandAdmin id=$brand->id return=$smarty.server.REQUEST_URI}">
                                         {$brand->name|escape}
                                     </a>
+
+                                    {get_design_block block="brands_list_name" vars=['brand' => $brand]}
                                 </div>
 
                                 <div class="okay_list_boding okay_list_status">
@@ -109,6 +118,8 @@
                                     <a href="../{url_generator route="brand" url=$brand->url}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
                                         {include file='svg_icon.tpl' svgId='icon_desktop'}
                                     </a>
+
+                                    {get_design_block block="brands_icon" vars=['brand' => $brand]}
                                 </div>
 
                                 <div class="okay_list_boding okay_list_close">

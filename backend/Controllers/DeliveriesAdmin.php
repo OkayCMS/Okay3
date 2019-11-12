@@ -4,50 +4,46 @@
 namespace Okay\Admin\Controllers;
 
 
-use Okay\Entities\DeliveriesEntity;
+use Okay\Admin\Helpers\BackendDeliveriesHelper;
+use Okay\Admin\Requests\BackendDeliveriesRequest;
 
 class DeliveriesAdmin extends IndexAdmin
 {
     
-    public function fetch(DeliveriesEntity $deliveriesEntity)
+    public function fetch(BackendDeliveriesHelper $backendDeliveriesHelper, BackendDeliveriesRequest $backendDeliveriesRequest)
     {
         // Обработка действий
-        if($this->request->method('post')) {
-            // Действия с выбранными
-            $ids = $this->request->post('check');
+        if ($this->request->method('post')) {
+            $ids = $backendDeliveriesRequest->postCheck();
+
+            $positions = $backendDeliveriesRequest->postPositions();
+            $backendDeliveriesHelper->sortPositions($positions);
             
-            if(is_array($ids)) {
-                switch($this->request->post('action')) {
+            if (is_array($ids)) {
+                switch ($backendDeliveriesRequest->postAction()) {
                     case 'disable': {
-                        /*Выключить способ доставки*/
-                        $deliveriesEntity->update($ids, ['enabled'=>0]);
+                        $backendDeliveriesHelper->disable($ids);
                         break;
                     }
                     case 'enable': {
-                        /*Включить сопсоб доставки*/
-                        $deliveriesEntity->update($ids, ['enabled'=>1]);
+                        $backendDeliveriesHelper->enable($ids);
                         break;
                     }
                     case 'delete': {
-                        /*Удалить способ доставки*/
-                        $deliveriesEntity->delete($ids);
+                        $backendDeliveriesHelper->delete($ids);
                         break;
                     }
                 }
             }
-            
-            // Сортировка
-            $positions = $this->request->post('positions');
-            $ids = array_keys($positions);
-            sort($positions);
-            foreach($positions as $i=>$position) {
-                $deliveriesEntity->update($ids[$i], array('position'=>$position));
-            }
         }
         
         // Отображение
-        $deliveries = $deliveriesEntity->find();
+        $filter          = $backendDeliveriesHelper->buildDeliveriesFilter();
+        $deliveries      = $backendDeliveriesHelper->findDeliveries($filter);
+        $deliveriesCount = $backendDeliveriesHelper->getDeliveriesCount($filter);
+        
         $this->design->assign('deliveries', $deliveries);
+        $this->design->assign('deliveries_count', $deliveriesCount);
         $this->response->setContent($this->design->fetch('deliveries.tpl'));
     }
     

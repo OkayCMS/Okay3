@@ -5,8 +5,8 @@ namespace Okay\Admin\Controllers;
 
 
 use Okay\Entities\ProductsEntity;
-use Okay\Admin\Requests\CategoriesRequest;
-use Okay\Admin\Requests\ProductAdminRequest;
+use Okay\Admin\Requests\BackendCategoriesRequest;
+use Okay\Admin\Requests\BackendProductsRequest;
 use Okay\Admin\Helpers\BackendBrandsHelper;
 use Okay\Admin\Helpers\BackendProductsHelper;
 use Okay\Admin\Helpers\BackendVariantsHelper;
@@ -17,14 +17,14 @@ class ProductsAdmin extends IndexAdmin
 {
     
     public function fetch(
-        ProductsEntity          $productsEntity,
-        BackendCategoriesHelper $backendCategoriesHelper,
-        BackendBrandsHelper     $backendBrandsHelper,
-        BackendProductsHelper   $backendProductsHelper,
-        BackendVariantsHelper   $backendVariantsHelper,
-        BackendCurrenciesHelper $backendCurrenciesHelper,
-        CategoriesRequest       $categoriesRequest,
-        ProductAdminRequest     $productRequest
+        ProductsEntity           $productsEntity,
+        BackendCategoriesHelper  $backendCategoriesHelper,
+        BackendBrandsHelper      $backendBrandsHelper,
+        BackendProductsHelper    $backendProductsHelper,
+        BackendVariantsHelper    $backendVariantsHelper,
+        BackendCurrenciesHelper  $backendCurrenciesHelper,
+        BackendCategoriesRequest $categoriesRequest,
+        BackendProductsRequest   $productRequest
     ) {
         // Категории
         $categories = $backendCategoriesHelper->getCategoriesTree();
@@ -37,7 +37,7 @@ class ProductsAdmin extends IndexAdmin
         $brandId      = $this->request->get('brand_id', 'integer');
 
         // Фильтр
-        $filter = $backendProductsHelper->prepareFilterForProductsAdmin();
+        $filter = $backendProductsHelper->buildFilter();
 
         // Обработка действий
         if ($this->request->method('post')) {
@@ -81,7 +81,7 @@ class ProductsAdmin extends IndexAdmin
                         break;
                     }
                     case 'move_to_page': {
-                        $backendProductsHelper->actionsMoveToPage($ids, $filter);
+                        $backendProductsHelper->moveToPage($ids, $filter);
                     }
                     case 'move_to_category': {
                         $backendProductsHelper->actionMoveToCategory($ids);
@@ -124,7 +124,10 @@ class ProductsAdmin extends IndexAdmin
 
         $this->design->assign('current_limit',  $filter['limit']);
         $this->design->assign('filter',         $filter['filter']);
-        $this->design->assign('keyword',        $filter['keyword']);
+
+        if (isset($filter['keyword'])) {
+            $this->design->assign('keyword',    $filter['keyword']);
+        }
 
         $this->response->setContent($this->design->fetch('products.tpl'));
     }

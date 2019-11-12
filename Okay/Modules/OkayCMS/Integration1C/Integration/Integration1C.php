@@ -161,7 +161,9 @@ class Integration1C
             $path = explode('/', $file_path);
             $temp_path = '';
             foreach($path as $p) {
-                mkdir($this->dir . $temp_path . $p);
+                if (!is_dir($this->dir . $temp_path . $p)) {
+                    mkdir($this->dir . $temp_path . $p);
+                }
                 $temp_path .= $p.'/';
             }
         }

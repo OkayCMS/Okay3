@@ -41,6 +41,13 @@
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <form id="list_form" method="post" class="fn_form_list fn_fast_button">
+                    {$block = {get_design_block block="pages_custom_block"}}
+                    {if !empty($block)}
+                        <div class="row custom_block">
+                            {$block}
+                        </div>
+                    {/if}
+
                     <input type="hidden" name="session_id" value="{$smarty.session.id}">
 
                     <div class="pages_wrap okay_list">
@@ -78,6 +85,8 @@
                                             <a href="{url controller=PageAdmin id=$page->id return=$smarty.server.REQUEST_URI}">
                                                 {$page->name|escape}
                                             </a>
+
+                                            {get_design_block block="pages_list_name"}
                                         </div>
 
                                         <div class="okay_list_boding okay_list_pages_group">
@@ -97,6 +106,8 @@
                                             <a href="../{url_generator route="page" url=$page->url}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
                                                 {include file='svg_icon.tpl' svgId='icon_desktop'}
                                             </a>
+
+                                            {get_design_block block="pages_icon"}
                                         </div>
 
                                         <div class="okay_list_boding okay_list_close">

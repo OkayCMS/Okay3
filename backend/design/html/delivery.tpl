@@ -81,6 +81,7 @@
                             <input class="form-control mb-h" name="name" type="text" value="{$delivery->name|escape}"/>
                             <input name="id" type="hidden" value="{$delivery->id|escape}"/>
                         </div>
+                        {get_design_block block="delivery_general"}
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
@@ -95,6 +96,7 @@
                                 </div>
                             </div>
                         </div>
+                        {get_design_block block="delivery_switch_checkboxes"}
                     </div>
                 </div>
             </div>
@@ -136,6 +138,7 @@
                         </li>
                     </ul>
                 </div>
+                {get_design_block block="delivery_image"}
             </div>
         </div>
         <div class="col-lg-8 col-md-12">
@@ -190,10 +193,18 @@
                         </div>
                     </div>
                     <input class="hidden" name="separate_payment" type="checkbox" value="1" {if $delivery->separate_payment}checked{/if} />
+                    {get_design_block block="delivery_price_block"}
                 </div>
             </div>
         </div>
     </div>
+
+    {$block = {get_design_block block="delivery_custom_block"}}
+    {if !empty($block)}
+        <div class="row custom_block">
+            {$block}
+        </div>
+    {/if}
     
     <div class="row">
         <div class="col-lg-12 col-md-12">
@@ -233,7 +244,7 @@
                                             <div class="">
                                                 <select name="delivery_settings[{$setting->variable}]" class="selectpicker">
                                                     {foreach $setting->options as $option}
-                                                        <option value="{$option->value}" {if isset($delivery_settings[$setting->variable]) && $option->value==$delivery_settings[$setting->variable]}selected{/if}>{$option->name|escape}</option>
+                                                        <option value="{$option->value}" {if isset($delivery->delivery_settings[$setting->variable]) && $option->value==$delivery->delivery_settings[$setting->variable]}selected{/if}>{$option->name|escape}</option>
                                                     {/foreach}
                                                 </select>
                                             </div>
@@ -247,13 +258,13 @@
                                                 <label class="heading_label" for="{$setting->variable}">{$setting->name|escape}</label>
                                                 <div class="boxes_inline">
                                                     
-                                                    <input name="delivery_settings[{$setting->variable}]" class="hidden_check" type="{$setting->type|escape}" value="{$setting->value|escape}" {if $setting->value == $delivery_settings[$setting->variable]}checked{/if} id="{$setting->variable}"/>
+                                                    <input name="delivery_settings[{$setting->variable}]" class="hidden_check" type="{$setting->type|escape}" value="{$setting->value|escape}" {if $setting->value == $delivery->delivery_settings[$setting->variable]}checked{/if} id="{$setting->variable}"/>
                                                     <label class="okay_ckeckbox" for="{$setting->variable}"></label>
                                                 </div>
                                             {else}
                                                 <label class="heading_label" for="{$setting->variable}">{$setting->name|escape}</label>
                                                 <div>
-                                                    <input name="delivery_settings[{$setting->variable}]" class="form-control" type="{$setting->type|escape}" value="{if isset($delivery_settings[$setting->variable])}{$delivery_settings[$setting->variable]|escape}{/if}" id="{$setting->variable}"/>
+                                                    <input name="delivery_settings[{$setting->variable}]" class="form-control" type="{$setting->type|escape}" value="{if isset($delivery->delivery_settings[$setting->variable])}{$delivery->delivery_settings[$setting->variable]|escape}{/if}" id="{$setting->variable}"/>
                                                 </div>
                                             {/if}
                                         </div>
@@ -285,8 +296,8 @@
                         {foreach $payment_methods as $payment_method}
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <div class="payment_item">
-                                    <input class="hidden_check" id="id_{$payment_method->id}" value="{$payment_method->id}" {if in_array($payment_method->id, $delivery_payments)}checked{/if} type="checkbox" name="delivery_payments[]">
-                                    <label for="id_{$payment_method->id}" class="okay_ckeckbox {if in_array($payment_method->id, $delivery_payments)}active_payment{/if}">
+                                    <input class="hidden_check" id="id_{$payment_method->id}" value="{$payment_method->id}" {if in_array($payment_method->id, $delivery->delivery_payments)}checked{/if} type="checkbox" name="delivery_payments[]">
+                                    <label for="id_{$payment_method->id}" class="okay_ckeckbox {if in_array($payment_method->id, $delivery->delivery_payments)}active_payment{/if}">
                                         <span class="payment_img_wrap">
                                             {if $payment_method->image}
                                                 <img src="{$payment_method->image|resize:50:50:false:$config->resized_payments_dir}">

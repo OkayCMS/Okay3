@@ -88,6 +88,7 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="settings_general_general"}
             </div>
         </div>
     </div>
@@ -125,20 +126,9 @@
                         <div class="permission_boxes row">
                             <div class="col-xl-3 col-lg-4 col-md-6">
                                 <div class="permission_box">
-                                    <span>{$btr->settings_general_product|escape}</span>
+                                    <span>{$btr->settings_general_comment|escape}</span>
                                     <label class="switch switch-default">
-                                        <input class="switch-input" name="captcha_product" value='1' type="checkbox" {if $settings->captcha_product}checked=""{/if}/>
-                                        <span class="switch-label"></span>
-                                        <span class="switch-handle"></span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-3 col-lg-4 col-md-6">
-                                <div class="permission_box">
-                                    <span>{$btr->settings_general_blog|escape}</span>
-                                    <label class="switch switch-default">
-                                        <input class="switch-input" name="captcha_post" value='1' type="checkbox" {if $settings->captcha_post}checked=""{/if}/>
+                                        <input class="switch-input" name="captcha_comment" value='1' type="checkbox" {if $settings->captcha_comment}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>
@@ -189,6 +179,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        {get_design_block block="settings_general_recaptcha_checboxes"}
                     </div>
                     <div class="row">
                         <div class="col-lg-6 col-md-12">
@@ -293,9 +285,17 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="settings_general_recaptcha"}
             </div>
         </div>
     </div>
+
+    {$block = {get_design_block block="settings_general_custom_block"}}
+    {if !empty($block)}
+        <div class="custom_block">
+            {$block}
+        </div>
+    {/if}
 
     <div class="row">
         <div class="col-lg-12 col-md-12">

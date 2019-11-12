@@ -272,22 +272,29 @@
                             $('.selectpicker_brands').selectpicker();
                         </script>
                     {/literal}
+                    <div class="col-lg-6 col-md-12">
+                        <div class="boxed fn_toggle_wrap min_height_210px">
+                            {backend_compact_product_list
+                                title=$btr->okaycms__yandex_xml__products_for_upload
+                                name='related_products'
+                                products=$related_products
+                                label=$btr->okaycms__yandex_xml__add_products
+                                placeholder=$btr->okaycms__yandex_xml__select_products
+                            }
+                        </div>
+                    </div>
 
-                    {backend_compact_product_list
-                        title=$btr->okaycms__yandex_xml__products_for_upload
-                        name='related_products'
-                        products=$related_products
-                        label=$btr->okaycms__yandex_xml__add_products
-                        placeholder=$btr->okaycms__yandex_xml__select_products
-                    }
-
-                    {backend_compact_product_list
-                        title=$btr->okaycms__yandex_xml__products_not_for_upload
-                        name='not_related_products'
-                        products=$not_related_products
-                        label=$btr->okaycms__yandex_xml__add_products
-                        placeholder=$btr->okaycms__yandex_xml__select_products
-                    }
+                    <div class="col-lg-6 col-md-12">
+                        <div class="boxed fn_toggle_wrap min_height_210px">
+                            {backend_compact_product_list
+                                title=$btr->okaycms__yandex_xml__products_not_for_upload
+                                name='not_related_products'
+                                products=$not_related_products
+                                label=$btr->okaycms__yandex_xml__add_products
+                                placeholder=$btr->okaycms__yandex_xml__select_products
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

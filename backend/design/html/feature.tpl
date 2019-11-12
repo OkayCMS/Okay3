@@ -124,6 +124,7 @@
                                 </div>
                             </div>
                         </div>
+                        {get_design_block block="feature_general"}
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
@@ -140,6 +141,7 @@
                                         <span class="switch-handle"></span>
                                     </label>
                                 </div>
+                                {get_design_block block="feature_switch_checkboxes"}
                             </div>
                         </div>
                     </div>
@@ -189,6 +191,7 @@
                         {category_select categories=$categories}
                     </select>
                 </div>
+                {get_design_block block="feature_categories"}
             </div>
         </div>
         <div class="col-lg-6 col-md-12">
@@ -220,9 +223,17 @@
                     <div class="heading_label" >{$btr->feature_description|escape}</div>
                     <textarea class="form-control okay_textarea" name="description">{$feature->description}</textarea>
                 </div>
+                {get_design_block block="feature_meta_data"}
             </div>
         </div>
     </div>
+
+    {$block = {get_design_block block="feature_custom_block"}}
+    {if !empty($block)}
+        <div class="row custom_block">
+            {$block}
+        </div>
+    {/if}
 
     <div class="row">
         {*Значения свойства*}
@@ -337,6 +348,14 @@
                                             </button>
                                         </div>
                                     </div>
+
+                                    {$block = {get_design_block block="feature_item"}}
+                                    {if $block}
+                                        <div class="okay_list_body_item">
+                                            {$block}
+                                        </div>
+                                    {/if}
+
                                 </div>
                             {/foreach}
 
@@ -431,6 +450,7 @@
                 </div>
             </div>
         </div>
+        {get_design_block block="feature_merge_values"}
     </div>
     {/if}
 

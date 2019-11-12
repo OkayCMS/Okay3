@@ -7,13 +7,9 @@ namespace Okay\Controllers;
 use Okay\Core\Cart;
 use Okay\Core\Comparison;
 use Okay\Core\Config;
-use Okay\Core\Notify;
 use Okay\Core\Router;
 use Okay\Core\ServiceLocator;
-use Okay\Core\Validator;
 use Okay\Core\WishList;
-use Okay\Entities\CallbacksEntity;
-use Okay\Entities\SubscribesEntity;
 use Okay\Core\Design;
 use Okay\Core\EntityFactory;
 use Okay\Core\Languages;
@@ -21,8 +17,9 @@ use Okay\Core\Request;
 use Okay\Core\Response;
 use Okay\Core\Settings;
 use Okay\Core\TemplateConfig;
-use Okay\Entities\UsersEntity;
 use Okay\Helpers\MainHelper;
+use Okay\Helpers\MetadataHelpers\MetadataInterface;
+use Okay\Helpers\CommonHelper;
 
 class AbstractController
 {
@@ -73,15 +70,20 @@ class AbstractController
 
     /** @var ServiceLocator */
     protected $serviceLocator;
+    
+    private $metadataHelper;
 
+    protected function setMetadataHelper(MetadataInterface $metadataHelper)
+    {
+        $this->metadataHelper = $metadataHelper;
+    }
+    
     /*
      * Метод, который вызывается всегда перед вызовом метода контроллера.
      * В методе можно принимать аргументы, с указанием типа данных, они автоматически через DI сюда передадутся
      * ВНИМАНИЕ! В конструкторе эти переменные еще не доступны!
      */
     final public function onInit(
-        Validator $validator,
-        Notify $notify,
         Design $design,
         Request $request,
         Response $response,
@@ -93,7 +95,8 @@ class AbstractController
         Cart $cart,
         Comparison $comparison,
         WishList $wishList,
-        MainHelper $mainHelper
+        MainHelper $mainHelper,
+        CommonHelper $commonHelper
     ) {
         $this->design       = $design;
         $this->request      = $request;
@@ -123,8 +126,8 @@ class AbstractController
         $this->group        = $mainHelper->getCurrentUserGroup();
 
         $mainHelper->configureTemplateDirProcedure();
-        
-        $this->rootPOST($validator, $notify);
+
+        $commonHelper->rootPostProcedure();
     }
     
     /*
@@ -133,88 +136,7 @@ class AbstractController
      */
     final public function afterController(MainHelper $mainHelper)
     {
-        $mainHelper->afterControllerProcedure();
-    }
-    
-    private function rootPOST(Validator $validator, Notify $notify)
-    {
-        if ($this->request->method('post') && $this->request->post('callback')) {
-            
-            /** @var CallbacksEntity $callbacksEntity */
-            $callbacksEntity = $this->entityFactory->get(CallbacksEntity::class);
-            
-            $callback = new \stdClass();
-            $callback->phone        = $this->request->post('phone');
-            $callback->name         = $this->request->post('name');
-            $callback->url          = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-            $callback->message      = $this->request->post('message');
-            $captcha_code =  $this->request->post('captcha_code', 'string');
-
-            $this->design->assign('callname',  $callback->name);
-            $this->design->assign('callphone', $callback->phone);
-            $this->design->assign('callmessage', $callback->message);
-
-            /*Валидация данных клиента*/
-            if (!$validator->isName($callback->name, true)) {
-                $this->design->assign('call_error', 'empty_name', true);
-            } elseif (!$validator->isPhone($callback->phone, true)) {
-                $this->design->assign('call_error', 'empty_phone', true);
-            } elseif (!$validator->isComment($callback->message)) {
-                $this->design->assign('call_error', 'empty_comment', true);
-            } elseif ($this->settings->captcha_callback && !$validator->verifyCaptcha('captcha_callback', $captcha_code)) {
-                $this->design->assign('call_error', 'captcha', true);
-            } elseif ($callbackId = $callbacksEntity->add($callback)) {
-                $this->design->assign('call_sent', true, true);
-                // Отправляем email
-                $notify->emailCallbackAdmin($callbackId);
-            } else {
-                $this->design->assign('call_error', 'unknown error', true);
-            }
-        }
-
-        // Если прилетел токен, вероятно входят через соц. сеть
-        if (empty($this->user) && $this->request->method('post') && ($token = $this->request->post('token'))) {
-
-            /** @var UsersEntity $usersEntity */
-            $usersEntity = $this->entityFactory->get(UsersEntity::class);
-            
-            $uLoginData = $usersEntity->getUloginUser($token);
-
-            if (!empty($uLoginData)) {
-                $user = new \stdClass();
-                $user->last_ip = $_SERVER['REMOTE_ADDR'];
-                $user->name    = $uLoginData['last_name'] . ' ' . $uLoginData['first_name'];
-                $user->email   = $uLoginData['email'];
-
-                if (empty($usersEntity->count(['email' => (string)$user->email]))) {
-                    $user->password = $usersEntity->generatePass(6);
-                    $userId = $usersEntity->add($user);
-                    $_SESSION['user_id'] = $userId;
-                    // Перенаправляем пользователя в личный кабинет
-                    $this->response->redirectTo(Router::generateUrl('user', [], true));
-                    exit;
-                }
-            }
-        }
-
-        /*E-mail подписка*/
-        if ($this->request->post('subscribe')) {
-
-            /** @var SubscribesEntity $subscribesEntity */
-            $subscribesEntity = $this->entityFactory->get(SubscribesEntity::class);
-            
-            $email = $this->request->post('subscribe_email');
-            
-            if (!$validator->isEmail($email, true)) {
-                $this->design->assign('subscribe_error', 'empty_email', true);
-            } elseif ($subscribesEntity->count(['email' => $email]) > 0) {
-                $this->design->assign('subscribe_error', 'email_exist', true);
-            } else {
-                $subscribesEntity->add(['email' => $email]);
-                
-                $this->design->assign('subscribe_success', '1', true);
-            }
-        }
+        $mainHelper->commonAfterControllerProcedure($this->metadataHelper);
     }
     
 }

@@ -114,6 +114,7 @@
                                 <input name="name_h1" class="form-control" type="text" value="{$page->name_h1|escape}" />
                             </div>
                         </div>
+                        {get_design_block block="page_general"}
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
@@ -127,6 +128,7 @@
                                     </label>
                                 </div>
                             </div>
+                            {get_design_block block="page_switch_checkboxes"}
                         </div>
                     </div>
                 </div>
@@ -156,9 +158,18 @@
                         <textarea name="meta_description" class="form-control okay_textarea fn_meta_field">{$page->meta_description|escape}</textarea>
                     </div>
                 </div>
+                {get_design_block block="page_meta_data"}
             </div>
         </div>
     </div>
+
+    {$block = {get_design_block block="page_custom_block"}}
+    {if !empty($block)}
+        <div class="row custom_block">
+            {$block}
+        </div>
+    {/if}
+
     {*Описание элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">

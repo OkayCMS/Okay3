@@ -63,11 +63,10 @@
     display: block;
     height: auto;
     margin: 0 auto;
-    width: auto!important;
+    width: auto;
     position: relative;
     top: 0;
     left: 0;
-    max-width: none;
 }
 .banner_group__variant1 .banner_group__content,
 .banner_group__variant2 .banner_group__content{
@@ -206,7 +205,7 @@
         padding: 5px 5px;
     }
     .banner_group__title {
-        font-size: 18px;
+        font-size: 16px;
         line-height: 1.2;
         font-weight: 500;
         text-transform: initial;
@@ -227,6 +226,7 @@
         align-items: center;
     }
     .banner_group__description {
-        display: none;
+        font-size: 12px;
+        font-weight: 400;
     }
 }

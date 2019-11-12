@@ -7,6 +7,11 @@ namespace Okay\Modules\OkayCMS\Banners\Init;
 use Okay\Core\Modules\AbstractInit;
 use Okay\Core\Modules\EntityField;
 use Okay\Helpers\MainHelper;
+use Okay\Helpers\MetadataHelpers\BrandMetadataHelper;
+use Okay\Helpers\MetadataHelpers\CategoryMetadataHelper;
+use Okay\Helpers\MetadataHelpers\CommonMetadataHelper;
+use Okay\Helpers\MetadataHelpers\PostMetadataHelper;
+use Okay\Helpers\MetadataHelpers\ProductMetadataHelper;
 use Okay\Modules\OkayCMS\Banners\Entities\BannersEntity;
 use Okay\Modules\OkayCMS\Banners\Entities\BannersImagesEntity;
 use Okay\Modules\OkayCMS\Banners\Extenders\FrontExtender;
@@ -69,8 +74,33 @@ class Init extends AbstractInit
         $this->addBackendControllerPermission('BannersImagesAdmin', self::PERMISSION);
         
         $this->registerQueueExtension(
-            ['class' => MainHelper::class, 'method' => 'afterControllerProcedure'],
+            ['class' => MainHelper::class, 'method' => 'commonAfterControllerProcedure'],
             ['class' => FrontExtender::class, 'method' => 'assignCurrentBanners']
+        );
+        
+        $this->registerChainExtension(
+            ['class' => CategoryMetadataHelper::class, 'method' => 'getParts'],
+            ['class' => FrontExtender::class, 'method' => 'metadataGetParts']
+        );
+        
+        $this->registerChainExtension(
+            ['class' => BrandMetadataHelper::class, 'method' => 'getParts'],
+            ['class' => FrontExtender::class, 'method' => 'metadataGetParts']
+        );
+        
+        $this->registerChainExtension(
+            ['class' => ProductMetadataHelper::class, 'method' => 'getParts'],
+            ['class' => FrontExtender::class, 'method' => 'metadataGetParts']
+        );
+        
+        $this->registerChainExtension(
+            ['class' => PostMetadataHelper::class, 'method' => 'getParts'],
+            ['class' => FrontExtender::class, 'method' => 'metadataGetParts']
+        );
+        
+        $this->registerChainExtension(
+            ['class' => CommonMetadataHelper::class, 'method' => 'getParts'],
+            ['class' => FrontExtender::class, 'method' => 'metadataGetParts']
         );
         
         $this->extendBackendMenu('left_banners', [

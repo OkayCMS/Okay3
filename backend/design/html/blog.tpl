@@ -64,6 +64,13 @@
         </div>
     </div>
 
+    {$block = {get_design_block block="blog_custom_block"}}
+    {if !empty($block)}
+        <div class="fn_toggle_wrap" style="height: 40px; margin-bottom: 5px;">
+            {$block}
+        </div>
+    {/if}
+
     {*Главная форма страницы*}
     {if $posts}
         <div class="row">
@@ -115,6 +122,8 @@
                                                     <div class="tag tag-info">{$btr->blog_one_news|escape}</div>
                                                 {/if}
                                             </div>
+
+                                            {get_design_block block="blog_post_name" vars=['post'=>$post]}
                                         </div>
 
                                         <div class="okay_list_boding okay_list_blog_type">
@@ -143,6 +152,8 @@
                                             <a href="../{$url}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
                                                 {include file='svg_icon.tpl' svgId='icon_desktop'}
                                             </a>
+
+                                            {get_design_block block="blog_icon" vars=['post'=>$post]}
                                         </div>
 
                                         <div class="okay_list_boding okay_list_close">

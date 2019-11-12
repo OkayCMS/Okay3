@@ -102,6 +102,7 @@
                                     <input name="" class="form-control" type="text" disabled value="{$user->created|date}" />
                                 </div>
                             </div>
+                            {get_design_block block="user_fields_1"}
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
@@ -128,6 +129,7 @@
                                     <input name="" class="form-control" type="text" disabled value="{$user->last_ip|escape}" />
                                 </div>
                             </div>
+                            {get_design_block block="user_fields_2"}
                         </div>
                     </div>
                 </div>
@@ -135,8 +137,15 @@
         </div>
     </div>
 
+    {$block = {get_design_block block="user_custom_block"}}
+    {if !empty($block)}
+        <div class="row custom_block">
+            {$block}
+        </div>
+    {/if}
+    
 {*История покупок*}
-{if $orders}
+{if $user->orders}
     <div class="row">
         <div class="col-md-12">
             <div class="boxed fn_toggle_wrap min_height_230px">
@@ -156,7 +165,7 @@
                                 <div class="okay_list_heading okay_list_user_price">{$btr->coupons_order_price|escape}</div>
                             </div>
                             <div class="okay_list_body">
-                                {foreach $orders as $order}
+                                {foreach $user->orders as $order}
                                     <div class="fn_row okay_list_body_item">
                                         <div class="okay_list_row">
                                             <div class="okay_list_boding okay_list_user_number">
@@ -172,6 +181,7 @@
                                                         <span class="tag tag-success">{$btr->general_paid|escape}</span>
                                                     </div>
                                                 {/if}
+                                                {get_design_block block="user_order_username" vars=['order' => $order]}
                                             </div>
                                             <div class="okay_list_boding okay_list_user_date">
                                                 <div>{$order->date|date} | {$order->date|time}</div>
