@@ -14,6 +14,8 @@ use Okay\Core\ManagerMenu;
 use Okay\Core\Config;
 use OkayLicense\License;
 use Okay\Core\Entity\Entity;
+use Okay\Core\Languages;
+use Okay\Entities\LanguagesEntity;
 
 ini_set('display_errors', 'off');
 
@@ -45,11 +47,27 @@ if ($config->get('debug_mode') == true) {
     error_reporting(E_ALL);
 }
 
-/** @var BackendTranslations $backendTranslations */
-$backendTranslations = $DI->get(BackendTranslations::class);
-
 /** @var Request $request */
 $request = $DI->get(Request::class);
+
+/** @var Languages $languages */
+$languages = $DI->get(Languages::class);
+
+$postLangId = $request->post('lang_id', 'integer');
+$adminLangId = ($postLangId ? $postLangId : $request->get('lang_id', 'integer'));
+
+if ($adminLangId) {
+    $_SESSION['admin_lang_id'] = $adminLangId;
+}
+
+if (!empty($_SESSION['admin_lang_id'])) {
+    $languages->setLangId((int)$_SESSION['admin_lang_id']);
+} else {
+    $_SESSION['admin_lang_id'] = $languages->getLangId();
+}
+
+/** @var BackendTranslations $backendTranslations */
+$backendTranslations = $DI->get(BackendTranslations::class);
 
 /** @var Response $response */
 $response = $DI->get(Response::class);
@@ -82,7 +100,7 @@ $modules->startAllModules();
 $smartyPlugins = include_once 'Okay/Core/SmartyPlugins/SmartyPlugins.php';
 
 // SL будем использовать только для получения сервисов, которые запросили для контроллера
-$serviceLocator = new ServiceLocator();
+$serviceLocator = ServiceLocator::getInstance();
 
 /** @var ManagersEntity $managersEntity */
 $managersEntity = $entityFactory->get(ManagersEntity::class);
@@ -124,6 +142,10 @@ foreach ($modulesBackendControllers as $backendController) {
 }
 
 if (!empty($manager)) {
+
+    $backendTranslations->initTranslations($manager->lang);
+    $design->assign('btr', $backendTranslations);
+    
     foreach ($modules->getRunningModules() as $runningModule) {
         foreach ($modules->getModuleBackendTranslations($runningModule['vendor'], $runningModule['module_name'], $manager->lang) as $var => $translation) {
             $backendTranslations->addTranslation($var, $translation);

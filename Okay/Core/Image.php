@@ -5,6 +5,7 @@ namespace Okay\Core;
 
 
 use Okay\Core\Adapters\Resize\AdapterManager;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class Image
 {
@@ -130,7 +131,7 @@ class Image
         if (preg_match("~^https?://~", $sourceFile)) {
             // Имя оригинального файла
             if (!$originalFile = $this->downloadImage($sourceFile)) {
-                return false;
+                return ExtenderFacade::execute(__METHOD__, false, func_get_args());
             }
         } else {
             $originalFile = $sourceFile;
@@ -142,7 +143,7 @@ class Image
         $previewDir   = $this->rootDir . $resizedImagesDir;
         
         if (!file_exists($originalsDir . $originalFile)) {
-            return false;
+            return ExtenderFacade::execute(__METHOD__, false, func_get_args());
         }
         
         $adapter = $this->adapterManager->getAdapter();
@@ -155,8 +156,8 @@ class Image
             $setWatermark,
             $cropParams
         );
-        
-        return $previewDir . $resizedFile;
+
+        return ExtenderFacade::execute(__METHOD__, $previewDir . $resizedFile, func_get_args());
     }
 
     public function getResizeModifier(
@@ -195,7 +196,8 @@ class Image
             $resizedDir = $this->config->resized_images_dir;
         }
 
-        return $this->request->getRootUrl() . '/' . $resizedDir . $resizedFilenameEncoded;
+        $result = $this->request->getRootUrl() . '/' . $resizedDir . $resizedFilenameEncoded;
+        return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
     }
     
     public function addImagesSize($size, $type)
@@ -222,6 +224,8 @@ class Image
                 $this->settings->image_sizes = implode('|', $image_sizes);
             }
         }
+
+        return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     /**
@@ -254,7 +258,8 @@ class Image
             $resizedFilename .= '.'.$cropParams['x_pos'].'.'.$cropParams['y_pos'];
         }
 
-        return $resizedFilename.'.'.$ext;
+        $result = $resizedFilename.'.'.$ext;
+        return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
     }
 
     /**
@@ -266,7 +271,7 @@ class Image
     public function downloadImage($filename)
     {
         if ($this->fileIsNotExists($filename)) {
-            return false;
+            return ExtenderFacade::execute(__METHOD__, false, func_get_args());
         }
 
         $uploadedFile = $this->getOriginalFilenameByResizeName($filename);
@@ -287,7 +292,7 @@ class Image
                 ->cols(['filename' => $newName])
                 ->where('filename=?', rawurlencode($filename));
             $this->db->query($update);
-            return $newName;
+            return ExtenderFacade::execute(__METHOD__, $newName, func_get_args());
         }
 
         if ($this->isNotHttpsSource($filename)) {
@@ -303,11 +308,11 @@ class Image
                 ->cols(['filename' => $newName])
                 ->where('filename=?', rawurlencode($filename));
             $this->db->query($update);
-            return $newName;
+            return ExtenderFacade::execute(__METHOD__, $newName, func_get_args());
         }
 
         @unlink($localFile);
-        return false;
+        return ExtenderFacade::execute(__METHOD__, false, func_get_args());
     }
 
     /*Загрузка изображения*/
@@ -325,7 +330,7 @@ class Image
         }
         
         if (!in_array(strtolower($ext), $this->allowed_extensions)) {
-            return false;
+            return ExtenderFacade::execute(__METHOD__, false, func_get_args());
         }
 
         while (file_exists($this->config->root_dir.$originalDir.$newName)) {
@@ -337,10 +342,10 @@ class Image
             }
         }
         if (move_uploaded_file($filename, $this->rootDir.$originalDir.$newName)) {
-            return $newName;
+            return ExtenderFacade::execute(__METHOD__, $newName, func_get_args());
         }
 
-        return false;
+        return ExtenderFacade::execute(__METHOD__, false, func_get_args());
     }
 
     /*Выборка параметров изображения для ресайза*/
@@ -376,7 +381,7 @@ class Image
         $res = preg_replace("/[\s]+/ui", '-', $res);
         $res = preg_replace("/[^a-zA-Z0-9\.\-\_]+/ui", '', $res);
         $res = strtolower($res);
-        return $res;
+        return ExtenderFacade::execute(__METHOD__, $res, func_get_args());
     }
 
     /**
@@ -394,7 +399,7 @@ class Image
     public function deleteImage($entityId, $field, $entityName, $originalDir, $resizedDir = null, $langId = 0, $langField = '')
     {
         if (empty($field) || empty($entityName) || empty($originalDir)) {
-            return false;
+            return ExtenderFacade::execute(__METHOD__, false, func_get_args());
         }
 
         $entity = $this->entityFactory->get($entityName);
@@ -496,6 +501,8 @@ class Image
                 }
             }
         }
+
+        return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     private function fileIsNotExists($filename)

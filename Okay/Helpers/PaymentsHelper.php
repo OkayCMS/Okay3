@@ -51,7 +51,7 @@ class PaymentsHelper
      */
     public function getActivePaymentMethod($paymentMethods, $activeDelivery)
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         
         /** @var Request $request */
         $request = $SL->getService(Request::class);

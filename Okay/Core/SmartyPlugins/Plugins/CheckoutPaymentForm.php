@@ -31,7 +31,7 @@ class CheckoutPaymentForm extends Func
 
     public function run($params)
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
 
         $moduleName = str_replace("/", "\\", $params['module']);
         $moduleName = preg_replace("/[^A-Za-z0-9\\\\]+/", "", $moduleName);

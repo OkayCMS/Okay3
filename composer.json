@@ -37,7 +37,7 @@
         "aura/sqlquery": "^2.7",
         "aura/sql": "^3.0",
         "haydenpierce/class-finder": "^0.3.3",
-        "okaycms/license": "~1.1.0",
+        "okaycms/license": "~1.2.0",
         "axy/sourcemap": "^0.1.4"
     },
     "autoload": {

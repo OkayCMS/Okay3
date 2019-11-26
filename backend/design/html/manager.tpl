@@ -183,12 +183,14 @@
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>
-                    <span class="font_14 text_600">{$btr->manager_all_access|escape}</span>
-                    <label class="switch switch-default">
-                        <input class="switch-input fn_all_perms" value="" type="checkbox" />
-                        <span class="switch-label"></span>
-                        <span class="switch-handle"></span>
-                    </label>
+                    {if $m->id != $manager->id}
+                        <span class="font_14 text_600">{$btr->manager_all_access|escape}</span>
+                        <label class="switch switch-default">
+                            <input class="switch-input fn_all_perms" value="" type="checkbox" />
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                        </label>
+                    {/if}
                 </div>
                 <div class="toggle_body_wrap on fn_card">
                     {foreach $permission as $title=>$items}

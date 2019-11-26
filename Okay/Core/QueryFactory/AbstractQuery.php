@@ -27,7 +27,7 @@ abstract class AbstractQuery implements QueryInterface
 
     public function __construct($queryObject)
     {
-        $SL                = new ServiceLocator();
+        $SL                = ServiceLocator::getInstance();
         $this->db          = $SL->getService(Database::class);
         $this->queryObject = $queryObject;
     }

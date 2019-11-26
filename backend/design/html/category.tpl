@@ -212,7 +212,7 @@
 
                         <div id="product_categories">
                             <div class="heading_box">
-                                {$btr->general_category|escape}
+                                {$btr->category_subcategory|escape}
                                 <i class="fn_tooltips" title="{$btr->tooltip_general_category_category|escape}">
                                     {include file='svg_icon.tpl' svgId='icon_tooltips'}
                                 </i>

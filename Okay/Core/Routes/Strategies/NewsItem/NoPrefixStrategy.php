@@ -20,7 +20,7 @@ class NoPrefixStrategy extends AbstractRouteStrategy
 
     public function __construct()
     {
-        $serviceLocator = new ServiceLocator();
+        $serviceLocator = ServiceLocator::getInstance();
         $entityFactory  = $serviceLocator->getService(EntityFactory::class);
 
         $this->blogEntity = $entityFactory->get(BlogEntity::class);

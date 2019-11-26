@@ -1,5 +1,13 @@
-{$subject="`$btr->email_comment_from` `$comment->name|escape` `$btr->email_awaits`" scope=global}
-{$subject="Вопрос от пользователя `$feedback->name|escape`" scope=global}
+{*
+Для отладки данного сообщение пройдите по ссылке http://domain/backend/index.php?controller=EmailTemplatesAdmin&debug=emailCommentAdmin&comment_id=1
+если потребуется, измените параметр comment_id
+*}
+
+{if $comment->approved}
+    {$subject="`$btr->email_comment_from` `$comment->name|escape`" scope=global}
+{else}
+    {$subject="`$btr->email_comment_from` `$comment->name|escape` `$btr->email_awaits`" scope=global}
+{/if}
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -141,7 +149,7 @@
                                                     <table class="es-table-infobox" cellspacing="1" cellpadding="1" border="0" align="left">
                                                         <tbody>
                                                         <tr valign="top">
-                                                            <td class="es-p5t es-p5b" width="180"><span>{$lang->email_order_name|escape}:</span></td>
+                                                            <td class="es-p5t es-p5b" width="180"><span>{$btr->email_order_name|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$comment->name|escape}</span></td>
                                                         </tr>
                                                         <tr valign="top">
@@ -163,6 +171,7 @@
                                                             <td class="es-p5t es-p5b" width="180"><span>{$btr->general_comment|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$comment->text|escape|nl2br}</span></td>
                                                         </tr>
+                                                        {get_design_block block="email_comment_admin_total_info"}
                                                         </tbody>
                                                     </table>
                                                 </td>

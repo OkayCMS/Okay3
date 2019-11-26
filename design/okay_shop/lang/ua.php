@@ -295,3 +295,4 @@ $lang['email_comment_look'] = "Подивитися";
 $lang['product_sticker_hit'] = "Топ продажів";
 $lang['product_sticker_discount'] = "Суперціна";
 $lang['cart_empty_coupon_error'] = "Купон не може бути пустим";
+$lang['register_write_comment'] = "Заповніть форму";

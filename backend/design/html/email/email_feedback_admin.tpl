@@ -1,3 +1,8 @@
+{*
+Для отладки данного сообщение пройдите по ссылке http://domain/backend/index.php?controller=EmailTemplatesAdmin&debug=emailFeedbackAdmin&feedback_id=1
+если потребуется, измените параметр feedback_id
+*}
+
 {$subject="`$btr->email_request_from` `$feedback->name|escape`" scope=global}
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -120,6 +125,7 @@
                                                             <td class="es-p5t es-p5b" width="180"><span>{$btr->general_comment|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$feedback->message|escape|nl2br}</span></td>
                                                         </tr>
+                                                        {get_design_block block="email_feedback_admin_total_info"}
                                                         </tbody>
                                                     </table>
                                                 </td>

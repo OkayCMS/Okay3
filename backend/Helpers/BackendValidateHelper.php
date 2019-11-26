@@ -218,9 +218,11 @@ class BackendValidateHelper
     public function getFaviconValidateError()
     {
         $error = '';
-        $ext = pathinfo($_FILES['site_favicon']['name'],PATHINFO_EXTENSION);
-        if (!in_array($ext, ['png', 'gif', 'jpg', 'jpeg', 'ico'])) {
-            $error = 'wrong_favicon_ext';
+        if (!empty($_FILES['site_favicon']['name'])) {
+            $ext = pathinfo($_FILES['site_favicon']['name'],PATHINFO_EXTENSION);
+            if (!in_array($ext, ['png', 'gif', 'jpg', 'jpeg', 'ico'])) {
+                $error = 'wrong_favicon_ext';
+            }
         }
 
         return ExtenderFacade::execute(__METHOD__, $error, func_get_args());

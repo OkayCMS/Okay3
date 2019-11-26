@@ -9,9 +9,9 @@
         </h1>
     </div>
     <div class="block__body block--boxed block--border">
-        {if $page->description}
+        {if $description}
             <div class="block">
-                {$page->description}
+                {$description}
             </div>
         {/if}
 

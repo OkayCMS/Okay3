@@ -109,7 +109,7 @@ class AbstractController
         $this->cart           = $cart;
         $this->comparison     = $comparison;
         $this->wishList       = $wishList;
-        $this->serviceLocator = new ServiceLocator();
+        $this->serviceLocator = ServiceLocator::getInstance();
 
         $mainHelper->activatePRG();
         $mainHelper->activateDynamicJs();// метод должен быть в начале

@@ -37,7 +37,7 @@ class FrontExtender implements ExtensionInterface
      */
     public function getCartDeliveriesList($deliveries, $cart)
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
 
         /** @var FrontTranslations $frontTranslations */
         $frontTranslations = $SL->getService(FrontTranslations::class);

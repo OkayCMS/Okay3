@@ -6,6 +6,8 @@
 :root {
 	--okay-button-color: #c5530c;
 	--okay-button-text: #fff;
+	--okay-button-color-hover: #c5530c;
+	--okay-button-text-hover: #fff;
 	--okay-basic-company: #00afee;
 	--okay-second-company: #232f3e;
 	--okay-basic-company-text: #fff;

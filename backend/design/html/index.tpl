@@ -9,6 +9,47 @@
 
     {literal}
     <script>
+        /* Initializing clipboard */
+        sclipboard();
+        function sclipboard() {
+            const links = document.querySelectorAll('.fn_clipboard');
+            const cls = {
+                copied: 'is-copied',
+                hover: 'hint-anim'
+            };
+
+            const copyToClipboard = str => {
+                const el = document.createElement('input');
+                str.dataset.copyString ? el.value = str.dataset.copyString : el.value = str.text;
+                el.setAttribute('readonly', '');
+                el.style.position = 'absolute';
+                el.style.opacity = 0;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+            };
+            const clickInteraction = e => {
+                e.preventDefault();
+                copyToClipboard(e.target);
+                e.target.classList.add(cls.copied);
+                setTimeout(() => e.target.classList.remove(cls.copied), 1000);
+                setTimeout(() => e.target.classList.remove(cls.hover), 700);
+            };
+            Array.from(links).forEach(link => {
+                link.addEventListener('click', e => clickInteraction(e));
+                link.addEventListener('keypress', e => {
+                    if (e.keyCode === 13) clickInteraction(e);
+                });
+                link.addEventListener('mouseover', e => e.target.classList.add(cls.hover));
+                link.addEventListener('mouseleave', e => {
+                    if (!e.target.classList.contains(cls.copied)) {
+                        e.target.classList.remove(cls.hover);
+                    }
+                });
+            });
+        };
+
         var okay = {};
         okay.router = {};
         {/literal}
@@ -20,7 +61,8 @@
         {literal}
     </script>
     {/literal}
-    
+
+
     <link rel="icon" href="design/images/favicon.png" type="image/x-icon" />
     <script src="design/js/jquery/jquery.js"></script>
     <script src="design/js/jquery.scrollbar.min.js"></script>
@@ -31,10 +73,8 @@
     <link href="design/css/okay.css" rel="stylesheet" type="text/css" />
     <link href="design/css/media.css" rel="stylesheet" type="text/css" />
     <script src="design/js/jquery.dd.min.js"></script>
-
     <link href="design/js//fancybox/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
     <script src="design/js/fancybox/jquery.fancybox.min.js"></script>
-
 
     {if in_array($smarty.get.controller, array("OrdersAdmin", "PostAdmin", "ReportStatsAdmin", "CouponsAdmin", "CategoryStatsAdmin"))}
         <script src="design/js/jquery/datepicker/jquery.ui.datepicker-{$manager->lang}.js"></script>
@@ -173,6 +213,7 @@
                         </a>
                     </div>
                 </div>
+
                 <div class="admin_switches admin_switches_two hidden-sm-down">
                     {include file="video_help.tpl"}
                 </div>

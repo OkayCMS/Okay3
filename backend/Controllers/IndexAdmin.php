@@ -9,6 +9,7 @@ use Okay\Core\Config;
 use Okay\Core\Database;
 use Okay\Core\Managers;
 use Okay\Core\Design;
+use Okay\Core\Modules\Module;
 use Okay\Core\Router;
 use Okay\Core\Support;
 use Okay\Core\EntityFactory;
@@ -105,7 +106,6 @@ class IndexAdmin
         Languages $languages,
         EntityFactory $entityFactory,
         ManagerMenu $managerMenu,
-        BackendTranslations $backendTranslations,
         Database $db,
         Translit $translit,
         LanguagesEntity $languagesEntity,
@@ -114,7 +114,8 @@ class IndexAdmin
         Support $support,
         SupportInfoEntity $supportInfoEntity,
         Router $router,
-        BackendMainHelper $backendMainHelper
+        BackendMainHelper $backendMainHelper,
+        Module $module
     ) {
         $this->design        = $design;
         $this->request       = $request;
@@ -130,6 +131,7 @@ class IndexAdmin
         
         $design->assign('is_mobile', $design->isMobile());
         $design->assign('is_tablet', $design->isTablet());
+        $design->assign('is_module', $module->isBackendControllerName($this->backendController));
 
         $design->assign('settings',  $this->settings);
         $design->assign('config',    $this->config);
@@ -168,25 +170,11 @@ class IndexAdmin
         $backendMainHelper->evensCounters();
         
         // Язык
-        $languagesList = $languagesEntity->find();
+        $languagesList = $languagesEntity->mappedBy('id')->find();
         $design->assign('languages', $languagesList);
         
         if (count($languagesList)) {
-            $postLangId = $this->request->post('lang_id', 'integer');
-            $adminLangId = ($postLangId ? $postLangId : $request->get('lang_id', 'integer'));
-            
-            if ($adminLangId) {
-                $_SESSION['admin_lang_id'] = $adminLangId;
-            }
-            
-            if (!isset($_SESSION['admin_lang_id']) || !isset($languagesList[$_SESSION['admin_lang_id']])) {
-                $l = $languagesEntity->getMainLanguage();
-                $_SESSION['admin_lang_id'] = $l->id;
-            }
-            
-            $this->design->assign('current_language', $languagesList[$_SESSION['admin_lang_id']]);
-            $languages->setLangId((int)$_SESSION['admin_lang_id']);
-            $this->settings->initMultiSettings((int)$_SESSION['admin_lang_id']);
+            $this->design->assign('current_language', $languagesList[$languages->getLangId()]);
         }
 
         $langId = $languages->getLangId();
@@ -197,19 +185,6 @@ class IndexAdmin
             $design->assign('main_lang_id', $mainLanguage->id);
         }
         
-        if (!empty($this->manager)) {
-            // Перевод админки
-            $file = "backend/lang/" . $this->manager->lang . ".php";
-            if (!file_exists($file)) {
-                foreach (glob("backend/lang/??.php") as $f) {
-                    $file = "backend/lang/" . pathinfo($f, PATHINFO_FILENAME) . ".php";
-                    break;
-                }
-            }
-            require_once($file);
-        }
-
-        $design->assign('btr', $backendTranslations);
         $design->assign('is_valid_license', $license->check());
 
         if ($request->method('post') && !empty($this->manager->id)) {

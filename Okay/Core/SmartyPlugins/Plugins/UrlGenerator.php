@@ -30,7 +30,7 @@ class UrlGenerator extends Func
             unset($params['absolute']);
         }
         unset($params['route']);
-       
+        
         return $this->router->generateUrl($routeName, $params, $isAbsolute);
     }
 }

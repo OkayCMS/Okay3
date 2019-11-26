@@ -99,6 +99,7 @@ class BackendSettingsHelper
         $this->queryFactory    = $queryFactory;
         $this->languages       = $languages;
         $this->jsSocial        = $jsSocial;
+        $this->dataCleaner     = $dataCleaner;
     }
 
     public function updateSettings()
@@ -271,7 +272,20 @@ class BackendSettingsHelper
         $this->settings->set('social_share_theme', $this->request->post('social_share_theme'));
         $this->settings->set('sj_shares',          $this->request->post('sj_shares'));
         $this->settings->set('site_email',         $this->request->post('site_email'));
-        $this->settings->set('site_social_links',  explode(PHP_EOL, $this->request->post('site_social_links')));
+
+        $siteSocialLinks = $this->request->post('site_social_links');
+        if (!empty($siteSocialLinks)) {
+            $linksArray = explode(PHP_EOL, $siteSocialLinks);
+            foreach($linksArray as $key => $link) {
+                if (trim($link) == '') {
+                    unset($linksArray[$key]);
+                }
+            }
+
+            $this->settings->set('site_social_links',  $linksArray);
+        } else {
+            $this->settings->set('site_social_links',  '');
+        }
 
         $this->settings->update('site_working_hours', $this->request->post('site_working_hours'));
         $this->settings->update('product_deliveries', $this->request->post('product_deliveries'));
@@ -296,6 +310,10 @@ class BackendSettingsHelper
 
     public function uploadFavicon()
     {
+        if (empty($_FILES['site_favicon']['name'])) {
+            return ExtenderFacade::execute(__METHOD__, null, func_get_args());
+        }
+
         $designImagesDir = $this->config->get('root_dir') .'/'. $this->config->get('design_images');
         $tmpName         = $_FILES['site_favicon']['tmp_name'];
         $ext             = pathinfo($_FILES['site_favicon']['name'],PATHINFO_EXTENSION);
@@ -353,7 +371,13 @@ class BackendSettingsHelper
 
     public function getSiteSocialLinks()
     {
-        return ExtenderFacade::execute(__METHOD__, implode(PHP_EOL, $this->settings->get('site_social_links')), func_get_args());
+        if (! empty($this->settings->get('site_social_links'))) {
+            $siteSocialLinks = implode(PHP_EOL, $this->settings->get('site_social_links'));
+        } else {
+            $siteSocialLinks = '';
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $siteSocialLinks, func_get_args());
     }
 
     public function getCssVariables()

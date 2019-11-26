@@ -156,7 +156,7 @@ abstract class Entity implements EntityInterface, FilterPriorityInterface
 
     public function __construct()
     {
-        $this->serviceLocator = new ServiceLocator();
+        $this->serviceLocator = ServiceLocator::getInstance();
         $this->queryFactory   = $this->serviceLocator->getService(QueryFactory::class);
         $this->db             = $this->serviceLocator->getService(Database::class);
         $this->lang           = $this->serviceLocator->getService(Languages::class);

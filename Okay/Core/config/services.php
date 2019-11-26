@@ -5,6 +5,7 @@ namespace Okay\Core;
 
 
 use Okay\Core\Entity\UrlUniqueValidator;
+use Okay\Core\Modules\ModuleDesign;
 use Okay\Core\Modules\ModulesEntitiesFilters;
 use Okay\Core\OkayContainer\Reference\ParameterReference as PR;
 use Okay\Core\OkayContainer\Reference\ServiceReference as SR;
@@ -256,6 +257,7 @@ $services = [
         'arguments' => [
             new SR(Managers::class),
             new SR(Module::class),
+            new PR('manager_menu.dev_mode'),
         ],
     ],
     BackendTranslations::class => [
@@ -318,6 +320,14 @@ $services = [
         'class' => Module::class,
         'arguments' => [
             new SR(LoggerInterface::class),
+        ],
+    ],
+    ModuleDesign::class => [
+        'class' => ModuleDesign::class,
+        'arguments' => [
+            new SR(Module::class),
+            new SR(TemplateConfig::class),
+            new SR(Config::class),
         ],
     ],
     Modules::class => [

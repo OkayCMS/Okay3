@@ -179,9 +179,11 @@
     .okay_list_coupon_count,
     .okay_list_order_product_count,
     .okay_list_setting,
+    .okay_list_modyle_type,
     .okay_list_products_setting{display: none;}
 
     /* Переопределение размеров списков */
+    .okay_list .okay_list_module_name {width: calc(100% - 320px);}
     .okay_list .okay_list_currency_exchange {width: calc(100% - 380px);}
     .okay_list .okay_list_brands_tag {width: 260px;}
     .okay_list .okay_list_delivery_name {width: calc(100% - 390px);}
@@ -385,6 +387,7 @@
     .okay_list_check,
     .variants_item_drag,
     .okay_list_menu_setting,
+    .okay_list_module_design_status,
     .okay_list_drag {
         display: none;
     }
@@ -397,6 +400,10 @@
     }
     
     /* Переопределение размеров списков */
+    .okay_list .okay_list_module_name {
+        width: calc(100% - 130px);
+    }
+
     .okay_list .okay_list_currency_name {
         width: calc(100% - 130px);
     }
@@ -408,7 +415,11 @@
     .okay_list .okay_list_reportstats_products {
         width: calc(100% - 100px);
     }
-    
+
+    .okay_list .okay_list_module_design_name{
+        width: 100%;
+    }
+
     .okay_list .okay_list_bransimages_name {
         width: calc(100% - 320px);
     }

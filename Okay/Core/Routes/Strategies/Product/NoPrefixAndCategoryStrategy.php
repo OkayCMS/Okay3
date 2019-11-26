@@ -26,7 +26,7 @@ class NoPrefixAndCategoryStrategy extends AbstractRouteStrategy
 
     public function __construct()
     {
-        $serviceLocator         = new ServiceLocator();
+        $serviceLocator         = ServiceLocator::getInstance();
         $entityFactory          = $serviceLocator->getService(EntityFactory::class);
         $this->productsEntity   = $entityFactory->get(ProductsEntity::class);
         $this->categoriesEntity = $entityFactory->get(CategoriesEntity::class);

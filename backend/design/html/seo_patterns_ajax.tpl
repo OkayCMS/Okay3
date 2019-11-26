@@ -15,12 +15,15 @@
                 <div>
                     <ul class="mb-0 pl-1">
                         {literal}
-                            <li>{$category} - {/literal}{$btr->seo_patterns_ajax_cat_name|escape}</li>{literal}
-                            <li>{$category_h1} - {/literal}{$btr->seo_patterns_ajax_cat_h1|escape}</li>{literal}
-                            <li>{$brand} - {/literal}{$btr->seo_patterns_ajax_brand_name|escape}</li>{literal}
-                            <li>{$product} - {/literal}{$btr->seo_patterns_ajax_product_name|escape}</li>{literal}
-                            <li>{$price} - {/literal}{$btr->seo_patterns_ajax_product_price|escape}</li>{literal}
-                            <li>{$sitename} - {/literal}{$btr->seo_patterns_ajax_site_name|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$category}</a>
+                                 - {/literal}{$btr->seo_patterns_ajax_cat_name|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$category_h1}</a> - {/literal}{$btr->seo_patterns_ajax_cat_h1|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$brand}</a> - {/literal}{$btr->seo_patterns_ajax_brand_name|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$product}</a> - {/literal}{$btr->seo_patterns_ajax_product_name|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$price}</a> - {/literal}{$btr->seo_patterns_ajax_product_price|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$compare_price}</a> - {/literal}{$btr->seo_patterns_ajax_product_compare_price|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$sku}</a> - {/literal}{$btr->seo_patterns_ajax_product_sku|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$sitename}</a> - {/literal}{$btr->seo_patterns_ajax_site_name|escape}</li>{literal}
                         {/literal}
                         {foreach $features as $feature}
                             {if $feature->auto_name_id && $feature->auto_value_id}

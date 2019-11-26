@@ -24,7 +24,7 @@ class PrefixAndPathStrategy extends AbstractRouteStrategy
 
     public function __construct()
     {
-        $serviceLocator         = new ServiceLocator();
+        $serviceLocator         = ServiceLocator::getInstance();
         $this->settings         = $serviceLocator->getService(Settings::class);
         $entityFactory          = $serviceLocator->getService(EntityFactory::class);
         $this->categoriesEntity = $entityFactory->get(CategoriesEntity::class);

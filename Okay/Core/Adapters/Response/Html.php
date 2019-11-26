@@ -15,7 +15,7 @@ class Html extends AbstractResponse
     
     public function __construct()
     {
-        $serviceLocator = new ServiceLocator();
+        $serviceLocator = ServiceLocator::getInstance();
         $this->design = $serviceLocator->getService(Design::class);
     }
 
@@ -39,9 +39,9 @@ class Html extends AbstractResponse
                 $resultContent .= $contents;
             }
         }
-        
-        $this->design->assign('content', $resultContent);
 
+        $this->design->assign('content', $resultContent);
+        
         // Создаем текущую обертку сайта (обычно index.tpl)
         $wrapper = $this->design->getVar('wrapper');
         if (is_null($wrapper)) {

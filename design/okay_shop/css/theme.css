@@ -2003,6 +2003,7 @@ b.filter__catalog_link.selected{
     text-align: center;
     font-weight: 500;
     line-height: 1;
+    padding: 5px 0;
     font-size: 15px;
     height: 34px;
 }

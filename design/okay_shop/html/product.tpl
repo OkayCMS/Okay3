@@ -142,7 +142,7 @@
                         <div class="details_boxed__offer" itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
                             {* Schema.org *}
                             <span class="hidden">
-                                <link itemprop="url" href="{$rootUrl}/{url_generator route="product" url=$product->url}" />
+                                <link itemprop="url" href="{url_generator route="product" url=$product->url absolute=1}" />
                                 <time itemprop="priceValidUntil" datetime="{$product->created|date:'Ymd'}"></time>
                                 {if $product->variant->stock > 0}
                                 <link itemprop="availability" href="https://schema.org/InStock" />
@@ -163,7 +163,7 @@
                                     </div>
                                     {* Price *}
                                     <div class="d-flex align-items-center details_boxed__price {if $product->variant->compare_price} price--red{/if}">
-                                        <span class="fn_price" itemprop="price" content="{$product->variant->price|convert:'':false}">{$product->variant->price|convert}</span>
+                                        <span class="fn_price" itemprop="price" content="{$product->variant->price|convert:null:false}">{$product->variant->price|convert}</span>
                                         <span class="currency" itemprop="priceCurrency" content="{$currency->code|escape}">{$currency->sign|escape}</span>
                                     </div>
 
@@ -398,8 +398,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                {if isset($children[$comment->id])}
-                                    {comments_tree comments=$children[$comment->id] level=$level+1}
+                                {if !empty($comment->children)}
+                                    {comments_tree comments=$comment->children level=$level+1}
                                 {/if}
                                 </div>
                                 {/foreach}

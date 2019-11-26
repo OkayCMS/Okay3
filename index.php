@@ -21,6 +21,10 @@ try {
 
     $DI = include 'Okay/Core/config/container.php';
 
+    /** @var Router $router */
+    $router = $DI->get(Router::class);
+    $router->resolveCurrentLanguage();
+    
     /** @var Config $config */
     $config = $DI->get(Config::class);
 
@@ -31,10 +35,10 @@ try {
     
     /** @var Response $response */
     $response = $DI->get(Response::class);
-
-    // Установим время начала выполнения скрипта
+    
     /** @var Request $request */
     $request = $DI->get(Request::class);
+    // Установим время начала выполнения скрипта
     $request->setStartTime($startTime);
 
     if (isset($_GET['logout'])) {
@@ -49,9 +53,7 @@ try {
     /** @var Modules $modules */
     $modules = $DI->get(Modules::class);
     $modules->startEnabledModules();
-
-    /** @var Router $router */
-    $router = $DI->get(Router::class);
+    
     $router->run();
 
     if ($response->getContentType() == RESPONSE_HTML) {

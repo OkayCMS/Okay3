@@ -92,6 +92,7 @@ class Managers
         'ThemeAdmin'          => 'theme',
         'StylesAdmin'         => 'style_templates',
         'TemplatesAdmin'      => 'file_templates',
+        'EmailTemplatesAdmin' => 'file_templates',
         'ImagesAdmin'         => 'images',
         'ScriptsAdmin'        => 'scripts',
         'SettingsThemeAdmin'  => 'design_settings',
@@ -129,6 +130,7 @@ class Managers
         'TopicAdmin'                => 'support',
         'FeaturesAliasesAdmin'      => 'features_aliases',
         'ModulesAdmin'              => 'modules',
+        'ModuleDesignAdmin'         => 'modules',
         'LearningAdmin'             => 'learning',
         'SettingsRouterAdmin'       => 'router',
     ];

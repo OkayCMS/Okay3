@@ -13,10 +13,10 @@
     {* The page content *}
     <div class="block__body block--boxed block--border">
         <div class="row">
-            {if $page->description}
+            {if $description}
                 <div class="col-lg-6">
                     <div class="block">
-                        {$page->description}
+                        {$description}
                     </div>
                 </div>
             {/if}

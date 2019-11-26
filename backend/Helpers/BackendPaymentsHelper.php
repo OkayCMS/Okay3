@@ -134,6 +134,7 @@ class BackendPaymentsHelper
             $payment->payment_deliveries = $this->paymentMethodsEntity->getPaymentDeliveries($payment->id);
             $payment->payment_settings = $this->paymentMethodsEntity->getPaymentSettings($payment->id);
         } else {
+            $payment = new \stdClass();
             $payment->payment_deliveries = [];
             $payment->payment_settings = [];
         }

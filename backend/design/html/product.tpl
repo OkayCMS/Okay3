@@ -753,7 +753,7 @@
 
     {$block = {get_design_block block="product_custom_block"}}
     {if !empty($block)}
-        <div class="boxed fn_toggle_wrap">
+        <div class="custom_block">
             {$block}
         </div>
     {/if}

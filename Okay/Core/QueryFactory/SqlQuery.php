@@ -18,7 +18,7 @@ class SqlQuery implements QueryInterface
 
     public function result($column = null)
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         $db = $SL->getService(Database::class);
 
         if ($this->executed) {
@@ -32,7 +32,7 @@ class SqlQuery implements QueryInterface
 
     public function results($column = null, $mapped = null)
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         $db = $SL->getService(Database::class);
 
         if ($this->executed) {
@@ -46,7 +46,7 @@ class SqlQuery implements QueryInterface
 
     public function execute()
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         $db = $SL->getService(Database::class);
         $db->query($this);
         $this->executed = true;

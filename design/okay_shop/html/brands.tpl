@@ -34,10 +34,10 @@
 </div>
 
 {* The page body *}
-{if $page->description}
+{if $description}
 <div class="block block--boxed block--border">
 	<div class="fn_readmore">
-		<div class="page-description__text boxed__description">{$page->description}</div>
+		<div class="page-description__text boxed__description">{$description}</div>
 	</div>
 </div>
 {/if}

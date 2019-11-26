@@ -117,10 +117,14 @@ class ManagerMenu
     
     private $menuCounters = [];
     
-    public function __construct(Managers $managers, Module $module)
+    public function __construct(Managers $managers, Module $module, $devMode = false)
     {
         $this->managers = $managers;
         $this->module   = $module;
+        
+        if ((bool)$devMode === true) {
+            $this->leftMenu['left_design']['left_email_templates_debug'] = ['EmailTemplatesAdmin'];
+        }
     }
 
     /**

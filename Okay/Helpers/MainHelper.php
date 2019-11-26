@@ -11,6 +11,7 @@ use Okay\Core\Design;
 use Okay\Core\EntityFactory;
 use Okay\Core\FrontTranslations;
 use Okay\Core\JsSocial;
+use Okay\Core\Languages;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Core\Modules\Module;
 use Okay\Core\Request;
@@ -45,16 +46,18 @@ class MainHelper
     
     public function __construct()
     {
-        $this->SL = new ServiceLocator();
+        $this->SL = ServiceLocator::getInstance();
         /** @var EntityFactory $entityFactory */
         $entityFactory = $this->SL->getService(EntityFactory::class);
         /** @var Request $request */
         $request = $this->SL->getService(Request::class);
+        /** @var Languages $languages */
+        $languages = $this->SL->getService(Languages::class);
         /** @var Response $response */
         $response = $this->SL->getService(Response::class);
         
         $languagesEntity = $entityFactory->get(LanguagesEntity::class);
-        $langId = $request->getLangId();
+        $langId = $languages->getLangId();
         $this->currentLanguage = $languagesEntity->get($langId);
         $this->allLanguages = $languagesEntity->find();
 
@@ -175,7 +178,7 @@ class MainHelper
         $design->assign('current_page', $request->get('page'));
 
         // Передаем переводы
-        $design->assign('lang', $this->SL->getService(FrontTranslations::class));
+        $design->assign('lang',       $this->SL->getService(FrontTranslations::class));
 
         $design->assign('settings',   $this->SL->getService(Settings::class));
         $design->assign('config',     $this->SL->getService(Config::class));

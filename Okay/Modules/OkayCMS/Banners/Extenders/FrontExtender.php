@@ -31,12 +31,23 @@ class FrontExtender implements ExtensionInterface
 
     public function assignCurrentBanners()
     {
+        if (!empty($this->shortCodesParts)) {
+            foreach ($this->shortCodesParts as $individualShortCode => $codesPart) {
+                $this->design->assign($individualShortCode, $codesPart);
+            }
+        }
         $this->design->assign('global_banners', $this->totalBannersHtml);
     }
     
     public function metadataGetParts(array $parts = [])
     {
-        $parts = array_merge($parts, $this->shortCodesParts);
+        $shortCodeParts = [];
+        if (!empty($this->shortCodesParts)) {
+            foreach ($this->shortCodesParts as $individualShortCode => $codesPart) {
+                $shortCodeParts['{$' . $individualShortCode . '}'] = $codesPart;
+            }
+        }
+        $parts = array_merge($parts, $shortCodeParts);
         return $parts;
     }
     
@@ -119,7 +130,7 @@ class FrontExtender implements ExtensionInterface
                 // Если баннер отмечен как шорткод, передадим такую переменную в дизайн
                 if (!empty($banner->individual_shortcode)) {
                     $bannerHtml = $this->design->fetch('show_banner.tpl');
-                    $this->shortCodesParts['{$' . $banner->individual_shortcode . '}'] = $bannerHtml;
+                    $this->shortCodesParts[$banner->individual_shortcode] = $bannerHtml;
                 } else {
                     $this->totalBannersHtml .= $this->design->fetch('show_banner.tpl');
                 }

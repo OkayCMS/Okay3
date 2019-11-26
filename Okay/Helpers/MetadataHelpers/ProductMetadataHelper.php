@@ -103,10 +103,12 @@ class ProductMetadataHelper extends CommonMetadataHelper
         $product = $this->design->getVar('product');
 
         $this->parts = [
-            '{$brand}' => ($this->design->getVar('brand') ? $this->design->getVar('brand')->name : ''),
-            '{$product}' => ($this->design->getVar('product') ? $this->design->getVar('product')->name : ''),
-            '{$price}' => ($product->variant->price != null ? $this->money->convert($product->variant->price, $currency->id, false) . ' ' . $currency->sign : ''),
-            '{$sitename}' => ($this->settings->get('site_name') ? $this->settings->get('site_name') : '')
+            '{$brand}'         => ($this->design->getVar('brand') ? $this->design->getVar('brand')->name : ''),
+            '{$product}'       => ($this->design->getVar('product') ? $this->design->getVar('product')->name : ''),
+            '{$price}'         => ($product->variant->price != null ? $this->money->convert($product->variant->price, $currency->id, false) . ' ' . $currency->sign : ''),
+            '{$compare_price}' => ($product->variant->compare_price != null ? $this->money->convert($product->variant->compare_price, $currency->id, false) . ' ' . $currency->sign : ''),
+            '{$sku}'           => ($product->variant->sku != null ? $product->variant->sku : ''),
+            '{$sitename}'      => ($this->settings->get('site_name') ? $this->settings->get('site_name') : '')
         ];
 
         if ($category = $this->design->getVar('category')) {

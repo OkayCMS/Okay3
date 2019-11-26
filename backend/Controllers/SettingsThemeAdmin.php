@@ -23,13 +23,10 @@ class SettingsThemeAdmin extends IndexAdmin
                 $backendSettingsHelper->deleteFavicon();
             }
 
-            if ($settingsRequest->filesFavicon()) {
-                if ($error = $backendValidateHelper->getFaviconValidateError()) {
-                    $backendSettingsHelper->deleteFavicon();
-                    $this->design->assign('message_error', 'wrong_favicon_ext');
-                } else {
-                    $backendSettingsHelper->uploadFavicon();
-                }
+            if ($error = $backendValidateHelper->getFaviconValidateError()) {
+                $this->design->assign('message_error', $error);
+            } else {
+                $backendSettingsHelper->uploadFavicon();
             }
 
             // Logo

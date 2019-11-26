@@ -35,7 +35,7 @@ class CommonMetadataHelper implements MetadataInterface
 
     public function __construct()
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         $this->SL = $SL;
         $this->design = $SL->getService(Design::class);
         $this->settings = $SL->getService(Settings::class);

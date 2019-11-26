@@ -24,11 +24,11 @@
                 <div class="okay_list_heading okay_list_check">
                     <input class="hidden_check fn_check_all" type="checkbox" id="check_all_1" name="" value=""/>
                 </div>
-                <div class="okay_list_boding okay_list_photo"></div>
-                <div class="okay_list_heading okay_list_delivery_name"></div>
-                <div class="okay_list_heading okay_list_delivery_condit"></div>
-                <div class="okay_list_heading okay_list_delivery_photo">{$btr->module_type|escape}</div>
+                <div class="okay_list_heading okay_list_photo">{$btr->general_photo|escape}</div>
+                <div class="okay_list_heading okay_list_module_name">{$btr->general_name|escape}</div>
+                <div class="okay_list_heading okay_list_module_type">{$btr->module_type|escape}</div>
                 <div class="okay_list_heading okay_list_status">{$btr->general_enable|escape}</div>
+                <div class="okay_list_heading okay_list_setting okay_list_products_setting">{$btr->modules_files|escape}</div>
                 <div class="okay_list_heading okay_list_close"></div>
             </div>
 
@@ -68,7 +68,7 @@
                             {/if}
                         </div>
 
-                        <div class="okay_list_boding okay_list_delivery_name">
+                        <div class="okay_list_boding okay_list_module_name">
                             {if $module->backend_main_controller}
                                 <a href="{url controller=[{$module->vendor},{$module->module_name},{$module->backend_main_controller}] id=null return=$smarty.server.REQUEST_URI}">
                                     {$module->vendor|escape}/{$module->module_name|escape}
@@ -77,8 +77,9 @@
                                 {$module->vendor|escape}/{$module->module_name|escape}
                             {/if}
                         </div>
-                        <div class="okay_list_boding okay_list_delivery_condit"></div>
-                        <div class="okay_list_boding okay_list_delivery_photo">{if $module->type}{$module->type}{else}{$btr->not_used_module_type}{/if}</div>
+
+                        <div class="okay_list_boding okay_list_module_type">{if $module->type}{$module->type}{else}{$btr->not_used_module_type}{/if}</div>
+
                         <div class="okay_list_boding okay_list_status">
                             {*visible*}
                             {if $module->status === 'Not Installed'}
@@ -90,6 +91,12 @@
                                 <span class="switch-handle"></span>
                             </label>
                             {/if}
+                        </div>
+
+                        <div class="okay_list_setting okay_list_products_setting">
+                            <a data-hint="{$btr->files_list_module|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim" href="{url controller='ModuleDesignAdmin' vendor=$module->vendor module_name=$module->module_name}">
+                                {include file='svg_icon.tpl' svgId='icon_copy'}
+                            </a>
                         </div>
 
                         <div class="okay_list_boding okay_list_close">

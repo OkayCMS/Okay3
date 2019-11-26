@@ -40,7 +40,7 @@
                             </div>
                         {/if}
                         <div class="form__group">
-                            <input id="password_remind" class="form__input form__placeholder--focus" type="text" name="email" value="{$email|escape}" data-language="form_email" required>
+                            <input id="password_remind" class="form__input form__placeholder--focus" type="text" name="email" value="{$request_data.email|escape}" data-language="form_email" required>
                             <span class="form__placeholder">{$lang->form_email}*</span>
                         </div>
                     </div>

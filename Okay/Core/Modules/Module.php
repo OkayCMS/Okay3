@@ -7,6 +7,7 @@ namespace Okay\Core\Modules;
 use Monolog\Logger;
 use Okay\Core\EntityFactory;
 use Okay\Core\ServiceLocator;
+use Okay\Core\TemplateConfig;
 use Okay\Entities\ModulesEntity;
 
 /**
@@ -22,6 +23,9 @@ class Module
     const COMMON_MODULE_NAMESPACE = 'Okay\\Modules';
     const COMMON_MODULE_DIRECTORY = 'Okay/Modules/';
 
+    /**
+     * @var Logger
+     */
     protected $logger;
 
     public function __construct(Logger $logger)
@@ -39,9 +43,9 @@ class Module
      */
     public function getBaseNamespace($vendor, $moduleName)
     {
-        return self::COMMON_MODULE_NAMESPACE.'\\'.$vendor.'\\'.$moduleName;
+        return self::COMMON_MODULE_NAMESPACE . '\\' . $vendor . '\\' . $moduleName;
     }
-    
+
     /**
      * Получить область видимости контроллеров админки для указанного модуля
      * @param string $vendor
@@ -50,9 +54,9 @@ class Module
      */
     public function getBackendControllersNamespace($vendor, $moduleName)
     {
-        return self::COMMON_MODULE_NAMESPACE.'\\'.$vendor.'\\'.$moduleName.'\\Backend\\Controllers';
+        return self::COMMON_MODULE_NAMESPACE . '\\' . $vendor . '\\' . $moduleName . '\\Backend\\Controllers';
     }
-    
+
     /**
      * Получить область видимости контроллеров админки для указанного модуля
      * @param string $vendor
@@ -73,7 +77,7 @@ class Module
      */
     public function getInitClassName($vendor, $moduleName)
     {
-        $initClassName = $this->getBaseNamespace($vendor, $moduleName).'\\Init\\Init';
+        $initClassName = $this->getBaseNamespace($vendor, $moduleName) . '\\Init\\Init';
         if (class_exists($initClassName)) {
             return $initClassName;
         }
@@ -91,26 +95,26 @@ class Module
     public function getModuleDirectory($vendor, $moduleName)
     {
         if (!preg_match('~^[\w]+$~', $vendor)) {
-            throw new \Exception('"'.$vendor.'" is wrong name of vendor');
+            throw new \Exception('"' . $vendor . '" is wrong name of vendor');
         }
-        
+
         if (!preg_match('~^[\w]+$~', $moduleName)) {
-            throw new \Exception('"'.$moduleName.'" is wrong name of module');
+            throw new \Exception('"' . $moduleName . '" is wrong name of module');
         }
-        
-        $dir = self::COMMON_MODULE_DIRECTORY.$vendor.'/'.$moduleName;
+
+        $dir = self::COMMON_MODULE_DIRECTORY . $vendor . '/' . $moduleName;
         return rtrim($dir, '/') . '/';
     }
 
     public function moduleDirectoryNotExists($vendor, $moduleName)
     {
-         $moduleDir = $this->getModuleDirectory($vendor, $moduleName);
+        $moduleDir = $this->getModuleDirectory($vendor, $moduleName);
 
-         if (is_dir($moduleDir)) {
-             return false;
-         }
+        if (is_dir($moduleDir)) {
+            return false;
+        }
 
-        $moduleNotExistsMsg = 'Module "'.$vendor.'/'.$moduleName.'" installed but not exists';
+        $moduleNotExistsMsg = 'Module "' . $vendor . '/' . $moduleName . '" installed but not exists';
         trigger_error($moduleNotExistsMsg, E_USER_WARNING);
         $this->logger->addWarning($moduleNotExistsMsg);
         return true;
@@ -125,7 +129,7 @@ class Module
      */
     public function getRoutes($vendor, $moduleName)
     {
-        $file = $this->getModuleDirectory($vendor, $moduleName).'/Init/routes.php';
+        $file = $this->getModuleDirectory($vendor, $moduleName) . '/Init/routes.php';
 
         if (!file_exists($file)) {
             return [];
@@ -143,7 +147,7 @@ class Module
      */
     public function getServices($vendor, $moduleName)
     {
-        $file = $this->getModuleDirectory($vendor, $moduleName).'/Init/services.php';
+        $file = $this->getModuleDirectory($vendor, $moduleName) . '/Init/services.php';
 
         if (!file_exists($file)) {
             return [];
@@ -161,7 +165,7 @@ class Module
      */
     public function getSmartyPlugins($vendor, $moduleName)
     {
-        $file = $this->getModuleDirectory($vendor, $moduleName).'/Init/SmartyPlugins.php';
+        $file = $this->getModuleDirectory($vendor, $moduleName) . '/Init/SmartyPlugins.php';
 
         if (!file_exists($file)) {
             return [];
@@ -197,10 +201,35 @@ class Module
         return preg_match('~Okay\\\\Modules\\\\([a-zA-Z0-9]+)\\\\([a-zA-Z0-9]+)\\\\Controllers\\\\?.*~', $controllerName);
     }
 
+    public function isBackendControllerName($backendController)
+    {
+        return preg_match('/[a-zA-Z]+\.[a-zA-Z]+\.[a-zA-Z]+/', $backendController);
+    }
+
+    public function getVendorNameByBackendControllerName($backendController)
+    {
+        if (!$this->isBackendControllerName($backendController)) {
+            throw new \Exception('Incorrect module backend controller name');
+        }
+
+        $nameParts = explode('.', $backendController);
+        return $nameParts[0];
+    }
+
+    public function getModuleNameByBackendControllerName($backendController)
+    {
+        if (!$this->isBackendControllerName($backendController)) {
+            throw new \Exception('Incorrect module backend controller name');
+        }
+
+        $nameParts = explode('.', $backendController);
+        return $nameParts[1];
+    }
+
     /**
      * Получить параметры контроллера админки. Имя контроллера имеет структуру Vendor.Module.Controller
      * В случае если имя контроллера соответствует контрорллеру админки,
-     * в ответ получим массив 
+     * в ответ получим массив
      * [
      *      'vendor' => 'Vendor',
      *      'module' => 'Module',
@@ -225,10 +254,10 @@ class Module
                 ];
             }
         }
-        
+
         return false;
     }
-    
+
     public function getBackendControllerName($vendor, $module, $controllerClass)
     {
         return $vendor . '.' . $module . '.' . $controllerClass;
@@ -236,7 +265,7 @@ class Module
 
     public function generateModuleTemplateDir($vendor, $moduleName)
     {
-        return realpath(__DIR__.'/../../Modules/'.$vendor.'/'.$moduleName.'/design/html/');
+        return realpath(__DIR__ . '/../../Modules/' . $vendor . '/' . $moduleName . '/design/html/');
     }
 
     /**
@@ -250,16 +279,16 @@ class Module
     {
         $vendor = $this->getVendorName($namespace);
         $moduleName = $this->getModuleName($namespace);
-        
+
         if (!empty(self::$modulesIds[$vendor][$moduleName])) {
             return self::$modulesIds[$vendor][$moduleName];
         }
-        
-        $SL = new ServiceLocator();
+
+        $SL = ServiceLocator::getInstance();
 
         /** @var EntityFactory $entityFactory */
         $entityFactory = $SL->getService(EntityFactory::class);
-        
+
         /** @var ModulesEntity $modulesEntity */
         $modulesEntity = $entityFactory->get(ModulesEntity::class);
         if ($module = $modulesEntity->getByVendorModuleName($vendor, $moduleName)) {
@@ -279,13 +308,13 @@ class Module
     public function findModulePreview($vendor, $moduleName)
     {
         $moduleDir = $this->getModuleDirectory($vendor, $moduleName);
-        $matchedFiles = glob ($moduleDir."preview.*");
+        $matchedFiles = glob($moduleDir . "preview.*");
 
         if (empty($matchedFiles)) {
             return false;
         }
 
-        foreach($matchedFiles as $file) {
+        foreach ($matchedFiles as $file) {
             if ($this->fileHasAllowImageExtension($file)) {
                 return $file;
             }

@@ -43,6 +43,7 @@ body {
     color: var(--okay-body-text);
     font-size: 14px;
     font-weight: normal;
+    position: relative;
     line-height: 1.4;
     min-height: 100%;
     max-width: 100%;

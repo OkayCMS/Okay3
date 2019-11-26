@@ -106,6 +106,8 @@
                         toastr.success(msg, "Success");
                         elem.addClass("active");
                         $(".fn_preloader ").removeClass("ajax_preloader");
+
+                        sclipboard();
                     } else {
                         toastr.error(msg, "Error");
                         $(".fn_preloader ").removeClass("ajax_preloader");

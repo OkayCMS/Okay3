@@ -101,7 +101,7 @@ abstract class AbstractInit
             throw new \Exception('"$moduleId" must be integer');
         }
         
-        $serviceLocator        = new ServiceLocator();
+        $serviceLocator        = ServiceLocator::getInstance();
         $this->entityFactory   = $serviceLocator->getService(EntityFactory::class);
         $this->queryFactory    = $serviceLocator->getService(QueryFactory::class);
         $this->entityMigrator  = $serviceLocator->getService(EntityMigrator::class);
@@ -482,7 +482,7 @@ abstract class AbstractInit
      */
     private function addDesignBlock($blockName, $blockTplFile)
     {
-        $serviceLocator = new ServiceLocator();
+        $serviceLocator = ServiceLocator::getInstance();
 
         /** @var DesignBlocks $designBlocks */
         $designBlocks = $serviceLocator->getService(DesignBlocks::class);

@@ -129,7 +129,7 @@
     <div class="row">
         <div class="col-lg-12 col-md-12">
             <div class="boxed fn_toggle_wrap min_height_230px">
-                <div class="heading_box">{$btr->general_template|escape} {$template_file|escape}</div>
+                <div class="heading_box">{$btr->scripts_scripts|escape} {$script_file}</div>
 
                 <form class="fn_fast_button">
                     <textarea id="script_content" name="script_content" style="width:700px;height:500px;">{$script_content|escape}</textarea>

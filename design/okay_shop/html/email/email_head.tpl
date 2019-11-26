@@ -16,8 +16,7 @@
     /*  Template reset styles  */
 
     #outlook a {padding:0;}
-    html,
-    body {
+    .es-wrapper-color {
         width: 100%;
         font-family: 'Trebuchet MS', helvetica, arial, sans-serif;
         -webkit-text-size-adjust: 100%;
@@ -60,11 +59,11 @@
         font-weight: inherit !important;
         line-height: inherit !important;
     }
-    h1,
-    h2,
-    h3,
-    h4,
-    h5 {
+    .es-wrapper-color h1,
+    .es-wrapper-color h2,
+    .es-wrapper-color h3,
+    .es-wrapper-color h4,
+    .es-wrapper-color h5 {
         margin: 0;
         line-height: 120%;
         mso-line-height-rule: exactly;
@@ -73,16 +72,16 @@
         font-weight: normal;
         color: #222;
     }
-    h1 {font-size: 24px;font-weight: 400;}
-    h2 {font-size: 22px;font-weight: 400;}
-    h3 {font-size: 20px;font-weight: 400;}
-    h4 {font-size: 18px;font-weight: 600;}
-    h5 {font-size: 18px}
+    .es-wrapper-color h1 {font-size: 24px;font-weight: 400;}
+    .es-wrapper-color h2 {font-size: 22px;font-weight: 400;}
+    .es-wrapper-color h3 {font-size: 20px;font-weight: 400;}
+    .es-wrapper-color h4 {font-size: 18px;font-weight: 600;}
+    .es-wrapper-color h5 {font-size: 18px}
 
-    p,
-    ul li,
-    ol li,
-    a {
+    .es-wrapper-color  p,
+    .es-wrapper-color  ul li,
+    .es-wrapper-color  ol li,
+    .es-wrapper-color  a {
         -webkit-text-size-adjust: none;
         -ms-text-size-adjust: none;
         mso-line-height-rule: exactly;
@@ -92,7 +91,7 @@
         margin: 0 0 10px;
         color: #515151;
     }
-    a {
+    .es-wrapper-color  a {
         text-decoration: underline;
         color: #F36D17;
         margin-bottom: 0;
@@ -198,7 +197,7 @@
         color: #fff;
         font-weight: 600;
     }
-    .es-button {
+    .es-wrapper-color .es-button {
         mso-style-priority: 100 !important;
         text-decoration: none !important;
         border: 2px solid #F36D17;
@@ -216,7 +215,7 @@
         font-family: Verdana, arial, sans-serif;
     }
 
-    .es-download{
+    .es-wrapper-color .es-download{
         mso-style-priority: 100 !important;
         text-decoration: none !important;
         border: 2px solid #F36D17;
@@ -234,7 +233,7 @@
         font-family: Verdana, arial, sans-serif;
     }
 
-    .es-button-border {
+    .es-wrapper-color .es-button-border {
         border: 2px solid #F36D17;
         color: #F36D17;
         background: #fff;
@@ -248,7 +247,7 @@
         width: auto;
         text-align: center;
     }
-    .es-number-order {
+    .es-wrapper-color .es-number-order {
         color: #F36D17;
         padding: 3px 3px;
         display: inline-block;
@@ -260,7 +259,7 @@
         vertical-align: text-bottom;
         font-weight: 600;
     }
-    .es-status-color{
+    .es-wrapper-color .es-status-color{
         font-weight: 600;
         color: #fff;
         background: #1dc116;
@@ -288,8 +287,8 @@
         .es-left,
         .es-right {width: 100% !important;float: none;
         }
-        .es-button-border {display: block !important;}
-        .es-button {
+        .es-wrapper-color .es-button-border {display: block !important;}
+        .es-wrapper-color .es-button {
             font-size: 14px !important;
             display: block !important;
             border-left-width: 0 !important;

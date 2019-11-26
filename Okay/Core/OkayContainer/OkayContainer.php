@@ -149,6 +149,7 @@ class OkayContainer implements ContainerInterface
 
         $reflector = new \ReflectionClass($entry['class']);
         $service = $reflector->newInstanceArgs($arguments);
+        unset($reflector);
 
         if (isset($entry['calls'])) {
             $this->initializeService($service, $name, $entry['calls']);

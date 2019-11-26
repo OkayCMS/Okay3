@@ -195,6 +195,7 @@
                                                         <span class="hidden-md-up text_500">
                                                         {$purchase->amount} {if $purchase->units}{$purchase->units|escape}{else}{$settings->units|escape}{/if}</span>
                                                     </div>
+                                                    {get_design_block block="order_purchase_name" vars=['purchase'=>$purchase]}
                                                 </div>
 
                                                 {if !$purchase->variant}

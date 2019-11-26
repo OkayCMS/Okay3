@@ -82,11 +82,6 @@ class Languages
             return $this->langId;
         }
         
-        // Проверяем, может request знает о языке
-        if ($langId = $this->request->getLangId()) {
-            $this->langId = $langId;
-        }
-        
         if (empty($this->langId) && !empty($_SESSION['lang_id']) && !empty($this->languagesList[$_SESSION['lang_id']])) {
             $this->langId  = intval($_SESSION['lang_id']);
         }
@@ -100,7 +95,12 @@ class Languages
     /*Установка ID языка*/
     public function setLangId($id)
     {
-        $this->langId = $_SESSION['lang_id'] = intval($id);
+        $id = (int)$id;
+        if (!isset($this->languagesList[$id])) {
+            $id = (int)$this->mainLanguage->id;
+        }
+        
+        $this->langId = $_SESSION['lang_id'] = $id;
     }
 
     public function getLangLabel($langId = null)

@@ -43,7 +43,7 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
 
     public function __construct()
     {
-        $serviceLocator         = new ServiceLocator();
+        $serviceLocator         = ServiceLocator::getInstance();
         $entityFactory          = $serviceLocator->getService(EntityFactory::class);
         $this->db               = $serviceLocator->getService(Database::class);
         $this->queryFactory     = $serviceLocator->getService(QueryFactory::class);
@@ -142,8 +142,7 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
 
             return $sortCategories($mappedByParentCategories[$category->id]);
         };
-
-        $mostNestedCategory = $sortCategories($mappedByParentCategories[0]);
+        $mostNestedCategory = $sortCategories(reset($mappedByParentCategories));
         return $mostNestedCategory->id;
     }
 

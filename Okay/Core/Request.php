@@ -54,20 +54,15 @@ class Request
         }
         return $result;
     }
-    
-    public function getCurrentUrl()
-    {
-        return $this->getRootUrl().$_SERVER['REQUEST_URI'];
-    }
 
-    public function getLangId()
+    /**
+     * Метод возвращает текущий URL с протоколом и REQUEST_URI
+     * 
+     * @return string
+     */
+    public static function getCurrentUrl()
     {
-        return $this->langId;
-    }
-    
-    public function setLangId($langId)
-    {
-        $this->langId = (int)$langId;
+        return self::getDomainWithProtocol() . $_SERVER['REQUEST_URI'];
     }
     
     public function getStartTime()
@@ -85,14 +80,37 @@ class Request
     
     public function getBasePathWithDomain()
     {
-        return $this->getProtocol() . '://' . $this->getDomain() . $this->getBasePath();
+        return self::getProtocol() . '://' . self::getDomain() . $this->getBasePath();
+    }
+
+    /**
+     * Метод возвращает REQUEST_URI без учёта подпапки сайта. т.е. только от корня сайта
+     * Напр. для URL https://demookay.com/subfolder/catalog/mebel-dlya-doma?param=value
+     * $_SERVER['REQUEST_URI'] будет равен /subfolder/catalog/mebel-dlya-doma?param=value
+     * а тукущий метод вернёт catalog/mebel-dlya-doma?param=value
+     * 
+     * @return string
+     */
+    public static function getRequestUri()
+    {
+        return trim(str_replace(self::getRootUrl(), '', self::getCurrentUrl()), '/');
     }
     
+    /**
+     * Метод возвращает домен вместе с подпапкой (корень сайта)
+     * 
+     * @return string
+     */
     public static function getRootUrl()
     {
         return self::getDomainWithProtocol() . self::getSubDir();
     }
-    
+
+    /**
+     * Метод возвращает текущий домен с протоколом
+     * 
+     * @return string
+     */
     public static function getDomainWithProtocol()
     {
         return self::getProtocol() . '://' . self::getDomain();
@@ -118,54 +136,43 @@ class Request
         $this->pageUrl = $pageUrl;
     }
     
-    private static function getDomain()
-    {
-        return rtrim($_SERVER['HTTP_HOST']);
-    }
-    
-    private static function getProtocol()
-    {
-        $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,5)) == 'https' ? 'https' : 'http';
-        if($_SERVER["SERVER_PORT"] == 443)
-            $protocol = 'https';
-        elseif (isset($_SERVER['HTTPS']) && (($_SERVER['HTTPS'] == 'on') || ($_SERVER['HTTPS'] == '1')))
-            $protocol = 'https';
-        elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on')
-            $protocol = 'https';
-        return $protocol;
-    }
-    
     /**
-    * Определение request-метода обращения к странице (GET, POST)
-    * Если задан аргумент функции (название метода, в любом регистре), возвращает true или false
-    * Если аргумент не задан, возвращает имя метода
-    * Пример:
-    *
-    *    if($request->method('post'))
-    *        print 'Request method is POST';
-    *
-    */
-    /*Возвращение метода передачи данных*/
-    public function method($method = null) {
-        if(!empty($method)) {
+     * Определение request-метода обращения к странице (GET, POST)
+     * Если задан аргумент функции (название метода, в любом регистре), возвращает true или false
+     * Если аргумент не задан, возвращает имя метода
+     * Пример:
+     *
+     *    if($request->method('post'))
+     *        print 'Request method is POST';
+     * @var string $method
+     * @return string
+     */
+    public function method($method = null)
+    {
+        if (!empty($method)) {
             return strtolower($_SERVER['REQUEST_METHOD']) == strtolower($method);
         }
         return $_SERVER['REQUEST_METHOD'];
     }
     
     /**
-    * Возвращает переменную _GET, отфильтрованную по заданному типу, если во втором параметре указан тип фильтра
-    * Второй параметр $type может иметь такие значения: integer, string, boolean
-    * Если $type не задан, возвращает переменную в чистом виде
-    */
+     * Возвращает переменную _GET, отфильтрованную по заданному типу, если во втором параметре указан тип фильтра
+     * Второй параметр $type может иметь такие значения: integer, string, boolean
+     * Если $type не задан, возвращает переменную в чистом виде
+     * @var string $name
+     * @var string $type
+     * @var string $default
+     * @return mixed
+     */
     /*Прием параметров с массива $_GET*/
-    public function get($name, $type = null, $default = '') {
+    public function get($name, $type = null, $default = '')
+    {
         $val = null;
-        if(isset($_GET[$name])) {
+        if (isset($_GET[$name])) {
             $val = $_GET[$name];
         }
         
-        if(!empty($type) && is_array($val)) {
+        if (!empty($type) && is_array($val)) {
             $val = reset($val);
         }
 
@@ -173,19 +180,19 @@ class Request
             $val = $default;
         }
 
-        if($type == 'string') {
+        if ($type == 'string') {
             return strval(preg_replace('/[^\p{L}\p{Nd}\d\s_\-\.\%\s]/ui', '', $val));
         }
         
-        if($type == 'integer') {
+        if ($type == 'integer' || $type == 'int') {
             return intval($val);
         }
         
-        if($type == 'float') {
+        if ($type == 'float') {
             return floatval($val);
         }
         
-        if($type == 'boolean') {
+        if ($type == 'boolean' || $type == 'bool') {
             return !empty($val);
         }
         
@@ -193,16 +200,19 @@ class Request
     }
     
     /**
-    * Возвращает переменную _POST, отфильтрованную по заданному типу, если во втором параметре указан тип фильтра
-    * Второй параметр $type может иметь такие значения: integer, string, boolean
-    * Если $type не задан, возвращает переменную в чистом виде
-    */
-    /*Прием параметров с массива $_POST*/
+     * Возвращает переменную _POST, отфильтрованную по заданному типу, если во втором параметре указан тип фильтра
+     * Второй параметр $type может иметь такие значения: integer, string, boolean
+     * Если $type не задан, возвращает переменную в чистом виде
+     * @var string $name
+     * @var string $type
+     * @var string $default
+     * @return mixed
+     */
     public function post($name = null, $type = null, $default = null) {
         $val = null;
-        if(!empty($name) && isset($_POST[$name])) {
+        if (!empty($name) && isset($_POST[$name])) {
             $val = $_POST[$name];
-        } elseif(empty($name)) {
+        } elseif (empty($name)) {
             $val = file_get_contents('php://input');
         }
 
@@ -210,19 +220,19 @@ class Request
             $val = $default;
         }
 
-        if($type == 'string') {
+        if ($type == 'string') {
             return strval(preg_replace('/[^\p{L}\p{Nd}\d\s_\-\.\%\s]/ui', '', $val));
         }
         
-        if($type == 'integer') {
+        if ($type == 'integer' || $type == 'int') {
             return intval($val);
         }
         
-        if($type == 'float') {
+        if ($type == 'float') {
             return floatval($val);
         }
         
-        if($type == 'boolean') {
+        if ($type == 'boolean' || $type == 'bool') {
             return !empty($val);
         }
         
@@ -230,15 +240,18 @@ class Request
     }
     
     /**
-    * Возвращает переменную _FILES
-    * Обычно переменные _FILES являются двухмерными массивами, поэтому можно указать второй параметр,
-    * например, чтобы получить имя загруженного файла: $filename = $request->files('myfile', 'name');
-    */
-    /*Прием параметров с массива $_FILES*/
-    public function files($name, $name2 = null) {
-        if(!empty($name2) && !empty($_FILES[$name][$name2])) {
+     * Возвращает переменную _FILES
+     * Обычно переменные _FILES являются двухмерными массивами, поэтому можно указать второй параметр,
+     * например, чтобы получить имя загруженного файла: $filename = $request->files('myfile', 'name');
+     * @var string $name
+     * @var string $name2
+     * @return array|null
+     */
+    public function files($name, $name2 = null)
+    {
+        if (!empty($name2) && !empty($_FILES[$name][$name2])) {
             return $_FILES[$name][$name2];
-        } elseif(empty($name2) && !empty($_FILES[$name])) {
+        } elseif (empty($name2) && !empty($_FILES[$name])) {
             return $_FILES[$name];
         }
 
@@ -257,7 +270,24 @@ class Request
 
         return $subDir;
     }
+    
+    private static function getDomain()
+    {
+        return rtrim($_SERVER['HTTP_HOST']);
+    }
 
+    private static function getProtocol()
+    {
+        $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,5)) == 'https' ? 'https' : 'http';
+        if($_SERVER["SERVER_PORT"] == 443)
+            $protocol = 'https';
+        elseif (isset($_SERVER['HTTPS']) && (($_SERVER['HTTPS'] == 'on') || ($_SERVER['HTTPS'] == '1')))
+            $protocol = 'https';
+        elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on')
+            $protocol = 'https';
+        return $protocol;
+    }
+    
     /**
      * Рекурсивная чистка магических слешей
      */
@@ -279,8 +309,8 @@ class Request
     }
     
     /**
-    * Проверка сессии
-    */
+     * Проверка сессии
+     */
     public function checkSession()
     {
         if (!empty($_POST)) {
@@ -293,8 +323,11 @@ class Request
     }
     
     /**
-    * Формирование ссылки
-    */
+     * Формирование ссылки
+     * 
+     * @var array $params
+     * @return string
+     */
     public function url($params = array()) {
         $url = @parse_url($_SERVER["REQUEST_URI"]);
         if (!empty($url['query'])) {

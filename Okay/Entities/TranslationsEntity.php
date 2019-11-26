@@ -29,7 +29,7 @@ class TranslationsEntity extends Entity
     public function __construct()
     {
         parent::__construct();
-        $serviceLocator = new ServiceLocator();
+        $serviceLocator = ServiceLocator::getInstance();
         $this->templateConfig = $serviceLocator->getService(TemplateConfig::class);
         $this->languages      = $serviceLocator->getService(EntityFactory::class)->get(LanguagesEntity::class);
     }

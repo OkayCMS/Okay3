@@ -14,7 +14,7 @@ abstract class AbstractModule
     
     public function __construct()
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         $this->design = $SL->getService(Design::class);
     }
     

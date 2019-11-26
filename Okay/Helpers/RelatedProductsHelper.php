@@ -23,7 +23,6 @@ class RelatedProductsHelper
      */
     public function getRelatedProductsList(RelatedProductsInterface $relatedObjectsEntity, array $filter)
     {
-        $relatedObjectsEntity->getRelatedProducts();
 
         $relatedProducts = [];
         foreach ($relatedObjectsEntity->getRelatedProducts($filter) as $p) {

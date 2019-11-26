@@ -823,6 +823,7 @@ a.link_white:hover{
     background-color: transparent;
     border-color: #10cfbd;
 }
+.btn-outline-info.disabled,
 .btn-outline-info:hover {
     color: #fff;
     background-color: #10cfbd;
@@ -2196,6 +2197,21 @@ label.switch_label {
     width: 140px;
     text-align: center!important;
 }
+.okay_list .okay_list_module_type{
+    width: 140px;
+    text-align: center!important;
+}
+.okay_list .okay_list_module_design_status{
+    width: 370px;
+    text-align: center!important;
+}
+.okay_list .okay_list_module_design_name{
+    float: left;
+    padding: 10px;
+    width: calc(100% - 410px);
+    position: relative;
+    text-align: left;
+}
 .okay_list .okay_list_comments_btn{
     width: 240px;
     text-align: center!important;
@@ -2208,6 +2224,7 @@ label.switch_label {
     color: #2b303b;
     display: block;
     text-decoration: none;
+    word-wrap: break-word;
 }
 .okay_list .okay_list_boding.okay_list_comments_name a{
     color: #02bcf2;
@@ -2292,6 +2309,11 @@ label.switch_label {
 }
 .okay_list .okay_list_delivery_name{
     width: calc(100% - 610px);
+    position: relative;
+    text-align: left;
+}
+.okay_list .okay_list_module_name{
+    width: calc(100% - 560px);
     position: relative;
     text-align: left;
 }
@@ -5071,7 +5093,7 @@ input[type=range]:focus::-ms-fill-upper {
 .design_tabs .design_navigation{
     border-bottom: 1px solid #ddd;
     padding-bottom: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
 }
 .design_tabs .design_navigation .design_navigation_link{
     text-transform: uppercase;
@@ -5090,7 +5112,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .design_tabs .design_navigation .design_navigation_link.focus::before {
     position: absolute;
-    bottom: -4px;
+    bottom: -7px;
     left: 0;
     display: block;
     width: 100%;
@@ -5098,7 +5120,7 @@ input[type=range]:focus::-ms-fill-upper {
     border-bottom: 2px solid #4ccdc1;
 }
 .design_tabs .design_container{
-    min-height: 100px;
+    min-height: 50px;
     overflow: hidden;
 }
 .design_tabs .design_container .design_tab{
@@ -5114,6 +5136,8 @@ input[type=range]:focus::-ms-fill-upper {
     white-space: nowrap;
     border: 1px solid transparent;
     line-height: 14px;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
 }
 .design_tabs .design_container .design_tab:hover,
 .design_tabs .design_container .design_tab.focus{
@@ -5129,6 +5153,10 @@ input[type=range]:focus::-ms-fill-upper {
     border: 5px solid transparent;
     border-top: 5px solid #4DCDC1;
     border-right: 5px solid #4DCDC1;
+}
+.design_tabs .design_container .design_tab.focus:hover {
+    background: #4DCDC1;
+    color: #fff;
 }
 /************************************************************************* Delivery.tpl  */
 .payment_item{
@@ -6546,8 +6574,64 @@ ul.submenu .menu_counter {
     font-size: 0.9em;
     font-weight: 700;
 }
-
 .custom_block {
     min-height: 40px;
     margin-bottom: 5px;
+}
+
+.fn_clipboard {
+    position: relative;
+    padding: 0 2px;
+    text-decoration: none;
+    background: transparent;
+    cursor: copy;
+    color: inherit;
+    text-decoration: none;
+}
+.fn_clipboard:after {
+    content: attr(data-hint);
+    width: auto!important;
+    white-space: nowrap !important;
+}
+.fn_clipboard.is-copied {
+    background-color: #F1BC0A;
+    color:#333;
+}
+.fn_clipboard.is-copied:after {
+    content: attr(data-hint-copied);
+}
+.variables_box{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    margin: 7px 0;
+}
+.variables_box__left{
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 75%;
+    -ms-flex: 0 0 75%;
+    flex: 0 0 75%;
+    max-width: 75%;
+}
+.variables_box .heading_label{
+    line-height: 1.2;
+}
+.variables_box__right{
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 25%;
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
 }

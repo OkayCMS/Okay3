@@ -124,7 +124,7 @@ class Notify
     }
 
     /*Отправка емейла клиенту о заказе*/
-    public function emailOrderUser($orderId)
+    public function emailOrderUser($orderId, $debug = false)
     {
         /** @var OrdersEntity $ordersEntity */
         $ordersEntity = $this->entityFactory->get(OrdersEntity::class);
@@ -185,8 +185,11 @@ class Notify
         }
         $emailTemplate = $this->design->fetch($this->rootDir.'design/'.$this->templateConfig->getTheme().'/html/email/email_order.tpl');
         $subject = $this->design->getVar('subject');
-        $from = ($this->settings->notify_from_name ? $this->settings->notify_from_name." <".$this->settings->notify_from_email.">" : $this->settings->notify_from_email);
-        $this->email($order->email, $subject, $emailTemplate, $from);
+        
+        if ($debug === false) {
+            $from = ($this->settings->get('notify_from_name') ? $this->settings->get('notify_from_name')." <".$this->settings->get('notify_from_email').">" : $this->settings->get('notify_from_email'));
+            $this->email($order->email, $subject, $emailTemplate, $from);
+        }
         
         /*lang_modify...*/
         if (!empty($currentLangId)) {
@@ -205,10 +208,17 @@ class Notify
             $this->design->assign('settings', $this->settings);
         }
         /*/lang_modify...*/
+
+        if ($debug === true) {
+            $this->design->assign('meta_title', $subject);
+            return $emailTemplate;
+        }
+        
+        return true;
     }
 
     /*Отправка емейла о заказе администратору*/
-    public function emailOrderAdmin($orderId)
+    public function emailOrderAdmin($orderId, $debug = false)
     {
         /** @var OrdersEntity $ordersEntity */
         $ordersEntity = $this->entityFactory->get(OrdersEntity::class);
@@ -251,29 +261,26 @@ class Notify
         $this->design->assign('main_currency', $currenciesEntity->getMainCurrency());
 
         // Перевод админки
-        $backendTranslations = $this->backendTranslations;
-        $file = "backend/lang/".$this->settings->email_lang.".php";
-        if (!file_exists($file)) {
-            foreach (glob("backend/lang/??.php") as $f) {
-                $file = "backend/lang/".pathinfo($f, PATHINFO_FILENAME).".php";
-                break;
-            }
-        }
-        require($file);
-        $this->design->assign('btr', $backendTranslations);
+        $this->backendTranslations->initTranslations($this->settings->get('email_lang'));
+        $this->design->assign('btr', $this->backendTranslations);
 
         // Отправляем письмо
         $emailTemplate = $this->design->fetch($this->rootDir.'backend/design/html/email/email_order_admin.tpl');
 
         $subject = $this->design->getVar('subject');
         
-        $this->email($this->settings->order_email, $subject, $emailTemplate, $this->settings->notify_from_email);
+        if ($debug === true) {
+            $this->design->assign('meta_title', $subject);
+            return $emailTemplate;
+        } else {
+            $this->email($this->settings->get('order_email'), $subject, $emailTemplate, $this->settings->get('notify_from_email'));
+        }
+        return true;
     }
 
     /*Отправка емейла о комментарии администратору*/
-    public function emailCommentAdmin($commentId)
+    public function emailCommentAdmin($commentId, $debug = false)
     {
-
         /** @var CommentsEntity $commentsEntity */
         $commentsEntity = $this->entityFactory->get(CommentsEntity::class);
         
@@ -296,25 +303,26 @@ class Notify
         }
         
         $this->design->assign('comment', $comment);
+        
         // Перевод админки
-        $backendTranslations = $this->backendTranslations;
-        $file = "backend/lang/".$this->settings->email_lang.".php";
-        if (!file_exists($file)) {
-            foreach (glob("backend/lang/??.php") as $f) {
-                $file = "backend/lang/".pathinfo($f, PATHINFO_FILENAME).".php";
-                break;
-            }
-        }
-        require($file);
-        $this->design->assign('btr', $backendTranslations);
+        $this->backendTranslations->initTranslations($this->settings->get('email_lang'));
+        $this->design->assign('btr', $this->backendTranslations);
+        
         // Отправляем письмо
-        $email_template = $this->design->fetch($this->rootDir.'backend/design/html/email/email_comment_admin.tpl');
+        $emailTemplate = $this->design->fetch($this->rootDir.'backend/design/html/email/email_comment_admin.tpl');
         $subject = $this->design->getVar('subject');
-        $this->email($this->settings->comment_email, $subject, $email_template, $this->settings->notify_from_email);
+        
+        if ($debug === true) {
+            $this->design->assign('meta_title', $subject);
+            return $emailTemplate;
+        } else {
+            $this->email($this->settings->get('comment_email'), $subject, $emailTemplate, $this->settings->get('notify_from_email'));
+        }
+        return true;
     }
 
     /*Отправка емейла администратору о заказе обратного звонка*/
-    public function emailCallbackAdmin($callbackId)
+    public function emailCallbackAdmin($callbackId, $debug = false)
     {
         /** @var CallbacksEntity $callbacksEntity */
         $callbacksEntity = $this->entityFactory->get(CallbacksEntity::class);
@@ -323,20 +331,22 @@ class Notify
             return false;
         }
         $this->design->assign('callback', $callback);
-        $backendTranslations = $this->backendTranslations;
-        $file = "backend/lang/".$this->settings->email_lang.".php";
-        if (!file_exists($file)) {
-            foreach (glob("backend/lang/??.php") as $f) {
-                $file = "backend/lang/".pathinfo($f, PATHINFO_FILENAME).".php";
-                break;
-            }
-        }
-        require($file);
-        $this->design->assign('btr', $backendTranslations);
+
+        // Перевод админки
+        $this->backendTranslations->initTranslations($this->settings->get('email_lang'));
+        $this->design->assign('btr', $this->backendTranslations);
+        
         // Отправляем письмо
-        $email_template = $this->design->fetch($this->rootDir.'backend/design/html/email/email_callback_admin.tpl');
+        $emailTemplate = $this->design->fetch($this->rootDir.'backend/design/html/email/email_callback_admin.tpl');
         $subject = $this->design->getVar('subject');
-        $this->email($this->settings->comment_email, $subject, $email_template, "$callback->name <$callback->phone>", "$callback->name <$callback->phone>");
+
+        if ($debug === true) {
+            $this->design->assign('meta_title', $subject);
+            return $emailTemplate;
+        } else {
+            $this->email($this->settings->get('comment_email'), $subject, $emailTemplate, "$callback->name <$callback->phone>", "$callback->name <$callback->phone>");
+        }
+        return true;
     }
 
     /*Отправка емейла с ответом на комментарий клиенту*/
@@ -377,12 +387,12 @@ class Notify
         }
         /*/lang_modify...*/
 
-        if ($comment->type == 'product') {
-            $comment->product = $productsEntity->get(intval($comment->object_id));
-        } elseif ($comment->type == 'blog') {
-            $comment->post = $blogEntity->get(intval($comment->object_id));
-        } elseif ($comment->type == 'news') {
-            $comment->post = $blogEntity->get(intval($comment->object_id));
+        if ($parentComment->type == 'product') {
+            $parentComment->product = $productsEntity->get(intval($parentComment->object_id));
+        } elseif ($parentComment->type == 'blog') {
+            $parentComment->post = $blogEntity->get(intval($parentComment->object_id));
+        } elseif ($parentComment->type == 'news') {
+            $parentComment->post = $blogEntity->get(intval($parentComment->object_id));
         }
 
         $this->design->assign('comment', $comment);
@@ -391,7 +401,8 @@ class Notify
         // Отправляем письмо
         $emailTemplate = $this->design->fetch($this->rootDir.'design/'.$this->templateConfig->getTheme().'/html/email/email_comment_answer_to_user.tpl');
         $subject = $this->design->getVar('subject');
-        $from = ($this->settings->notify_from_name ? $this->settings->notify_from_name." <".$this->settings->notify_from_email.">" : $this->settings->notify_from_email);
+
+        $from = ($this->settings->get('notify_from_name') ? $this->settings->get('notify_from_name')." <".$this->settings->get('notify_from_email').">" : $this->settings->get('notify_from_email'));
         $this->email($parentComment->email, $subject, $emailTemplate, $from, $from);
 
         $this->design->setTemplatesDir($templateDir);
@@ -404,6 +415,8 @@ class Notify
             $this->design->assign('settings', $this->settings);
         }
         /*/lang_modify...*/
+
+        return true;
     }
 
     /*Отправка емейла о восстановлении пароля клиенту*/
@@ -436,10 +449,12 @@ class Notify
         
         $this->design->smarty->clearAssign('user');
         $this->design->smarty->clearAssign('code');
+
+        return true;
     }
 
     /*Отправка емейла о заявке с формы обратной связи администратору*/
-    public function emailFeedbackAdmin($feedbackId)
+    public function emailFeedbackAdmin($feedbackId, $debug = false)
     {
 
         /** @var UsersEntity $feedbackEntity */
@@ -450,21 +465,24 @@ class Notify
         }
         
         $this->design->assign('feedback', $feedback);
+
         // Перевод админки
-        $backendTranslations = $this->backendTranslations;
-        $file = "backend/lang/".$this->settings->email_lang.".php";
-        if (!file_exists($file)) {
-            foreach (glob("backend/lang/??.php") as $f) {
-                $file = "backend/lang/".pathinfo($f, PATHINFO_FILENAME).".php";
-                break;
-            }
-        }
-        require($file);
-        $this->design->assign('btr', $backendTranslations);
+        $this->backendTranslations->initTranslations($this->settings->get('email_lang'));
+        $this->design->assign('btr', $this->backendTranslations);
+        
         // Отправляем письмо
-        $email_template = $this->design->fetch($this->rootDir.'backend/design/html/email/email_feedback_admin.tpl');
+        $emailTemplate = $this->design->fetch($this->rootDir.'backend/design/html/email/email_feedback_admin.tpl');
         $subject = $this->design->getVar('subject');
-        $this->email($this->settings->comment_email, $subject, $email_template, "$feedback->name <$feedback->email>", "$feedback->name <$feedback->email>");
+        
+
+        if ($debug === true) {
+            $this->design->assign('meta_title', $subject);
+            return $emailTemplate;
+        } else {
+            $this->email($this->settings->get('comment_email'), $subject, $emailTemplate, "$feedback->name <$feedback->email>", "$feedback->name <$feedback->email>");
+        }
+        
+        return true;
     }
 
     /*Отправка емейла с ответом на заявку с формы обратной связи клиенту*/
@@ -501,7 +519,7 @@ class Notify
         // Отправляем письмо
         $email_template = $this->design->fetch($this->rootDir.'design/'.$this->templateConfig->getTheme().'/html/email/email_feedback_answer_to_user.tpl');
         $subject = $this->design->getVar('subject');
-        $from = ($this->settings->notify_from_name ? $this->settings->notify_from_name." <".$this->settings->notify_from_email.">" : $this->settings->notify_from_email);
+        $from = ($this->settings->get('notify_from_name') ? $this->settings->get('notify_from_name')." <".$this->settings->get('notify_from_email').">" : $this->settings->get('notify_from_email'));
         $this->email($feedback->email, $subject, $email_template, $from, $from);
 
         $this->design->setTemplatesDir($templateDir);
@@ -512,34 +530,29 @@ class Notify
             $this->languages->setLangId($currentLangId);
         }
         /*/lang_modify...*/
+        
+        return true;
     }
 
     /*Отправка емейла на восстановление пароля администратора*/
     public function passwordRecoveryAdmin($email, $code)
     {
-        if(empty($email) || empty($code)){
+        if (empty($email) || empty($code)){
             return false;
         }
 
         // Перевод админки
-        $backendTranslations = $this->backendTranslations;
-        $file = "backend/lang/".$this->settings->email_lang.".php";
-        if (!file_exists($file)) {
-            foreach (glob("backend/lang/??.php") as $f) {
-                $file = "backend/lang/".pathinfo($f, PATHINFO_FILENAME).".php";
-                break;
-            }
-        }
-        require($file);
-        $this->design->assign('btr', $backendTranslations);
+        $this->backendTranslations->initTranslations($this->settings->get('email_lang'));
+        $this->design->assign('btr', $this->backendTranslations);
+        
         $this->design->assign('code',$code);
         $this->design->assign('recovery_url', Request::getRootUrl() . '/backend/index.php?controller=AuthAdmin&code='.$code);
         $email_template = $this->design->fetch($this->rootDir.'backend/design/html/email/email_admin_recovery.tpl');
         $subject = $this->design->getVar('subject');
-        $from = ($this->settings->notify_from_name ? $this->settings->notify_from_name." <".$this->settings->notify_from_email.">" : $this->settings->notify_from_email);
+        $from = ($this->settings->get('notify_from_name') ? $this->settings->get('notify_from_name')." <".$this->settings->get('notify_from_email').">" : $this->settings->get('notify_from_email'));
         $this->email($email, $subject, $email_template, $from, $from);
+        
         return true;
-
     }
     
 }

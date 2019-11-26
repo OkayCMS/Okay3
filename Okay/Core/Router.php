@@ -6,11 +6,9 @@ namespace Okay\Core;
 use Okay\Core\Entity\Entity;
 use Bramus\Router\Router as BRouter;
 use Okay\Core\Routes\RouteFactory;
-use Okay\Entities\CategoriesEntity;
-use Okay\Entities\ProductsEntity;
+use Okay\Entities\LanguagesEntity;
 use OkayLicense\License;
 use Okay\Entities\PagesEntity;
-use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class Router {
 
@@ -61,7 +59,7 @@ class Router {
     ) {
         
         // SL будем использовать только для получения сервисов, которые запросили для контроллера
-        $this->serviceLocator = new ServiceLocator();
+        $this->serviceLocator = ServiceLocator::getInstance();
         
         $this->router        = $router;
         $this->request       = $request;
@@ -120,95 +118,92 @@ class Router {
         $request = $this->request;
         $settings = $this->settings;
         
-        // Добавляем роуты по языкам в обратном порядке, т.к. первый язык не имеет приставки,
-        // и роутер перехватывает $page с другого языка
-        $languages = self::$languages->getAllLanguages();
-        $languages = array_reverse($languages);
-        foreach ($languages as $language) {
-            $baseRoute = '';
-            $label = self::$languages->getLangLink($language->id);
+        /** @var LanguagesEntity $languagesEntity */
+        $languagesEntity = $this->entityFactory->get(LanguagesEntity::class);
+        
+        $language = $languagesEntity->get(self::$languages->getLangId());
+        
+        $baseRoute = '';
+        $label = self::$languages->getLangLink($language->id);
 
-            if (!empty(trim($label, '/'))) {
-                $baseRoute = '/' . trim($label, '/');
+        if (!empty(trim($label, '/'))) {
+            $baseRoute = '/' . trim($label, '/');
+        }
+
+        foreach ($routes as $routeName => $route) {
+            if (empty($route['params']['controller']) || empty($route['params']['method'])) {
+                throw new \Exception('Route "'.$routeName.'" must contain two arguments named "controller" and "method" in "params" block');
             }
 
-            foreach ($routes as $routeName => $route) {
-                if (empty($route['params']['controller']) || empty($route['params']['method'])) {
-                    throw new \Exception('Route "'.$routeName.'" must contain two arguments named "controller" and "method" in "params" block');
-                }
-
-                $controllerClassName = $this->getFullControllerClassName($route['params']['controller']);
-                if (!class_exists($controllerClassName)) {
-                    throw new \Exception('Class "'.$controllerClassName.'" uses in route "'.$routeName.'" is not exists');
-                }
-
-                if (!$this->methodExists($controllerClassName, $route['params']['method'])) {
-                    throw new \Exception('Method "'.$route['params']['method'].'" of "'.$controllerClassName.'" class uses in route "'.$routeName.'" is not exists');
-                }
-
-                if (!empty($route['mock'])) {
-                    continue;
-                }
-                
-                $pattern = $baseRoute . $this->getPattern($route);
-                
-                $router->all("{$pattern}", function(...$params) use ($router, $route, $request, $settings, $language, $baseRoute, $routeName) {
-                    self::$currentRouteName = $routeName;
-                    $this->request->setBasePath($router->getBasePath());
-
-                    $this->request->setPageUrl($this->getCurrentUri( // todo это должен сам Request знать
-                        $router->getCurrentUri(),
-                        $baseRoute
-                    ));
-                    
-                    $request->setLangId($language->id);
-                    $settings->initMultiSettings($language->id);
-                    $routeVars = [];
-                    $controllerName = $route['params']['controller'];
-
-                    if ($this->classNameHasNoNamespace($controllerName)) {
-                        $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . $controllerName;
-                    }
-                    $method = $route['params']['method'];
-
-                    $this->license->registerSmartyPlugins();
-                    $this->license->check();
-
-                    $settings = $this->serviceLocator->getService(Settings::class);
-                    $siteDisabled = $settings->get('site_work') === 'off' && empty($_SESSION['admin']) ? true : false;
-                    if ($siteDisabled) {
-                        $this->response->setStatusCode(503);
-                        $this->response->sendHeaders();
-                        exit();
-                    }
-
-                    // Если язык выключен, отдадим 404
-                    if (!$language->enabled && empty($_SESSION['admin'])) {
-                        $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController';
-                        $method = 'pageNotFound';
-                    }
-
-                    /** @var PagesEntity $pagesEntity */
-                    $pagesEntity = $this->entityFactory->get(PagesEntity::class);
-                    $page = $pagesEntity->get((string) $this->request->getPageUrl());
-                    if (!empty($page) && empty($page->visible)) {
-                        $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController';
-                        $method = 'pageNotFound';
-                    }
-                    
-                    $defaults = isset($route['defaults']) ? $route['defaults'] : [];
-
-                    preg_match_all('~{\$(.+?)}~', $route['slug'], $matches);
-                    $routeVars = array_merge($routeVars, $matches[1]);
-                    
-                    include_once 'Okay/Core/SmartyPlugins/SmartyPlugins.php';
-
-                    // Если контроллер вернул false, кидаем 404
-                    if ($this->createControllerInstance($controllerName, $method, $params, $routeVars, $defaults) === false) {
-                        $this->createControllerInstance(self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController', 'pageNotFound', $params, $routeVars, $defaults);
-                    }
-                });
+            $controllerClassName = $this->getFullControllerClassName($route['params']['controller']);
+            if (!class_exists($controllerClassName)) {
+                throw new \Exception('Class "'.$controllerClassName.'" uses in route "'.$routeName.'" is not exists');
             }
+
+            if (!$this->methodExists($controllerClassName, $route['params']['method'])) {
+                throw new \Exception('Method "'.$route['params']['method'].'" of "'.$controllerClassName.'" class uses in route "'.$routeName.'" is not exists');
+            }
+
+            if (!empty($route['mock'])) {
+                continue;
+            }
+            
+            $pattern = $baseRoute . $this->getPattern($route);
+            
+            $router->all($pattern, function(...$params) use ($router, $route, $request, $settings, $language, $baseRoute, $routeName) {
+                self::$currentRouteName = $routeName;
+                $request->setBasePath($router->getBasePath());
+
+                $request->setPageUrl($this->getCurrentUri(
+                    $router->getCurrentUri(),
+                    $baseRoute
+                ));
+                
+                $routeVars = [];
+                $controllerName = $route['params']['controller'];
+
+                if ($this->classNameHasNoNamespace($controllerName)) {
+                    $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . $controllerName;
+                }
+                $method = $route['params']['method'];
+
+                $this->license->registerSmartyPlugins();
+                $this->license->check();
+
+                $settings = $this->serviceLocator->getService(Settings::class);
+                $siteDisabled = $settings->get('site_work') === 'off' && empty($_SESSION['admin']) ? true : false;
+                if ($siteDisabled) {
+                    $this->response->setStatusCode(503);
+                    $this->response->sendHeaders();
+                    exit();
+                }
+
+                // Если язык выключен, отдадим 404
+                if (!$language->enabled && empty($_SESSION['admin'])) {
+                    $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController';
+                    $method = 'pageNotFound';
+                }
+
+                /** @var PagesEntity $pagesEntity */
+                $pagesEntity = $this->entityFactory->get(PagesEntity::class);
+                $page = $pagesEntity->get((string) $this->request->getPageUrl());
+                if (!empty($page) && empty($page->visible)) {
+                    $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController';
+                    $method = 'pageNotFound';
+                }
+                
+                $defaults = isset($route['defaults']) ? $route['defaults'] : [];
+
+                preg_match_all('~{\$(.+?)}~', $route['slug'], $matches);
+                $routeVars = array_merge($routeVars, $matches[1]);
+                
+                include_once 'Okay/Core/SmartyPlugins/SmartyPlugins.php';
+
+                // Если контроллер вернул false, кидаем 404
+                if ($this->createControllerInstance($controllerName, $method, $params, $routeVars, $defaults) === false) {
+                    $this->createControllerInstance(self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController', 'pageNotFound', $params, $routeVars, $defaults);
+                }
+            });
         }
 
         $response = $this->response;
@@ -218,6 +213,31 @@ class Router {
         });
     }
 
+    /**
+     * Метод определяет текущий язык и устанавливает его в класс Languages
+     */
+    public function resolveCurrentLanguage()
+    {
+        $languages = self::$languages->getAllLanguages();
+        $request = $this->request;
+
+        $languages = array_reverse($languages);
+        $router = clone $this->router;
+        foreach ($languages as $language) {
+            $label = self::$languages->getLangLink($language->id);
+            if (!empty(trim($label, '/'))) {
+                $pattern = '/' . trim($label, '/') . '(\/.*)?';
+            } else {
+                $pattern = '/.*';
+            }
+
+            $router->all($pattern, function() use ($language, $request) {
+                self::$languages->setLangId((int)$language->id);
+            });
+        }
+        $router->run();
+    }
+    
     private function classNameHasNoNamespace($className)
     {
         return strpos($className, '\\') === false;
@@ -225,6 +245,7 @@ class Router {
 
     private function createControllerInstance($controllerName, $methodName, $params = [], $routeVars = [], $defaults = [])
     {
+        
         $controller = new $controllerName();
 
         $requiredParametersNames = [];
@@ -234,14 +255,12 @@ class Router {
                 $requiredParametersNames[] = $parameter->name;
             }
         }
-        
-        foreach ($this->getMethodParams($controller, $methodName, $params, $routeVars, $defaults) as $name=>$paramValue) {
-            if (!is_object($paramValue)) {
-                if (in_array($name, $requiredParametersNames)) {
-                    $this->routeRequiredParams[$name] = $paramValue;
-                }
-                $this->routeParams[$name] = $paramValue;
+
+        foreach ($this->getMethodParams($controller, $methodName, $params, $routeVars, $defaults, true) as $name=>$paramValue) {
+            if (in_array($name, $requiredParametersNames)) {
+                $this->routeRequiredParams[$name] = $paramValue;
             }
+            $this->routeParams[$name] = $paramValue;
         }
 
         // Передаем контроллеру, все, что запросили
@@ -255,7 +274,7 @@ class Router {
     
     /**
      * @return array
-     * Метод возвращает все параметры, для который не задан type hint (текстовые)
+     * Метод возвращает все параметры, для которых не задан type hint (текстовые)
      * в виде ассоциативного массива, которые указаны в поле slug роута
      */
     public function getCurrentRouteParams()
@@ -265,7 +284,7 @@ class Router {
     
     /**
      * @return array
-     * Метод возвращает все обязательные параметры, для который не задан type hint (текстовые)
+     * Метод возвращает все обязательные параметры, для которых не задан type hint (текстовые)
      * в виде ассоциативного массива, которые указаны в поле slug роута
      */
     public function getCurrentRouteRequiredParams()
@@ -314,7 +333,7 @@ class Router {
             $result = Request::getRootUrl() . '/' . $result;
         }
 
-        return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
+        return $result;
     }
     
     /**
@@ -363,11 +382,12 @@ class Router {
      * @param array $routeParams
      * @param array $routeVars
      * @param array $defaults
+     * @param bool $stringOnly - возвращать все параметры или только текстовые
      * @return array ассоциативный массив, где ключ - название параметра, 
      * значение - экземпляк класса, который указали как Type hint или строка, которая соответствует части урла
      * @throws \ReflectionException
      */
-    private function getMethodParams($controller, $methodName, $routeParams = [], $routeVars = [], $defaults = [])
+    private function getMethodParams($controller, $methodName, $routeParams = [], $routeVars = [], $defaults = [], $stringOnly = false)
     {
         $methodParams = [];
         $allParams = [];
@@ -386,11 +406,13 @@ class Router {
         foreach ($reflectionMethod->getParameters() as $parameter) {
             
             if ($parameter->getClass() !== null) { // если для аргумента указан type hint, передадим экземляр соответствующего класса
-                // Определяем это Entity или сервис из DI
-                if (is_subclass_of($parameter->getClass()->name, Entity::class)) {
-                    $methodParams[$parameter->getClass()->name] = $this->entityFactory->get($parameter->getClass()->name);
-                } else {
-                    $methodParams[$parameter->getClass()->name] = $this->serviceLocator->getService($parameter->getClass()->name);
+                if ($stringOnly === false) {
+                    // Определяем это Entity или сервис из DI
+                    if (is_subclass_of($parameter->getClass()->name, Entity::class)) {
+                        $methodParams[$parameter->getClass()->name] = $this->entityFactory->get($parameter->getClass()->name);
+                    } else {
+                        $methodParams[$parameter->getClass()->name] = $this->serviceLocator->getService($parameter->getClass()->name);
+                    }
                 }
             } elseif (!empty($allParams[$parameter->name])) { // если тип не указан, передаем строковую переменную как значение из поля slug (то, что попало под регулярку)
                 $methodParams[$parameter->name] = $allParams[$parameter->name];

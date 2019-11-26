@@ -44,12 +44,12 @@
                 <div>
                     <ul class="mb-0 pl-1">
                         {literal}
-                            <li>{$category} - {/literal}{$btr->seo_patterns_ajax_cat_name|escape}</li>{literal}
-                            <li>{$category_h1} - {/literal}{$btr->seo_patterns_ajax_cat_h1|escape}</li>{literal}
-                            <li>{$brand} - {/literal}{$btr->seo_patterns_ajax_brand_name|escape}</li>{literal}
-                            <li>{$sitename} - {/literal}{$btr->seo_patterns_ajax_site_name|escape}</li>{literal}
-                            <li>{$feature_name} - {/literal}{$btr->seo_patterns_ajax_feature_name|escape}</li>{literal}
-                            <li>{$feature_val} - {/literal}{$btr->seo_patterns_ajax_feature_val|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$category}</a> - {/literal}{$btr->seo_patterns_ajax_cat_name|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$category_h1}</a> - {/literal}{$btr->seo_patterns_ajax_cat_h1|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$brand}</a> - {/literal}{$btr->seo_patterns_ajax_brand_name|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$sitename}</a> - {/literal}{$btr->seo_patterns_ajax_site_name|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$feature_name}</a> - {/literal}{$btr->seo_patterns_ajax_feature_name|escape}</li>{literal}
+                            <li><a href="" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{$feature_val}</a> - {/literal}{$btr->seo_patterns_ajax_feature_val|escape}</li>{literal}
                         {/literal}
 
                         {if $features_aliases}

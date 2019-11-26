@@ -42,6 +42,9 @@ return [
         'config_file' => __DIR__ . '/../../../config/config.php',
         'config_local_file' => __DIR__ . '/../../../config/config.local.php',
     ],
+    'manager_menu' => [
+        'dev_mode' => '{$dev_mode}',
+    ],
     'template_config' => [
         'scripts_defer' => '{$scripts_defer}',
         'them_settings_filename' => 'theme-settings.css',

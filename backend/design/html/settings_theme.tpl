@@ -336,7 +336,7 @@
 
     {if !empty($css_variables)}
     <div class="row">
-        <div class="col-lg-6 col-md-12">
+        <div class="col-lg-12 col-md-12">
             <div class="boxed fn_toggle_wrap">
                 <div class="heading_box">
                     {$btr->settings_theme_color|escape}{if $settings->admin_theme} {$settings->admin_theme|escape}{/if}
@@ -354,13 +354,13 @@
                             {$translation_name = str_replace('--', '', $name)}
                             {$translation_name = str_replace('-', '_', $translation_name)}
                             {if !empty($btr->getTranslation('settings_theme_'|cat:$translation_name))}
-                                <div class="col-xs-12">
-                                    <div class="row">
-                                        <div class="col-xs-9">
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="variables_box">
+                                        <div class="variables_box__left">
                                             <div class="heading_label">{$btr->getTranslation('settings_theme_'|cat:$translation_name)}</div>
                                         </div>
-                                        <div class="col-xs-3">
-                                            <div class="mb-1">
+                                        <div class="variables_box__right">
+                                            <div class="">
                                                 <span{if !empty($value)} style="background-color: {$value|escape};"{/if} class="fn_color theme_color"></span>
                                                 <input name="css_colors[{$name|escape}]" class="form-control" type="hidden" value="{$value|escape}" />
                                             </div>

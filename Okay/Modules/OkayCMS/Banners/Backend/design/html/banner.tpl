@@ -149,13 +149,13 @@
                     <div class="alert-body">
                         <p>
                             {$btr->banner_instruction_global_shortcode_part_1|escape}
-                            <span style="background: #383838; color: #d8d8d8;">{literal}{$global_banners}{/literal}</span>.
+                            <a href="" style="background:rgb(43, 48, 59);padding: 1px 8px 2px;color:rgb(216, 216, 216);" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{literal}{$global_banners}{/literal}</a>
                             {$btr->banner_instruction_global_shortcode_part_2|escape}
                         </p>
                         {if $banner->individual_shortcode}
                         <p>
                             {$btr->banner_instruction_shortcode_part_1|escape}
-                            <span style="background: #383838; color: #d8d8d8;">{literal}{${/literal}{$banner->individual_shortcode}{literal}}{/literal}</span>
+                            <a href="" style="background:rgb(43, 48, 59);padding: 1px 8px 2px;color:rgb(216, 216, 216);" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{literal}{${/literal}{$banner->individual_shortcode}{literal}}{/literal}</a>
                             {$btr->banner_instruction_shortcode_part_2|escape}
                         </p>
                         <p>{$btr->banner_instruction_shortcode_part_3|escape}</p>
@@ -345,6 +345,7 @@
 </form>
 
 <script>
+    sclipboard();
 
     $(document).on('change', '#select_all_categories', function () {
         $('.fn_select_all_categories option').prop("selected", $(this).is(':checked'));

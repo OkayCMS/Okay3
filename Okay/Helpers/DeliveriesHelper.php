@@ -69,7 +69,7 @@ class DeliveriesHelper
      */
     public function getCartDeliveriesList($cart, $paymentMethods)
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         
         /** @var FrontTranslations $frontTranslations */
         $frontTranslations = $SL->getService(FrontTranslations::class);
@@ -120,7 +120,7 @@ class DeliveriesHelper
     
     public function getActiveDeliveryMethod($deliveries)
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
 
         /** @var Request $request */
         $request = $SL->getService(Request::class);

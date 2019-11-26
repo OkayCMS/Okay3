@@ -74,6 +74,14 @@ class TemplateConfig
         $this->adminTheme = $adminTheme;
         $this->adminThemeManagers = $adminThemeManagers;
         $this->settingsFile = 'design/' . $this->getTheme() . '/css/' . $this->themeSettingsFileName;
+
+        if (!is_dir($this->compileCssDir)) {
+            mkdir($this->compileCssDir, 0777, true);
+        }
+        
+        if (!is_dir($this->compileJsDir)) {
+            mkdir($this->compileJsDir, 0777, true);
+        }
     }
     
     public function __destruct()
@@ -99,7 +107,7 @@ class TemplateConfig
         if ($this->registeredTemplateFiles === true) {
             return;
         }
-        
+
         if (($themeJs = include 'design/' . $this->getTheme() . '/js.php') && is_array($themeJs)) {
             foreach ($themeJs as $jsItem) {
                 $this->registerJs($jsItem);
@@ -121,25 +129,53 @@ class TemplateConfig
                 /** @var TemplateCss $cssItem */
                 foreach ($moduleCss as $cssItem) {
                     if ($cssItem->getDir() === null) {
-                        $cssItem->setDir($moduleThemesDir . 'css/');
+                        $cssDir = $this->getModuleCssDirGivenPriority($cssItem, $runningModule);
+                        $cssItem->setDir($cssDir);
                     }
                     $this->registerCss($cssItem);
                 }
             }
+
             if (file_exists($moduleThemesDir . 'js.php') && ($moduleJs = include $moduleThemesDir . 'js.php') && is_array($moduleJs)) {
 
                 /** @var TemplateJs $jsItem */
                 foreach ($moduleJs as $jsItem) {
                     if ($jsItem->getDir() === null) {
-                        $jsItem->setDir($moduleThemesDir . 'js/');
+                        $jsDir = $this->getModuleJsDirGivenPriority($jsItem, $runningModule);
+                        $jsItem->setDir($jsDir);
                     }
+
                     $this->registerJs($jsItem);
                 }
             }
         }
         $this->registeredTemplateFiles = true;
     }
-    
+
+    private function getModuleCssDirGivenPriority(TemplateCss $cssItem, $module)
+    {
+        $moduleThemesDir = $this->module->getModuleDirectory($module['vendor'], $module['module_name']) . 'design/';
+
+        $moduleInnerThemeCssDir = './design/'.$this->getTheme().'/modules/'.$module['vendor'].'/'.$module['module_name'].'/css';
+        if (file_exists($moduleInnerThemeCssDir.'/'.$cssItem->getFilename())) {
+            return $moduleInnerThemeCssDir;
+        }
+
+        return $moduleThemesDir . 'css/';
+    }
+
+    private function getModuleJsDirGivenPriority(TemplateJs $jsItem, $module)
+    {
+        $moduleThemesDir = $this->module->getModuleDirectory($module['vendor'], $module['module_name']) . 'design/';
+
+        $moduleInnerThemeJsDir = './design/'.$this->getTheme().'/modules/'.$module['vendor'].'/'.$module['module_name'].'/js';
+        if (file_exists($moduleInnerThemeJsDir.'/'.$jsItem->getFilename())) {
+            return $moduleInnerThemeJsDir;
+        }
+
+        return $moduleThemesDir . 'js/';
+    }
+
     private function registerCss(TemplateCss $css)
     {
         // Файл настроек шаблона регистрировать не нужно
@@ -178,7 +214,7 @@ class TemplateConfig
     public function head()
     {
 
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         
         /** @var LoggerInterface $logger */
         $logger = $SL->getService(LoggerInterface::class);
@@ -246,7 +282,7 @@ class TemplateConfig
      */
     public function footer()
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         
         /** @var Design $design */
         $design = $SL->getService(Design::class);
@@ -271,15 +307,9 @@ class TemplateConfig
             $design->setCompiledDir('backend/design/compiled');
 
             // Перевод админки
-            $backendTranslations = new \stdClass();
-            $file = "backend/lang/" . $manager->lang . ".php";
-            if (!file_exists($file)) {
-                foreach (glob("backend/lang/??.php") as $f) {
-                    $file = "backend/lang/" . pathinfo($f, PATHINFO_FILENAME) . ".php";
-                    break;
-                }
-            }
-            include ($file);
+            /** @var BackendTranslations $backendTranslations */
+            $backendTranslations = $SL->getService(BackendTranslations::class);
+            $backendTranslations->initTranslations($manager->lang);
             $design->assign('scripts_defer', $this->scriptsDefer);
             $design->assign('btr', $backendTranslations);
             $footer .= $design->fetch('admintooltip.tpl');
@@ -753,13 +783,8 @@ class TemplateConfig
      * @param $file
      * Метод сохраняет скомпилированный css в кеш
      */
-    private function saveCompileFile($content, $file) {
-        
-        $dir = pathinfo($file, PATHINFO_DIRNAME);
-        if(!empty($dir) && !is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
-
+    private function saveCompileFile($content, $file)
+    {
         if (!empty($content)) {
             // Сохраняем скомпилированный CSS
             file_put_contents($file, $content);

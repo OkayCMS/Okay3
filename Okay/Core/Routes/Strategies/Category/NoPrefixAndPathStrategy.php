@@ -20,7 +20,7 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
 
     public function __construct()
     {
-        $serviceLocator         = new ServiceLocator();
+        $serviceLocator         = ServiceLocator::getInstance();
         $entityFactory          = $serviceLocator->getService(EntityFactory::class);
         $this->categoriesEntity = $entityFactory->get(CategoriesEntity::class);
     }
@@ -72,7 +72,7 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
 
     private function matchHasHigherPriority($prevMatch, $currentMatch)
     {
-        return strlen($prevMatch[0]) < strlen($currentMatch.'{$filtersUrl}');
+        return strlen($prevMatch[1]['{$url}']) < strlen($currentMatch);
     }
 
     private function matchFiltersUrl($categoryPathUrl, $url)

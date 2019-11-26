@@ -1221,6 +1221,8 @@ CREATE TABLE `ok_feedbacks` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+INSERT INTO `ok_feedbacks` (`id`, `date`, `ip`, `name`, `email`, `message`, `processed`, `lang_id`, `is_admin`, `parent_id`) VALUES
+(1,	'2019-11-20 15:37:14',	'192.168.220.1',	'Роман',	'test@gmail.com',	'Как к вам пройти?',	0,	1,	0,	0);
 
 DROP TABLE IF EXISTS `ok_groups`;
 CREATE TABLE `ok_groups` (

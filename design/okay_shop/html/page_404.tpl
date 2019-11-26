@@ -11,7 +11,7 @@
                 {include file="svg.tpl" svgId="404_icon"}
             </div>
             <div class="not_found__description">
-                {$page->description}
+                {$description}
             </div>
             <div class="not_found__menu">
                 {$menu_404}

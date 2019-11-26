@@ -14,7 +14,7 @@ class DefaultStrategy extends AbstractRouteStrategy
 
     public function __construct()
     {
-        $serviceLocator = new ServiceLocator();
+        $serviceLocator = ServiceLocator::getInstance();
         $this->settings = $serviceLocator->getService(Settings::class);
     }
 

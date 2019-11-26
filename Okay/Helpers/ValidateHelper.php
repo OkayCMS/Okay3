@@ -29,7 +29,7 @@ class ValidateHelper
 
     public function getUserError($user, $currentUserId)
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         $entityFactory = $SL->getService(EntityFactory::class);
         /** @var UsersEntity $usersEntity */
         $usersEntity = $entityFactory->get(UsersEntity::class);
@@ -53,7 +53,7 @@ class ValidateHelper
     
     public function getUserRegisterError($user)
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         $entityFactory = $SL->getService(EntityFactory::class);
         /** @var UsersEntity $usersEntity */
         $usersEntity = $entityFactory->get(UsersEntity::class);
@@ -160,7 +160,7 @@ class ValidateHelper
     
     public function getSubscribeValidateError($subscribe)
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         $entityFactory = $SL->getService(EntityFactory::class);
         /** @var SubscribesEntity $subscribesEntity */
         $subscribesEntity = $entityFactory->get(SubscribesEntity::class);

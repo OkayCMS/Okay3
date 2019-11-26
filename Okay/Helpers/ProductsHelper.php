@@ -45,6 +45,10 @@ class ProductsHelper
         /** @var ProductsEntity $productsEntity */
         $productsEntity = $this->entityFactory->get(ProductsEntity::class);
         
+        if (isset($filter['featured'])) {
+            $productsEntity->addHighPriority('featured');
+        }
+        
         if ($this->settings->get('missing_products') === MISSING_PRODUCTS_HIDE) {
             $filter['in_stock'] = true;
         }
@@ -183,6 +187,7 @@ class ProductsHelper
         $obj = new \ArrayObject($products);
         $copyProducts = $obj->getArrayCopy();
 
+        /** @var ImagesEntity $imagesEntity */
         $imagesEntity = $this->entityFactory->get(ImagesEntity::class);
 
         $imagesIds = [];

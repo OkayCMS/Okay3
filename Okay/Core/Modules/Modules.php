@@ -8,6 +8,7 @@ use Okay\Core\Design;
 use Okay\Core\Database;
 use Okay\Core\QueryFactory;
 use Okay\Core\Config;
+use Okay\Core\TemplateConfig;
 use Okay\Entities\ManagersEntity;
 use Okay\Entities\ModulesEntity;
 use Okay\Core\EntityFactory;
@@ -15,7 +16,7 @@ use OkayLicense\License;
 use Okay\Core\ServiceLocator;
 use Okay\Core\OkayContainer\OkayContainer;
 
-class Modules // todo подумать, мож сюда переедит CRUD Entity/Modules
+class Modules // TODO: подумать, мож сюда переедет CRUD Entity/Modules
 {
     /**
      * @var Module
@@ -45,20 +46,24 @@ class Modules // todo подумать, мож сюда переедит CRUD En
      * @var Config
      */
     private $config;
-    
-    /** @var array список контроллеров бекенда */
+
+    /**
+     * @var array список контроллеров бекенда
+     */
     private $backendControllersList = [];
     
-    /** @var array список запущенных модулей */
+    /**
+     * @var array список запущенных модулей
+     */
     private $runningModules = [];
 
     public function __construct(
         EntityFactory $entityFactory,
-        License $license,
-        Module $module,
-        QueryFactory $queryFactory,
-        Database $database,
-        Config $config
+        License       $license,
+        Module        $module,
+        QueryFactory  $queryFactory,
+        Database      $database,
+        Config        $config
     ) {
         $this->entityFactory = $entityFactory;
         $this->module        = $module;
@@ -105,7 +110,7 @@ class Modules // todo подумать, мож сюда переедит CRUD En
         $this->db->query($select);
         $modules = $this->db->results();
 
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         /** @var Design $design */
         $design = $SL->getService(Design::class);
 
@@ -114,7 +119,7 @@ class Modules // todo подумать, мож сюда переедит CRUD En
                 continue;
             }
 
-            // TODO подумать над тем, чтобы перенести этот код отсюда
+            // TODO: подумать над тем, чтобы перенести этот код отсюда
             if ($activeOnly === true && (int) $module->enabled !== 1) {
                 $plugins = $this->module->getSmartyPlugins($module->vendor, $module->module_name);
                 foreach ($plugins as $plugin) {
@@ -308,8 +313,16 @@ class Modules // todo подумать, мож сюда переедит CRUD En
         $langLabel = $this->getFrontLangLabel($vendor, $moduleName, $langLabel);
         $moduleDir = $this->module->getModuleDirectory($vendor, $moduleName);
 
+        // TODO: подумать что делать с локатором и циклической зависимостью из-за которой нельзя заинжектить сервис
+        $serviceLocator = ServiceLocator::getInstance();
+        $templateConfig = $serviceLocator->getService(TemplateConfig::class);
+        $themeDir  = 'design/'.$templateConfig->getTheme().'/';
+
         $lang = [];
-        if (is_file($moduleDir . '/design/lang/' . $langLabel . '.php')) {
+        if (is_file($themeDir .'modules/'.$vendor.'/'.$moduleName.'/lang/'. $langLabel.'.php')) {
+            include $themeDir .'modules/'.$vendor.'/'.$moduleName.'/lang/'. $langLabel.'.php';
+        }
+        elseif (is_file($moduleDir . '/design/lang/' . $langLabel . '.php')) {
             include $moduleDir . 'design/lang/' . $langLabel . '.php';
         }
         return $lang;

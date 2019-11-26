@@ -16,7 +16,7 @@ class QueueExtender extends AbstractExtender
             return;
         }
 
-        $serviceLocator = new ServiceLocator();
+        $serviceLocator = ServiceLocator::getInstance();
         foreach(static::$triggers[$trigger] as $extension) {
 
             $classExtender = $extension->class;

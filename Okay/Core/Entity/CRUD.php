@@ -55,6 +55,7 @@ trait CRUD
         $this->buildFilter($filter);
         $this->select->distinct(true);
         $this->select->cols($this->getAllFields());
+        $this->select->cache();
         
         $this->db->query($this->select);
         

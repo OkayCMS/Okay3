@@ -18,7 +18,7 @@ class ChainExtender extends AbstractExtender
 
         $extensions = array_values(static::$triggers[$trigger]);
 
-        $serviceLocator = new ServiceLocator();
+        $serviceLocator = ServiceLocator::getInstance();
 
         $extendedOutput = null;
         $countExtensions = count($extensions);

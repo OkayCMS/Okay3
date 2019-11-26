@@ -1,3 +1,8 @@
+{*
+Для отладки данного сообщение пройдите по ссылке http://domain/backend/index.php?controller=EmailTemplatesAdmin&debug=emailCallbackAdmin&callback_id=1
+если потребуется, измените параметр callback_id
+*}
+
 {$subject="`$btr->email_callback_request` `$callback->name|escape`" scope=global}
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -96,7 +101,7 @@
                                                     <table class="es-table-infobox" cellspacing="1" cellpadding="1" border="0" align="left">
                                                         <tbody>
                                                         <tr valign="top">
-                                                            <td class="es-p5t es-p5b" width="180"><span>{$lang->email_order_name|escape}:</span></td>
+                                                            <td class="es-p5t es-p5b" width="180"><span>{$btr->email_order_name|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$callback->name|escape}</span></td>
                                                         </tr>
                                                         <tr valign="top">
@@ -113,6 +118,7 @@
                                                             <td class="es-p5t es-p5b" width="180"><span>{$btr->email_message|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$callback->message|escape}</span></td>
                                                         </tr>
+                                                        {get_design_block block="email_callback_admin_total_info"}
                                                         </tbody>
                                                     </table>
                                                 </td>

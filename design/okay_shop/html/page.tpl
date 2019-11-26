@@ -16,7 +16,7 @@
 
 		{* The page content *}
 		<div class="block block--boxed block--border">
-			{$page->description}
+			{$description}
 		</div>
     </div>
 {/if}

@@ -180,7 +180,7 @@
                             </div>
                             <div class="col-lg-4 col-md-6">
                                 <div class="heading_label">&nbsp;</div>
-                                <button type="submit" class="btn btn_small btn-danger" name="truncate_table_confirm" value="1">
+                                <button type="submit" class="btn btn_small btn-danger" name="truncate_table_confirm" value="">
                                     {include file='svg_icon.tpl' svgId='checked'}
                                     <span>{$btr->truncate_table_confirm|escape}</span>
                                 </button>
@@ -279,6 +279,7 @@
     $(document).on("click", ".fn_truncate_table", function () {
         $('.fn_truncate_table_confirm').fadeIn(500);
         $('[name="truncate_table_password"]').prop('disabled', false);
+        $('[name="truncate_table_confirm"]').val('1');
     });
     $(document).on("input", ".fn_rating", function () {
         $(this).closest(".fn_range_wrap").find(".fn_show_range").html($(this).val());
