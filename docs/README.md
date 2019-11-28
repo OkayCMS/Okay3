@@ -5,8 +5,11 @@
 ## Основные типы классов
 
 + [Core](./core.md)
-+ [Controllers](./controllers.md)
-+ [Entities](./entities.md)
++ [Контроллеры](./controllers.md)
++ [Классы сущностей (Entities)](./entities.md)
 + [Helpers](./helpers.md)
 + [Requests](./requests.md)
++ [Маршруты](./routes.md)
++ [Smarty плагины](./smarty_plugins.md)
++ [Модульность](./modules/README.md)
 
