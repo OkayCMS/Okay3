@@ -8,7 +8,7 @@
 
 Не допускается использования цекличиских зависимостей.
 
-### Регистрация сервиса
+### Регистрация сервиса <a name="serviceRegister"></a>
 Чтобы зарегистрировать сервис, нужно в одном из файлов описания сервисов добавить его.
 
 Рассмотрим пример регистрации сервиса ядра. Регистрировать его нужно файле Okay/Core/config/services.php
@@ -17,20 +17,22 @@
 
 Файл services.php возвращает массив с описанием сервисов, где ключ, это название сервиса, значение - описание сервиса.
 
-`Best practices: в качестве имени сервиса держать полное имя класса `
+`Best practices: в качестве имени сервиса держать полное имя класса`
 
 Пример:
 ```php
 use Okay\Core\OkayContainer\Reference\ParameterReference as PR;
 use Okay\Core\OkayContainer\Reference\ServiceReference as SR;
 
-MyClass::class => [ // Имя сервиса
-    'class' => MyClass::class, // Имя класса, из которого создавать экземпляр сервиса
-    'arguments' => [ // Аргументы конструктора класса MyClass. Принимать в порядке, как здесь передаём
-        new SR(OtherClass::class),
-        new PR('foo.bar'),
+[
+    MyClass::class => [ // Имя сервиса
+        'class' => MyClass::class, // Имя класса, из которого создавать экземпляр сервиса
+        'arguments' => [ // Аргументы конструктора класса MyClass. Принимать в порядке, как здесь передаём
+            new SR(OtherClass::class),
+            new PR('foo.bar'),
+        ],
     ],
-],
+];
 ```
 Описание классов [ParameterReference](#ParameterReference) и [ServiceReference](#ServiceReference)
 

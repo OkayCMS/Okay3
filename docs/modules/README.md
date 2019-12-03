@@ -54,7 +54,7 @@ JS файлы, языковые файлы.
     ├── settings.xml
     └── preview.(jpeg|jpg|png|gif|svg)
 
-##### Конфигурационные файлы модуля
+##### Конфигурационные файлы модуля <a name="configuratinFiles"></a>
 
 Файл `Init/Init.php` является самым главным конфигурационным файлом. Он обязательно должен унаследоваться от 
 Okay\Core\Modules\AbstractInit.
@@ -68,8 +68,8 @@ Okay\Core\Modules\AbstractInit.
 Файл `Init/routes.php` содержит роуты для текущего модуля. Структура файла полностью повторяет структуру 
 [системных роутов](./../routes.md)
 
-Файл `Init/services.php` содержит сервисы для текущего модуля.
-Регистрация сервисов в модуле осуществляется так же как и [системные сервисы](./../core.md#serviceRegister),
+Файл `Init/services.php` <a name="Initservices"></a> содержит сервисы для текущего модуля.
+Регистрация сервисов в модуле осуществляется так же как и [системные сервисы](./../di_container.md#serviceRegister),
 но в файле Init/services.php.
 Все они должны быть частью [DI контейнера](./../di_container.md "Dependency injection container").
 
