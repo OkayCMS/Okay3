@@ -88,18 +88,18 @@ MODULE_TYPE_PAYMENT или MODULE_TYPE_DELIVERY).
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-	<settings><!--Если указать больше одного <options> будет выведено как HTML select (выпадающий список)-->
-		<variable>service_type</variable><!--Название переменной-->
-		<name>{$lang->settings_np_service_type}</name><!--Название параметра (поддерживается из переводов)-->
-		<options>
-			<name>{$lang->settings_np_service_dd}</name>
-			<value>DoorsDoors</value>
-		</options>
-		<options>
-			<name>{$lang->settings_np_service_wd}</name>
-			<value>WarehouseDoors</value>
-		</options>
-	</settings>
+    <settings><!--Если указать больше одного <options> будет выведено как HTML select (выпадающий список)-->
+        <variable>service_type</variable><!--Название переменной-->
+        <name>{$lang->settings_np_service_type}</name><!--Название параметра (поддерживается из переводов)-->
+        <options>
+            <name>{$lang->settings_np_service_dd}</name>
+            <value>DoorsDoors</value>
+        </options>
+        <options>
+            <name>{$lang->settings_np_service_wd}</name>
+            <value>WarehouseDoors</value>
+        </options>
+    </settings>
     <settings><!--Так будет выведено текстовое поле-->
         <variable>wayforpay_merchant</variable>
         <name>{$lang->way_for_pay_merchant}</name>

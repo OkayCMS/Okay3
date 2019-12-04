@@ -18,7 +18,7 @@ $this->migrateEntityField(VariantsEntity::class, (new EntityField('field_name'))
 ```
 
 Так же при добавлении поля к уже существующим сущностям, нужно его зарегистрировать в системе, чтобы оно учавствовало
-в SELECT и фильтрации [подробнее об Entities](./../entities.md).
+в SELECT и фильтрации ([подробнее об Entities](./../entities.md)).
 
 Пример:
 ```php
@@ -104,3 +104,4 @@ $this->migrateCustomTable('__second_some_table_name', [
 $notLangField = (new EntityField('not_lang_field'))->setTypeVarchar(255)->setIndex();
 $langField = (new EntityField('lang_field'))->setTypeVarchar(255)->setIndex()->setIsLang();
 ```
+
