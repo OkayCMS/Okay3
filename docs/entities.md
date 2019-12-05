@@ -124,7 +124,7 @@ $someEntity->find([
 
 построит запрос `SELECT ... WHERE entity_table.id IN (1,2,3,4,5)`.
 
-#### Пользовательские фильтры
+#### Пользовательские фильтры <a name="usersFilters"></a>
 
 Если поведение "магических" фильтров не устраивает, или его нужно по какой-то причине отменить вообще, или вы фильруете
 не по полю, а скажем по таблице связей, нужно объявить свой пользовательский фильтр в вашем классе Entity.
@@ -171,6 +171,70 @@ class SomeEntity extends Entity
             ->bindValue('value', $val);
         
         $this->select->groupBy(['e.id']);
+    }
+}
+```
+
+#### Пользовательские фильтры созданные из модулей для существующего Entity <a name="usersFiltersFromModules"></a>
+
+Если нужно добавить пользовательский фильтр, в существующий Entity, его можно добавить через модуль.
+Для этого нужно описать метод, который будет выполнять роль пользовательского фильтра в классе
+наследнике `Okay\Core\Modules\AbstractModuleEntityFilter`. Метод такого фильтра должен быть публичным (public).
+
+Пример:
+```php
+namespace Okay\Modules\OkayCMS\GoogleMerchant\ExtendsEntities;
+
+
+use Okay\Core\Modules\AbstractModuleEntityFilter;
+use Okay\Modules\OkayCMS\GoogleMerchant\Init\Init;
+
+class ProductsEntity extends AbstractModuleEntityFilter
+{
+    public function okaycms__google_merchant__only($categoriesIds, $filter)
+    {
+        $categoryFilter = '';
+        if (!empty($categoriesIds)) {
+            $categoryFilter = "OR p.id IN (SELECT product_id FROM __products_categories WHERE category_id IN (:category_id))";
+            $this->select->bindValue('category_id', (array)$categoriesIds);
+        }
+
+        $this->select->where('not_to__okaycms__google_merchant != 1');
+        $this->select->where("(
+            p.".Init::TO_FEED_FIELD."=1 
+            OR p.brand_id IN (SELECT id FROM __brands WHERE ".Init::TO_FEED_FIELD." = 1)
+            {$categoryFilter}
+        )");
+    }
+}
+```
+Внутри метода фильтра работа выполняется так же как и в [обычном пользовательском фильтре](#usersFilters).
+Но данный метод хоть чуть более сложный, но он позволяет из модуля добавить пользовательский фильтр к существующему 
+Entity не правя файл, где описан их класс.
+
+Пример регистрации данного фильтра:
+```php
+namespace Okay\Modules\OkayCMS\GoogleMerchant\Init;
+
+use Okay\Core\Modules\AbstractInit;
+use Okay\Entities\ProductsEntity;
+
+class Init extends AbstractInit
+{
+    public function install()
+    {
+        // ...abstract
+    }
+
+    public function init()
+    {
+        // ...abstract
+        $this->registerEntityFilter(
+            ProductsEntity::class,
+            'okaycms__google_merchant__only',
+            \Okay\Modules\OkayCMS\GoogleMerchant\ExtendsEntities\ProductsEntity::class,
+            'okaycms__google_merchant__only'
+        );
     }
 }
 ```

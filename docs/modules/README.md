@@ -63,7 +63,7 @@ Okay\Core\Modules\AbstractInit.
 вызывается при каждом запуске системы.
 В методе install() стоит вызывать такие методы как setBackendMainController(), 
 [migrateEntityTable()](./table_migrate.md), [setModuleType()](#typesOfModules).
-[Пример инициализации модуля](./quick_start.md#InitInitphp)
+[Пример инициализации модуля](./quick_start.md#InitInitphp) и [полное описание инициализации](./init.md).
 
 Файл `Init/routes.php` содержит роуты для текущего модуля. Структура файла полностью повторяет структуру 
 [системных роутов](./../routes.md)
@@ -110,6 +110,9 @@ MODULE_TYPE_PAYMENT или MODULE_TYPE_DELIVERY).
     </settings>
 </module>
 ```
+
+Файл `config/config.php` может содержать директивы, такие же как и в системном конфиге. Можно только добавлять
+директивы, переопределять системные директивы нельзя.
 
 ##### Типы модулей <a name="typesOfModules"></a>
 

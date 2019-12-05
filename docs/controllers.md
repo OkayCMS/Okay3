@@ -9,7 +9,7 @@
 метод `onInit` после него вызывает метод контроллера, указанный в роуте.
 
 В методе контроллера стоит установить контент, который должен возвращаться пользователю. Для этого вызовите метод
-[Okay\Core\Response::setContent()](./core.md#ResponseSetContent).
+[Response::setContent()](./core/Response.md#setContent).
 
 ### Фронт-контроллеры <a name="frontControllers"></a>
 
@@ -74,13 +74,13 @@ class CartController extends AbstractController
 Зависимости можно получать так же как и для [фронт-контроллеров](#DIVars). Параметров маршрута для контроллера админки
 не бывает. Разве что $_GET параметры.
 
-### Фронт-контроллеры модулей
+### Фронт-контроллеры модулей <a name="frontControllersModules"></a>
 
 Контроллеры модулей стоит размещать в директории `Okay/Modules/Vendor/Module/Controllers`, в остальном они ни чем не
 отличаются от [стандартных фронт-контроллеров](#frontControllers). Роут к ним так же прописывается в [файле 
 `Init/routes.php`](./modules/README.md#configuratinFiles).
 
-### Бек-контроллеры модулей
+### Бек-контроллеры модулей <a name="backendControllersModules"></a>
 
 Бек-контроллеры модулей, полностью соответствуют [стандартным бек-контроллерам](#backendControllers), но располагаются
 в директории `Okay/Modules/Vendor/Module/Backend/Controllers`.
