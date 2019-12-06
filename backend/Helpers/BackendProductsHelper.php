@@ -66,6 +66,12 @@ class BackendProductsHelper
         $this->specialImagesEntity = $entityFactory->get(SpecialImagesEntity::class);
     }
 
+    public function getProduct($id)
+    {
+        $product = $this->productsEntity->get((int) $id);
+        return ExtenderFacade::execute(__METHOD__, $product, func_get_args());
+    }
+
     public function prepareAdd($product)
     {
         return ExtenderFacade::execute(__METHOD__, $product, func_get_args());

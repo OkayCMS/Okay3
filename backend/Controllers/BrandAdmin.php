@@ -26,11 +26,14 @@ class BrandAdmin extends IndexAdmin
                 if (empty($brand->id)) {
                     $preparedBrand = $backendBrandsHelper->prepareAdd($brand);
                     $brand->id     = $backendBrandsHelper->add($preparedBrand);
-                    $this->design->assign('message_success', 'added');
+
+                    $this->postRedirectGet->storeMessageSuccess('added');
+                    $this->postRedirectGet->storeNewEntityId($brand->id);
                 } else {
                     $preparedBrand = $backendBrandsHelper->prepareUpdate($brand);
                     $backendBrandsHelper->update($preparedBrand->id, $preparedBrand);
-                    $this->design->assign('message_success', 'updated');
+
+                    $this->postRedirectGet->storeMessageSuccess('updated');
                 }
 
                 // Картинка
@@ -41,16 +44,14 @@ class BrandAdmin extends IndexAdmin
                 if ($image = $brandsRequest->fileImage()) {
                     $backendBrandsHelper->uploadImage($image, $brand);
                 }
-            }
-        }
 
-        if (!empty($brand)) {
-            $brandId = $brand->id;
+                $this->postRedirectGet->redirect();
+            }
         } else {
             $brandId = $this->request->get('id', 'integer');
+            $brand   = $backendBrandsHelper->getBrand($brandId);
         }
 
-        $brand = $backendBrandsHelper->getBrand($brandId);
         $this->design->assign('brand', $brand);
         $this->response->setContent($this->design->fetch('brand.tpl'));
     }

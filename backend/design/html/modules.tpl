@@ -135,7 +135,7 @@
     </form>
     {else}
     <div class="heading_box mt-1">
-        <div class="text_grey">{$btr->payment_methods_no|escape}</div>
+        <div class="text_grey">{$btr->no_modules|escape}</div>
     </div>
     {/if}
 </div>

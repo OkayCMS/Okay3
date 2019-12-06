@@ -87,7 +87,7 @@
                             </div>
                             <div class="block__body">
                                 <div class="fn_readmore">
-                                    <div class="page-description__text boxed__description">{$description}</div>
+                                    <div class="block__description">{$description}</div>
                                 </div>
                             </div>
                         </div>

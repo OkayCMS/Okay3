@@ -29,13 +29,14 @@ class LanguageAdmin extends IndexAdmin
                 $updateLanguage->href_lang = $lang->href_lang;
 
                 if (!$updateLanguage->label) {
-                    $this->design->assign('message_error', 'label_empty');
+                    $this->postRedirectGet->storeMessageError('label_empty');
                 } elseif (($l = $languagesEntity->get((string)$updateLanguage->label)) && $l->id!=$updateLanguage->id) {
-                    $this->design->assign('message_error', 'label_exists');
+                    $this->postRedirectGet->storeMessageError('label_exists');
                 } else {
                     /*Добавление/Обновление языка*/
                     $updateLanguage->id = $languagesEntity->add($updateLanguage);
-                    $this->design->assign('message_success', 'added');
+                    $this->postRedirectGet->storeMessageSuccess('added');
+                    $this->postRedirectGet->storeNewEntityId($updateLanguage->id);
                 }
             } else {
 
@@ -46,21 +47,22 @@ class LanguageAdmin extends IndexAdmin
                     $languagesEntity->update($updateLanguage->id, ['name' => $langName]);
                 }
                 $languagesCore->setLangId($currentLangId);
-                
-                $this->design->assign('message_success', 'updated');
+
+                $this->postRedirectGet->storeMessageSuccess('updated');
             }
-        } else {
-            $updateLanguage->id = $this->request->get('id', 'integer');
+
+            $this->postRedirectGet->redirect();
         }
 
-        if (!empty($updateLanguage->id)) {
+        $updateLanguageId = $this->request->get('id', 'integer');
+        if (!empty($updateLanguageId)) {
             $updateLanguage = $languagesEntity->getMultiLanguage((int)$updateLanguage->id);
         }
-        $this->design->assign('lang_list', $langList);
-        
-        $this->design->assign('language', $updateLanguage);
 
         $languages = $languagesEntity->mappedBy('id')->find();
+
+        $this->design->assign('lang_list', $langList);
+        $this->design->assign('language',  $updateLanguage);
         $this->design->assign('languages', $languages);
 
         $this->response->setContent($this->design->fetch('language.tpl'));

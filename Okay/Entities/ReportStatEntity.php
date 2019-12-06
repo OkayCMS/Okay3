@@ -34,6 +34,9 @@ class ReportStatEntity extends Entity
     public function find(array $filter = [])
     {
         $this->select->join('LEFT', '__orders AS o', 'o.id = p.order_id');
+        $this->select->groupBy(['p.variant_id', 'p.product_id', 'p.product_name', 'p.variant_name', 'p.sku', 'o.id']);
+        $this->select->limit(null);
+
         return parent::find($filter);
     }
     

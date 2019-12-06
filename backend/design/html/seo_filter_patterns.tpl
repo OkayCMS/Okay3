@@ -301,13 +301,13 @@
                 success: function(data){
                     if(data.success) {
                         $(".fn_result_ajax").html(data.tpl);
-                        toastr.success(msg, "Success");
+                        toastr.success(msg, "{/literal}{$btr->toastr_success|escape}{literal}");
                         elem.addClass("active");
                         $(".fn_preloader ").removeClass("ajax_preloader");
 
                         sclipboard();
                     } else {
-                        toastr.error(msg, "Error");
+                        toastr.error(msg, "{/literal}{$btr->toastr_error|escape}{literal}");
                         $(".fn_preloader ").removeClass("ajax_preloader");
                     }
                 }
@@ -333,10 +333,10 @@
                 success: function(data){
                     if(data.success) {
                         $(".fn_result_ajax").html(data.tpl);
-                        toastr.success(msg, "Success");
+                        toastr.success(msg, "{/literal}{$btr->toastr_success|escape}{literal}");
                         $(".fn_preloader ").removeClass("ajax_preloader ");
                     } else {
-                        toastr.error(msg, "Error");
+                        toastr.error(msg, "{/literal}{$btr->toastr_error|escape}{literal}");
                         $(".fn_preloader ").removeClass("ajax_preloader ");
                     }
                 }

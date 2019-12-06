@@ -22,7 +22,6 @@ class FeatureAdmin extends IndexAdmin
         BackendCategoriesHelper      $backendCategoriesHelper,
         BackendFeaturesValuesHelper  $backendFeaturesValuesHelper
     ) {
-        $feature = new \stdClass;
         if ($this->request->method('post')) {
             $feature           = $featuresRequest->postFeature();
             $featureCategories = $featuresRequest->postFeatureCategories();
@@ -34,16 +33,21 @@ class FeatureAdmin extends IndexAdmin
                 if (empty($feature->id)) {
                     $feature   = $backendFeaturesHelper->prepareAdd($feature);
                     $feature->id = $backendFeaturesHelper->add($feature);
-                    $this->design->assign('message_success', 'added');
+
+                    $this->postRedirectGet->storeMessageSuccess('added');
+                    $this->postRedirectGet->storeNewEntityId($feature->id);
                 } else {
                     $feature = $backendFeaturesHelper->prepareUpdate($feature);
                     $backendFeaturesHelper->update($feature->id, $feature);
-                    $this->design->assign('message_success', 'updated');
+
+                    $this->postRedirectGet->storeMessageSuccess('updated');
                 }
 
                 $feature = $backendFeaturesHelper->getFeature($feature->id);
 
                 $backendFeaturesHelper->updateFeatureCategories($feature->id, $featureCategories);
+
+                $this->postRedirectGet->redirect();
             }
 
             $toIndexAllValues = $featuresValuesRequest->postToIndexAllValues();
@@ -65,8 +69,8 @@ class FeatureAdmin extends IndexAdmin
                 $backendFeaturesValuesHelper->unionValues($unionMainValueId, $unionSecondValueId);
             }
         } else {
-            $feature->id = $this->request->get('id', 'integer');
-            $feature = $backendFeaturesHelper->getFeature($feature->id);
+            $featureId = $this->request->get('id', 'integer');
+            $feature   = $backendFeaturesHelper->getFeature($featureId);
         }
 
         if (!empty($feature->id)) {
@@ -83,14 +87,14 @@ class FeatureAdmin extends IndexAdmin
                 $backendFeaturesValuesHelper->moveToPage($ids, $targetPage, $feature, $featuresValuesFilter);
             }
 
+            $featuresValues = $backendFeaturesValuesHelper->findFeaturesValues($featuresValuesFilter);
+            $productsCounts = $backendFeaturesValuesHelper->getProductsCountsByValues($featuresValuesFilter, $featuresValues);
+
             $this->design->assign('feature_values_count', $backendFeaturesValuesHelper->count($featuresValuesFilter));
             $this->design->assign('pages_count',          $backendFeaturesValuesHelper->countPages($featuresValuesFilter, $feature));
             $this->design->assign('current_page',         $featuresValuesFilter['page']);
-
-            $featuresValues = $backendFeaturesValuesHelper->findFeaturesValues($featuresValuesFilter);
-            $productsCounts = $backendFeaturesValuesHelper->getProductsCountsByValues($featuresValuesFilter, $featuresValues);
-            $this->design->assign('products_counts', $productsCounts);
-            $this->design->assign('features_values', $featuresValues);
+            $this->design->assign('products_counts',      $productsCounts);
+            $this->design->assign('features_values',      $featuresValues);
         }
 
         $featureCategories = $backendFeaturesHelper->getFeatureCategories($feature);
@@ -99,7 +103,7 @@ class FeatureAdmin extends IndexAdmin
         $this->design->assign('categories', $categories);
         $this->design->assign('feature', $feature);
         $this->design->assign('feature_categories', $featureCategories);
-        
+
         $this->response->setContent($this->design->fetch('feature.tpl'));
     }
 

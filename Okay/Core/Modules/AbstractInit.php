@@ -130,6 +130,17 @@ abstract class AbstractInit
     abstract public function init();
 
     /**
+     * Отрабатывает при установке модуля и задает ему статус системного, что означает отсутствие его в списке модулей для менеджеров
+     * у которых недостаточно прав на просмотр модулей данного типа
+     */
+    protected function setSystem()
+    {
+        /** @var ModulesEntity $modulesEntity */
+        $modulesEntity = $this->entityFactory->get(ModulesEntity::class);
+        $modulesEntity->update($this->moduleId, ['system' => 1]);
+    }
+
+    /**
      * Регистрация блока в админке. Чтобы узнать имя блока, к которому хотите зацепиться,
      * нужно в конфиге включить директиву dev_mode = true,
      * зайти в админку на нужную страницу и можно будет увидеть красные лейблы, при наведении на них мышкой

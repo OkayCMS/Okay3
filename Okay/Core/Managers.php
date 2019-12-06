@@ -57,6 +57,7 @@ class Managers
         'theme',
         'learning',
         'router',
+        'system_modules'
     ];
 
     // Соответсвие модулей и названий соответствующих прав
@@ -281,4 +282,13 @@ class Managers
         return "$"."apr1"."$".$salt."$".$tmp;
     }
 
+    public function canVisibleSystemModules($manager)
+    {
+        return in_array('system_modules', $manager->permissions);
+    }
+
+    public function cannotVisibleSystemModules($manager)
+    {
+        return !$this->canVisibleSystemModules($manager);
+    }
 }

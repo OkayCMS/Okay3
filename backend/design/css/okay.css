@@ -6635,3 +6635,14 @@ ul.submenu .menu_counter {
     flex: 0 0 25%;
     max-width: 25%;
 }
+
+.system_label {
+    transform: translateY(3px);
+    float: left;
+    margin-right: 10px;
+    color: gray;
+}
+
+.system_position {
+    float: right;
+}

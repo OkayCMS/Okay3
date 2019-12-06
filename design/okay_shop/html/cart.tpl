@@ -20,6 +20,7 @@
 
                         {* The list of products in the cart *}
                         <div class="fn_cart_sticky block--cart_purchases block--boxed block--border" data-margin-top="75" data-sticky-for="1024" data-sticky-class="is-sticky">
+                            <div class="block__inner">
                             <div class="h6" data-language="cart_purchase_title">{$lang->cart_purchase_title}</div>
 
                             <div id="fn_purchases" class="purchase">
@@ -43,7 +44,7 @@
                                         </div>
                                     </div>
                                 {/if}
-                                
+
                                 {* Discount *}
                                 <div class="purchase_detail__item">
                                     <div class="purchase_detail__column_name">
@@ -70,7 +71,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="purchase_detail__item">
                                     <div class="purchase_detail__column_name">
                                         <div class="purchase_detail__name purchase_detail__name--total" data-language="cart_total_price">{$lang->cart_total_price}:</div>
@@ -83,12 +84,13 @@
                                     </div>
                                 </div>
                             </div>
+                            </div>
                         </div>
 
 					</div>
                     <div class="sticky f_col f_col-lg-6 f_col-xl-7 flex-lg-first">
                         <div class="fn_cart_sticky block--boxed block--border d-flex justify-content-center" data-margin-top="75" data-sticky-for="1024" data-sticky-class="is-sticky">
-                            <div class="">
+                            <div class="block__inner">
                                 <div class="h6" data-language="cart_title">{$lang->cart_title}</div>
 
                                 <div class="block form form_cart form--boxed">

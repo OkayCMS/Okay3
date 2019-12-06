@@ -104,7 +104,7 @@
                             </div>
 
                             <div class="okay_list_boding okay_list_features_name">
-                                <a class="link" href="{url controller=FeatureAdmin id=$feature->id return=$smarty.server.REQUEST_URI}">
+                                <a class="link" href="{url controller=FeatureAdmin page=null id=$feature->id return=$smarty.server.REQUEST_URI}">
                                     {$feature->name|escape}
                                 </a>
 

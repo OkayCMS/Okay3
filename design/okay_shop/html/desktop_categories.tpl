@@ -3,7 +3,7 @@
         <div class="level_{$level} {if $level == 1}categories_nav__menu{else}categories_nav__subcategory{/if}">
             <ul class="fn_category_scroll {if $level == 1}categories_menu {else}subcategory {/if}">
                 {foreach $categories as $c}
-                    {if $c->visible}
+                    {if $c->visible && ($c->has_products || $settings->show_empty_categories)}
                         {if $c->subcategories && $c->count_children_visible && $level < 3}
                             <li class="categories_menu__item has_child">
                                 <a class="d-flex align-items-center categories_menu__link{if $category->id == $c->id} selected{/if}" href="{url_generator route="category" url=$c->url}" data-category="{$c->id}">

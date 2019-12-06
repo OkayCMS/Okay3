@@ -35,7 +35,7 @@
 						</div>
 						{if $delivery->image}
 							<div class="delivery__image">
-								<img src="{$delivery->image|resize:40:25:false:$config->resized_deliveries_dir}" alt="{$delivery->name|escape}"/>
+								<img src="{$delivery->image|resize:80:30:false:$config->resized_deliveries_dir}" alt="{$delivery->name|escape}"/>
 							</div>
 						{/if}
 					</label>
@@ -81,7 +81,7 @@
 								</div>
 								{if $payment_method->image}
 									<div class="delivery__image">
-										<img src="{$payment_method->image|resize:40:25:false:$config->resized_payments_dir}" alt="{$payment_method->name|escape}"/>
+										<img src="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" alt="{$payment_method->name|escape}"/>
 									</div>
 								{/if}
 							</label>

@@ -53,11 +53,8 @@ class BackendBlogRequest
 
         $post->annotation  = $this->request->post('annotation');
         $post->description = $this->request->post('description');
-
-        $post->url = preg_replace("/[\s]+/ui", '', $post->url);
-        $post->url = strtolower(preg_replace("/[^0-9a-z]+/ui", '', $post->url));
         if (empty($post->url)) {
-            $post->url = $this->translit->translitAlpha($post->name);
+            $post->url = $this->translit->translit($post->name);
         }
 
         return ExtenderFacade::execute(__METHOD__, $post, func_get_args());

@@ -66,123 +66,123 @@
     </div>
 
     {*Главная форма страницы*}
-    <div class="row">
-        {if $banners_images}
+    {if $banners_images}
+        <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
-                <form class="fn_form_list" method="post">
-                    <div id="main_list" class=" okay_list products_list fn_sort_list">
-                        <input type="hidden" name="session_id" value="{$smarty.session.id}" />
-                        {*Шапка таблицы*}
-                        <div class="okay_list_head">
-                            <div class="okay_list_heading okay_list_drag"></div>
-                            <div class="okay_list_heading okay_list_check">
-                                <input class="hidden_check fn_check_all" type="checkbox" id="check_all_1" name="" value=""/>
-                                <label class="okay_ckeckbox" for="check_all_1"></label>
-                            </div>
-                            <div class="okay_list_heading okay_list_brands_photo">{$btr->general_image|escape}</div>
-                            <div class="okay_list_heading okay_list_bransimages_name">{$btr->general_name|escape}</div>
-                            <div class="okay_list_heading okay_list_brands_group">{$btr->general_banner_group|escape}</div>
-                            <div class="okay_list_heading okay_list_status">{$btr->general_enable|escape}</div>
-                            <div class="okay_list_heading okay_list_close"></div>
+            <form class="fn_form_list" method="post">
+                <div id="main_list" class=" okay_list products_list fn_sort_list">
+                    <input type="hidden" name="session_id" value="{$smarty.session.id}" />
+                    {*Шапка таблицы*}
+                    <div class="okay_list_head">
+                        <div class="okay_list_heading okay_list_drag"></div>
+                        <div class="okay_list_heading okay_list_check">
+                            <input class="hidden_check fn_check_all" type="checkbox" id="check_all_1" name="" value=""/>
+                            <label class="okay_ckeckbox" for="check_all_1"></label>
                         </div>
+                        <div class="okay_list_heading okay_list_brands_photo">{$btr->general_image|escape}</div>
+                        <div class="okay_list_heading okay_list_bransimages_name">{$btr->general_name|escape}</div>
+                        <div class="okay_list_heading okay_list_brands_group">{$btr->general_banner_group|escape}</div>
+                        <div class="okay_list_heading okay_list_status">{$btr->general_enable|escape}</div>
+                        <div class="okay_list_heading okay_list_close"></div>
+                    </div>
 
-                        {*Параметры элемента*}
-                        <div class="banners_wrap okay_list_body features_wrap sortable">
-                            {foreach $banners_images as $banners_image}
-                                <div class="fn_row okay_list_body_item fn_sort_item">
-                                    <div class="okay_list_row">
-                                        <input type="hidden" name="positions[{$banners_image->id}]" value="{$banners_image->position}">
+                    {*Параметры элемента*}
+                    <div class="banners_wrap okay_list_body features_wrap sortable">
+                        {foreach $banners_images as $banners_image}
+                        <div class="fn_row okay_list_body_item fn_sort_item">
+                            <div class="okay_list_row">
+                                <input type="hidden" name="positions[{$banners_image->id}]" value="{$banners_image->position}">
 
-                                        <div class="okay_list_boding okay_list_drag move_zone">
-                                            {include file='svg_icon.tpl' svgId='drag_vertical'}
-                                        </div>
+                                <div class="okay_list_boding okay_list_drag move_zone">
+                                    {include file='svg_icon.tpl' svgId='drag_vertical'}
+                                </div>
 
-                                        <div class="okay_list_boding okay_list_check">
-                                            <input class="hidden_check" type="checkbox" id="id_{$banners_image->id}" name="check[]" value="{$banners_image->id}"/>
-                                            <label class="okay_ckeckbox" for="id_{$banners_image->id}"></label>
-                                        </div>
+                                <div class="okay_list_boding okay_list_check">
+                                    <input class="hidden_check" type="checkbox" id="id_{$banners_image->id}" name="check[]" value="{$banners_image->id}"/>
+                                    <label class="okay_ckeckbox" for="id_{$banners_image->id}"></label>
+                                </div>
 
-                                        <div class="okay_list_boding okay_list_brands_photo">
-                                            {if $banners_image->image}
-                                                <a href="{url controller=[OkayCMS,Banners,BannersImageAdmin] id=$banners_image->id return=$smarty.server.REQUEST_URI}">
-                                                    <img src="{$banners_image->image|resize:200:200:false:$config->resized_banners_images_dir}" width="200px"/>
-                                                </a>
-                                            {else}
-                                                <img height="100" width="100" src="design/images/no_image.png"/>
-                                            {/if}
-                                        </div>
+                                <div class="okay_list_boding okay_list_brands_photo">
+                                    {if $banners_image->image}
+                                    <a href="{url controller=[OkayCMS,Banners,BannersImageAdmin] id=$banners_image->id return=$smarty.server.REQUEST_URI}">
+                                        <img src="{$banners_image->image|resize:200:200:false:$config->resized_banners_images_dir}" width="200px"/>
+                                    </a>
+                                    {else}
+                                    <img height="100" width="100" src="design/images/no_image.png"/>
+                                    {/if}
+                                </div>
 
-                                        <div class="okay_list_boding okay_list_bransimages_name">
-                                            <a class="link" href="{url controller=[OkayCMS,Banners,BannersImageAdmin] id=$banners_image->id return=$smarty.server.REQUEST_URI}">
-                                                {$banners_image->name|escape}
-                                            </a>
-                                            <div class="okay_list_name_brand">
-                                                {$banners_image->image}
-                                            </div>
-                                        </div>
-
-                                        <div class="okay_list_boding okay_list_brands_group">
-                                            {if $banners}
-                                                <select class="selectpicker" name=image_banners[{$banners_image->id}]">
-                                                    {foreach $banners as $b}
-                                                        <option value="{$b->id}"{if $b->id == $banners_image->banner_id} selected{/if}>{$b->name}</option>
-                                                    {/foreach}
-                                                </select>
-                                            {/if}
-                                        </div>
-
-                                        <div class="okay_list_boding okay_list_status">
-                                            {*visible*}
-                                            <label class="switch switch-default">
-                                                <input class="switch-input fn_ajax_action {if $banners_image->visible}fn_active_class{/if}" data-controller="okay_cms__banners_images" data-action="visible" data-id="{$banners_image->id}" name="visible" value="1" type="checkbox"  {if $banners_image->visible}checked=""{/if}/>
-                                                <span class="switch-label"></span>
-                                                <span class="switch-handle"></span>
-                                            </label>
-                                        </div>
-                                        <div class="okay_list_boding okay_list_close">
-                                            {*delete*}
-                                            <button data-hint="{$btr->banners_images_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                                {include file='svg_icon.tpl' svgId='delete'}
-                                            </button>
-                                        </div>
+                                <div class="okay_list_boding okay_list_bransimages_name">
+                                    <a class="link" href="{url controller=[OkayCMS,Banners,BannersImageAdmin] id=$banners_image->id return=$smarty.server.REQUEST_URI}">
+                                        {$banners_image->name|escape}
+                                    </a>
+                                    <div class="okay_list_name_brand">
+                                        {$banners_image->image}
                                     </div>
                                 </div>
-                            {/foreach}
-                        </div>
 
-                        {*Блок массовых действий*}
-                        <div class="okay_list_footer fn_action_block">
-                            <div class="okay_list_foot_left">
-                                <div class="okay_list_heading okay_list_drag"></div>
-                                <div class="okay_list_heading okay_list_check">
-                                    <input class="hidden_check fn_check_all" type="checkbox" id="check_all_2" name="" value=""/>
-                                    <label class="okay_ckeckbox" for="check_all_2"></label>
-                                </div>
-                                <div class="okay_list_option">
-                                   <select name="action" class="selectpicker">
-                                        {if $banners|count>1}
-                                            {foreach $banners as $b}
-                                                <option value="move_to_banner[{$b->id}]">{$btr->banners_images_move|escape} {$b->name|escape}</option>
-                                            {/foreach}
-                                        {/if}
-                                        <option value="enable">{$btr->general_do_enable|escape}</option>
-                                        <option value="disable">{$btr->general_do_disable|escape}</option>
-                                        <option value="delete">{$btr->general_delete|escape}</option>
+                                <div class="okay_list_boding okay_list_brands_group">
+                                    {if $banners}
+                                    <select class="selectpicker" name=image_banners[{$banners_image->id}]">
+                                        {foreach $banners as $b}
+                                        <option value="{$b->id}"{if $b->id == $banners_image->banner_id} selected{/if}>{$b->name}</option>
+                                        {/foreach}
                                     </select>
+                                    {/if}
+                                </div>
+
+                                <div class="okay_list_boding okay_list_status">
+                                    {*visible*}
+                                    <label class="switch switch-default">
+                                        <input class="switch-input fn_ajax_action {if $banners_image->visible}fn_active_class{/if}" data-controller="okay_cms__banners_images" data-action="visible" data-id="{$banners_image->id}" name="visible" value="1" type="checkbox"  {if $banners_image->visible}checked=""{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                </div>
+                                <div class="okay_list_boding okay_list_close">
+                                    {*delete*}
+                                    <button data-hint="{$btr->banners_images_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
+                                        {include file='svg_icon.tpl' svgId='delete'}
+                                    </button>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn_small btn_blue">
-                                {include file='svg_icon.tpl' svgId='checked'}
-                                <span>{$btr->general_apply|escape}</span>
-                            </button>
                         </div>
+                        {/foreach}
                     </div>
-                </form>
-            </div>
-        {else}
-            <div class="heading_box mt-1">
-                <div class="text_grey">{$btr->banners_images_none|escape}</div>
-            </div>
-        {/if}
-    </div>
+
+                    {*Блок массовых действий*}
+                    <div class="okay_list_footer fn_action_block">
+                        <div class="okay_list_foot_left">
+                            <div class="okay_list_heading okay_list_drag"></div>
+                            <div class="okay_list_heading okay_list_check">
+                                <input class="hidden_check fn_check_all" type="checkbox" id="check_all_2" name="" value=""/>
+                                <label class="okay_ckeckbox" for="check_all_2"></label>
+                            </div>
+                            <div class="okay_list_option">
+                                <select name="action" class="selectpicker">
+                                    {if $banners|count>1}
+                                    {foreach $banners as $b}
+                                    <option value="move_to_banner[{$b->id}]">{$btr->banners_images_move|escape} {$b->name|escape}</option>
+                                    {/foreach}
+                                    {/if}
+                                    <option value="enable">{$btr->general_do_enable|escape}</option>
+                                    <option value="disable">{$btr->general_do_disable|escape}</option>
+                                    <option value="delete">{$btr->general_delete|escape}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn_small btn_blue">
+                            {include file='svg_icon.tpl' svgId='checked'}
+                            <span>{$btr->general_apply|escape}</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        </div>
+    {else}
+        <div class="heading_box mt-1">
+            <div class="text_grey">{$btr->banners_images_none|escape}</div>
+        </div>
+    {/if}
 </div>

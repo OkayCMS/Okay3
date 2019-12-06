@@ -1,7 +1,6 @@
 {* Breadcrumb navigation *}
 {if $controller != "MainController"}
     <ol class="breadcrumbs d-flex flex-wrap align-items-center">
-
         {* The link to the homepage *}
         <li class="d-inline-flex align-items-center breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
             <a itemprop="url" aria-label="{$lang->breadcrumb_home}" href="{url_generator route='main'}" >

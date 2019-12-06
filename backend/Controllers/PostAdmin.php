@@ -14,9 +14,9 @@ class PostAdmin extends IndexAdmin
 {
     
     public function fetch(
-        BlogEntity         $blogEntity,
-        BackendBlogRequest $backendBlogRequest,
-        BackendBlogHelper $backendBlogHelper,
+        BlogEntity            $blogEntity,
+        BackendBlogRequest    $backendBlogRequest,
+        BackendBlogHelper     $backendBlogHelper,
         BackendValidateHelper $backendValidateHelper,
         RelatedProductsHelper $relatedProductsHelper
     ) {
@@ -34,11 +34,14 @@ class PostAdmin extends IndexAdmin
                 if (empty($post->id)) {
                     $preparedPost = $backendBlogHelper->prepareAdd($post);
                     $post->id     = $backendBlogHelper->add($preparedPost);
-                    $this->design->assign('message_success', 'added');
+
+                    $this->postRedirectGet->storeMessageSuccess('added');
+                    $this->postRedirectGet->storeNewEntityId($post->id);
                 } else {
                     $preparedPost = $backendBlogHelper->prepareUpdate($post);
                     $backendBlogHelper->update($preparedPost->id, $post);
-                    $this->design->assign('message_success', 'updated');
+
+                    $this->postRedirectGet->storeMessageSuccess('updated');
                 }
 
                 // Картинка
@@ -53,16 +56,13 @@ class PostAdmin extends IndexAdmin
                 // Связанные товары
                 $relatedProducts = $backendBlogHelper->prepareUpdateRelatedProducts($post, $relatedProducts);
                 $backendBlogHelper->updateRelatedProducts($post, $relatedProducts);
+
+                $this->postRedirectGet->redirect();
             }
         }
 
-        if (!empty($post)) {
-            $postId = $post->id;
-        } else {
-            $postId = $this->request->get('id', 'integer');
-        }
-
-        $post = $backendBlogHelper->getPost($postId);
+        $postId = $this->request->get('id', 'integer');
+        $post   = $backendBlogHelper->getPost($postId);
 
         $relatedProducts = [];
         if (!empty($post->id)) {
@@ -70,7 +70,7 @@ class PostAdmin extends IndexAdmin
         }
 
         $this->design->assign('related_products', $relatedProducts);
-        $this->design->assign('post', $post);
+        $this->design->assign('post',             $post);
         $this->response->setContent($this->design->fetch('post.tpl'));
     }
     

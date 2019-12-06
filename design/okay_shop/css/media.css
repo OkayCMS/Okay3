@@ -834,6 +834,45 @@
     .product_preview__buttons .product_preview__button:before {
         font-size: 20px;
     }
+    .product-page__images{
+        min-height: 1px;
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 100%;
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-right: 0px!important;
+        margin-left: 0px!important;
+    }
+    .product-page__images{
+        margin-top: 10px;
+    }
+    .product-page__image {
+        display: block!important;
+        max-width: 100%;
+        margin-right: 0px!important;
+        margin-left: 0px!important;
+    }
+    .product-page__img {
+        padding: 0;
+    }
+    .product-page__images-item{
+        margin: 5px;
+        float: left;
+    }
+    .purchase__image {
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 75px;
+        -ms-flex: 0 0 75px;
+        flex: 0 0 75px;
+        max-width: 75px;
+    }
+    .gallery_image{
+        overflow: hidden;
+    }
+    .gallery_image a{
+        height: 250px;
+    }
 
 }
 /* Extra Small Devices, Phones */
@@ -912,16 +951,6 @@
     }
     .pager li:first-child{
         margin-bottom: 10px;
-    }
-    .product-page__images-item{
-        margin: 5px;
-    }
-    .purchase__image {
-        -webkit-box-flex: 0;
-        -webkit-flex: 0 0 75px;
-        -ms-flex: 0 0 75px;
-        flex: 0 0 75px;
-        max-width: 75px;
     }
     .purchase__content {
         -webkit-box-flex: 0;
@@ -1004,14 +1033,6 @@
     .details_boxed__price .currency{
         font-size: 13px;
     }
-    .features {
-        -webkit-column-count: 1;
-        -moz-column-count: 1;
-        column-count: 1;
-        -webkit-column-gap: 0px;
-        -moz-column-gap: 0px;
-        column-gap: 0px;
-    }
     .mobile_tab__content .comment{
         margin-bottom: 10px;
     }
@@ -1028,33 +1049,8 @@
         flex: 0 0 100%;
         max-width: 100%;
     }
-    .product-page__images{
-        min-height: 1px;
-        -webkit-box-flex: 0;
-        -webkit-flex: 0 0 100%;
-        -ms-flex: 0 0 100%;
-        flex: 0 0 100%;
-        max-width: 100%;
-        margin-right: 0px!important;
-        margin-left: 0px!important;
-    }
-    .product-page__images{
-       margin-top: 10px;
-    }
-    .product-page__image {
-        display: block!important;
-        max-width: 100%;
-        margin-right: 0px!important;
-        margin-left: 0px!important;
-    }
     .tab {
         padding: 0px 15px;
-    }
-    .gallery_image{
-        overflow: hidden;
-    }
-    .gallery_image a{
-        height: 250px;
     }
     .details_boxed__no_brand .details_boxed__title{
         display: block;

@@ -13,6 +13,8 @@
         line-height: 84px;
         background-color: #272b35;
         padding-left: 15px;
+        top: 0;
+        left: 0;
     }
     #fix_logo:before {
         content: "";

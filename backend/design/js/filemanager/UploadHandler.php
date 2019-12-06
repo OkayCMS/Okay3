@@ -1445,6 +1445,9 @@ class UploadHandler
     }
 
     public function onUploadEnd ($res) {
+
+        $this->head();
+        $this->body(json_encode($res));
         return;
 
         $targetPath = $this->options['storeFolder'];

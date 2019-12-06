@@ -15,6 +15,7 @@ class ModulesEntity extends Entity
         'type',
         'enabled',
         'position',
+        'system',
         'backend_main_controller',
     ];
 
@@ -112,6 +113,11 @@ class ModulesEntity extends Entity
         }
 
         return $vendor.'/'.$moduleName;
+    }
+
+    protected function filter__without_system()
+    {
+        $this->select->where('system IS NULL OR system = 0');
     }
 
     private function installedFullModuleNames()

@@ -164,6 +164,16 @@
                                 {include file='svg_icon.tpl' svgId='refresh_icon'}
                                 <span>{$btr->manager_reset_menu|escape}</span>
                             </button>
+
+                            <div class="permission_box system_position {if $m->id==$manager->id}text-muted{/if}">
+                                <div class="system_label">{$btr->allow_to_visible_system_modules}</div>
+                                <label class="switch switch-default">
+                                    <input class="switch-input fn_item_perm" name="permissions[]" value="system_modules" type="checkbox" {if $m->permissions && in_array('system_modules', $m->permissions)}checked{/if} {if $m->id==$manager->id}disabled{/if}  />
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                            </div>
+
                         </div>
                     </div>
                 </div>

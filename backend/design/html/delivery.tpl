@@ -162,6 +162,7 @@
                             <button type="button" class="btn btn-small btn-outline-warning fn_type_delivery delivery_type {if $delivery->separate_payment}active{/if}" data-type="delivery">
                                 {$btr->general_paid_separately|escape}
                             </button>
+                            <input type="hidden" name="delivery_type" />
                         </div>
                     </div>
                     <div class="row fn_delivery_option {if $delivery->price == 0}hidden{/if} mt-1">
@@ -374,17 +375,18 @@
             case 'paid':
                 $(".fn_delivery_option").removeClass("hidden");
                 $("input[name=separate_payment]").removeAttr("checked");
+                $("input[name=delivery_type]").val('paid');
                 $(this).addClass("active");
                break;
             case 'free':
                 $(".fn_delivery_option").addClass("hidden");
-                // $(".fn_delivery_option").find("input").val(0);
                 $("input[name=separate_payment]").removeAttr("checked");
+                $("input[name=delivery_type]").val('free');
                 $(this).addClass("active");
                 break;
             case 'delivery':
                 $(".fn_delivery_option").addClass("hidden");
-                // $(".fn_delivery_option").find("input").val(0);
+                $("input[name=delivery_type]").val('separate_payment');
                 $("input[name=separate_payment]").trigger("click");
                 $(this).addClass("active");
                 break;

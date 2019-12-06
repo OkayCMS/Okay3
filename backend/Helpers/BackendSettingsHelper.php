@@ -119,6 +119,12 @@ class BackendSettingsHelper
             $this->settings->set('is_preorder', 0);
         }
 
+        if ($this->request->post('show_empty_categories', 'integer')){
+            $this->settings->set('show_empty_categories', $this->request->post('show_empty_categories', 'integer'));
+        } else {
+            $this->settings->set('show_empty_categories', 0);
+        }
+
         return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
@@ -144,7 +150,7 @@ class BackendSettingsHelper
         $clearImageCache = false;
         if ($this->request->post('delete_watermark')) {
             $clearImageCache = true;
-            unlink($this->config->root_dir.$this->config->watermark_file);
+            @unlink($this->config->root_dir.$this->config->watermark_file);
             $this->config->watermark_file = '';
         }
 

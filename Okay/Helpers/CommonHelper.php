@@ -54,6 +54,12 @@ class CommonHelper
             } else {
                 $this->design->assign('call_error', 'unknown error', true);
             }
+
+            if (!empty($error)) {
+                $this->design->assign('callback_name',    $callback->name);
+                $this->design->assign('callback_phone',   $callback->phone);
+                $this->design->assign('callback_message', $callback->message);
+            }
         }
 
         // Если прилетел токен, вероятно входят через соц. сеть

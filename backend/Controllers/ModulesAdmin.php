@@ -4,14 +4,21 @@
 namespace Okay\Admin\Controllers;
 
 
+use Okay\Core\Managers;
 use Okay\Core\Modules\Installer;
+use Okay\Entities\ManagersEntity;
 use Okay\Entities\ModulesEntity;
 use Okay\Core\Modules\Module;
 
 class ModulesAdmin extends IndexAdmin
 {
-    public function fetch(ModulesEntity $modulesEntity, Installer $modulesInstaller, Module $moduleCore)
-    {
+    public function fetch(
+        ModulesEntity  $modulesEntity,
+        Installer      $modulesInstaller,
+        Module         $moduleCore,
+        ManagersEntity $managersEntity,
+        Managers       $managersCore
+    ){
         // Обработка действий
         if ($this->request->method('post')) {
             if (!empty($this->request->post('install_module'))) {
@@ -48,7 +55,13 @@ class ModulesAdmin extends IndexAdmin
             $this->response->redirectTo($this->request->getCurrentUrl());
         }
 
-        $modules = array_merge($modulesEntity->findNotInstalled(), $modulesEntity->find());
+        $filter = [];
+        $manager = $managersEntity->findOne(['login' => $_SESSION['admin']]);
+        if ($managersCore->cannotVisibleSystemModules($manager)) {
+            $filter['without_system'] = 1;
+        }
+
+        $modules = array_merge($modulesEntity->findNotInstalled(), $modulesEntity->find($filter));
 
         foreach($modules as $module) {
             $preview = $moduleCore->findModulePreview($module->vendor, $module->module_name);

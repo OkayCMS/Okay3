@@ -290,7 +290,8 @@ class Image
             $update = $this->queryFactory->newUpdate();
             $update->table('__images')
                 ->cols(['filename' => $newName])
-                ->where('filename=?', rawurlencode($filename));
+                ->where('filename=:encoded_filename')
+                ->bindValue('encoded_filename', rawurlencode($filename));
             $this->db->query($update);
             return ExtenderFacade::execute(__METHOD__, $newName, func_get_args());
         }

@@ -10,6 +10,7 @@ use Okay\Core\Database;
 use Okay\Core\Managers;
 use Okay\Core\Design;
 use Okay\Core\Modules\Module;
+use Okay\Core\BackendPostRedirectGet;
 use Okay\Core\Router;
 use Okay\Core\Support;
 use Okay\Core\EntityFactory;
@@ -96,6 +97,11 @@ class IndexAdmin
      */
     protected $support;
 
+    /**
+     * @var BackendPostRedirectGet
+     */
+    protected $postRedirectGet;
+
     public function onInit(
         Design $design,
         Request $request,
@@ -115,7 +121,8 @@ class IndexAdmin
         SupportInfoEntity $supportInfoEntity,
         Router $router,
         BackendMainHelper $backendMainHelper,
-        Module $module
+        Module $module,
+        BackendPostRedirectGet $postRedirectGet
     ) {
         $this->design        = $design;
         $this->request       = $request;
@@ -128,6 +135,7 @@ class IndexAdmin
         $this->managers      = $managers;
         $this->support       = $support;
         $this->supportInfoEntity = $supportInfoEntity;
+        $this->postRedirectGet   = $postRedirectGet;
         
         $design->assign('is_mobile', $design->isMobile());
         $design->assign('is_tablet', $design->isTablet());
@@ -199,6 +207,10 @@ class IndexAdmin
 
         $backendMainHelper->commonBeforeControllerProcedure();
         $backendMainHelper->beforeControllerProcedure(static::class);
+
+        if ($messageSuccess = $this->postRedirectGet->matchMessageSuccess()) {
+            $this->design->assign('message_success', $messageSuccess);
+        }
 
         if (isset($_SESSION['show_learn'])) {
             unset($_SESSION['show_learn']);

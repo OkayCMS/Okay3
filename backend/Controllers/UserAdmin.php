@@ -12,9 +12,9 @@ class UserAdmin extends IndexAdmin
 {
     
     public function fetch(
-        BackendUsersRequest $backendUsersRequest,
+        BackendUsersRequest   $backendUsersRequest,
         BackendValidateHelper $backendValidateHelper,
-        BackendUsersHelper $backendUsersHelper
+        BackendUsersHelper    $backendUsersHelper
     ) {
         
         /*Прием данных о пользователе*/
@@ -27,21 +27,18 @@ class UserAdmin extends IndexAdmin
             } else {
                 $preparedUser = $backendUsersHelper->prepareUpdate($user);
                 $backendUsersHelper->update($preparedUser->id, $preparedUser);
+
+                $this->postRedirectGet->redirect();
             }
         }
 
-        if (!empty($user)) {
-            $userId = (int)$user->id;
-        } else {
-            $userId = $this->request->get('id', 'integer');
-        }
-        
-        $user = $backendUsersHelper->getUser($userId);
-        
+        $userId = $this->request->get('id', 'integer');
+        $user   = $backendUsersHelper->getUser($userId);
         $groups = $backendUsersHelper->getAllGroups();
+
         $this->design->assign('groups', $groups);
-        $this->design->assign('user', $user);
-        
+        $this->design->assign('user',   $user);
+
         $this->response->setContent($this->design->fetch('user.tpl'));
     }
     

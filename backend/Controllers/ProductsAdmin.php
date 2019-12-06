@@ -82,6 +82,7 @@ class ProductsAdmin extends IndexAdmin
                     }
                     case 'move_to_page': {
                         $backendProductsHelper->moveToPage($ids, $filter);
+                        break;
                     }
                     case 'move_to_category': {
                         $backendProductsHelper->actionMoveToCategory($ids);

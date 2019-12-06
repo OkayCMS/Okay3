@@ -129,6 +129,7 @@
                         <input type="hidden" name="id" value="{$manager->id}" />
                         <ul id="fn_sort_menu_section" class="menu_items">
                             {foreach $left_menu as $section=>$items}
+                                {if empty($items)}{continue}{/if}
                                 <li class="{if isset($items.$menu_selected)}open active{/if} {if $items|count > 1} fn_item_sub_switch nav-dropdown{/if}">
                                     {if $items|count == 1}
                                         <input type="hidden" value="{$items|reset}" name="manager_menu[{$section|escape}][{$items|key}]" />

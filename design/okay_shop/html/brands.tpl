@@ -37,7 +37,7 @@
 {if $description}
 <div class="block block--boxed block--border">
 	<div class="fn_readmore">
-		<div class="page-description__text boxed__description">{$description}</div>
+		<div class="block__description block__description--style">{$description}</div>
 	</div>
 </div>
 {/if}

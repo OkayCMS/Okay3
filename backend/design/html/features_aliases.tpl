@@ -145,10 +145,10 @@
                         $(".fn_aliases_result_ajax").html(data.feature_aliases_tpl);
                         $(".fn_aliases_values_result_ajax").html(data.feature_aliases_values_tpl);
                         set_sortable();
-                        toastr.success(msg, "Success");
+                        toastr.success(msg, "{/literal}{$btr->toastr_success|escape}{literal}");
                         $(".fn_preloader ").removeClass("ajax_preloader ");
                     } else {
-                        toastr.error(msg, "Error");
+                        toastr.error(msg, "{/literal}{$btr->toastr_error|escape}{literal}");
                         $(".fn_preloader ").removeClass("ajax_preloader ");
                     }
                 }
@@ -180,11 +180,11 @@
                         $(".fn_aliases_result_ajax").html(data.feature_aliases_tpl);
                         $(".fn_aliases_values_result_ajax").html(data.feature_aliases_values_tpl);
                         set_sortable();
-                        toastr.success(msg, "Success");
+                        toastr.success(msg, "{/literal}{$btr->toastr_success|escape}{literal}");
                         elem.addClass("active");
                         $(".fn_preloader ").removeClass("ajax_preloader");
                     } else {
-                        toastr.error(msg, "Error");
+                        toastr.error(msg, "{/literal}{$btr->toastr_error|escape}{literal}");
                         $(".fn_preloader ").removeClass("ajax_preloader");
                     }
                 }

@@ -49,13 +49,14 @@ class DeliveriesHelper
             $deliveryPriceInfo = [
                 'delivery_price'    => $delivery->price,
                 'separate_delivery' => $delivery->separate_payment,
+                'total_price'       => $order->total_price + $delivery->price,
             ];
         } elseif ($delivery->separate_payment) {
             $deliveryPriceInfo = [
-                'separate_delivery' => $delivery->separate_payment
+                'separate_delivery' => $delivery->separate_payment,
             ];
         }
-        
+
         return ExtenderFacade::execute(__METHOD__, $deliveryPriceInfo, func_get_args());
     }
 

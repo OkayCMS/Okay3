@@ -68,7 +68,7 @@
                     <div class="block_explanation__header">
                         <span data-language="login_text">{$lang->login_text}</span>
                     </div>
-                    <div class="block_explanation__body page_description">
+                    <div class="block_explanation__body block__description">
                         {$description}
                     </div>
                     {* Link to registration *}

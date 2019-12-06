@@ -13,10 +13,10 @@ class PageAdmin extends IndexAdmin
 {
     
     public function fetch(
-        PagesEntity $pagesEntity,
-        BackendPagesRequest $pagesRequest,
+        PagesEntity           $pagesEntity,
+        BackendPagesRequest   $pagesRequest,
         BackendValidateHelper $backendValidateHelper,
-        BackendPagesHelper $backendPagesHelper
+        BackendPagesHelper    $backendPagesHelper
     ){
         /*Прием информации о страницу*/
         if ($this->request->method('POST')) {
@@ -29,8 +29,9 @@ class PageAdmin extends IndexAdmin
                 if (empty($page->id)) {
                     $page     = $backendPagesHelper->prepareAdd($page);
                     $page->id = $backendPagesHelper->add($page);
-                    $page     = $backendPagesHelper->getPage((int) $page->id);
-                    $this->design->assign('message_success', 'added');
+
+                    $this->postRedirectGet->storeMessageSuccess('added');
+                    $this->postRedirectGet->storeNewEntityId($page->id);
                 } else {
                     // Запретим изменение системных url.
                     if ($error = $backendValidateHelper->getChangeSystemUrlValidateErrors($page)) {
@@ -41,8 +42,11 @@ class PageAdmin extends IndexAdmin
 
                     $page = $backendPagesHelper->prepareUpdate($page);
                     $backendPagesHelper->update($page->id, $page);
-                    $page = $pagesEntity->get($page->id);
-                    $this->design->assign('message_success', 'updated');
+                    $this->postRedirectGet->storeMessageSuccess('updated');
+                }
+
+                if (! $this->design->getVar('message_error')) {
+                    $this->postRedirectGet->redirect();
                 }
             }
         } else {

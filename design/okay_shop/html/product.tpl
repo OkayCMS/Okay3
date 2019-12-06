@@ -17,7 +17,7 @@
 
     <div class="fn_transfer f_row flex-column flex-lg-row align-items-lg-stretch">
         <div class="block product-page__gallery f_col f_col-lg-7 f_col-xl-7">
-            <div class="block--boxed block--border boxed--stretch d-sm-flex justify-content-between">
+            <div class="block--boxed block--border boxed--stretch d-md-flex justify-content-between">
                 {if $product->images}
                     {* Main product image *}
                     <div class="gallery_image product-page__image f_row justify-content-center">
@@ -43,13 +43,15 @@
                     </div>
                     {* Additional product images *}
                     {if $product->images|count > 1}
-                    <div class="product-page__images xzoom-thumbs d-flex justify-content-center justify-content-sm-start flex-sm-column">
+                    <div class="product-page__images xzoom-thumbs d-md-flex justify-content-center justify-content-md-start flex-md-column">
+                        <div class="scrollbar-inner">
                         {* cut removes the first image, if you need start from the second - write cut:2 *}
                         {foreach $product->images as $i=>$image}
                         <a href="{$image->filename|resize:1200:1000:w}" class="product-page__images-item">
-                            <img class="xzoom-gallery4" src="{$image->filename|resize:70:70}" xpreview="{$image->filename|resize:800:550}" alt="{$product->name|escape}" srcset="{$image->filename|resize:70:70:false:null:null:null:true}"/>
+                            <img class="xzoom-gallery4" src="{$image->filename|resize:60:60}" xpreview="{$image->filename|resize:800:550}" alt="{$product->name|escape}"/>
                         </a>
                         {/foreach}
+                        </div>
                     </div>
                     {else}
                         <a href="{$product->image->filename|resize:1200:1000:w}" class="hidden">
@@ -332,18 +334,20 @@
                                 <span data-language="product_features">{$lang->product_features}</span>
                             </div>
                         </div>
-                        <ul class="features mobile_tab__content">
+                        <ul class="d-sm-flex flex-sm-wrap features mobile_tab__content">
                             {foreach $product->features as $f}
-                            <li class="d-flex justify-content-start features__item">
-                                <div class="features__name"><span>{$f->name|escape}:</span>{if $f->description}<span title="{$f->description}" style="margin-left: 10px; cursor: pointer; background: lightgreen; padding: 5px; border-radius: 5px;">i</span>{/if}</div>
-                                <div class="features__value">
-                                    {foreach $f->values as $value}
+                            <li class="f_col-md-6 features__item">
+                                <div class="d-flex justify-content-start features__wrap">
+                                    <div class="features__name"><span>{$f->name|escape}:</span>{if $f->description}<span title="{$f->description}" style="margin-left: 10px; cursor: pointer; background: lightgreen; padding: 5px; border-radius: 5px;">i</span>{/if}</div>
+                                    <div class="features__value">
+                                        {foreach $f->values as $value}
                                         {if $category && $f->url_in_product && $f->in_filter && $value->to_index}
-                                            <a href="{url_generator route="category" url=$category->url}/{$f->url}-{$value->translit}">{$value->value|escape}</a>{if !$value@last},{/if}{*todo генерация урла*}
+                                        <a href="{url_generator route="category" url=$category->url}/{$f->url}-{$value->translit}">{$value->value|escape}</a>{if !$value@last},{/if}{*todo генерация урла*}
                                         {else}
-                                            {$value->value|escape}{if !$value@last},{/if}
+                                        {$value->value|escape}{if !$value@last},{/if}
                                         {/if}
-                                    {/foreach}
+                                        {/foreach}
+                                    </div>
                                 </div>
                             </li>
                             {/foreach}
@@ -554,8 +558,6 @@
         </div>
     </div>
 {/if}
-
-
 
 {*микроразметка по схеме JSON-LD*}
 {*

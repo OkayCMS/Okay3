@@ -79,8 +79,8 @@ class BackendOrderSettingsRequest
 
     public function postNewLabels()
     {
-        $newLabelNames = $this->request->post('new_name');
-        $newColors     = $this->request->post('new_color');
+        $newLabelNames = (array) $this->request->post('new_name');
+        $newColors     = (array) $this->request->post('new_color');
 
         $newLabels = [];
         foreach ($newLabelNames as $id=>$name) {

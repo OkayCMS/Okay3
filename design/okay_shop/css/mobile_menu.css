@@ -280,6 +280,11 @@ body.hc-nav-open {
     -webkit-justify-content: center;
     -ms-flex-pack: center;
     justify-content: center;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 26px;
+    -ms-flex: 0 0 26px;
+    flex: 0 0 26px;
+    max-width: 26px;
     width: 26px;
     height: 26px;
     background: #fff;

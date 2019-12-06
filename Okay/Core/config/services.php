@@ -398,6 +398,13 @@ $services = [
     RouteFactory::class => [
         'class' => RouteFactory::class,
         'arguments' => [],
+    ],
+    BackendPostRedirectGet::class => [
+        'class' => BackendPostRedirectGet::class,
+        'arguments' => [
+            new SR(Request::class),
+            new SR(Response::class),
+        ],
     ]
 ];
 

@@ -136,6 +136,22 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-lg-4 col-md-6 mt-2">
+                            <div class="heading_label boxes_inline">{$btr->allow_to_visible_empty_categories|escape}</div>
+                            <div class="boxes_inline">
+                                <div class="okay_switch clearfix">
+                                    <label class="switch switch-default">
+                                        <input class="switch-input" name="show_empty_categories" value='1' type="checkbox" {if $settings->show_empty_categories}checked=""{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <i class="fn_tooltips" title="{$btr->allow_to_visible_empty_categories_notice|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </div>
                     </div>
                 </div>
                 {get_design_block block="settings_catalog_general"}

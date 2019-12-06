@@ -14,7 +14,6 @@ class CategoryAdmin extends IndexAdmin
 {
 
     public function fetch(
-        CategoriesEntity         $categoriesEntity,
         BackendCategoriesRequest $categoriesRequest,
         BackendCategoriesHelper  $backendCategoriesHelper,
         BackendValidateHelper    $backendValidateHelper
@@ -29,12 +28,15 @@ class CategoryAdmin extends IndexAdmin
                     // Добавление категории
                     $category     = $backendCategoriesHelper->prepareAdd($category);
                     $category->id = $backendCategoriesHelper->add($category);
-                    $this->design->assign('message_success', 'added');
+
+                    $this->postRedirectGet->storeMessageSuccess('added');
+                    $this->postRedirectGet->storeNewEntityId($category->id);
                 } else {
                     // Обновление категории
                     $category     = $backendCategoriesHelper->prepareUpdate($category->id, $category);
                     $backendCategoriesHelper->update($category->id, $category);
-                    $this->design->assign('message_success', 'updated');
+
+                    $this->postRedirectGet->storeMessageSuccess('updated');
                 }
 
                 // Удаление изображения
@@ -47,7 +49,8 @@ class CategoryAdmin extends IndexAdmin
                 $image = $categoriesRequest->fileImage();
                 $image = $backendCategoriesHelper->prepareUploadCategoryImage($category, $image);
                 $backendCategoriesHelper->uploadCategoryImage($category, $image);
-                $category = $categoriesEntity->get(intval($category->id));
+
+                $this->postRedirectGet->redirect();
             }
         } else {
             $categoryId = $this->request->get('id', 'integer');

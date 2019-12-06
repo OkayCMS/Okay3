@@ -74,19 +74,16 @@ class CartController extends AbstractController
 
                 $couponHelper->registerUseIfExists($cart->coupon);
 
+                $preparedCart = $cartHelper->prepareCart($cart, $orderId);
+                $cartHelper->cartToOrder($preparedCart, $orderId);
+
                 $order = $ordersEntity->get((int) $orderId);
                 if (!empty($order->delivery_id)) {
                     $delivery          = $deliveriesEntity->get((int) $order->delivery_id);
                     $deliveryPriceInfo = $deliveriesHelper->prepareDeliveryPriceInfo($delivery, $order);
                     $deliveriesHelper->updateDeliveryPriceInfo($deliveryPriceInfo, $order);
-
-                    if (isset($deliveryPriceInfo['delivery_price'])) {
-                        $cart->total_price += $deliveryPriceInfo['delivery_price'];
-                    }
                 }
 
-                $preparedCart = $cartHelper->prepareCart($cart, $orderId);
-                $cartHelper->cartToOrder($preparedCart, $orderId);
                 $ordersHelper->finalCreateOrderProcedure($order);
                 
                 // Отправляем письмо пользователю

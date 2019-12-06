@@ -52,11 +52,12 @@ class OrderAdmin extends IndexAdmin
                 if (empty($order->id)) {
                     $preparedOrder = $backendOrdersHelper->prepareAdd($order);
                     $order->id  = $backendOrdersHelper->add($preparedOrder);
-                    $this->design->assign('message_success', 'added');
+                    $this->postRedirectGet->storeMessageSuccess('added');
+                    $this->postRedirectGet->storeNewEntityId($order->id);
                 } else {
                     $preparedOrder = $backendOrdersHelper->prepareUpdate($order);
                     $backendOrdersHelper->update($preparedOrder);
-                    $this->design->assign('message_success', 'updated');
+                    $this->postRedirectGet->storeMessageSuccess('updated');
                 }
                 
                 $orderLabelsEntity->updateOrderLabels($order->id, $orderLabels);
@@ -99,58 +100,62 @@ class OrderAdmin extends IndexAdmin
                 // По умолчанию метод ничего не делает, но через него можно зацепиться модулем
                 $backendOrdersHelper->executeCustomPost($order);
             }
-        } else {
+
+            if (! $this->design->getVar('message_error')) {
+                $this->postRedirectGet->redirect();
+            }
+        }
             
-            $order = $backendOrdersHelper->findOrder($this->request->get('id', 'integer'));
-            // Метки заказа
-            $orderLabels = [];
-            if (isset($order->id)) {
-                $orderLabels = $orderLabelsEntity->find(['order_id' => $order->id]);
-                if ($orderLabels) {
-                    foreach ($orderLabels as $orderLabel) {
-                        $orderLabels[] = $orderLabel->id;
-                    }
+        $order = $backendOrdersHelper->findOrder($this->request->get('id', 'integer'));
+
+        // Метки заказа
+        $orderLabels = [];
+        if (isset($order->id)) {
+            $orderLabels = $orderLabelsEntity->find(['order_id' => $order->id]);
+            if ($orderLabels) {
+                foreach ($orderLabels as $orderLabel) {
+                    $orderLabels[] = $orderLabel->id;
                 }
             }
-        }
 
-        $purchases = $backendOrdersHelper->findOrderPurchases($order);
+            $purchases = $backendOrdersHelper->findOrderPurchases($order);
 
-        $subtotal = 0;
-        $hasVariantNotInStock = false;
-        foreach ($purchases as $purchase) {
-            if (($purchase->amount > $purchase->variant->stock || !$purchase->variant->stock) && !$hasVariantNotInStock) {
-                $hasVariantNotInStock = true;
+            $subtotal = 0;
+            $hasVariantNotInStock = false;
+            foreach ($purchases as $purchase) {
+                if (($purchase->amount > $purchase->variant->stock || !$purchase->variant->stock) && !$hasVariantNotInStock) {
+                    $hasVariantNotInStock = true;
+                }
+                $subtotal += $purchase->price * $purchase->amount;
             }
-            $subtotal += $purchase->price*$purchase->amount;
-        }
-        // Способ доставки
-        $delivery = $backendOrdersHelper->findOrderDelivery($order);
-        $this->design->assign('delivery', $delivery);
+            // Способ доставки
+            $delivery = $backendOrdersHelper->findOrderDelivery($order);
+            $this->design->assign('delivery', $delivery);
 
-        // Способ оплаты
-        $paymentMethod = $backendOrdersHelper->findOrderPayment($order);
-        if (!empty($paymentMethod)) {
-            // Валюта оплаты
-            $paymentCurrency = $currenciesEntity->get(intval($paymentMethod->currency_id));
-            $this->design->assign('payment_currency', $paymentCurrency);
-        }
+            // Способ оплаты
+            $paymentMethod = $backendOrdersHelper->findOrderPayment($order);
+            if (!empty($paymentMethod)) {
+                // Валюта оплаты
+                $paymentCurrency = $currenciesEntity->get(intval($paymentMethod->currency_id));
+                $this->design->assign('payment_currency', $paymentCurrency);
+            }
 
-        $user = $backendOrdersHelper->findOrderUser($order);
-        $neighborsOrders = $backendOrdersHelper->findNeighborsOrders(
-            $order,
-            $this->request->get('label', 'integer'),
-            $this->request->get('status', 'integer')
-        );
-        
-        $this->design->assign('delivery', $delivery);
-        $this->design->assign('payment_method', $paymentMethod);
-        $this->design->assign('user', $user);
-        $this->design->assign('purchases', $purchases);
-        $this->design->assign('subtotal', $subtotal);
-        $this->design->assign('order', $order);
-        $this->design->assign('hasVariantNotInStock', $hasVariantNotInStock);
-        $this->design->assign('neighbors_orders', $neighborsOrders);
+            $user = $backendOrdersHelper->findOrderUser($order);
+            $neighborsOrders = $backendOrdersHelper->findNeighborsOrders(
+                $order,
+                $this->request->get('label', 'integer'),
+                $this->request->get('status', 'integer')
+            );
+
+            $this->design->assign('delivery', $delivery);
+            $this->design->assign('payment_method', $paymentMethod);
+            $this->design->assign('user', $user);
+            $this->design->assign('purchases', $purchases);
+            $this->design->assign('subtotal', $subtotal);
+            $this->design->assign('order', $order);
+            $this->design->assign('hasVariantNotInStock', $hasVariantNotInStock);
+            $this->design->assign('neighbors_orders', $neighborsOrders);
+        }
 
         //все статусы
         $allStatuses = $orderStatusEntity->find();

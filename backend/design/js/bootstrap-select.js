@@ -984,7 +984,7 @@
             'min-height': minHeight + headerHeight + searchHeight + actionsHeight + doneButtonHeight + 'px'
           });
           $menuInner.css({
-            'max-height': menuHeight - headerHeight - searchHeight - actionsHeight - doneButtonHeight - menuPadding.vert + 'px',
+            'max-height': menuHeight - headerHeight - searchHeight - actionsHeight - doneButtonHeight - 55 - menuPadding.vert + 'px',
             'overflow-y': 'auto',
             'min-height': Math.max(minHeight - menuPadding.vert, 0) + 'px'
           });

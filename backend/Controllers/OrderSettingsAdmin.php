@@ -49,7 +49,7 @@ class OrderSettingsAdmin extends IndexAdmin
             $backendOrderSettingsHelper->updateLabels($labels);
 
             $idsToDelete = $orderSettingsRequest->postCheck();
-            if (!empty($ids)) {
+            if (!empty($idsToDelete)) {
                 $backendOrderSettingsHelper->deleteLabels($idsToDelete);
             }
         }

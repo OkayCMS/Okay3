@@ -124,13 +124,13 @@ class Cart
     public function addItem($variantId, $amount = 1)
     {
         $variant = $this->variantsEntity->get(intval($variantId));
-        if (!empty($variant) && ($variant->stock>0 || $this->settings->is_preorder)) {
+        if (!empty($variant) && ($variant->stock>0 || $this->settings->get('is_preorder'))) {
             $amount = max(1, $amount);
             if (isset($_SESSION['shopping_cart'][$variantId])) {
                 $amount = max(1, $amount + $_SESSION['shopping_cart'][$variantId]);
             }
 
-            $amount = min($amount, ($variant->stock ? $variant->stock : min($this->settings->max_order_amount, $amount)));
+            $amount = min($amount, ($variant->stock > 0 ? $variant->stock : min($this->settings->get('max_order_amount'), $amount)));
             $_SESSION['shopping_cart'][$variantId] = intval($amount);
         }
 
@@ -140,9 +140,9 @@ class Cart
     public function updateItem($variantId, $amount = 1)
     {
         $variant = $this->variantsEntity->get(intval($variantId));
-        if (!empty($variant) && ($variant->stock>0 || $this->settings->is_preorder)) {
+        if (!empty($variant) && ($variant->stock>0 || $this->settings->get('is_preorder'))) {
             $amount = max(1, $amount);
-            $amount = min($amount, ($variant->stock ? $variant->stock : min($this->settings->max_order_amount, $amount)));
+            $amount = min($amount, ($variant->stock > 0 ? $variant->stock : min($this->settings->get('max_order_amount'), $amount)));
             $_SESSION['shopping_cart'][$variantId] = intval($amount);
         }
 

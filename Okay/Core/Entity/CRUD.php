@@ -106,7 +106,7 @@ trait CRUD
                 unset($object->$field);
             }
         }
-        
+
         // todo добавлять только колонки, которые есть у entity
         $insert->into($this->getTable())
             ->cols((array)$object); // todo здесь нужно сделать через bindValues
@@ -150,14 +150,24 @@ trait CRUD
         $result = $this->getDescription($object);
 
         foreach ($object as $field=>$value) {
+            if (is_array($value) || is_object($value)) {
+                unset($object->$field);
+                continue;
+            }
+
             if (strtolower($value) == 'now()') {
                 $update->set($field, $value);
                 unset($object->$field);
             }
         }
-        
+
+        $props = get_object_vars($object);
+        if (empty($props)) {
+            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
+        }
+
         // Вдруг обновляют только мультиязычные поля
-        if (!empty((array)$object)) {
+        if (!empty((array)$object) && !empty($ids)) {
             $update->table($this->getTable() . ' AS ' . $this->getTableAlias())
                 ->cols((array)$object)// todo здесь нужно сделать через bindValues
                 ->where($this->getTableAlias() . '.id IN (:update_entity_id)');

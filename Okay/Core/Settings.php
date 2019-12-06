@@ -109,7 +109,9 @@ class Settings
         
         $this->db->query($select->cols(['param', 'value'])->from('__settings'));
         foreach($this->db->results() as $result) {
-            if(!($this->vars[$result->param] = @unserialize($result->value))) {
+            if($this->isSerializable($result->value)) {
+                $this->vars[$result->param] = unserialize($result->value);;
+            } else {
                 $this->vars[$result->param] = $result->value;
             }
         }
@@ -119,11 +121,19 @@ class Settings
         $multi = $this->getSettings();
         if (is_array($multi)) {
             foreach ($multi as $s) {
-                if (!($this->vars_lang[$s->param] = @unserialize($s->value))) {
+                if($this->isSerializable($s->value)) {
+                    $this->vars_lang[$s->param] = unserialize($s->value);
+                } else {
                     $this->vars_lang[$s->param] = $s->value;
                 }
             }
         }
+    }
+
+    private function isSerializable($value)
+    {
+        $unserializedValue = @unserialize($value);
+        return (is_array($unserializedValue) || is_object($unserializedValue));
     }
     
     /**

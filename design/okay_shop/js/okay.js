@@ -289,6 +289,7 @@ console.log(window.location.href.replace( /\/page-(\d{1,5})/, '' ))
     } );
 }
 
+
 /* Document ready */
 $(function(){
 
@@ -340,6 +341,8 @@ $(function(){
             });
         }
 
+    $('.scrollbar-inner').scrollbar();
+
     /* Carousel products */
     if( $('.fn_products_slide').length ) {
         $('.fn_products_slide').owlCarousel({
@@ -362,6 +365,7 @@ $(function(){
             }
         });
     }
+
 
     /* Mobile search */
     $(document).on("click", ".fn_search_toggle", function() {
@@ -925,7 +929,8 @@ if( $( '.fn_comparison_products' ).length ) {
     $(window).on('load', resize_comparison);
 }
 
-/* Адаптивное видео tiny MCE */
-if( $( '.boxed__description' ).length ) {
-    $('.boxed__description').find('iframe').wrapAll('<p class="video"></p>');
+/* Адаптивное видео и таблицы tiny MCE */
+if( $( '.block__description' ).length ) {
+    $('.block__description').find('iframe').wrap('<p class="video"></p>');
+    $('.block__description').find('table').wrap('<div class="table_responsive"></div>');
 }

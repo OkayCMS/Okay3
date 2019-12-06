@@ -16,7 +16,7 @@
             {if $description}
                 <div class="col-lg-6">
                     <div class="block">
-                        {$description}
+                        <div class="block__description">{$description}</div>
                     </div>
                 </div>
             {/if}

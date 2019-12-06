@@ -410,6 +410,20 @@ class CategoriesEntity extends Entity
         unset($pointers[0]);
         unset($ids);
 
+        $select = $this->queryFactory->newSelect();
+        $categoriesIdsWithProducts = $select->cols(['category_id'])
+            ->from('__products_categories')
+            ->groupBy(['category_id'])
+            ->results('category_id');
+
+        foreach($pointers as &$pointer) {
+            if (array_intersect($pointer->children, $categoriesIdsWithProducts)) {
+                $pointer->has_products = true;
+            } else {
+                $pointer->has_products = false;
+            }
+        }
+
         $this->categoriesTree = $tree->subcategories;
         $this->allCategories  = $pointers;
     }

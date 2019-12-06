@@ -7,7 +7,7 @@ if(!empty($_SERVER['HTTP_USER_AGENT'])){
 //error_reporting(E_ALL);
 
 session_start();
-chdir('../..');
+chdir(dirname(dirname(__DIR__)));
 
 use Okay\Core\Request;
 use Okay\Core\Response;

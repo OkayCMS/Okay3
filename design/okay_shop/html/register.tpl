@@ -105,7 +105,7 @@
             </div>
             <div class="f_col-lg-5 f_col-xl-6">
                 <div class="block_explanation">
-                    <div class="block_explanation__body page_description">
+                    <div class="block__description">
                         {$description}
                     </div>
                     {* Link to registration *}
