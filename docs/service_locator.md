@@ -14,7 +14,7 @@ use Okay\Core\EntityFactory;
 class SomeClass {
     public function someMethod()
     {
-        $SL = new ServiceLocator();
+        $SL = ServiceLocator::getInstance();
         $entityFactory = $SL->getService(EntityFactory::class);
         //...abstract
     }

@@ -179,7 +179,7 @@ class FrontExtender implements ExtensionInterface
         $this->telegramNotify = $telegramNotify;
     }
 
-    public function sendTelegraphMessage()
+    public function sendTelegramMessage()
     {
         if (($user = $this->design->getVar('user')) && !empty($user->phone)) {
             $this->telegramNotify->sendCommentsThanks($user->phone);
@@ -215,6 +215,6 @@ return [
 ```php
 $this->registerQueueExtension(
     ['class' => CommentsHelper::class, 'method' => 'addCommentProcedure'],
-    ['class' => FrontExtender::class, 'method' => 'sendTelegraphMessage']
+    ['class' => FrontExtender::class, 'method' => 'sendTelegramMessage']
 );
 ```

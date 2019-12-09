@@ -2,7 +2,7 @@
 
 Контейнер реализовывает интерфейс [Psr\Container\ContainerInterface](https://www.php-fig.org/psr/psr-11/).
 Описание всех сервисов и их зависимостей описано в файлах:
-+ Okay/Core/config/services.php ([основные сервисы ядра](./core.md))
++ Okay/Core/config/services.php ([основные сервисы ядра](./core/README.md))
 + Okay/Core/config/requests.php ([сервисы Requests](./requests.md))
 + Okay/Core/config/helpers.php ([сервисы хелперов](./helpers.md))
 
