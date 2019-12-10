@@ -145,6 +145,18 @@ class BackendBrandsHelper
         return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
+    public function enable($ids)
+    {
+        $this->brandsEntity->update($ids, ['visible' => 1]);
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
+    public function disable($ids)
+    {
+        $this->brandsEntity->update($ids, ['visible' => 0]);
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
     public function delete($ids)
     {
         $this->brandsEntity->delete($ids);

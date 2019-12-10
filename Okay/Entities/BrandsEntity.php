@@ -162,11 +162,11 @@ class BrandsEntity extends Entity
         
         $brand = (object)$brand;
         if (empty($brand->url)) {
-            $brand->url = $translit->translitAlpha($brand->name);
+            $brand->url = $translit->translit($brand->name);
+            $brand->url = str_replace('.', '', $brand->url);
         }
 
         $brand->url = preg_replace("/[\s]+/ui", '', $brand->url);
-        $brand->url = strtolower(preg_replace("/[^0-9a-z]+/ui", '', $brand->url));
 
         while ($this->get((string)$brand->url)) {
             if(preg_match('/(.+)([0-9]+)$/', $brand->url, $parts)) {

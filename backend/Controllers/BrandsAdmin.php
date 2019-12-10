@@ -26,6 +26,14 @@ class BrandsAdmin extends IndexAdmin
             // Действия с выбранными
             $ids = $brandsRequest->postCheck();
             switch ($brandsRequest->postAction()) {
+                case 'enable': {
+                    $backendBrandsHelper->enable($ids);
+                    break;
+                }
+                case 'disable': {
+                    $backendBrandsHelper->disable($ids);
+                    break;
+                }
                 case 'delete': {
                     $backendBrandsHelper->delete($ids);
                     break;

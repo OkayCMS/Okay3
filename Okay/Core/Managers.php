@@ -241,6 +241,28 @@ class Managers
         return $controllersPermissions[$controller];
     }
 
+    public function determineNewPermissions($activeManager, $targetManager, $updatePermissions)
+    {
+        if ($targetManager) {
+            $permissions = $targetManager->permissions;
+        } else {
+            $permissions = [];
+        }
+
+        $allowToUpdatePermissions = $activeManager->permissions;
+        foreach($allowToUpdatePermissions as $permission) {
+            if (in_array($permission, $updatePermissions) && !in_array($permission, $permissions)) {
+                $permissions[] = $permission;
+            }
+            elseif(!in_array($permission, $updatePermissions) && in_array($permission, $permissions)) {
+                $targetKey = array_search($permission, $permissions);
+                unset($permissions[$targetKey]);
+            }
+        }
+
+        return $permissions;
+    }
+
     /*Проверка пароля*/
     public function checkPassword($password, $crypt_pass)
     {

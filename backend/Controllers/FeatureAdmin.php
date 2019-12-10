@@ -26,6 +26,7 @@ class FeatureAdmin extends IndexAdmin
             $feature           = $featuresRequest->postFeature();
             $featureCategories = $featuresRequest->postFeatureCategories();
 
+            $neededPostRedirectGet = false;
             if ($error = $backendValidateHelper->getFeatureValidateError($feature)) {
                 $this->design->assign('message_error', $error);
             } else {
@@ -44,10 +45,8 @@ class FeatureAdmin extends IndexAdmin
                 }
 
                 $feature = $backendFeaturesHelper->getFeature($feature->id);
-
                 $backendFeaturesHelper->updateFeatureCategories($feature->id, $featureCategories);
-
-                $this->postRedirectGet->redirect();
+                $neededPostRedirectGet = true;
             }
 
             $toIndexAllValues = $featuresValuesRequest->postToIndexAllValues();
@@ -67,6 +66,10 @@ class FeatureAdmin extends IndexAdmin
             $unionSecondValueId = $featuresRequest->postUnionSecondValueId();
             if (!empty($unionMainValueId) && !empty($unionSecondValueId)) {
                 $backendFeaturesValuesHelper->unionValues($unionMainValueId, $unionSecondValueId);
+            }
+
+            if ($neededPostRedirectGet) {
+                $this->postRedirectGet->redirect();
             }
         } else {
             $featureId = $this->request->get('id', 'integer');

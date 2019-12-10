@@ -310,7 +310,7 @@ class ManagerMenu
         return $activeControllerName;
     }
 
-    public function getPermissionMenu($btr = null)
+    public function getPermissionMenu($manager, $btr = null)
     {
         $permissionMenu = [];
 
@@ -331,7 +331,26 @@ class ManagerMenu
         foreach ($this->managers->getModulesPermissions() as $permission=>$vendorModuleName) {
             $permissionMenu['left_modules'][$permission] = $vendorModuleName;
         }
-        
+
+        return $this->removeNotPermittedSections($permissionMenu, $manager);
+    }
+
+    private function removeNotPermittedSections($permissionMenu, $manager)
+    {
+        foreach($permissionMenu as $menuName => $menuItem) {
+            foreach($menuItem as $permission => $title) {
+                if (! in_array($permission, $manager->permissions)) {
+                    unset($permissionMenu[$menuName][$permission]);
+                }
+            }
+        }
+
+        foreach($permissionMenu as $menuName => $menuItem) {
+            if (empty($permissionMenu[$menuName])) {
+                unset($permissionMenu[$menuName]);
+            }
+        }
+
         return $permissionMenu;
     }
 

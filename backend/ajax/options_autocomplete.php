@@ -24,7 +24,7 @@ $featuresValues = $featuresValuesEntity->find([
 $suggestions = [];
 foreach ($featuresValues as $fv) {
     $suggestion = new \stdClass();
-    $suggestion->value = $fv->value;
+    $suggestion->value = "{$fv->value} ({$fv->translit})";
     $suggestion->data = $fv;
     $suggestions[] = $suggestion;
 }

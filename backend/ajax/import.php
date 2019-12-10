@@ -285,7 +285,10 @@ class ImportAjax
         
         if (!empty($item['url'])) {
             $product['url'] = $this->translit->translit(trim($item['url']));
+        } else {
+            $product['url'] = $this->translit->translit(trim($item['name']));
         }
+        $product['url'] = str_replace('.', '', $product['url']);
 
         // Если задан бренд
         if (!empty($item['brand'])) {

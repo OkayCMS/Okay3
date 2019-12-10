@@ -393,9 +393,11 @@ class FilterHelper
             if (empty($v)) {
                 continue;
             }
-            @list($paramName, $paramValues) = explode('-', $v);
 
+            $paramName = explode('-', $v)[0];
             if ($paramName == 'brand') {
+                $paramValues = substr($v, strlen($paramName) + 1);
+
                 foreach (explode('_', $paramValues) as $bv) {
                     if (($brand = $this->getBrand((string)$bv)) && !in_array($brand->id, $currentBrands)) {
                         $currentBrands[] = $brand->id;

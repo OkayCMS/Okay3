@@ -86,13 +86,13 @@ class BackendFeedbacksHelper
     {
         $status = '';
 
-        if (empty($filter['processed'])) {
+        if (! isset($filter['processed'])) {
             return ExtenderFacade::execute(__METHOD__, $status, func_get_args());
         }
 
-        if ($filter['processed'] == 1) {
+        if ($filter['processed'] === 1) {
             $status = 'processed';
-        } elseif ($filter['processed'] == 0) {
+        } elseif ($filter['processed'] === 0) {
             $status = 'unprocessed';
         }
 

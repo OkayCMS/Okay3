@@ -8,6 +8,8 @@ use Okay\Core\Entity\Entity;
 use Okay\Core\Entity\RelatedProductsInterface;
 use Okay\Core\Money;
 use Okay\Core\Modules\Extender\ExtenderFacade;
+use Okay\Core\ServiceLocator;
+use Okay\Core\Translit;
 
 class ProductsEntity extends Entity implements RelatedProductsInterface
 {
@@ -46,6 +48,20 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
     protected static $langTable = 'products';
     protected static $tableAlias = 'p';
     protected static $alternativeIdField = 'url';
+
+    public function add($product)
+    {
+        /** @var Translit $translit */
+        $translit = ServiceLocator::getInstance();
+
+        $product = (object) $product;
+        if (empty($product->url)) {
+            $product->url = $translit->translit($product->name);
+            $product->url = str_replace('.', '', $product->url);
+        }
+
+        return parent::add($product);
+    }
 
     public function delete($ids)
     {

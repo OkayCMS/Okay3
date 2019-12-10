@@ -50,7 +50,14 @@ class ManagerAdmin extends IndexAdmin
                     // Обновляем права только другим менеджерам
                     $currentManager = $managersEntity->get($_SESSION['admin']);
                     if ($manager->id != $currentManager->id) {
-                        $manager->permissions = (array)$this->request->post('permissions');
+                        $targetManager  = $managersEntity->get((int) $manager->id);
+                        $newPermissions = $this->request->post('permissions');
+
+                        $manager->permissions = $this->managers->determineNewPermissions(
+                            $currentManager,
+                            $targetManager,
+                            $newPermissions
+                        );
                     }
 
                     /*Добавление/Обновление менеджера*/
@@ -75,7 +82,10 @@ class ManagerAdmin extends IndexAdmin
         }
 
         $btr = $this->design->getVar('btr');
-        $permission = $managerMenu->getPermissionMenu($btr);
+        $permission = $managerMenu->getPermissionMenu(
+            $managersEntity->get((string) $_SESSION['admin']),
+            $btr
+        );
 
         $btrLanguages = [];
         foreach ($languagesCore->getLangList() as $label=>$l) {

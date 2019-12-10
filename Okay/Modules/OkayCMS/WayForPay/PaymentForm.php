@@ -73,16 +73,11 @@ class PaymentForm extends AbstractModule implements PaymentFormInterface
         $this->design->assign('orderDate', strtotime($order->date));
         $this->design->assign('merchantAuthType', 'simpleSignature');
         $this->design->assign('merchantDomainName', $_SERVER['HTTP_HOST']);
-        $this->design->assign('currency', 'UAH');
 
-        $price = round($this->money->convert($order->total_price, $paymentMethod->currency_id, false), 2);
-        $this->design->assign('amount', $price);
+        $price           = round($this->money->convert($order->total_price, $paymentMethod->currency_id, false), 2);
         $paymentCurrency = $currenciesEntity->get(intval($paymentMethod->currency_id));
-        if ($paymentCurrency->code != 'UAH') {
-            $this->design->assign('alternativeCurrency', $paymentCurrency->code);
-            $this->design->assign('alternativeAmount', $price);
-            $this->design->assign('amount', $price);
-        }
+        $this->design->assign('amount', $price);
+        $this->design->assign('currency', $paymentCurrency->code);
 
         $this->design->assign('productName', $this->getPurchaseNames($purchases));
         $this->design->assign('productPrice', $this->getPurchasePrices($purchases, $paymentMethod->currency_id));
