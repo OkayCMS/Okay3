@@ -17,14 +17,14 @@
 $this->migrateEntityField(VariantsEntity::class, (new EntityField('field_name'))->setTypeVarchar(255)->setIndex());
 ```
 
-Так же при добавлении поля к уже существующим сущностям, нужно его зарегистрировать в системе, чтобы оно учавствовало
+Также при добавлении поля к уже существующим сущностям, нужно его зарегистрировать в системе, чтобы оно учавствовало
 в SELECT и фильтрации ([подробнее об Entities](./../entities.md)).
 
 Пример:
 ```php
 $this->registerEntityField(VariantsEntity::class, 'field_name');
 ```
-Это то же самое, если бы это поле было прописано в одно из свойств класса VariantsEntity
+Это тоже самое, если бы это поле было прописано в одно из свойств класса VariantsEntity
 ```php
 use Okay\Core\Entity\Entity;
 

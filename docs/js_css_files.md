@@ -10,7 +10,7 @@
 [Okay\Core\TemplateConfig\Js](#TemplateConfigJS). Или файл `design/<theme name>/css.php` с массивом 
 [Okay\Core\TemplateConfig\CSS](#TemplateConfigCSS) соответственно.
 
-Из модуля так же эти файлы можно подключать, расположив регистрационные файлы в директории 
+Из модуля также эти файлы можно подключать, расположив регистрационные файлы в директории 
 `Okay/Modules/Vendor/Module/design/`.
 
 
@@ -18,8 +18,8 @@
 #### Общее описание классов Okay\Core\TemplateConfig\JS и Okay\Core\TemplateConfig\CSS
 
 Класс в конструктор принимает название файла, который нужно зарегистрировать (без пути).
-Если путь не указать, это имеется ввиду, что файл лежит в `design/<theme name>/js/` или `design/<theme name>/css/`.
-В случае если подключается файл из модуля, имеется ввиду директория 
+Если путь не указать, это имеется в виду, что файл лежит в `design/<theme name>/js/` или `design/<theme name>/css/`.
+В случае если подключается файл из модуля, имеется в виду директория 
 `Okay/Modules/Vendor/Module/design/js/` или `Okay/Modules/Vendor/Module/design/css/`.
 По умолчанию все зарегистрированные скрипты выводятся в одном общем файле в head шаблона.
 Оба класса (`Okay\Core\TemplateConfig\JS` и `Okay\Core\TemplateConfig\CSS`) имеют общую реализацию
