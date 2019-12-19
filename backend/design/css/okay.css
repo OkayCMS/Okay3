@@ -2688,7 +2688,7 @@ label.switch_label {
     width: 140px;
 }
 .okay_list .okay_list_order_stg_sts_name{
-    width: calc(100% - 160px);
+    width: calc(100% - 360px);
     text-align: left;
 }
 .okay_list .okay_list_order_stg_sts_name_1c{

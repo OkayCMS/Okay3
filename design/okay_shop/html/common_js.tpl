@@ -98,6 +98,12 @@
         {/foreach}
 
         let currency = currencies[currencyId];
+        
+        if (typeof currency == "undefined") {
+            console.error('currency ID='+currencyId+' is not defined');
+            return 'currency error';
+        }
+        
         let decimal = currency.cents;
         let dec_point = '{$settings->decimals_point}';
         let separator = '{$settings->thousands_separator}';

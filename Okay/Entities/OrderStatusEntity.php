@@ -41,10 +41,13 @@ class OrderStatusEntity extends Entity
             
         /** @var OrdersEntity $ordersEntity */
         $ordersEntity = $this->entity->get(OrdersEntity::class);
-        $checkCnt = $ordersEntity->count(['status_id'=>$ids]);
+        
+        foreach ($ids as $id) {
+            $checkCnt = $ordersEntity->count(['status_id' => $id]);
 
-        if ($checkCnt == 0) {
-            return parent::delete($ids);
+            if ($checkCnt == 0) {
+                parent::delete($ids);
+            }
         }
 
         return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());

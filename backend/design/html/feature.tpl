@@ -140,8 +140,8 @@
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>
+                                    {get_design_block block="feature_switch_checkboxes"}
                                 </div>
-                                {get_design_block block="feature_switch_checkboxes"}
                             </div>
                         </div>
                     </div>
@@ -349,7 +349,7 @@
                                         </div>
                                     </div>
 
-                                    {$block = {get_design_block block="feature_item"}}
+                                    {$block = {get_design_block block="feature_value_item" vars=['fv' => $fv]}}
                                     {if $block}
                                         <div class="okay_list_body_item">
                                             {$block}
@@ -473,7 +473,7 @@
             union_second_value_id = $('input[name="union_second_value_id"]');
 
         $(".fn_union_main_value").devbridgeAutocomplete({
-            serviceUrl:'ajax/options_autocomplete.php',
+            serviceUrl:'ajax/merge_options_autocomplete.php',
             minChars:0,
             params: {feature_id:{/literal}{$feature->id}{literal}},
             noCache: false,
@@ -487,7 +487,7 @@
         });
 
         $(".fn_union_second_value").devbridgeAutocomplete({
-            serviceUrl:'ajax/options_autocomplete.php',
+            serviceUrl:'ajax/merge_options_autocomplete.php',
             minChars:0,
             params: {feature_id:{/literal}{$feature->id}{literal}},
             noCache: false,

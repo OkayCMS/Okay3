@@ -24,6 +24,7 @@
         "ext-SimpleXML": "*",
         "ext-json": "*",
         "ext-curl": "*",
+        "ext-mbstring": "*",
         "gregwar/image": "2.*",
         "smarty/smarty": "~3.1",
         "mobiledetect/mobiledetectlib": "^2.8",

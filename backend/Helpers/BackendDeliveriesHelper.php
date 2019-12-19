@@ -107,10 +107,10 @@ class BackendDeliveriesHelper
 
     public function prepareAdd($delivery)
     {
-        if ($this->request->post('delivery_type') === 'free' ||
-            $this->request->post('delivery_type') === 'separate_payment'
-        ) {
-            $delivery->price = 0;
+        if (empty($delivery->paid)) {
+            $delivery->price            = 0;
+            $delivery->free_from        = 0;
+            $delivery->separate_payment = 0;
         }
 
         return ExtenderFacade::execute(__METHOD__, $delivery, func_get_args());
@@ -124,10 +124,10 @@ class BackendDeliveriesHelper
 
     public function prepareUpdate($delivery)
     {
-        if ($this->request->post('delivery_type') === 'free' ||
-            $this->request->post('delivery_type') === 'separate_payment'
-        ) {
-            $delivery->price = 0;
+        if (empty($delivery->paid)) {
+            $delivery->price            = 0;
+            $delivery->free_from        = 0;
+            $delivery->separate_payment = 0;
         }
 
         return ExtenderFacade::execute(__METHOD__, $delivery, func_get_args());

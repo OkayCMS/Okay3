@@ -12,7 +12,7 @@ use Okay\Entities\CategoriesEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\FeaturesEntity;
 use Okay\Helpers\ProductsHelper;
-use Okay\Modules\OkayCMS\YandexXML\Init\Init;
+use Okay\Modules\OkayCMS\YandexXMLVendorModel\Init\Init;
 
 class YandexXmlAdmin extends IndexAdmin
 {

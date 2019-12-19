@@ -241,7 +241,7 @@ class Database
     /**
      * Возвращает первый результат запроса.
      * @param string $field - Если нужно получить массив значений одной колонки, нужно передать название этой колонки
-     * @return array
+     * @return object|string|null
      * @throws \Exception
      */
     public function result($field = null)

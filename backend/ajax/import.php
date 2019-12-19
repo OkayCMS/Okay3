@@ -178,7 +178,7 @@ class ImportAjax
         }
 
         // Массив импортированных товаров
-        $importedItems = array();
+        $importedItems = [];
 
         // Проходимся по строкам, пока не конец файла
         // или пока не импортировано достаточно строк для одного запроса
@@ -249,7 +249,7 @@ class ImportAjax
         }
 
         // Подготовим товар для добавления в базу
-        $product = array();
+        $product = [];
         
         if (isset($item['name'])) {
             $product['name'] = trim($item['name']);
@@ -285,10 +285,12 @@ class ImportAjax
         
         if (!empty($item['url'])) {
             $product['url'] = $this->translit->translit(trim($item['url']));
-        } else {
+        } elseif (!empty($item['name'])) {
             $product['url'] = $this->translit->translit(trim($item['name']));
         }
-        $product['url'] = str_replace('.', '', $product['url']);
+        if (!empty($product['url'])) {
+            $product['url'] = str_replace('.', '', $product['url']);
+        }
 
         // Если задан бренд
         if (!empty($item['brand'])) {
@@ -323,7 +325,7 @@ class ImportAjax
 
         // Если задана категория
         $categoryId = null;
-        $categories_ids = array();
+        $categories_ids = [];
         if (!empty($item['category'])) {
             foreach (explode($this->import->getCategoryDelimiter(), $item['category']) as $c) {
                 $categories_ids[] = $this->importCategory($c);
@@ -332,7 +334,7 @@ class ImportAjax
         }
         
         // Подготовим вариант товара
-        $variant = array();
+        $variant = [];
         $variant['price'] = 0;
         $variant['compare_price'] = 0;
         
@@ -518,7 +520,7 @@ class ImportAjax
             }
 
             // Изображения товаров
-            $imagesIds = array();
+            $imagesIds = [];
             if (isset($item['images'])) {
                 // Изображений может быть несколько, через запятую
                 $images = explode(',', $item['images']);
@@ -558,7 +560,7 @@ class ImportAjax
                 }
             }
 
-            $mainInfo = array();
+            $mainInfo = [];
             $mainImage = reset($imagesIds);
             if (!empty($mainImage)) {
                 $mainInfo['main_image_id'] = $mainImage;
@@ -642,7 +644,6 @@ class ImportAjax
         }
         return $id;
     }
-    
 }
 
 $importAjax = new ImportAjax($DI, $entityFactory);

@@ -26,20 +26,16 @@ class BackendOrderSettingsHelper
         $this->orderStatusEntity = $entityFactory->get(OrderStatusEntity::class);
         $this->orderLabelsEntity = $entityFactory->get(OrderLabelsEntity::class);
     }
-
-    public function addNewStatuses($newStatuses)
-    {
-        foreach ($newStatuses as $status) {
-            $this->orderStatusEntity->add($status);
-        }
-
-        ExtenderFacade::execute(__METHOD__, null, func_get_args());
-    }
+    
 
     public function updateStatuses($statuses)
     {
-        foreach ($statuses as $id => $status) {
-            $this->orderStatusEntity->update($id, $status);
+        foreach ($statuses as $status) {
+            if (!empty($status->id)) {
+                $this->orderStatusEntity->update($status->id, $status);
+            } else {
+                $status->id = $this->orderStatusEntity->add($status);
+            }
         }
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
@@ -79,19 +75,14 @@ class BackendOrderSettingsHelper
         return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
     }
 
-    public function addNewLabels($newLabels)
-    {
-        foreach($newLabels as $label) {
-            $this->orderLabelsEntity->add($label);
-        }
-
-        ExtenderFacade::execute(__METHOD__, null, func_get_args());
-    }
-
     public function updateLabels($labels)
     {
-        foreach($labels as $id => $label) {
-            $this->orderLabelsEntity->update($id, $label);
+        foreach ($labels as $label) {
+            if (!empty($label->id)) {
+                $this->orderLabelsEntity->update($label->id, $label);
+            } else {
+                $label->id = $this->orderLabelsEntity->add($label);
+            }
         }
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());

@@ -36,11 +36,10 @@ class GetNewProducts extends Func
         if (!isset($params['visible'])) {
             $params['visible'] = 1;
         }
-        if(!isset($params['sort'])) {
-            $params['sort'] = 'created';
-        }
+        
         if (!empty($params['var'])) {
-            $products = $this->productsHelper->getProductList($params);
+            $sort = isset($params['sort']) ? $params['sort'] : 'created_desc';
+            $products = $this->productsHelper->getProductList($params, $sort);
             $smarty->assign($params['var'], $products);
         }
     }

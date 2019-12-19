@@ -7,6 +7,7 @@ namespace Okay\Admin\Controllers;
 use Okay\Admin\Helpers\BackendOrderSettingsHelper;
 use Okay\Admin\Helpers\BackendOrdersHelper;
 use Okay\Admin\Requests\BackendOrderSettingsRequest;
+use Okay\Core\BackendPostRedirectGet;
 
 class OrderSettingsAdmin extends IndexAdmin
 {
@@ -14,36 +15,31 @@ class OrderSettingsAdmin extends IndexAdmin
     public function fetch(
         BackendOrdersHelper         $backendOrdersHelper,
         BackendOrderSettingsRequest $orderSettingsRequest,
-        BackendOrderSettingsHelper  $backendOrderSettingsHelper
+        BackendOrderSettingsHelper  $backendOrderSettingsHelper,
+        BackendPostRedirectGet      $backendPostRedirectGet
     ){
         /*Статусы заказов*/
-        if ($orderSettingsRequest->postStatus()) {
-            $positions = $orderSettingsRequest->postPositions();
-            $backendOrderSettingsHelper->sortStatusPositions($positions);
-
-            $newStatuses = $orderSettingsRequest->postNewStatuses();
-            $backendOrderSettingsHelper->addNewStatuses($newStatuses);
+        if ($this->request->post('statuses')) {
+            if ($positions = $orderSettingsRequest->postPositions()) {
+                $backendOrderSettingsHelper->sortStatusPositions($positions);
+            }
 
             $statuses = $orderSettingsRequest->postStatuses();
             $backendOrderSettingsHelper->updateStatuses($statuses);
 
             $idsToDelete = $orderSettingsRequest->postCheck();
             if (!empty($idsToDelete) && $backendOrderSettingsHelper->statusCanBeDeleted()) {
-                $result = $backendOrderSettingsHelper->deleteStatuses($idsToDelete);
-                $this->design->assign("error_status", $result);
+                $backendOrderSettingsHelper->deleteStatuses($idsToDelete);
             }
+            $backendPostRedirectGet->redirect();
         }
-        // Отображение
-        $ordersStatuses = $backendOrdersHelper->findStatuses();
-        $this->design->assign('orders_statuses', $ordersStatuses);
+        
 
         /*Метки заказов*/
         if ($this->request->post('labels')) {
-            $positions = $orderSettingsRequest->postPositions();
-            $backendOrderSettingsHelper->sortLabelPositions($positions);
-
-            $newLabels = $orderSettingsRequest->postNewLabels();
-            $backendOrderSettingsHelper->addNewLabels($newLabels);
+            if ($positions = $orderSettingsRequest->postPositions()) {
+                $backendOrderSettingsHelper->sortLabelPositions($positions);
+            }
 
             $labels = $orderSettingsRequest->postLabels();
             $backendOrderSettingsHelper->updateLabels($labels);
@@ -52,8 +48,12 @@ class OrderSettingsAdmin extends IndexAdmin
             if (!empty($idsToDelete)) {
                 $backendOrderSettingsHelper->deleteLabels($idsToDelete);
             }
+            $backendPostRedirectGet->redirect();
         }
         // Отображение
+        $ordersStatuses = $backendOrdersHelper->findStatuses();
+        $this->design->assign('orders_statuses', $ordersStatuses);
+        
         $labels = $backendOrdersHelper->findLabels();
         $this->design->assign('labels', $labels);
 

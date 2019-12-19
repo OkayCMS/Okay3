@@ -40,6 +40,7 @@
                         <div class="okay_list_head">
                             <div class="okay_list_boding okay_list_drag"></div>
                             <div class="okay_list_heading okay_list_order_stg_sts_name">{$btr->general_name|escape}</div>
+                            <div class="okay_list_heading okay_list_order_stg_sts_status2">{$btr->general_select_action|escape}</div>
                             <div class="okay_list_heading okay_list_order_stg_sts_label">{$btr->order_settings_colour|escape}</div>
                             <div class="okay_list_heading okay_list_close"></div>
                         </div>
@@ -49,7 +50,7 @@
                                     <div class="fn_row okay_list_body_item">
                                         <div class="okay_list_row fn_sort_item">
                                             <input type="hidden" name="positions[{$order_status->id}]" value="{$order_status->position}">
-                                            <input type="hidden" name="id[]" value="{$order_status->id}">
+                                            <input type="hidden" name="statuses[id][]" value="{$order_status->id}">
 
                                             <div class="okay_list_boding okay_list_drag move_zone">
                                                 {include file='svg_icon.tpl' svgId='drag_vertical'}
@@ -60,18 +61,26 @@
                                             </div>
 
                                             <div class="okay_list_boding okay_list_order_stg_sts_name">
-                                                <input type="text" class="form-control" name="name[{$order_status->id}]" value="{$order_status->name|escape}">
+                                                <input type="text" class="form-control" name="statuses[name][]" value="{$order_status->name|escape}">
                                                 {if $is_mobile == true}
                                                 <div class="hidden-sm-up mt-q">
-                                                    <select name="is_close[{$order_status->id}]" class="selectpicker col-xs-12 px-0">
+                                                    <select name="statuses[is_close][]" class="selectpicker col-xs-12 px-0">
                                                         <option value="1" {if $order_status->is_close == 1}selected=""{/if} >{$btr->order_write_off|escape}: {$btr->order_yes|escape}</option>
                                                         <option value="0" {if $order_status->is_close == 0}selected=""{/if} >{$btr->order_write_off|escape}: {$btr->order_no|escape}</option>
                                                     </select>
                                                 </div>
                                                 {/if}
                                             </div>
+                                            {if $is_mobile == false || $is_tablet == true}
+                                            <div class="okay_list_boding okay_list_order_stg_sts_status2">
+                                                <select name="statuses[is_close][]" class="selectpicker col-xs-12 px-0">
+                                                    <option value="1" {if $order_status->is_close == 1}selected=""{/if} >{$btr->order_settings_reduse_products|escape}</option>
+                                                    <option value="0" {if $order_status->is_close == 0}selected=""{/if} >{$btr->order_settings_not_reduse_products|escape}</option>
+                                                </select>
+                                            </div>
+                                            {/if}
                                             <div class="okay_list_boding okay_list_order_stg_sts_label">
-                                                <input  name="color[{$order_status->id}]" value="{$order_status->color}" class="hidden">
+                                                <input  name="statuses[color][]" value="{$order_status->color}" class="hidden">
                                                 <span data-hint="#{$order_status->color}" class="fn_color label_color_item hint-bottom-middle-t-info-s-small-mobile  hint-anim" style="background-color:#{$order_status->color};"></span>
                                             </div>
                                             <div class="okay_list_boding okay_list_close">
@@ -98,19 +107,34 @@
                                     <div class="okay_list_row fn_sort_item">
                                         <div class="okay_list_boding okay_list_drag"></div>
                                         <div class="okay_list_boding okay_list_order_stg_sts_name">
-                                            <input type="text" class="form-control" name="new_name[]" value="">
+                                            <input type="hidden" name="statuses[id][]" value="">
+                                            <input type="text" class="form-control" name="statuses[name][]" value="">
                                             {if $is_mobile == true}
                                                 <div class="hidden-sm-up mt-q">
-                                                    <select name="new_is_close[]" class="selectpicker col-xs-12 px-0">
-                                                        <option value="1">{$btr->order_settings_reduse_products|escape}</option>
-                                                        <option value="0">{$btr->order_settings_not_reduse_products|escape}</option>
+                                                    <select name="statuses[is_close][]" class="selectpicker col-xs-12 px-0">
+                                                        <option value="1">{$btr->order_yes|escape}</option>
+                                                        <option value="0">{$btr->order_no|escape}</option>
                                                     </select>
                                                 </div>
                                             {/if}
                                         </div>
-                                         <div class="okay_list_boding okay_list_order_stg_sts_label">
-                                            <input name="new_color[]" value="" class="hidden">
+                                        {if $is_mobile == false || $is_tablet == true}
+                                            <div class="okay_list_boding okay_list_order_stg_sts_status2">
+                                                <select name="statuses[is_close][]" class="selectpicker">
+                                                    <option value="1">{$btr->order_settings_reduse_products|escape}</option>
+                                                    <option value="0">{$btr->order_settings_not_reduse_products|escape}</option>
+                                                </select>
+                                            </div>
+                                        {/if}
+                                        <div class="okay_list_boding okay_list_order_stg_sts_label">
+                                            <input name="statuses[color][]" value="" class="hidden">
                                             <span data-hint="{$btr->order_settings_select_colour|escape}" class="fn_color label_color_item hint-bottom-middle-t-info-s-small-mobile  hint-anim"></span>
+                                        </div>
+                                        <div class="okay_list_boding okay_list_close">
+                                            {*delete*}
+                                            <button data-hint="{$btr->order_settings_delete_status|escape}" type="button" class="btn_close fn_light_remove hint-bottom-right-t-info-s-small-mobile  hint-anim">
+                                                {include file='svg_icon.tpl' svgId='delete'}
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -167,7 +191,7 @@
                                 <div class="fn_row okay_list_body_item">
                                     <div class="okay_list_row fn_sort_item">
                                         <input type="hidden" name="positions[{$label->id}]" value="{$label->position}">
-                                        <input type="hidden" name="id[]" value="{$label->id}">
+                                        <input type="hidden" name="labels[id][]" value="{$label->id}">
 
                                         <div class="cokay_list_boding okay_list_check hidden">
                                             <input class="hidden_check" type="checkbox" id="id_{$label->id}" name="check[]" value="{$label->id}"/>
@@ -175,11 +199,11 @@
                                         </div>
 
                                         <div class="okay_list_boding okay_list_order_stg_lbl_name">
-                                            <input type="text" class="form-control" name="name[]" value="{$label->name|escape}">
+                                            <input type="text" class="form-control" name="labels[name][]" value="{$label->name|escape}">
                                         </div>
 
                                         <div class="okay_list_boding okay_list_order_stg_sts_label">
-                                            <input  name="color[]" value="{$label->color}" class="hidden">
+                                            <input  name="labels[color][]" value="{$label->color}" class="hidden">
                                             <span data-hint="#{$label->color}" class="fn_color label_color_item hint-bottom-middle-t-info-s-small-mobile  hint-anim" style="background-color:#{$label->color};"></span>
                                         </div>
 
@@ -200,11 +224,12 @@
                             {/foreach}
                             <div class="fn_row fn_new_label fn_sort_item okay_list_body_item">
                                 <div class="okay_list_row fn_sort_item">
+                                    <input type="hidden" name="labels[id][]" value="">
                                     <div class="okay_list_boding okay_list_order_stg_lbl_name">
-                                        <input type="text" class="form-control" name="new_name[]" value="">
+                                        <input type="text" class="form-control" name="labels[name][]" value="">
                                     </div>
                                     <div class="okay_list_boding okay_list_order_stg_sts_label">
-                                        <input name="new_color[]" value="" class="hidden">
+                                        <input name="labels[color][]" value="" class="hidden">
                                         <span data-hint="{$btr->order_settings_select_colour|escape}" class="fn_color label_color_item hint-bottom-middle-t-info-s-small-mobile  hint-anim"></span>
                                     </div>
                                 </div>

@@ -58,7 +58,10 @@ class PaymentsHelper
         
         if (($paymentId = $request->post('payment_method_id', 'integer')) && isset($paymentMethods[$paymentId])) {
             $activePayment = $paymentMethods[$paymentId];
-        } elseif (($firstDeliveryPaymentId = reset($activeDelivery->payment_methods_ids)) && isset($paymentMethods[$firstDeliveryPaymentId])) {
+        } elseif (!empty($activeDelivery->payment_methods_ids) 
+            && ($firstDeliveryPaymentId = reset($activeDelivery->payment_methods_ids))
+            && isset($paymentMethods[$firstDeliveryPaymentId])) {
+            
             $activePayment = $paymentMethods[$firstDeliveryPaymentId];
         } else {
             $activePayment = reset($paymentMethods);

@@ -4,6 +4,7 @@
 namespace Okay\Core;
 
 
+use Okay\Core\Adapters\Resize\AbstractResize;
 use Okay\Core\Adapters\Resize\AdapterManager;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
@@ -55,6 +56,9 @@ class Image
     private $entityFactory;
     
     private $resizeObjects;
+    
+    private $originalsDir;
+    private $resizedDir;
     
     public function __construct(
         Settings $settings,
@@ -109,9 +113,11 @@ class Image
      * Создание превью изображения
      *
      * @param  string $filename файл с изображением (без пути к файлу)
-     * @param  int max_w максимальная ширина
-     * @param  int max_h максимальная высота
+     * @param  string $imageSizes Возможные варианты ресайза, разделённые прямой чертой |
+     * @param  string $originalImagesDir путь к диретории оригиналов изображений
+     * @param  string $resizedImagesDir путь к диретории нарезок изображений
      * @return string имя файла превью
+     * @throws \Exception
      */
     public function resize($filename, $imageSizes, $originalImagesDir = null, $resizedImagesDir = null)
     {
@@ -126,6 +132,11 @@ class Image
             $this->response->setStatusCode(404)->sendHeaders();
             exit();
         }
+
+        $originalsDir = $this->rootDir . $originalImagesDir;
+        $previewDir   = $this->rootDir . $resizedImagesDir;
+        $this->originalsDir = $originalImagesDir;
+        $this->resizedDir   = $resizedImagesDir;
         
         // Если вайл удаленный (https?://), зальем его себе
         if (preg_match("~^https?://~", $sourceFile)) {
@@ -138,14 +149,12 @@ class Image
         }
         
         $resizedFile = $this->addResizeParams($originalFile, $width, $height, $setWatermark, $cropParams);
-
-        $originalsDir = $this->rootDir . $originalImagesDir;
-        $previewDir   = $this->rootDir . $resizedImagesDir;
         
         if (!file_exists($originalsDir . $originalFile)) {
             return ExtenderFacade::execute(__METHOD__, false, func_get_args());
         }
         
+        /** @var AbstractResize $adapter */
         $adapter = $this->adapterManager->getAdapter();
         
         $adapter->resize(
@@ -180,7 +189,7 @@ class Image
 
         $size = $width.'x'.$height.($setWatermark ? 'w':'');
 
-        if ($resizedDir === null || $resizedDir == $this->config->resized_images_dir) {
+        if ($resizedDir === null || $resizedDir == $this->config->get('resized_images_dir')) {
             $this->addImagesSize($size, 'product');
         } else {
             $this->addImagesSize($size, 'other');
@@ -193,17 +202,19 @@ class Image
         $resizedFilenameEncoded = rawurlencode($resizedFilenameEncoded);
 
         if ($resizedDir === null) {
-            $resizedDir = $this->config->resized_images_dir;
+            $resizedDir = $this->config->get('resized_images_dir');
         }
 
+        $this->resizedDir = $resizedDir;
+        
         $result = $this->request->getRootUrl() . '/' . $resizedDir . $resizedFilenameEncoded;
         return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
     }
     
-    public function addImagesSize($size, $type)
+    public function addImagesSize($size, $type) // todo сделать protected
     {
         if ($type == 'product') {
-            $image_sizes = explode('|', $this->settings->products_image_sizes);
+            $image_sizes = explode('|', $this->settings->get('products_image_sizes'));
             if (empty($image_sizes[0])) {
                 $image_sizes = array();
             }
@@ -212,16 +223,16 @@ class Image
                     $image_sizes = array();
                 }
                 $image_sizes[] = $size;
-                $this->settings->products_image_sizes = implode('|', $image_sizes);
+                $this->settings->set('products_image_sizes', implode('|', $image_sizes));
             }
         } else {
-            $image_sizes = explode('|', $this->settings->image_sizes);
+            $image_sizes = explode('|', $this->settings->get('image_sizes'));
             if (empty($image_sizes[0])) {
                 $image_sizes = array();
             }
             if (!in_array($size, $image_sizes)) {
                 $image_sizes[] = $size;
-                $this->settings->image_sizes = implode('|', $image_sizes);
+                $this->settings->set('image_sizes', implode('|', $image_sizes));
             }
         }
 
@@ -238,7 +249,7 @@ class Image
      * @param array   $cropParams
      * @return string
      */
-    public function addResizeParams($filename, $width = 0, $height = 0, $setWatermark = false, $cropParams = array())
+    public function addResizeParams($filename, $width = 0, $height = 0, $setWatermark = false, $cropParams = array()) // todo сделать protected
     {
         if('.' != ($dirname = pathinfo($filename,  PATHINFO_DIRNAME))) {
             $file = $dirname.'/'.pathinfo($filename, PATHINFO_FILENAME);
@@ -267,9 +278,19 @@ class Image
      *
      * @param string $filename
      * @return string|boolean
+     * @throws \Exception
      */
-    public function downloadImage($filename)
+    public function downloadImage($filename) // todo сделать protected
     {
+        $encodedFilename = rawurlencode($filename);
+        if (isset($_SESSION['resize_files'][$encodedFilename])) {
+            if ($this->filenameAlreadyUses($this->getOriginalFilenameByResizeName($filename))) {
+                return ExtenderFacade::execute(__METHOD__, $_SESSION['resize_files'][$encodedFilename], func_get_args());
+            } else {
+                unset($_SESSION['resize_files'][$encodedFilename]);
+            }
+        }
+        
         if ($this->fileIsNotExists($filename)) {
             return ExtenderFacade::execute(__METHOD__, false, func_get_args());
         }
@@ -282,17 +303,19 @@ class Image
             $newName = urldecode($uploadedFile);
         }
         
-        $localFile = $this->rootDir.$this->config->original_images_dir.$newName;
+        $localFile = $this->rootDir.$this->config->get('original_images_dir').$newName;
 
         // Перед долгим копированием займем это имя
         fclose(fopen($localFile, 'w'));
         if (copy($filename, $localFile) && filesize($localFile) > 0) {
+            $encodedFilename = rawurlencode($filename);
             $update = $this->queryFactory->newUpdate();
             $update->table('__images')
                 ->cols(['filename' => $newName])
                 ->where('filename=:encoded_filename')
-                ->bindValue('encoded_filename', rawurlencode($filename));
+                ->bindValue('encoded_filename', $encodedFilename);
             $this->db->query($update);
+            $_SESSION['resize_files'][$encodedFilename] = $newName;
             return ExtenderFacade::execute(__METHOD__, $newName, func_get_args());
         }
 
@@ -304,11 +327,14 @@ class Image
         $headers      = @get_headers($filenameHttp);
 
         if ($this->responseSuccess($headers) && copy($filenameHttp, $localFile) && filesize($localFile) > 0) {
+            $encodedFilename = rawurlencode($filename);
             $update = $this->queryFactory->newUpdate();
             $update->table('__images')
                 ->cols(['filename' => $newName])
-                ->where('filename=?', rawurlencode($filename));
+                ->where('filename=:encoded_filename')
+                ->bindValue('encoded_filename', $encodedFilename);
             $this->db->query($update);
+            $_SESSION['resize_files'][$encodedFilename] = $newName;
             return ExtenderFacade::execute(__METHOD__, $newName, func_get_args());
         }
 
@@ -320,21 +346,21 @@ class Image
     public function uploadImage($filename, $name, $originalDir = null)
     {
         // Имя оригинального файла
-        $name = preg_replace('~(.+)\.([0-9]*)x([0-9]*)(w)?\.([^\.\?]+)$~', '${1}.${5}', $name);
+        $name = preg_replace('~(.+)\.([0-9]*)x([0-9]*)(w)?\.([^.?]+)$~', '${1}.${5}', $name);
         $name = $this->correctFilename($name);
         $uploadedFile = $newName = pathinfo($name, PATHINFO_BASENAME);
         $base = pathinfo($uploadedFile, PATHINFO_FILENAME);
         $ext = pathinfo($uploadedFile, PATHINFO_EXTENSION);
 
         if (!$originalDir) {
-            $originalDir = $this->config->original_images_dir;
+            $originalDir = $this->config->get('original_images_dir');
         }
         
         if (!in_array(strtolower($ext), $this->allowed_extensions)) {
             return ExtenderFacade::execute(__METHOD__, false, func_get_args());
         }
 
-        while (file_exists($this->config->root_dir.$originalDir.$newName)) {
+        while (file_exists($this->rootDir.$originalDir.$newName)) {
             $new_base = pathinfo($newName, PATHINFO_FILENAME);
             if (preg_match('/_([0-9]+)$/', $new_base, $parts)) {
                 $newName = $base.'_'.($parts[1]+1).'.'.$ext;
@@ -353,7 +379,7 @@ class Image
     private function getResizeParams($filename)
     {
         // Определаяем параметры ресайза
-        if (!preg_match('/(.+)\.([0-9]*)x([0-9]*)(w)?(\.(left|center|right)\.(top|center|bottom))?\.([^\.]+)$/', $filename, $matches)) {
+        if (!preg_match('/(.+)\.([0-9]*)x([0-9]*)(w)?(\.(left|center|right)\.(top|center|bottom))?\.([^.]+)$/', $filename, $matches)) {
             return false;
         }
 
@@ -380,7 +406,7 @@ class Image
         
         $res = str_replace($ru, $en, $filename);
         $res = preg_replace("/[\s]+/ui", '-', $res);
-        $res = preg_replace("/[^a-zA-Z0-9\.\-\_]+/ui", '', $res);
+        $res = preg_replace("/[^a-zA-Z0-9.\-_]+/ui", '', $res);
         $res = strtolower($res);
         return ExtenderFacade::execute(__METHOD__, $res, func_get_args());
     }
@@ -527,7 +553,7 @@ class Image
 
     private function getOriginalFilenameByResizeName($filename)
     {
-        $basename = preg_replace('~(.+)\.([0-9]*)x([0-9]*)(w)?\.([^\.\?]+)(\?.*)?$~', '${1}.${5}', $filename);
+        $basename = preg_replace('~(.+)\.([0-9]*)x([0-9]*)(w)?\.([^.?]+)(\?.*)?$~', '${1}.${5}', $filename);
         $uploadedFile = pathinfo($basename, PATHINFO_BASENAME);
         return $this->correctFilename($uploadedFile);
     }
@@ -538,10 +564,10 @@ class Image
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
 
         $newName = urldecode($filename);
-        while(file_exists($this->rootDir.$this->config->original_images_dir.$newName)) {
+        while (file_exists($this->rootDir.$this->originalsDir.$newName)) {
             $new_base = pathinfo($newName, PATHINFO_FILENAME);
 
-            if(preg_match('/_([0-9]+)$/', $new_base, $parts)) {
+            if (preg_match('/_([0-9]+)$/', $new_base, $parts)) {
                 $newName = $base.'_'.($parts[1]+1).'.'.$ext;
                 continue;
             }
@@ -554,7 +580,7 @@ class Image
 
     private function filenameAlreadyUses($filename)
     {
-        return file_exists($this->rootDir.$this->config->original_images_dir.urldecode($filename));
+        return file_exists($this->rootDir.$this->originalsDir.urldecode($filename));
     }
 
     private function responseSuccess($responseHeaders)

@@ -73,11 +73,11 @@ class SeoFilterPatternsAdmin extends IndexAdmin
             /*Обновление шаблона данных категории*/
             if ($this->request->post("action") == "set") {
 
-                $this->settings->max_filter_brands          = $this->request->post('max_filter_brands', 'integer', 1);
-                $this->settings->max_filter_filter          = $this->request->post('max_filter_filter', 'integer', 1);
-                $this->settings->max_filter_features_values = $this->request->post('max_filter_features_values', 'integer', 1);
-                $this->settings->max_filter_features        = $this->request->post('max_filter_features', 'integer', 1);
-                $this->settings->max_filter_depth           = $this->request->post('max_filter_depth', 'integer', 1);
+                $this->settings->set('max_filter_brands', $this->request->post('max_filter_brands', 'integer', 0));
+                $this->settings->set('max_filter_filter', $this->request->post('max_filter_filter', 'integer', 0));
+                $this->settings->set('max_filter_features_values', $this->request->post('max_filter_features_values', 'integer', 0));
+                $this->settings->set('max_filter_features', $this->request->post('max_filter_features', 'integer', 0));
+                $this->settings->set('max_filter_depth', $this->request->post('max_filter_depth', 'integer', 0));
 
                 $result->success = true;
                 

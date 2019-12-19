@@ -791,6 +791,9 @@
     });
 
 
+    $(document).on('click', '.fn_light_remove', function () {
+        $(this).closest(".fn_row").remove();
+    });
     if($('.fn_remove').size() > 0) {
         // Подтверждение удаления
         /*

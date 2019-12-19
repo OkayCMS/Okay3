@@ -89,6 +89,9 @@ trait entityInfo
      */
     final public static function getTableAlias()
     {
+        if (empty(static::$tableAlias)) {
+            static::$tableAlias = substr(preg_replace('~(__)?(.+)~', '$2', self::getTable()), 0, 1);
+        }
         return (string)static::$tableAlias;
     }
 

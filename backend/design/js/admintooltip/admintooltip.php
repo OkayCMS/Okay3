@@ -46,14 +46,7 @@ $design->setCompiledDir('backend/design/compiled');
 
 // Перевод админки
 $backendTranslations = $DI->get(BackendTranslations::class);
-$file = "backend/lang/" . $manager->lang . ".php";
-if (!file_exists($file)) {
-    foreach (glob("backend/lang/??.php") as $f) {
-        $file = "backend/lang/".pathinfo($f, PATHINFO_FILENAME).".php";
-        break;
-    }
-}
-require_once($file);
+$backendTranslations->initTranslations($manager->lang);
 $design->assign('btr', $backendTranslations);
 $language = $manager = $DI->get(EntityFactory::class)->get(LanguagesEntity::class)->get((string)$manager->lang);
 $design->assign('language', $language);

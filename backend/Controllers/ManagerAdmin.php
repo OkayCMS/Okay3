@@ -51,7 +51,7 @@ class ManagerAdmin extends IndexAdmin
                     $currentManager = $managersEntity->get($_SESSION['admin']);
                     if ($manager->id != $currentManager->id) {
                         $targetManager  = $managersEntity->get((int) $manager->id);
-                        $newPermissions = $this->request->post('permissions');
+                        $newPermissions = $this->request->post('permissions', null, []);
 
                         $manager->permissions = $this->managers->determineNewPermissions(
                             $currentManager,

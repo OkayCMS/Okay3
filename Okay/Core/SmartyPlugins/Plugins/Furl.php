@@ -19,7 +19,7 @@ class Furl extends Func
         $this->filterHelper = $filterHelper;
     }
 
-    public function run($params)
+    public function run($params, \Smarty_Internal_Template $smarty)
     {
 
         if (is_array($params) && is_array(reset($params))) {
@@ -36,7 +36,7 @@ class Furl extends Func
         
         $routeParams = $this->router->getCurrentRouteRequiredParams();
         $baseUrl = $this->router->generateUrl($routeName, $routeParams, $isAbsolute);
-        $chpuUrl = $this->filterHelper->filterChpuUrl($params);
+        $chpuUrl = $this->filterHelper->filterChpuUrl($params, [], $smarty);
         
         $baseUrl = trim($baseUrl, '/');
         $chpuUrl = trim($chpuUrl, '/');

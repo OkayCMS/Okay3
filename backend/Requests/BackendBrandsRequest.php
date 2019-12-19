@@ -39,12 +39,6 @@ class BackendBrandsRequest
         $brand->meta_keywords    = $this->request->post('meta_keywords');
         $brand->meta_description = $this->request->post('meta_description');
 
-        $brand->url = preg_replace("/[\s]+/ui", '', $brand->url);
-        $brand->url = strtolower(preg_replace("/[^0-9a-z]+/ui", '', $brand->url));
-        if (empty($brand->url)) {
-            $brand->url = $this->translit->translitAlpha($brand->name);
-        }
-
         return ExtenderFacade::execute(__METHOD__, $brand, func_get_args());
     }
 

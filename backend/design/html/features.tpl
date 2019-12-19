@@ -9,7 +9,7 @@
                 {$btr->features_features|escape} - {$features_count}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url controller=FeatureAdmin return=$smarty.server.REQUEST_URI}">
+                <a class="btn btn_small btn-info" href="{url controller=FeatureAdmin return=$smarty.server.REQUEST_URI page=null limit=null}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->features_add|escape}</span>
                 </a>
@@ -104,7 +104,7 @@
                             </div>
 
                             <div class="okay_list_boding okay_list_features_name">
-                                <a class="link" href="{url controller=FeatureAdmin page=null id=$feature->id return=$smarty.server.REQUEST_URI}">
+                                <a class="link" href="{url controller=FeatureAdmin id=$feature->id return=$smarty.server.REQUEST_URI page=null limit=null}">
                                     {$feature->name|escape}
                                 </a>
 

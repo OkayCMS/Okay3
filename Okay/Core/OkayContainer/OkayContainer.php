@@ -130,6 +130,7 @@ class OkayContainer implements ContainerInterface
      * @param string $name The service name.
      * @return mixed The created service.
      * @throws ContainerException On failure.
+     * @throws \ReflectionException
      */
     private function createService($name)
     {
@@ -217,14 +218,18 @@ class OkayContainer implements ContainerInterface
             }
         }
 
-        if (is_string($parameter) && preg_match_all('~\{\%.+?%\}~', $parameter, $matches)) {
+        if (is_string($parameter) && preg_match_all('~{%.+?%}~', $parameter, $matches)) {
             $settings = $this->get(Settings::class);
             $matches = $matches[0];
             foreach ($matches as $match) {
-                $var = preg_replace('~\{%(.+)?%\}~', '$1', $match);
+                $var = preg_replace('~{%(.+)?%}~', '$1', $match);
 
                 if (!empty($param = $settings->$var)) {
-                    $parameter = strtr($parameter, [$match => $param]); // todo проверить что будет если в настройках массив лежит
+                    if (is_array($param) || is_object($param)) {
+                        $parameter = $param;
+                    } else {
+                        $parameter = strtr($parameter, [$match => $param]);
+                    }
                 } else {
                     $parameter = strtr($parameter, [$match => '']);
                 }

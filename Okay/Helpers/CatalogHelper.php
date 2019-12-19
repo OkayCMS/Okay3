@@ -4,9 +4,11 @@
 namespace Okay\Helpers;
 
 
+use Okay\Core\FrontTranslations;
 use Okay\Core\Money as MoneyCore;
 use Okay\Core\Design;
 use Okay\Core\EntityFactory;
+use Okay\Core\ServiceLocator;
 use Okay\Core\Settings;
 use Okay\Entities\TranslationsEntity;
 use Okay\Entities\ProductsEntity;
@@ -141,14 +143,13 @@ class CatalogHelper
     
     public function getOtherFilters(array $filter)
     {
-        /** @var TranslationsEntity $translationsEntity */
-        $translationsEntity = $this->entityFactory->get(TranslationsEntity::class);
+        $SL = ServiceLocator::getInstance();
+        /** @var FrontTranslations $translations */
+        $translations = $SL->getService(FrontTranslations::class);
         
         /** @var ProductsEntity $productsEntity */
         $productsEntity = $this->entityFactory->get(ProductsEntity::class);
         
-        $translations = $translationsEntity->find(['lang' => 'ru']); //todo languages
-
         $otherFilters = [];
         foreach ($this->otherFilters as $f) {
             $label = 'features_filter_'.$f;

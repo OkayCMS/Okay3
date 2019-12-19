@@ -582,7 +582,7 @@ function create_folder($path = null, $path_thumbs = null,$ftp = null,$config = n
 		} // or even 01777 so you get the sticky bit set
 		if ($path_thumbs)
 		{
-			mkdir($path_thumbs, $permission, true) or die("$path_thumbs cannot be found");
+			mkdir($path_thumbs, $permission, true);// or die("$path_thumbs cannot be found");
 		} // or even 01777 so you get the sticky bit set
 		umask($oldumask);
 		return true;

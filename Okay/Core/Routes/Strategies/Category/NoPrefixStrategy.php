@@ -15,7 +15,7 @@ class NoPrefixStrategy extends AbstractRouteStrategy
      */
     private $categoriesEntity;
 
-    private $mockRouteParams = ['{$url}', ['{$url}' => '', '{$filtersUrl}' => ''], ['{$url}' => '', '{$filtersUrl}' => '']];
+    private $mockRouteParams = ['{$url}{$filtersUrl}', ['{$url}' => '', '{$filtersUrl}' => ''], ['{$url}' => '', '{$filtersUrl}' => '']];
 
     public function __construct()
     {

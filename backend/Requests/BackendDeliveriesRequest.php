@@ -28,6 +28,7 @@ class BackendDeliveriesRequest
         $delivery->description      = $this->request->post('description');
         $delivery->price            = $this->request->post('price');
         $delivery->free_from        = $this->request->post('free_from');
+        $delivery->paid             = $this->request->post('delivery_type') === 'paid' ? 1 : 0;
         $delivery->separate_payment = $this->request->post('separate_payment','boolean');
         $delivery->module_id        = $this->request->post('module_id', 'integer');
 

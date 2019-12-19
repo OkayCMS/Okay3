@@ -170,14 +170,6 @@ class Router {
                 $this->license->registerSmartyPlugins();
                 $this->license->check();
 
-                $settings = $this->serviceLocator->getService(Settings::class);
-                $siteDisabled = $settings->get('site_work') === 'off' && empty($_SESSION['admin']) ? true : false;
-                if ($siteDisabled) {
-                    $this->response->setStatusCode(503);
-                    $this->response->sendHeaders();
-                    exit();
-                }
-
                 // Если язык выключен, отдадим 404
                 if (!$language->enabled && empty($_SESSION['admin'])) {
                     $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController';
@@ -196,6 +188,13 @@ class Router {
 
                 preg_match_all('~{\$(.+?)}~', $route['slug'], $matches);
                 $routeVars = array_merge($routeVars, $matches[1]);
+
+                $settings = $this->serviceLocator->getService(Settings::class);
+                $siteDisabled = $settings->get('site_work') === 'off' && empty($_SESSION['admin']) ? true : false;
+                if ($siteDisabled) {
+                    $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController';
+                    $method = 'siteDisabled';
+                }
                 
                 include_once 'Okay/Core/SmartyPlugins/SmartyPlugins.php';
 
@@ -414,7 +413,7 @@ class Router {
                         $methodParams[$parameter->getClass()->name] = $this->serviceLocator->getService($parameter->getClass()->name);
                     }
                 }
-            } elseif (!empty($allParams[$parameter->name])) { // если тип не указан, передаем строковую переменную как значение из поля slug (то, что попало под регулярку)
+            } elseif (!empty($allParams[$parameter->name]) || array_key_exists($parameter->name, $allParams)) { // если тип не указан, передаем строковую переменную как значение из поля slug (то, что попало под регулярку)
                 $methodParams[$parameter->name] = $allParams[$parameter->name];
             } elseif (!empty($defaults['{$' . $parameter->name . '}'])) { // на крайний случай, может в поле defaults роута указано значение этой переменной
                 $methodParams[$parameter->name] = $defaults['{$' . $parameter->name . '}'];

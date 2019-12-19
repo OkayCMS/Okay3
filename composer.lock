@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "456a5fc83d955daf347554885c133c51",
+    "content-hash": "227aeca64dd717a634a9c537fb50b950",
     "packages": [
         {
             "name": "aura/sql",
@@ -756,16 +756,16 @@
         },
         {
             "name": "okaycms/license",
-            "version": "1.2.0",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/OkayCMS/License.git",
-                "reference": "f845e8ebcda590edbed8032cfe6e7135e48ef529"
+                "reference": "ad8820731c8d0e395e2a1b584cce6356daafef89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OkayCMS/License/zipball/f845e8ebcda590edbed8032cfe6e7135e48ef529",
-                "reference": "f845e8ebcda590edbed8032cfe6e7135e48ef529",
+                "url": "https://api.github.com/repos/OkayCMS/License/zipball/ad8820731c8d0e395e2a1b584cce6356daafef89",
+                "reference": "ad8820731c8d0e395e2a1b584cce6356daafef89",
                 "shasum": ""
             },
             "require": {
@@ -789,7 +789,7 @@
                 }
             ],
             "description": "License checker for OkayCMS",
-            "time": "2019-11-25T16:56:33+00:00"
+            "time": "2019-12-19T10:03:53+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -1156,7 +1156,8 @@
     "platform": {
         "ext-simplexml": "*",
         "ext-json": "*",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "ext-mbstring": "*"
     },
     "platform-dev": []
 }

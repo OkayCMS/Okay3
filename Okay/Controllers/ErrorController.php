@@ -19,4 +19,10 @@ class ErrorController extends AbstractController
         $this->response->setContent('page.tpl');
     }
     
+    public function siteDisabled()
+    {
+        $this->response->setStatusCode(503);
+        $this->response->setContent('tech.tpl');
+    }
+    
 }

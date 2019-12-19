@@ -89,7 +89,7 @@
                             <vendorCode>{$v->sku|escape}</vendorCode>
                         {/if}
 
-                        <description>{if $settings->okaycms__yandex_xml_vendor_model__use_full_description_in_upload}{$p->description|strip_tags|escape}{else}{$p->annotation|strip_tags|escape}{/if}</description>
+                        <description>{if $settings->okaycms__yandex_xml_vendor_model__use_full_description_to_yandex}{$p->description|strip_tags|escape}{else}{$p->annotation|strip_tags|escape}{/if}</description>
                         <manufacturer_warranty>{if $settings->okaycms__yandex_xml_vendor_model__has_manufacturer_warranty}true{else}false{/if}</manufacturer_warranty>
 
                         {if !empty($p->features)}

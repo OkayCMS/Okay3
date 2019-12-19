@@ -54,7 +54,7 @@
                     <div class="level_1 filter__catalog_menu">
                         {foreach $brand->categories as $c}
                             <div class="filter__catalog_item has_child">
-                                <a class="filter__catalog_link" href="{url_generator route="category" url= $c->url|cat:'/brand-'|cat:$brand->url}" data-category="{$c->id}">
+                                <a class="filter__catalog_link" href="{url_generator route="category" url=$c->url filtersUrl='/brand-'|cat:$brand->url}" data-category="{$c->id}">
                                     <span>{$c->name|escape}</span>
                                     {include file="svg.tpl" svgId="arrow_right2"}
                                 </a>

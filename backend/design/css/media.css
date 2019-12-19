@@ -435,7 +435,11 @@
     }
     
     .okay_list .okay_list_order_stg_sts_name {
-        width: calc(100% - 110px);
+        width: calc(100% - 310px);
+    }
+
+    .okay_list .okay_list_order_stg_sts_status2{
+        max-width: 150px;
     }
     
     .okay_list .okay_list_translations_variable {

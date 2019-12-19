@@ -38,7 +38,8 @@ class GetDiscountedProducts extends Func
         }
         $params['discounted'] = 1;
         if (!empty($params['var'])) {
-            $products = $this->productsHelper->getProductList($params);
+            $sort = isset($params['sort']) ? $params['sort'] : null;
+            $products = $this->productsHelper->getProductList($params, $sort);
             $smarty->assign($params['var'], $products);
         }
     }

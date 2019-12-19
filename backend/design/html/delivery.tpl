@@ -153,19 +153,16 @@
                 <div class="toggle_body_wrap on fn_card">
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
-                            <button type="button" class="btn btn-small btn-outline-warning fn_type_delivery delivery_type {if $delivery->price > 0}active{/if}" data-type="paid">
+                            <button type="button" class="btn btn-small btn-outline-warning fn_type_delivery delivery_type {if $delivery->paid}active{/if}" data-type="paid">
                                 {$btr->delivery_paid|escape}
                             </button>
-                            <button type="button" class="btn btn-small btn-outline-warning fn_type_delivery delivery_type {if $delivery->price == 0 && !$delivery->separate_payment}active{/if}" data-type="free">
+                            <button type="button" class="btn btn-small btn-outline-warning fn_type_delivery delivery_type {if !$delivery->paid}active{/if}" data-type="free">
                                 {$btr->deliveries_free|escape}
                             </button>
-                            <button type="button" class="btn btn-small btn-outline-warning fn_type_delivery delivery_type {if $delivery->separate_payment}active{/if}" data-type="delivery">
-                                {$btr->general_paid_separately|escape}
-                            </button>
-                            <input type="hidden" name="delivery_type" />
+                            <input type="hidden" name="delivery_type" value="{if $delivery->paid}paid{else}free{/if}" />
                         </div>
                     </div>
-                    <div class="row fn_delivery_option {if $delivery->price == 0}hidden{/if} mt-1">
+                    <div class="row fn_delivery_option {if !$delivery->paid}hidden{/if} mt-1">
                         <div class="col-lg-12 col-md-12">
                             <div class="delivery_inline_block mt-1">
                                 <div class="input-group">
@@ -191,9 +188,21 @@
                                     </span>
                                 </div>
                             </div>
+
+                            <div class="delivery_inline_block mt-1 activity_of_switch_item"> {* row block *}
+                                <div class="activity_of_switch_item">
+                                    <div class="okay_switch clearfix">
+                                        <label class="switch_label">{$btr->general_paid_separately|escape}</label>
+                                        <label class="switch switch-default">
+                                            <input class="switch-input" name="separate_payment" value='1' type="checkbox" id="visible_checkbox" {if $delivery->separate_payment}checked=""{/if}/>
+                                            <span class="switch-label"></span>
+                                            <span class="switch-handle"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <input class="hidden" name="separate_payment" type="checkbox" value="1" {if $delivery->separate_payment}checked{/if} />
                     {get_design_block block="delivery_price_block"}
                 </div>
             </div>
@@ -382,12 +391,6 @@
                 $(".fn_delivery_option").addClass("hidden");
                 $("input[name=separate_payment]").removeAttr("checked");
                 $("input[name=delivery_type]").val('free');
-                $(this).addClass("active");
-                break;
-            case 'delivery':
-                $(".fn_delivery_option").addClass("hidden");
-                $("input[name=delivery_type]").val('separate_payment');
-                $("input[name=separate_payment]").trigger("click");
                 $(this).addClass("active");
                 break;
         }

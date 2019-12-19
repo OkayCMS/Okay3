@@ -1,9 +1,10 @@
+{$wrapper='' scope=global}
 <html>
 <title>{$settings->site_name}</title>
     <body>
     <div class="site_off">
         <div class="site_off_logo">
-            <img src="{$rootUrl}/design/{get_theme}/images/logo.png">
+            <img src="{$rootUrl}/{$config->design_images}{$settings->site_logo}?v={$settings->site_logo_version}" alt="{$settings->site_name|escape}"/>
         </div>
             <div class="site_off_text">
                 {$settings->site_annotation}

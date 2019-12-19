@@ -97,13 +97,14 @@
                             {if $order->separate_delivery || !$order->separate_delivery && $order->delivery_price > 0}
                                 <div class="purchase_detail__item">
                                     <div class="purchase_detail__column_name">
-                                        <div class="purchase_detail__name">{$delivery->name|escape}:</div>
+                                        <div class="purchase_detail__name">{$delivery->name|escape} ({$lang->cart_paid_separate}):</div>
                                     </div>
                                     <div class="purchase_detail__column_value">
                                         <div class="purchase_detail__price">
-                                            {if !$order->separate_delivery}
-                                               <span>{$order->delivery_price|convert} <span class="currency"> {$currency->sign|escape}</span></span>
+                                            {if $order->delivery_price > 0}
+                                                <span>{$order->delivery_price|convert} <span class="currency"> {$currency->sign|escape}</span></span>
                                             {else}
+                                                <span>{$lang->cart_free}</span>
                                             {/if}
                                          </div>
                                     </div>

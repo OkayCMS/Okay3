@@ -6,7 +6,7 @@ namespace Okay\Core;
 
 class Translit
 {
-    private $translitPairs = [
+    private static $translitPairs = [
         // русский
         [
             'from'  => "А-а-Б-б-В-в-Ґ-ґ-Г-г-Д-д-Е-е-Ё-ё-Є-є-Ж-ж-З-з-И-и-І-і-Ї-ї-Й-й-К-к-Л-л-М-м-Н-н-О-о-П-п-Р-р-С-с-Т-т-У-у-Ф-ф-Х-х-Ц-ц-Ч-ч-Ш-ш-Щ-щ-Ъ-ъ-Ы-ы-Ь-ь-Э-э-Ю-ю-Я-я",
@@ -20,7 +20,7 @@ class Translit
 
     ];
 
-    private $specPairs = [
+    private static $specPairs = [
         '+'  => 'p',
         '-'  => 'm',
         '—'  => 'ha',
@@ -65,15 +65,15 @@ class Translit
 
     ];
 
-    public function getTranslitPairs()
+    public static function getTranslitPairs()
     {
-        return $this->translitPairs;
+        return self::$translitPairs;
     }
     
-    public function translit($text)
+    public static function translit($text)
     {
         $res = $text;
-        foreach ($this->translitPairs as $pair) {
+        foreach (self::getTranslitPairs() as $pair) {
             $from = explode('-', $pair['from']);
             $to = explode('-', $pair['to']);
             $res = str_replace($from, $to, $res);
@@ -85,14 +85,14 @@ class Translit
         return $res;
     }
 
-    public function translitAlpha($text)
+    public static function translitAlpha($text)
     {
         $res = $text;
-        foreach ($this->translitPairs as $pair) {
+        foreach (self::getTranslitPairs() as $pair) {
             $pair['from'] = explode('-', $pair['from']);
             $pair['to'] = explode('-', $pair['to']);
 
-            $pair = $this->specPairs($pair);
+            $pair = self::specPairs($pair);
 
             $res = str_replace($pair['from'], $pair['to'], $res);
         }
@@ -104,8 +104,8 @@ class Translit
     }
 
     //Добавляет к массиву пар для транслита, пары для замены спецсимволов на буквенные обозначения
-    private function specPairs($pair) {
-        foreach ($this->specPairs as $symbol => $alias) {
+    private static function specPairs($pair) {
+        foreach (self::$specPairs as $symbol => $alias) {
             $pair['from'][] = $symbol;
             $pair['to'][]   = $alias;
         }

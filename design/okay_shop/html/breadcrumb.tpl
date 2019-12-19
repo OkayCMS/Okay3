@@ -94,12 +94,19 @@
         {elseif $controller == "BlogController"}
             {if $post}
                 <li class="d-inline-flex align-items-center breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
-                    <a itemprop="url" href="{url_generator route='news'}" data-language="breadcrumbs_blog">
+
+                    {if $post->type_post == "news"}
+                        {$prev_url = {url_generator route='news'}}
+                    {else}
+                        {$prev_url = {url_generator route='blog'}}
+                    {/if}
+                    
+                    <a itemprop="url" href="{$prev_url}">
                         <span itemprop="title">
                             {if $post->type_post == "news"}
-                                {$lang->main_news}
+                                <span data-language="main_news">{$lang->main_news}</span>
                             {else}
-                                {$lang->breadcrumbs_blog}
+                                <span data-language="breadcrumbs_blog">{$lang->breadcrumbs_blog}</span>
                             {/if}
                         </span>
                     </a>

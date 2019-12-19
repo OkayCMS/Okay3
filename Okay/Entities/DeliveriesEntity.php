@@ -18,6 +18,7 @@ class DeliveriesEntity extends Entity
         'enabled',
         'position',
         'separate_payment',
+        'paid',
         'image',
         'settings',
         'module_id',

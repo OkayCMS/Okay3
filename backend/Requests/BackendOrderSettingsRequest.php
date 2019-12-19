@@ -21,16 +21,16 @@ class BackendOrderSettingsRequest
 
     public function postNewStatuses()
     {
-        $newStatusNames = $this->request->post('new_name');
-        $newParams      = $this->request->post('new_is_close');
-        $newColors      = $this->request->post('new_color');
+        $newStatusNames = (array) $this->request->post('new_name');
+        //$newParams      = (array) $this->request->post('new_is_close');
+        $newColors      = (array) $this->request->post('new_color');
 
         $newStatuses = [];
         foreach ($newStatusNames as $id => $name) {
             if (!empty($name)) {
                 $status = new \stdClass();
                 $status->name     = $name;
-                $status->is_close = $newParams[$id];
+                //$status->is_close = $newParams[$id];
                 $status->color    = $newColors[$id];
                 $newStatuses[$id] = $status;
             }
@@ -41,21 +41,25 @@ class BackendOrderSettingsRequest
 
     public function postStatuses()
     {
-        $statusNames = $this->request->post('name');
-        $params      = $this->request->post('is_close');
-        $colors      = $this->request->post('color');
+        $postFields = $this->request->post('statuses');
 
-        $statuses = [];
-        foreach ($statusNames as $id=>$name) {
-            if (!empty($name)) {
-                $status = new \stdClass();
-                $status->name     = $name;
-                $status->is_close = $params[$id];
-                $status->color    = $colors[$id];
-                $statuses[$id] = $status;
-            }
+        if (empty($postFields)) {
+            return ExtenderFacade::execute(__METHOD__, false, func_get_args());
         }
 
+        $statuses = [];
+        foreach ($postFields as $n=>$va) {
+            foreach ($va as $i=>$v) {
+                if (empty($statuses[$i])) {
+                    $statuses[$i] = new \stdClass();
+                }
+                if (empty($v) && in_array($n, ['id'])) {
+                    $v = null;
+                }
+                $statuses[$i]->$n = $v;
+            }
+        }
+        
         return ExtenderFacade::execute(__METHOD__, $statuses, func_get_args());
     }
 
@@ -77,39 +81,27 @@ class BackendOrderSettingsRequest
         return ExtenderFacade::execute(__METHOD__, $check, func_get_args());
     }
 
-    public function postNewLabels()
-    {
-        $newLabelNames = (array) $this->request->post('new_name');
-        $newColors     = (array) $this->request->post('new_color');
-
-        $newLabels = [];
-        foreach ($newLabelNames as $id=>$name) {
-            if (!empty($name)) {
-                $label = new \stdClass();
-                $label->name  = $name;
-                $label->color = $newColors[$id];
-                $newLabels[] = $label;
-            }
-        }
-
-        return ExtenderFacade::execute(__METHOD__, $newLabels, func_get_args());
-    }
-
     public function postLabels()
     {
-        $labelNames = $this->request->post('name');
-        $colors     = $this->request->post('color');
+        $postFields = $this->request->post('labels');
 
+        if (empty($postFields)) {
+            return ExtenderFacade::execute(__METHOD__, false, func_get_args());
+        }
+        
         $labels = [];
-        foreach ($labelNames as $id=>$name) {
-            if (!empty($name)) {
-                $label = new \stdClass();
-                $label->name  = $name;
-                $label->color = $colors[$id];
-                $labels[$id]  = $labels;
+        foreach ($postFields as $n=>$va) {
+            foreach ($va as $i=>$v) {
+                if (empty($labels[$i])) {
+                    $labels[$i] = new \stdClass();
+                }
+                if (empty($v) && in_array($n, ['id'])) {
+                    $v = null;
+                }
+                $labels[$i]->$n = $v;
             }
         }
-
+        
         return ExtenderFacade::execute(__METHOD__, $labels, func_get_args());
     }
 }

@@ -64,11 +64,11 @@ class FilterHelper
         $languagesEntity = $entityFactory->get(LanguagesEntity::class);
         $this->language = $languagesEntity->get($languages->getLangId());
 
-        $this->maxFilterBrands = $settings->max_filter_brands;
-        $this->maxFilterFilter = $settings->max_filter_filter;
-        $this->maxFilterFeaturesValues = $settings->max_filter_features_values;
-        $this->maxFilterFeatures = $settings->max_filter_features;
-        $this->maxFilterDepth = $settings->max_filter_depth;
+        $this->maxFilterBrands = $settings->get('max_filter_brands');
+        $this->maxFilterFilter = $settings->get('max_filter_filter');
+        $this->maxFilterFeaturesValues = $settings->get('max_filter_features_values');
+        $this->maxFilterFeatures = $settings->get('max_filter_features');
+        $this->maxFilterDepth = $settings->get('max_filter_depth');
     }
 
     public function getBrandProductsFilter(array $filter = [])
@@ -396,7 +396,7 @@ class FilterHelper
 
             $paramName = explode('-', $v)[0];
             if ($paramName == 'brand') {
-                $paramValues = substr($v, strlen($paramName) + 1);
+                $paramValues = mb_substr($v, strlen($paramName) + 1);
 
                 foreach (explode('_', $paramValues) as $bv) {
                     if (($brand = $this->getBrand((string)$bv)) && !in_array($brand->id, $currentBrands)) {
@@ -490,6 +490,7 @@ class FilterHelper
             switch ($paramName) {
                 case 'brand':
                 {
+                    $paramValues = mb_substr($v, strlen($paramName) + 1);
                     foreach (explode('_', $paramValues) as $bv) {
                         if (($brand = $this->getBrand($bv)) && empty($metaArray['brand'][$brand->id])) {
                             $metaArray['brand'][$brand->id] = $brand->name;
@@ -651,7 +652,9 @@ class FilterHelper
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
     
-    public function filterChpuUrl($params, $featuresAltLang = [])
+    // из-за особенностей смарти, при использовании этого метода из плагина, нужно отдельно передавать
+    // экземпляр Smarty, чтобы отрабатывал assign
+    public function filterChpuUrl($params, $featuresAltLang = [], $smarty = null)
     {
         if (is_array($params) && is_array(reset($params))) {
             $params = reset($params);
@@ -669,6 +672,7 @@ class FilterHelper
                 switch ($paramName) {
                     case 'brand':
                     {
+                        $paramValues = mb_substr($v, strlen($paramName) + 1);
                         $resultArray['brand'] = explode('_', $paramValues);
                         break;
                     }
@@ -786,7 +790,7 @@ class FilterHelper
             }
         }
         if (!empty($resultArray['filter'])) {
-            if(count($resultArray['filter']) > $this->maxFilterFilter) {
+            if (count($resultArray['filter']) > $this->maxFilterFilter) {
                 $seoHideFilter = true;
             }
             $filter_params_count ++;
@@ -811,6 +815,10 @@ class FilterHelper
         $keyword = $this->request->get('keyword');
         if (!empty($keyword)) {
             $resultString .= '?keyword='.$keyword;
+        }
+        if ($smarty !== null) {
+            /** @var \Smarty_Internal_Template $smarty */
+            $smarty->assign('seo_hide_filter', $seoHideFilter);
         }
         $this->design->assign('seo_hide_filter', $seoHideFilter);
 

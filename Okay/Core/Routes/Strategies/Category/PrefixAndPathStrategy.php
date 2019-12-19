@@ -32,6 +32,9 @@ class PrefixAndPathStrategy extends AbstractRouteStrategy
 
     public function generateSlugUrl($url)
     {
+        if (empty($url)) {
+            return '';
+        }
         $category = $this->categoriesEntity->get((string) $url);
         return $category->path_url;
     }
@@ -72,7 +75,7 @@ class PrefixAndPathStrategy extends AbstractRouteStrategy
 
     private function getMockRouteParams($prefix)
     {
-        return [$prefix.'{$url}', ['{$url}' => ''], []];
+        return [$prefix.'{$url}{$filtersUrl}', ['{$url}' => '', '{$filtersUrl}' => ''], []];
     }
 
     private function compareUrlStartsNoSuccess($categoryPathUrl, $url)

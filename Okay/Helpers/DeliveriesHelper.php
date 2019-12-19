@@ -44,17 +44,35 @@ class DeliveriesHelper
      */
     public function prepareDeliveryPriceInfo($delivery, $order)
     {
-        $deliveryPriceInfo = [];
-        if (!empty($delivery) && $delivery->free_from > $order->total_price) {
-            $deliveryPriceInfo = [
-                'delivery_price'    => $delivery->price,
-                'separate_delivery' => $delivery->separate_payment,
-                'total_price'       => $order->total_price + $delivery->price,
-            ];
-        } elseif ($delivery->separate_payment) {
-            $deliveryPriceInfo = [
-                'separate_delivery' => $delivery->separate_payment,
-            ];
+        if (empty($delivery)) {
+            return ExtenderFacade::execute(__METHOD__, [], func_get_args());
+        }
+
+        if ($this->isSeparateDelivery($delivery)) {
+            if ($delivery->free_from > $order->total_price) {
+                $deliveryPriceInfo = [
+                    'delivery_price'    => $delivery->price,
+                    'separate_delivery' => $delivery->separate_payment,
+                ];
+            } else {
+                $deliveryPriceInfo = [
+                    'delivery_price'    => 0,
+                    'separate_delivery' => $delivery->separate_payment,
+                ];
+            }
+        } else {
+            if ($delivery->free_from > $order->total_price) {
+                $deliveryPriceInfo = [
+                    'delivery_price'    => $delivery->price,
+                    'separate_delivery' => $delivery->separate_payment,
+                    'total_price'       => $order->total_price + $delivery->price,
+                ];
+            } else {
+                $deliveryPriceInfo = [
+                    'delivery_price'    => 0,
+                    'separate_delivery' => $delivery->separate_payment,
+                ];
+            }
         }
 
         return ExtenderFacade::execute(__METHOD__, $deliveryPriceInfo, func_get_args());
@@ -144,5 +162,10 @@ class DeliveriesHelper
         }
 
         return ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
+    private function isSeparateDelivery($delivery)
+    {
+        return !empty($delivery->separate_payment);
     }
 }

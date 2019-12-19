@@ -38,17 +38,6 @@ class FeaturesValuesEntity extends Entity
     protected static $langTable = 'features_values';
     protected static $tableAlias = 'fv';
 
-    /**
-     * @var Translit
-     */
-    private $translit;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->translit = $this->serviceLocator->getService(Translit::class);
-    }
-
     /*добавление значения свойства*/
     public function add($featureValue) {
 
@@ -61,9 +50,9 @@ class FeaturesValuesEntity extends Entity
         $featureValue->value = trim($featureValue->value);
 
         if (empty($featureValue->translit)) {
-            $featureValue->translit = $this->translit->translitAlpha($featureValue->value);
+            $featureValue->translit = Translit::translitAlpha($featureValue->value);
         }
-        $featureValue->translit = $this->translit->translitAlpha($featureValue->translit);
+        $featureValue->translit = Translit::translitAlpha($featureValue->translit);
 
         return parent::add($featureValue);
     }
@@ -78,11 +67,11 @@ class FeaturesValuesEntity extends Entity
         }
 
         if (empty($featureValue->translit) && !empty($featureValue->value)) {
-            $featureValue->translit = $this->translit->translitAlpha($featureValue->value);
+            $featureValue->translit = Translit::translitAlpha($featureValue->value);
         }
 
         if (!empty($featureValue->translit)) {
-            $featureValue->translit = $this->translit->translitAlpha($featureValue->translit);
+            $featureValue->translit = Translit::translitAlpha($featureValue->translit);
         }
 
         return parent::update($id, $featureValue);

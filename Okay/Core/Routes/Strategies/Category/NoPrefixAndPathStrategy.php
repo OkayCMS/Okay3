@@ -16,7 +16,7 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
      */
     private $categoriesEntity;
 
-    private $mockRouteParams = ['{$url}', ['{$url}' => ''], []];
+    private $mockRouteParams = ['{$url}{$filtersUrl}', ['{$url}' => '', '{$filtersUrl}' => ''], []];
 
     public function __construct()
     {
@@ -27,6 +27,9 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
 
     public function generateSlugUrl($url)
     {
+        if (empty($url)) {
+            return '';
+        }
         $category = $this->categoriesEntity->get((string) $url);
         return $category->path_url;
     }

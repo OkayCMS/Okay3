@@ -98,12 +98,12 @@ class CategoriesEntity extends Entity
         return $id;
     }
     
-    public function update($id, $category)
+    public function update($ids, $category)
     {
-        $id = parent::update($id, $category);
+        parent::update($ids, $category);
         unset($this->categoriesTree);
         unset($this->allCategories);
-        return $id;
+        return true;
     }
 
     public function find(array $filter = [])
