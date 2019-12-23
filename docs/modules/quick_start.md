@@ -24,7 +24,7 @@ public function install()
 ```
 
 * В методе init() выполняем настройку работы модуля.
-* Регистрируем [бек-контроллеры](./../controllers.md#backendControllersModules), и указываем их разрешения для мереджера.
+* Регистрируем [бек-контроллеры](./../controllers.md#backendControllersModules), и указываем их разрешения для менеджера.
 ```php
 public function init()
 {

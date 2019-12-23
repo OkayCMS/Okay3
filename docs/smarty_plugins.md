@@ -7,7 +7,7 @@
 #### Регистрация плагинов
 
 В системе плагины регистрируются в файле `Okay/Core/SmartyPlugins/SmartyPlugins.php`, и являются по сути сервисами
-[DI контейнера](./di_container.md). Сами реализации плагинов распологаются в `Okay\Core\SmartyPlugins\Plugins` и должны
+[DI контейнера](./di_container.md). Сами реализации плагинов располагаются в `Okay\Core\SmartyPlugins\Plugins` и должны
 быть наследником `Okay\Core\SmartyPlugins\Func` (для работы в режиме функции) или `Okay\Core\SmartyPlugins\Modifier` 
 (для работы в режиме модификатора).
 
@@ -39,7 +39,7 @@ public function run($params)
 }
 ```
 
-`Best practices: в плагин передавать переменную "var", значение которой будет названием переменной-результатом работы`
+`Best practices: в плагин передавать переменную "var", значение которой будет названием переменной - результатом работы`
 
 Пример:
 ```smarty

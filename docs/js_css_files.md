@@ -84,7 +84,7 @@ return [
 <a name="TemplateConfigJS"></a>
 #### Класс Okay\Core\TemplateConfig\JS
 
-Класс `Okay\Core\TemplateConfig\JS` имеет индивидуальную реализацию, следующего метода, в остальном он соответствует 
+Класс `Okay\Core\TemplateConfig\JS` имеет индивидуальную реализацию следующего метода, в остальном он соответствует 
 [общей реализации](#commonScript).
 
 <a name="setDefer"></a>
