@@ -28,12 +28,16 @@ class ExtenderFacade
 
     public function newChainExtension($expandable, $extension)
     {
-        $this->chainExtender->newExtension($expandable['class'], $expandable['method'], $extension['class'], $extension['method']);
+        list($extendableClass, $extendableMethod) = $this->matchExtensionBindings($expandable);
+        list($extensionClass,  $extensionMethod)  = $this->matchExtensionBindings($extension);
+        $this->chainExtender->newExtension($extendableClass, $extendableMethod, $extensionClass, $extensionMethod);
     }
 
     public function newQueueExtension($expandable, $extension)
     {
-        $this->queueExtender->newExtension($expandable['class'], $expandable['method'], $extension['class'], $extension['method']);
+        list($extendableClass, $extendableMethod) = $this->matchExtensionBindings($expandable);
+        list($extensionClass,  $extensionMethod)  = $this->matchExtensionBindings($extension);
+        $this->queueExtender->newExtension($extendableClass, $extendableMethod, $extensionClass, $extensionMethod);
     }
 
     public static function queueExtLog($trigger)
@@ -50,5 +54,14 @@ class ExtenderFacade
     {
         list($className, $methodName) = $trigger;
         return $className.'::'.$methodName;
+    }
+
+    private function matchExtensionBindings($bindings)
+    {
+        if (isset($bindings['class']) && isset($bindings['method'])) {
+            return [$bindings['class'], $bindings['method']];
+        }
+
+        return $bindings;
     }
 }

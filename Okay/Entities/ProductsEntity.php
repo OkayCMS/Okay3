@@ -64,6 +64,9 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
             }
         }
 
+        $product->created     = 'NOW()';
+        $product->last_modify = 'NOW()';
+
         return parent::add($product);
     }
 

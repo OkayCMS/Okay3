@@ -1451,23 +1451,24 @@ select{
     max-height: 430px;
     width: 100%;
 }
-table {
+.block__description--style table {
     font-size: 12px;
     min-width: 500px;
     font-weight: 400;
     width: 100%;
     max-width: 100%;
 }
-td, th {
+.block__description--style td,
+.block__description--style th {
     padding: 10px;
     text-align: left;
     margin: 0;
     border: 1px solid #dbdbdb;
 }
-tbody tr:nth-child(2n) {
+.block__description--style tbody tr:nth-child(2n) {
     background-color:  #e9e9e9;
 }
-th {
+.block__description--style th {
     position: -webkit-sticky;
     position: sticky;
     top: 0;

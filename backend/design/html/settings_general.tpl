@@ -290,6 +290,46 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="boxed fn_toggle_wrap min_height_210px">
+                <div class="heading_box">
+                    {$btr->settings_advantages}
+                </div>
+                {foreach $advantages as $advantage}
+                <div class="advantage toggle_body_wrap on fn_card clearfix">
+                    <div class="advantage__image brand_image_item fn_image_block">
+                        {if $advantage->filename}
+                            <input type="hidden" class="fn_accept_delete" name="delete_image[{$advantage->id}]" value="">
+                            <div class="fn_parent_image">
+                                <div class="brand_image image_wrapper fn_image_wrapper text-xs-center">
+                                    <a href="javascript:;" class="fn_delete_item remove_image"></a>
+                                    <img src="{$advantage->filename|resize:300:120:false:$config->resized_advantages_dir}" alt="" />
+                                </div>
+                            </div>
+                        {else}
+                            <div class="fn_parent_image"></div>
+                        {/if}
+                        <div class="fn_upload_image dropzone_block_image {if $advantage->filename} hidden{/if}">
+                            <i class="fa fa-plus font-5xl" aria-hidden="true"></i>
+                            <input class="dropzone_image" name="advantages_image[{$advantage->id}]" type="file" />
+                        </div>
+                        <div class="brand_image image_wrapper fn_image_wrapper fn_new_image text-xs-center hidden">
+                            <a href="javascript:;" class="fn_delete_item remove_image"></a>
+                            <img style="max-height: 73px;" src="" alt="" />
+                        </div>
+                    </div>
+                    <div class="advantage__text">
+                        <textarea class="advantage__textarea" name="advantages_text[{$advantage->id}]">{$advantage->text}</textarea>
+                    </div>
+                </div>
+                {/foreach}
+
+                {get_design_block block="settings_general_advantages"}
+            </div>
+        </div>
+    </div>
+
     {$block = {get_design_block block="settings_general_custom_block"}}
     {if !empty($block)}
         <div class="custom_block">
@@ -335,3 +375,28 @@
         </div>
     </div>
 </form>
+
+<style>
+
+    .advantage {
+        padding-bottom: 10px;
+    }
+
+    .advantage__image {
+        float: left;
+        width: 25%;
+    }
+
+    .advantage__text {
+        float: left;
+        width: 75%;
+        padding-left: 10px;
+    }
+
+    .advantage__textarea {
+        width: 100%;
+        height: 73px;
+        resize: none;
+    }
+
+</style>

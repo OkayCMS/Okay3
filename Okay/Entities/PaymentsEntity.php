@@ -145,5 +145,10 @@ class PaymentsEntity extends Entity
 
         return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
     }
-    
+
+    protected function filter__has_image()
+    {
+        $this->select->where('images IS NOT NULL')
+            ->where("images <> ''");
+    }
 }

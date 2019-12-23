@@ -1079,3 +1079,4 @@ $lang['allow_to_visible_system_modules'] = 'Allow display of system modules';
 $lang['allow_to_visible_empty_categories'] = 'Show empty categories';
 $lang['allow_to_visible_empty_categories_notice'] = 'If you turn off this setting, categories without products will not be displayed in the catalog, but will remain available by direct link to users and search engines. If the setting is enabled';
 $lang['no_modules'] = 'No modules';
+$lang['settings_advantages'] = 'Advantages';

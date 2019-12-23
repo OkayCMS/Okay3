@@ -170,7 +170,7 @@ class Design
     {
         
         if ($dynamicJs === true) {
-            $_SESSION['dynamic_js']['vars'][$var] = $value;
+            $_SESSION['dynamic_js']['js_vars'][$var] = $value;
         }
         
         return $this->smarty->assign($var, $value);

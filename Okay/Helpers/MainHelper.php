@@ -21,12 +21,14 @@ use Okay\Core\ServiceLocator;
 use Okay\Core\Settings;
 use Okay\Core\TemplateConfig;
 use Okay\Core\WishList;
+use Okay\Entities\AdvantagesEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\LanguagesEntity;
 use Okay\Entities\MenuEntity;
 use Okay\Entities\MenuItemsEntity;
 use Okay\Entities\PagesEntity;
+use Okay\Entities\PaymentsEntity;
 use Okay\Entities\UserGroupsEntity;
 use Okay\Entities\UsersEntity;
 use Okay\Helpers\MetadataHelpers\CommonMetadataHelper;
@@ -203,6 +205,8 @@ class MainHelper
 
         $design->assign('user',       $this->getCurrentUser());
         $design->assign('group',      $this->getCurrentUserGroup());
+
+        $design->assign('payment_methods', $this->getPaymentMethods());
         
         // Категории товаров
         $allCategories = $categoriesEntity->find();
@@ -233,7 +237,11 @@ class MainHelper
                 $design->assign(MenuEntity::MENU_VAR_PREFIX . $menu->group_id, $design->fetch("menu.tpl"));
             }
         }
-        
+
+        /** @var AdvantagesEntity $advantagesEntity */
+        $advantagesEntity = $entityFactory->get(AdvantagesEntity::class);
+        $design->assign('advantages', $advantagesEntity->find());
+
         // Передаем текущий контроллер
         if ($route = $router->getRouteByName($router->getCurrentRouteName())) {
             //$reflector = new \ReflectionClass($route['params']['controller']);
@@ -426,6 +434,15 @@ class MainHelper
         return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
+    public function getPaymentMethods()
+    {
+        $entityFactory  = $this->SL->getService(EntityFactory::class);
+
+        /** @var PaymentsEntity $paymentsEntity */
+        $paymentsEntity = $entityFactory->get(PaymentsEntity::class);
+        $paymentMethodImages = $paymentsEntity->find(['visible' => 1]);
+        return ExtenderFacade::execute(__METHOD__, $paymentMethodImages, func_get_args());
+    }
 
     /**
      * Подсчет количества видимых дочерних элементов

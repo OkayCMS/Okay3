@@ -71,4 +71,53 @@ class BackendSettingsRequest
         $siteLogo = $this->request->post('site_logo');
         return ExtenderFacade::execute(__METHOD__, $siteLogo, func_get_args());
     }
+
+    public function filesAdvantageImages()
+    {
+        $images = $_FILES['advantages_image'];
+        $advantageImages = [];
+        foreach($images['name'] as $advantageId => $imageName) {
+            $advantageImage = [];
+            $advantageImage['name']     = $imageName;
+            $advantageImage['tmp_name'] = $images['tmp_name'][$advantageId];
+            $advantageImages[$advantageId] = $advantageImage;
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $advantageImages, func_get_args());
+    }
+
+    public function postAdvantagesUpdates()
+    {
+        $advantages = [];
+
+        $position = 0;
+        foreach($this->request->post('advantages_text') as $id => $advantageText) {
+            $advantage           = new \stdClass();
+            $advantage->text     = $advantageText;
+            $advantage->position = $position;
+
+            $advantages[$id] = $advantage;
+
+            $position++;
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $advantages, func_get_args());
+    }
+
+    public function postDeleteAdvantageImages()
+    {
+        $deleteImages = $this->request->post('delete_image');
+
+        if (empty($deleteImages)) {
+            return ExtenderFacade::execute(__METHOD__, [], func_get_args());
+        }
+
+        foreach($deleteImages as $key => $deleteImage) {
+            if (empty($deleteImage)) {
+                unset($deleteImages[$key]);
+            }
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $deleteImages, func_get_args());
+    }
 }

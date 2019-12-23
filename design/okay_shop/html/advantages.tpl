@@ -1,37 +1,16 @@
 {* Advantages block *}
 <div class="block block--boxed block--border section_advantages">
     <div class="advantages f_row no_gutters">
+
+        {foreach $advantages as $advantage}
         <div class="advantages__item f_col-6 f_col-md-3">
             <div class="advantages__preview d-flex align-items-center">
                 <div class="advantages__icon advantages__icon--delivery d-flex align-items-center justify-content-center">
-                    {include file="svg.tpl" svgId="advantage1_icon"}
+                    <img src="{$advantage->filename|resize:50:50:false:$config->resized_advantages_dir}">
                 </div>
-                <div class="advantages__title" data-language="advantage_1">{$lang->advantage_1}</div>
+                <div class="advantages__title" data-language="advantage_1">{$advantage->text}</div>
             </div>
         </div>
-        <div class="advantages__item f_col-6 f_col-md-3">
-            <div class="advantages__preview d-flex align-items-center">
-                <div class="advantages__icon d-flex align-items-center justify-content-center">
-                    {include file="svg.tpl" svgId="advantage2_icon"}
-                </div>
-                <div class="advantages__title" data-language="advantage_2">{$lang->advantage_2}</div>
-            </div>
-        </div>
-        <div class="advantages__item f_col-6 f_col-md-3">
-            <div class="advantages__preview d-flex align-items-center">
-                <div class="advantages__icon d-flex align-items-center justify-content-center">
-                    {include file="svg.tpl" svgId="advantage3_icon"}
-                </div>
-                <div class="advantages__title" data-language="advantage_3">{$lang->advantage_3}</div>
-            </div>
-        </div>
-        <div class="advantages__item f_col-6 f_col-md-3">
-            <div class="advantages__preview d-flex align-items-center">
-                <div class="advantages__icon d-flex align-items-center justify-content-center">
-                    {include file="svg.tpl" svgId="advantage4_icon"}
-                </div>
-                <div class="advantages__title" data-language="advantage_4">{$lang->advantage_4}</div>
-            </div>
-        </div>
+        {/foreach}
     </div>
 </div>

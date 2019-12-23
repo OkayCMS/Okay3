@@ -1,5 +1,5 @@
 {* Cart informer (given by Ajax) *}
-{if $cart->total_products > 0}
+{if $cart->isEmpty === false}
     <a href="{url_generator route='cart'}" class="header_informers__link d-flex align-items-center">
         <i class="d-flex align-items-center fa fa-shopping-cart"></i>
         <span class="cart_counter">{$cart->total_products}</span>

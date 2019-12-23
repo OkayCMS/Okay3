@@ -7,6 +7,7 @@ namespace Okay\Admin\Helpers;
 use Okay\Core\Config;
 use Okay\Core\DataCleaner;
 use Okay\Core\EntityFactory;
+use Okay\Core\Image;
 use Okay\Core\JsSocial;
 use Okay\Core\Languages;
 use Okay\Core\Managers;
@@ -17,6 +18,7 @@ use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Core\TemplateConfig;
 use Okay\Entities\LanguagesEntity;
 use Okay\Entities\ManagersEntity;
+use Okay\Entities\AdvantagesEntity;
 
 class BackendSettingsHelper
 {
@@ -44,6 +46,11 @@ class BackendSettingsHelper
      * @var LanguagesEntity
      */
     private $languagesEntity;
+
+    /**
+     * @var AdvantagesEntity
+     */
+    private $advantagesEntity;
 
     /**
      * @var DataCleaner
@@ -75,6 +82,11 @@ class BackendSettingsHelper
      */
     private $jsSocial;
 
+    /**
+     * @var Image
+     */
+    private $imageCore;
+
     private $allowedImageExtensions = ['png', 'gif', 'jpg', 'jpeg', 'ico'];
 
     public function __construct(
@@ -87,19 +99,22 @@ class BackendSettingsHelper
         TemplateConfig $templateConfig,
         QueryFactory   $queryFactory,
         Languages      $languages,
-        JsSocial       $jsSocial
+        JsSocial       $jsSocial,
+        Image          $imageCore
     ){
-        $this->managersEntity  = $entityFactory->get(ManagersEntity::class);
-        $this->languagesEntity = $entityFactory->get(LanguagesEntity::class);
-        $this->settings        = $settings;
-        $this->request         = $request;
-        $this->config          = $config;
-        $this->managers        = $managers;
-        $this->templateConfig  = $templateConfig;
-        $this->queryFactory    = $queryFactory;
-        $this->languages       = $languages;
-        $this->jsSocial        = $jsSocial;
-        $this->dataCleaner     = $dataCleaner;
+        $this->managersEntity   = $entityFactory->get(ManagersEntity::class);
+        $this->languagesEntity  = $entityFactory->get(LanguagesEntity::class);
+        $this->advantagesEntity = $entityFactory->get(AdvantagesEntity::class);
+        $this->settings         = $settings;
+        $this->request          = $request;
+        $this->config           = $config;
+        $this->managers         = $managers;
+        $this->templateConfig   = $templateConfig;
+        $this->queryFactory     = $queryFactory;
+        $this->languages        = $languages;
+        $this->jsSocial         = $jsSocial;
+        $this->dataCleaner      = $dataCleaner;
+        $this->imageCore        = $imageCore;
     }
 
     public function updateSettings()
@@ -519,6 +534,50 @@ class BackendSettingsHelper
     public function initSettings()
     {
         $this->settings->initSettings();
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
+    public function deleteAdvantageImage($advantageId)
+    {
+        $this->imageCore->deleteImage(
+            $advantageId,
+            'filename',
+            AdvantagesEntity::class,
+            $this->config->original_advantages_dir,
+            $this->config->resized_advantages_dir
+        );
+        $this->advantagesEntity->update($advantageId, ['filename' => '']);
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
+    public function uploadAdvantageImage($advantageId, $fileImage)
+    {
+        if (!empty($fileImage['name']) &&
+            ($filename = $this->imageCore->uploadImage(
+                $fileImage['tmp_name'],
+                $fileImage['name'],
+                $this->config->original_advantages_dir))
+        ) {
+            $this->imageCore->deleteImage(
+                $advantageId,
+                'filename',
+                AdvantagesEntity::class,
+                $this->config->original_advantages_dir,
+                $this->config->resized_advantages_dir
+            );
+
+            $this->advantagesEntity->update($advantageId, ['filename' => $filename]);
+        }
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
+    public function updateAdvantage($advantageId, $updates)
+    {
+        $_SESSION['need_die'] = 1;
+
+        $this->advantagesEntity->update($advantageId, $updates);
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 }

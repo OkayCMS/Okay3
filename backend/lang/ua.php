@@ -1080,3 +1080,4 @@ $lang['allow_to_visible_system_modules'] = 'Дозволити показ сис
 $lang['allow_to_visible_empty_categories'] = 'Відображати порожні категорії';
 $lang['allow_to_visible_empty_categories_notice'] = 'Якщо вимкнути цей параметр, то категорії без товарів не будуть відображаються в каталозі, але залишаться доступними за прямим посиланням для користувачів і пошукових систем. Якщо увімкнено';
 $lang['no_modules'] = 'Немає модулів';
+$lang['settings_advantages'] = 'Переваги';

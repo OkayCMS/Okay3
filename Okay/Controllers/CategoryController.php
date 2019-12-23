@@ -239,7 +239,7 @@ class CategoryController extends AbstractController
         $this->response->setHeaderLastModify(max($lastModify));
         //lastModify END
         
-        $this->design->assign('set_canonical', $filterHelper->isSetCanonical($filtersUrl));
+        $this->design->assign('set_canonical', true);
         
         $relPrevNext = $this->design->fetch('products_rel_prev_next.tpl');
         $this->design->assign('rel_prev_next', $relPrevNext);

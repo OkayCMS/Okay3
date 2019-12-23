@@ -61,7 +61,7 @@ class MenuEntity extends Entity
 
         $ids = (array)$ids;
 
-        if (!empty($ids)) {
+        if (empty($ids)) {
             return false;
         }
 

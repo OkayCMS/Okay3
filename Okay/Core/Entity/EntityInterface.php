@@ -79,4 +79,11 @@ interface EntityInterface
      * Сброс состояния поиска сущности
      */
     public function flush();
+
+    /**
+     * @return self
+     * @param $columnName
+     * Установки колонки по которой нужно делать маппинг
+     */
+    public function mappedBy($columnName);
 }

@@ -43,7 +43,7 @@
                     <div class="purchase__group_title hidden-xs-down">
                         <span data-language="cart_head_total">{$lang->cart_head_total}</span>
                     </div>
-                    <div class="purchase__group_content">{($purchase->variant->price*$purchase->amount)|convert} <span class="currency">{$currency->sign}</span></div>
+                    <div class="purchase__group_content">{$purchase->meta->total_price|convert} <span class="currency">{$currency->sign}</span></div>
                 </div>
             </div>
             {* Remove button *}

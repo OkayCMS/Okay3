@@ -22,18 +22,18 @@ class VariantsEntity extends Entity
         'external_id',
         'currency_id',
     ];
-    
+
     protected static $additionalFields = [
         '(v.stock IS NULL) as infinity',
         'c.rate_from',
         'c.rate_to',
     ];
-    
+
     protected static $langFields = [
         'name',
         'units',
     ];
-    
+
     protected static $defaultOrderFields = [
         'position',
         'id',
@@ -53,11 +53,11 @@ class VariantsEntity extends Entity
         $this->select->join('left', '__currencies AS c', 'c.id=v.currency_id');
 
         $variant = parent::get($id);
-        
+
         $variant = $this->resetInfo($variant);
         return $variant;
     }
-    
+
     public function find(array $filter = [])
     {
         $this->select->join('left', '__currencies AS c', 'c.id=v.currency_id');
@@ -66,7 +66,7 @@ class VariantsEntity extends Entity
         foreach ($variants as &$variant) {
             $variant = $this->resetInfo($variant);
         }
-        
+
         return $variants;
     }
 
@@ -100,12 +100,15 @@ class VariantsEntity extends Entity
                 ];
                 break;
         }
-        
+
         return ExtenderFacade::execute([static::class, __FUNCTION__], $orderFields, func_get_args());
     }
 
     protected function resetInfo($variant)
     {
+        if (empty($variant)) {
+            return $variant;
+        }
         if (property_exists($variant, 'compare_price') && $variant->compare_price == 0) {
             $variant->compare_price = null;
         }
@@ -120,18 +123,18 @@ class VariantsEntity extends Entity
 
         return $variant;
     }
-    
+
     protected function filter__in_stock()
     {
         $this->select->where('(v.stock > 0 OR v.stock IS NULL)');
     }
-    
+
     protected function filter__not_id($id)
     {
         $this->select->where("id!=:not_id");
         $this->select->bindValue('not_id', (int)$id);
     }
-    
+
     protected function filter__has_price()
     {
         $this->select->where("price > 0");

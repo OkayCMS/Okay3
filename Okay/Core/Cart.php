@@ -48,77 +48,19 @@ class Cart
         $cart->coupon          = null;
         $cart->discount        = 0;
         $cart->coupon_discount = 0;
-        
-        if (empty($_SESSION['shopping_cart'])) {
-            return $cart;
-        }
+        $cart->isEmpty = true;
 
-        $variants = $this->variantsEntity->find(['id' => $this->getVariantsIdsByCart($_SESSION['shopping_cart'])]);
-        if (empty($variants)) {
-            return $cart;
-        }
-        
-        $variants = $this->moneyHelper->convertVariantsPriceToMainCurrency($variants);
-        
-        $products = $this->getProductsByVariants($variants);
-        $products = $this->productsHelper->attachImages($products);
-
-        // TODO: собирать целостно в одном методе
-        $items = $this->buildItemsByVariants($variants);
-        foreach($items as $variantId=>$item) {
-            $purchase = null;
-            if(!empty($products[$item->variant->product_id])) {
-                $purchase = new \stdClass();
-                $purchase->product = $products[$item->variant->product_id];
-                $purchase->variant = $item->variant;
-                $purchase->amount  = $item->amount;
-
-                $purchase->product_id   = $item->variant->product_id;
-                $purchase->product_name = $products[$item->variant->product_id]->name;
-
-                $purchase->variant_id   = $item->variant->id;
-                $purchase->variant_name = $item->variant->name;
-                $purchase->price        = $item->variant->price;
-                $purchase->sku          = $item->variant->sku;
-                $purchase->units        = $item->variant->units;
-
-                $purchase->meta = (object) [
-                    'total_price' => $purchase->amount * $purchase->price
-                ];
-
+        if ($purchases = $this->getPurchases()) {
+            foreach ($purchases as $purchase) {
                 $cart->purchases[] = $purchase;
-                $cart->total_price += $item->variant->price*$item->amount;
-                $cart->total_products += $item->amount;
+                $cart->total_price += $purchase->variant->price * $purchase->amount;
+                $cart->total_products += $purchase->amount;
             }
-        }
-        
-        //TODO: В отдельный модуль
-        if($this->couponCodeExists()) {
-            $cart->coupon = $this->couponsEntity->get($_SESSION['coupon_code']);
-            if($cart->coupon && $cart->coupon->valid && $cart->total_price >= $cart->coupon->min_order_price) {
-                if($cart->coupon->type == 'absolute') {
-                    // Абсолютная скидка не более суммы заказа
-                    $cart->coupon_discount        = $cart->total_price>$cart->coupon->value?$cart->coupon->value:$cart->total_price;
-                    $cart->total_price            = max(0, $cart->total_price-$cart->coupon->value);
-                    $cart->coupon->coupon_percent = round(100-($cart->total_price*100)/($cart->total_price+$cart->coupon->value),2);
-                } else {
-                    $cart->coupon->coupon_percent = $cart->coupon->value;
-                    $cart->coupon_discount        = $cart->total_price * ($cart->coupon->value)/100;
-                    $cart->total_price            = $cart->total_price-$cart->coupon_discount;
-                }
-            } else {
-                unset($_SESSION['coupon_code']);
-            }
+            $cart->isEmpty = false;
         }
 
-        //TODO: В отдельный модуль
-        $cart->discount = 0;
-        if(isset($_SESSION['user_id']) && ($user = $this->usersEntity->get(intval($_SESSION['user_id'])))) {
-            $cart->discount = $user->discount;
-        }
-
-        $cart->total_price *= (100 - $cart->discount)/100;
-        return ExtenderFacade::execute(__METHOD__, $cart, func_get_args());
+        $cart = ExtenderFacade::execute(__METHOD__, $cart, func_get_args());
+        return $this->applyDiscounts($cart);
     }
 
     public function addItem($variantId, $amount = 1)
@@ -179,6 +121,84 @@ class Cart
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
+    private function applyDiscounts($cart)
+    {
+        //TODO: В отдельный модуль
+        if ($this->couponCodeExists()) {
+            $cart->coupon = $this->couponsEntity->get($_SESSION['coupon_code']);
+            if($cart->coupon && $cart->coupon->valid && $cart->total_price >= $cart->coupon->min_order_price) {
+                if ($cart->coupon->type == 'absolute') {
+                    // Абсолютная скидка не более суммы заказа
+                    $cart->coupon_discount        = $cart->total_price>$cart->coupon->value?$cart->coupon->value:$cart->total_price;
+                    $cart->total_price            = max(0, $cart->total_price-$cart->coupon->value);
+                    $cart->coupon->coupon_percent = round(100-($cart->total_price*100)/($cart->total_price+$cart->coupon->value),2);
+                } else {
+                    $cart->coupon->coupon_percent = $cart->coupon->value;
+                    $cart->coupon_discount        = $cart->total_price * ($cart->coupon->value)/100;
+                    $cart->total_price            = $cart->total_price-$cart->coupon_discount;
+                }
+            } else {
+                unset($_SESSION['coupon_code']);
+            }
+        }
+
+        //TODO: В отдельный модуль
+        $cart->discount = 0;
+        if (isset($_SESSION['user_id']) && ($user = $this->usersEntity->get(intval($_SESSION['user_id'])))) {
+            $cart->discount = $user->discount;
+        }
+
+        $cart->total_price *= (100 - $cart->discount)/100;
+
+        return ExtenderFacade::execute(__METHOD__, $cart, func_get_args());
+    }
+
+    private function getPurchases()
+    {
+        $purchases = [];
+        if (empty($_SESSION['shopping_cart'])) {
+            return ExtenderFacade::execute(__METHOD__, $purchases, func_get_args());
+        }
+
+        $variants = $this->variantsEntity->find(['id' => $this->getVariantsIdsByCart($_SESSION['shopping_cart'])]);
+        if (empty($variants)) {
+            return ExtenderFacade::execute(__METHOD__, $purchases, func_get_args());
+        }
+
+        $variants = $this->moneyHelper->convertVariantsPriceToMainCurrency($variants);
+
+        $products = $this->getProductsByVariants($variants);
+        $products = $this->productsHelper->attachImages($products);
+
+        // TODO: собирать целостно в одном методе
+        $items = $this->buildItemsByVariants($variants);
+        foreach($items as $variantId=>$item) {
+            $purchase = null;
+            if (!empty($products[$item->variant->product_id])) {
+                $purchase = new \stdClass();
+                $purchase->product = $products[$item->variant->product_id];
+                $purchase->variant = $item->variant;
+                $purchase->amount  = $item->amount;
+
+                $purchase->product_id   = $item->variant->product_id;
+                $purchase->product_name = $products[$item->variant->product_id]->name;
+
+                $purchase->variant_id   = $item->variant->id;
+                $purchase->variant_name = $item->variant->name;
+                $purchase->price        = $item->variant->price;
+                $purchase->sku          = $item->variant->sku;
+                $purchase->units        = $item->variant->units;
+
+                $purchase->meta = (object) [
+                    'total_price' => $purchase->amount * $purchase->price
+                ];
+
+                $purchases[] = $purchase;
+            }
+        }
+        return ExtenderFacade::execute(__METHOD__, $purchases, func_get_args());
+    }
+
     private function getVariantsIdsByCart($sessionCart)
     {
         return array_keys($sessionCart);
@@ -197,7 +217,7 @@ class Cart
     {
         $productsIds = $this->getProductsIdsByVariants($variants);
         $products = $this->productsEntity->mappedBy('id')->find([
-            'id'    => $productsIds, 
+            'id'    => $productsIds,
             'limit' => count($productsIds)
         ]);
 

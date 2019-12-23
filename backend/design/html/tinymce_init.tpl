@@ -9,11 +9,19 @@
                 "advlist autolink lists link image preview anchor responsivefilemanager emoticons",
                 "hr visualchars autosave noneditable searchreplace wordcount visualblocks",
                 "code fullscreen save charmap nonbreaking",
-                "insertdatetime media table paste imagetools"
+                "insertdatetime media table paste imagetools",
             ],
             toolbar_items_size : 'small',
             menubar:'file edit insert view format table tools',
             toolbar1: "restoredraft save fontselect formatselect fontsizeselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | forecolor backcolor | table | link unlink anchor media image emoticons | fullscreen visualblocks visualchars code",
+            {literal}
+            table_class_list:[
+                {title: 'None', value: ''},
+                {title: 'table_style1', value: 'table_style1'},
+                {title: 'table_style2', value: 'table_style2'},
+                {title: 'table_style3', value: 'table_style3'}
+            ],
+            {/literal}
             statusbar: true,
             font_formats: "Andale Mono=andale mono,times;"+
             "Arial=arial,helvetica,sans-serif;"+

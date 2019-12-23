@@ -24,21 +24,21 @@
                                     <div class="purchase__image d-flex">
                                         <a href="{url_generator route='product' url=$purchase->product->url}">
                                             {if $purchase->product->image}
-                                                 <img class="" alt="{$purchase->product->name|escape}" src="{$purchase->product->image->filename|resize:70:70}">
+                                                <img class="" alt="{$purchase->product->name|escape}" src="{$purchase->product->image->filename|resize:70:70}">
                                             {else}
                                                 <div class="purchase__no_image d-flex align-items-start">
                                                     {include file="svg.tpl" svgId="no_image"}
                                                 </div>
                                             {/if}
                                         </a>
-                                     </div>
+                                    </div>
                                     <div class="purchase__content">
                                         {* Product name *}
                                         <div class="purchase__name">
-                                            <a class="purchase__name_link" href="{url_generator route="product" url=$purchase->product->url}">{$purchase->product->name|escape}</a>
-                                            <i>{$purchase->variant->name|escape}</i>
+                                            <a class="purchase__name_link" href="{url_generator route="product" url=$purchase->product->url}">{$purchase->product_name|escape}</a>
+                                            <i>{$purchase->variant_name|escape}</i>
                                             {if $purchase->variant->stock == 0}<span class="preorder_label">{$lang->product_pre_order}</span>{/if}
-                                            
+
                                         </div>
                                         <div class="purchase__group">
                                             {* Price per unit *}
@@ -71,42 +71,41 @@
                         <div class="purchase_detail">
                             {* Discount *}
                             {if $order->discount > 0}
-                            <div class="purchase_detail__item">
-                                <div class="purchase_detail__column_name">
-                                    <div class="purchase_detail__name" data-language="cart_discount">{$lang->cart_discount}:</div>
+                                <div class="purchase_detail__item">
+                                    <div class="purchase_detail__column_name">
+                                        <div class="purchase_detail__name" data-language="cart_discount">{$lang->cart_discount}:</div>
+                                    </div>
+                                    <div class="purchase_detail__column_value">
+                                        <div class="purchase_detail__price">{$order->discount}%</div>
+                                    </div>
                                 </div>
-                                <div class="purchase_detail__column_value">
-                                    <div class="purchase_detail__price">{$order->discount}%</div>
-                                </div>
-                            </div>
                             {/if}
 
                             {if $order->coupon_discount > 0}
-                            <div class="purchase_detail__item">
-                                <div class="purchase_detail__column_name">
-                                    <div class="purchase_detail__name" data-language="cart_coupon">{$lang->cart_coupon}:</div>
-                                </div>
-                                <div class="purchase_detail__column_value">
-                                    <div class="purchase_detail__price">
-                                        &minus; {$order->coupon_discount|convert} <span class="currency">{$currency->sign|escape}</span>
+                                <div class="purchase_detail__item">
+                                    <div class="purchase_detail__column_name">
+                                        <div class="purchase_detail__name" data-language="cart_coupon">{$lang->cart_coupon}:</div>
+                                    </div>
+                                    <div class="purchase_detail__column_value">
+                                        <div class="purchase_detail__price">
+                                            &minus; {$order->coupon_discount|convert} <span class="currency">{$currency->sign|escape}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             {/if}
 
                             {if $order->separate_delivery || !$order->separate_delivery && $order->delivery_price > 0}
                                 <div class="purchase_detail__item">
                                     <div class="purchase_detail__column_name">
-                                        <div class="purchase_detail__name">{$delivery->name|escape} ({$lang->cart_paid_separate}):</div>
+                                        <div class="purchase_detail__name">{$delivery->name|escape}:</div>
                                     </div>
                                     <div class="purchase_detail__column_value">
                                         <div class="purchase_detail__price">
-                                            {if $order->delivery_price > 0}
+                                            {if !$order->separate_delivery}
                                                 <span>{$order->delivery_price|convert} <span class="currency"> {$currency->sign|escape}</span></span>
                                             {else}
-                                                <span>{$lang->cart_free}</span>
                                             {/if}
-                                         </div>
+                                        </div>
                                     </div>
                                 </div>
                             {/if}
@@ -131,7 +130,7 @@
                     <div class="order_boxeded">
                         {if !$order->paid}
                             {if $payment_methods && !$payment_method && $order->total_price>0}
-                               <div class="block form--boxed form form_cart">
+                                <div class="block form--boxed form form_cart">
                                     {* Payments *}
                                     <div class="h6">
                                         <span data-language="order_payment_details">{$lang->order_payment_details}</span>
@@ -140,32 +139,32 @@
                                         <form method="post">
                                             <div class="delivery form__group">
                                                 {foreach $payment_methods as $payment_method}
-                                                <div class="delivery__item">
-                                                    <label class="checkbox delivery__label{if $payment_method@first} active{/if}">
-                                                        <input class="checkbox__input delivery__input"  type="radio" name="payment_method_id"{if $payment_method@first} checked{/if} value="{$payment_method->id}" {if $delivery@first && $payment_method@first} checked{/if} id="payment_{$delivery->id}_{$payment_method->id}">
+                                                    <div class="delivery__item">
+                                                        <label class="checkbox delivery__label{if $payment_method@first} active{/if}">
+                                                            <input class="checkbox__input delivery__input"  type="radio" name="payment_method_id"{if $payment_method@first} checked{/if} value="{$payment_method->id}" {if $delivery@first && $payment_method@first} checked{/if} id="payment_{$delivery->id}_{$payment_method->id}">
 
-                                                        <svg class="checkbox__icon" viewBox="0 0 20 20">
-                                                            <path class="checkbox__mark" fill="none" d="M4 10 l5 4 8-8.5"></path>
-                                                        </svg>
+                                                            <svg class="checkbox__icon" viewBox="0 0 20 20">
+                                                                <path class="checkbox__mark" fill="none" d="M4 10 l5 4 8-8.5"></path>
+                                                            </svg>
 
-                                                        <div class="delivery__name">
-                                                            {$payment_method->name|escape} {$lang->cart_deliveries_to_pay}
-                                                            <span class="delivery__name_price">{$order->total_price|convert:$payment_method->currency_id} {$all_currencies[$payment_method->currency_id]->sign}</span>
-                                                        </div>
+                                                            <div class="delivery__name">
+                                                                {$payment_method->name|escape} {$lang->cart_deliveries_to_pay}
+                                                                <span class="delivery__name_price">{$order->total_price|convert:$payment_method->currency_id} {$all_currencies[$payment_method->currency_id]->sign}</span>
+                                                            </div>
 
-                                                        {if $payment_method->image}
-                                                            <div class="delivery__image">
-                                                                <img src="{$payment_method->image|resize:40:25:false:$config->resized_payments_dir}" />
+                                                            {if $payment_method->image}
+                                                                <div class="delivery__image">
+                                                                    <img src="{$payment_method->image|resize:40:25:false:$config->resized_payments_dir}" />
+                                                                </div>
+                                                            {/if}
+                                                        </label>
+
+                                                        {if $payment_method->description}
+                                                            <div class="delivery__description">
+                                                                {$payment_method->description}
                                                             </div>
                                                         {/if}
-                                                    </label>
-
-                                                    {if $payment_method->description}
-                                                        <div class="delivery__description">
-                                                            {$payment_method->description}
-                                                        </div>
-                                                    {/if}
-                                                </div>
+                                                    </div>
                                                 {/foreach}
                                             </div>
 
@@ -174,12 +173,12 @@
                                     </div>
                                 </div>
                             {elseif $payment_method}
-                               <div class="block form--boxed form form_cart">
+                                <div class="block form--boxed form form_cart">
 
-                                {* Payments *}
-                                <div class="h6">
-                                    <span data-language="order_payment_details">{$lang->order_payment_details}</span>
-                                </div>
+                                    {* Payments *}
+                                    <div class="h6">
+                                        <span data-language="order_payment_details">{$lang->order_payment_details}</span>
+                                    </div>
                                     {* Selected payment *}
                                     <div class="block_selected_payment">
                                         <div class="order_payment">
@@ -191,9 +190,9 @@
                                                 <input class="order_payment__button" type=submit name='reset_payment_method' data-language="order_change_payment" value='{$lang->order_change_payment}'/>
                                             </form>
                                             {if $payment_method->description}
-                                            <div class="order_payment__description">
-                                                {$payment_method->description}
-                                            </div>
+                                                <div class="order_payment__description">
+                                                    {$payment_method->description}
+                                                </div>
                                             {/if}
 
                                             <div class="order_payment__checkout">
@@ -205,7 +204,7 @@
                                     </div>
                                 </div>
                             {/if}
-                            
+
                         {/if}
                         <div class="block form form_cart">
                             <div class="h6" data-language="order_details">{$lang->order_details}</div>
@@ -219,7 +218,7 @@
                                         <td>
                                             {$order_status->name|escape}
                                             {if $order->paid == 1}
-                                            , <span data-language="status_paid">{$lang->status_paid}</span>
+                                                , <span data-language="status_paid">{$lang->status_paid}</span>
                                             {/if}
                                         </td>
                                     </tr>
@@ -248,36 +247,36 @@
                                         <td>{$order->email|escape}</td>
                                     </tr>
                                     {if $order->phone}
-                                    <tr>
-                                        <td>
-                                            <span data-language="order_phone">{$lang->order_phone}</span>
-                                        </td>
-                                        <td>{$order->phone|escape}</td>
-                                    </tr>
+                                        <tr>
+                                            <td>
+                                                <span data-language="order_phone">{$lang->order_phone}</span>
+                                            </td>
+                                            <td>{$order->phone|escape}</td>
+                                        </tr>
                                     {/if}
                                     {if $order->address}
-                                    <tr>
-                                        <td>
-                                            <span data-language="order_address">{$lang->order_address}</span>
-                                        </td>
-                                        <td>{$order->address|escape}</td>
-                                    </tr>
+                                        <tr>
+                                            <td>
+                                                <span data-language="order_address">{$lang->order_address}</span>
+                                            </td>
+                                            <td>{$order->address|escape}</td>
+                                        </tr>
                                     {/if}
                                     {if $order->comment}
-                                    <tr>
-                                        <td>
-                                            <span data-language="order_comment">{$lang->order_comment}</span>
-                                        </td>
-                                        <td>{$order->comment|escape|nl2br}</td>
-                                    </tr>
+                                        <tr>
+                                            <td>
+                                                <span data-language="order_comment">{$lang->order_comment}</span>
+                                            </td>
+                                            <td>{$order->comment|escape|nl2br}</td>
+                                        </tr>
                                     {/if}
                                     {if $delivery}
-                                    <tr>
-                                        <td>
-                                            <span data-language="order_delivery">{$lang->order_delivery}</span>
-                                        </td>
-                                        <td>{$delivery->name|escape}</td>
-                                    </tr>
+                                        <tr>
+                                            <td>
+                                                <span data-language="order_delivery">{$lang->order_delivery}</span>
+                                            </td>
+                                            <td>{$delivery->name|escape}</td>
+                                        </tr>
                                     {/if}
                                 </table>
                             </div>

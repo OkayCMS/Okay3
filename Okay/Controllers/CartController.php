@@ -50,7 +50,7 @@ class CartController extends AbstractController
         // Если передан id варианта, добавим его в корзину
         if ($variantId = $request->get('variant', 'integer')) {
             $cartCore->addItem($variantId, $request->get('amount', 'integer'));
-            $this->response->redirectTo(Router::generateUrl('cart', [], true));
+            $this->response->redirectTo(Router::generateUrl('cart', [], true), 301);
         }
 
         $this->setMetadataHelper($cartMetadataHelper);
@@ -139,8 +139,7 @@ class CartController extends AbstractController
         if ($couponsEntity->count(['valid'=>1])>0) {
             $this->design->assign('coupon_request', true);
         }
-                
-        $this->design->assign('cart', $cartCore->get());
+
         $this->response->setContent('cart.tpl');
     }
     
@@ -179,7 +178,7 @@ class CartController extends AbstractController
         $this->design->assign('all_currencies', $currenciesEntity->mappedBy('id')->find());
 
         /*Рабтаем с товарами в корзине*/
-        if (count($cart->purchases) > 0) {
+        if ($cart->isEmpty === false) {
             if (isset($_GET['coupon_code'])) {
                 $couponCode = trim($request->get('coupon_code', 'string'));
                 if (empty($couponCode)) {

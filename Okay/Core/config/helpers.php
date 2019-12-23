@@ -207,6 +207,7 @@ $helpers = [
             new SR(QueryFactory::class),
             new SR(Languages::class),
             new SR(JsSocial::class),
+            new SR(Image::class),
         ]
     ],
     BackendValidateHelper::class => [

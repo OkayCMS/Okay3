@@ -198,6 +198,7 @@
                         {menu_items menu_items=$menu_items level=0 parent_index=0}
                         <div class="fn_row fn_new_menuitem okay_list_body_item" data-index="-1">
                             <div class="okay_list_row fn_sort_item">
+                                <input type="hidden" name="menu_items[id][]" value="0"/>
                                 <input type="hidden" name="menu_items[index][]" value="-1"/>
                                 <input type="hidden" name="menu_items[parent_index][]" value="0"/>
                                 <div class="okay_list_boding okay_list_drag move_zone">

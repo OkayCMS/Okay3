@@ -320,21 +320,12 @@
                     {* Payments *}
                     <div class="f_col-md footer__payments payments">
                         <ul class="payments__list d-flex justify-content-md-end align-items-center">
-                            <li class="payments__item">
-                                <div class="payments_visa" title="VISA">{include file="svg.tpl" svgId="visacard_icon"}</div>
-                            </li>
-                            <li class="payments__item">
-                                <div class="payments_master" title="Master card">{include file="svg.tpl" svgId="mastercard_icon"}</div>
-                            </li>
-                            <li class="payments__item">
-                                <div class="payments_yamoney" title="Yandex money">{include file="svg.tpl" svgId="yandex_money_icon"}</div>
-                            </li>
-                            <li class="payments__item">
-                                <div class="payments_kiwi" title="Kiwi">{include file="svg.tpl" svgId="kiwi_icon"}</div>
-                            </li>
-                            <li class="payments__item">
-                                <div class="payments_sberbank" title="Sberbank">{include file="svg.tpl" svgId="sberbank_icon"}</div>
-                            </li>
+                            {foreach $payment_methods as $payment_method}
+                                {if !$payment_method->image}{continue}{/if}
+                                <li class="d-flex justify-content-center align-items-center payments__item" title="{$payment_method->name}">
+                                    <img src="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" />
+                                </li>
+                            {/foreach}
                         </ul>
                     </div>
                     {* Copyright *}
