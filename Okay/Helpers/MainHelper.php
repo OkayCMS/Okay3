@@ -440,7 +440,7 @@ class MainHelper
 
         /** @var PaymentsEntity $paymentsEntity */
         $paymentsEntity = $entityFactory->get(PaymentsEntity::class);
-        $paymentMethodImages = $paymentsEntity->find(['visible' => 1]);
+        $paymentMethodImages = $paymentsEntity->find(['enabled' => 1]);
         return ExtenderFacade::execute(__METHOD__, $paymentMethodImages, func_get_args());
     }
 
