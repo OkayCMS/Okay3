@@ -17,6 +17,12 @@ class ProductRoute extends AbstractRoute
     const TYPE_PREFIX_AND_PATH        = 'prefix_and_path';
     const TYPE_NO_PREFIX_AND_PATH     = 'no_prefix_and_path';
     const TYPE_NO_PREFIX_AND_CATEGORY = 'no_prefix_and_category';
+    const SLASH_END                   = 'product_routes_template_slash_end';
+
+    public function hasSlashAtEnd()
+    {
+        return intval($this->settings->get(static::SLASH_END)) === 1;
+    }
 
     protected function getStrategy()
     {

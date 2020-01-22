@@ -87,13 +87,13 @@ class Request
      * Метод возвращает REQUEST_URI без учёта подпапки сайта. т.е. только от корня сайта
      * Напр. для URL https://demookay.com/subfolder/catalog/mebel-dlya-doma?param=value
      * $_SERVER['REQUEST_URI'] будет равен /subfolder/catalog/mebel-dlya-doma?param=value
-     * а тукущий метод вернёт catalog/mebel-dlya-doma?param=value
+     * а текущий метод вернёт catalog/mebel-dlya-doma?param=value
      * 
      * @return string
      */
     public static function getRequestUri()
     {
-        return trim(str_replace(self::getRootUrl(), '', self::getCurrentUrl()), '/');
+        return ltrim(str_replace(self::getRootUrl(), '', self::getCurrentUrl()), '/');
     }
     
     /**

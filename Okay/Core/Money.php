@@ -70,29 +70,11 @@ class Money
                 $currency = self::$currentCurrency = current($currenciesEntity->find(['enabled' => 1]));
             }
         }
-        $precision = 0;
         
-        $result = $price;
-        if (!empty($currency)) {
-            // Умножим на курс валюты
-            if ($revers === true) {
-                $result = $result*$currency->rate_to/$currency->rate_from;
-            } else {
-                $result = $result*$currency->rate_from/$currency->rate_to;
-            }
-            
-            // Точность отображения, знаков после запятой
-            $precision = isset($currency->cents)?$currency->cents:2;
-        }
+        $result = $this->priceConvert($price, $currency, $revers);
+        $result = $this->formatPrice($result, $currency, $format);
         
-        // Форматирование цены
-        if ($format) {
-            $result = number_format($result, $precision, $this->decimalsPoint, $this->thousandsSeparator);
-        } else {
-            $result = round($result, $precision);
-        }
-
-        return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
+        return ExtenderFacade::execute(__METHOD__, $result, func_get_args());;
     }
     
     public function configure($decimalsPoint, $thousandsSeparator)
@@ -101,6 +83,38 @@ class Money
         $this->thousandsSeparator = $thousandsSeparator;
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+    
+    private function priceConvert($price, $currency, $revers = false)
+    {
+        $result = $price;
+        if (!empty($currency)) {
+            // Умножим на курс валюты
+            if ($revers === true) {
+                $result = $result*$currency->rate_to/$currency->rate_from;
+            } else {
+                $result = $result*$currency->rate_from/$currency->rate_to;
+            }
+        }
+        return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
+    }
+    
+    private function formatPrice($price, $currency, $format = true)
+    {
+        // Точность отображения, знаков после запятой
+        $precision = 0;
+        if (!empty($currency)) {
+            $precision = isset($currency->cents) ? $currency->cents : 2;
+        }
+        
+        // Форматирование цены
+        if ($format) {
+            $result = number_format($price, $precision, $this->decimalsPoint, $this->thousandsSeparator);
+        } else {
+            $result = round($price, $precision);
+        }
+        
+        return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
     }
     
 }

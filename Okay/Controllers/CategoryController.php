@@ -4,6 +4,7 @@
 namespace Okay\Controllers;
 
 
+use Okay\Core\Router;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\CategoriesEntity;
@@ -215,7 +216,7 @@ class CategoryController extends AbstractController
         }
 
         // Товары
-        $products = $productsHelper->getProductList($filter, $sortProducts);
+        $products = $productsHelper->getList($filter, $sortProducts);
         $this->design->assign('products', $products);
         
         if ($this->request->get('ajax','boolean')) {
@@ -238,8 +239,17 @@ class CategoryController extends AbstractController
         }
         $this->response->setHeaderLastModify(max($lastModify));
         //lastModify END
-        
-        $this->design->assign('set_canonical', $filterHelper->isSetCanonical($filtersUrl));
+
+        if (!$filterHelper->isSetCanonical($filtersUrl) && !empty($_GET)) {
+            $this->design->assign('need_indexing', true);
+            $this->design->assign('set_canonical', true);
+            $this->design->assign('canonical', Router::generateUrl('category', ['url' => $category->url], true));
+        } elseif (!empty($_GET)) {
+            $this->design->assign('set_canonical', true);
+            $this->design->assign('canonical', Router::generateUrl('category', ['url' => $category->url], true));
+        } else {
+            $this->design->assign('set_canonical', $filterHelper->isSetCanonical($filtersUrl));
+        }
         
         $relPrevNext = $this->design->fetch('products_rel_prev_next.tpl');
         $this->design->assign('rel_prev_next', $relPrevNext);

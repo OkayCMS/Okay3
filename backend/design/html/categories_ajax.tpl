@@ -55,7 +55,7 @@
 
                 <div class="okay_list_setting">
                     {*open*}
-                    <a href="../{url_generator route="category" url=$ajax_category->url}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
+                    <a href="{url_generator route="category" url=$ajax_category->url absolute=1}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
                         {include file='svg_icon.tpl' svgId='icon_desktop'}
                     </a>
                     {get_design_block block="categories_actions"}

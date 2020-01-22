@@ -868,8 +868,17 @@ function ajax_coupon() {
 function update_delivery_module_data() {
 
     let delivery_input = $('input[name="delivery_id"]:checked');
-    let delivery_id = delivery_input.val();
-    
+    let delivery_id    = delivery_input.val();
+
+    const hide_price                     = delivery_input.data('hide_front_delivery_price');
+    const $fn_total_delivery_price_block = $('#fn_total_delivery_price_block');
+
+    if (hide_price) {
+        $fn_total_delivery_price_block.hide();
+    } else {
+        $fn_total_delivery_price_block.show();
+    }
+
     $( '.fn_delivery_module_html input, .fn_delivery_module_html select, .fn_delivery_module_html textarea' ).attr('disabled', true);
 
     let delivery_block = $( '#deliveries_' + delivery_id ).closest( '.delivery__item' );

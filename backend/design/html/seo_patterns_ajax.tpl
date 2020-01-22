@@ -40,7 +40,7 @@
         </div>
     </div>
 </div>
-<div class="row">
+<div class="fn_step-3 row">
     <div class="col-md-6">
         <div class="row">
             <div class="col-md-12">
@@ -53,6 +53,12 @@
                 <div class="heading_label">Auto Meta-keywords</div>
                 <div class="mb-1">
                     <input name="auto_meta_keywords" class="form-control fn_ajax_area" value="{$category->auto_meta_keywords|escape}" />
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="heading_label">Auto H1</div>
+                <div class="mb-1">
+                    <input name="auto_h1" class="form-control fn_ajax_area" value="{$category->auto_h1|escape}" />
                 </div>
             </div>
         </div>
@@ -84,3 +90,4 @@
         </button>
     </div>
 </div>
+

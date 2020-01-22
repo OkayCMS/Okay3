@@ -4,6 +4,8 @@
     {$meta_title = $btr->category_new  scope=global}
 {/if}
 
+
+
 {*Название страницы*}
 <div class="row">
     <div class="col-lg-12 col-md-12">
@@ -17,7 +19,7 @@
             </div>
             {if $category->id}
                 <div class="box_btn_heading">
-                    <a class="btn btn_small btn-info add" target="_blank" href="../{url_generator route="category" url=$category->url}">
+                    <a class="btn btn_small btn-info add" target="_blank" href="{url_generator route="category" url=$category->url absolute=1}">
                         {include file='svg_icon.tpl' svgId='icon_desktop'}
                         <span>{$btr->general_open|escape}</span>
                     </a>
@@ -89,19 +91,21 @@
                 {*Название элемента сайта*}
                 <div class="row d_flex">
                     <div class="col-lg-10 col-md-9 col-sm-12">
-                        <div class="heading_label heading_label--required">
-                            <span>{$btr->general_name|escape}</span>
-                            <i class="fn_tooltips" title="{$btr->tooltip_general_name_category|escape}">
-                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                            </i>
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control" name="name" type="text" value="{$category->name|escape}"/>
-                            <input name="id" type="hidden" value="{$category->id|escape}"/>
+                        <div class="fn_step-1">
+                            <div class="heading_label heading_label--required">
+                                <span>{$btr->general_name|escape}</span>
+                                <i class="fn_tooltips" title="{$btr->tooltip_general_name_category|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </div>
+                            <div class="form-group">
+                                <input class="fn_step1_name form-control" name="name" type="text" value="{$category->name|escape}"/>
+                                <input name="id" type="hidden" value="{$category->id|escape}"/>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-xs-12 col-lg-6 col-md-10">
-                                <div class="">
+                                <div class="fn_step-2">
                                     <div class="input-group">
                                        <span class="input-group-addon">URL</span>
                                         <input name="url" class="fn_meta_field form-control fn_url {if $category->id}fn_disabled{/if}" {if $category->id}readonly=""{/if} type="text" value="{$category->url|escape}" />
@@ -121,7 +125,7 @@
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
-                            <div class="activity_of_switch_item"> {* row block *}
+                            <div class="fn_step-3 activity_of_switch_item"> {* row block *}
                                 <div class="okay_switch clearfix">
                                     <label class="switch_label">
                                         {$btr->general_enable|escape}
@@ -147,7 +151,7 @@
     {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-4 col-md-12 pr-0 hidden-sm-down">
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="fn_step-4 boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->general_image|escape}
                     <i class="fn_tooltips" title="{$btr->tooltip_general_image_category|escape}">
@@ -200,7 +204,7 @@
                     <div class="col-lg-12 toggle_body_wrap on fn_card">
                         <div class="row">
                             <div class="col-lg-6 pr-0">
-                                <div class="form-group clearfix">
+                                <div class="fn_step-5 form-group clearfix">
                                     <label class="heading_label" >{$btr->category_h1|escape}</label>
                                     <div>
                                         <input name="name_h1" class="form-control" type="text" value="{$category->name_h1|escape}" />
@@ -210,7 +214,7 @@
                         </div>
 
 
-                        <div id="product_categories">
+                        <div id="product_categories" class="fn_step-6">
                             <div class="heading_box">
                                 {$btr->category_subcategory|escape}
                                 <i class="fn_tooltips" title="{$btr->tooltip_general_category_category|escape}">
@@ -240,7 +244,7 @@
     {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed match fn_toggle_wrap">
+            <div class="fn_step-7 boxed match fn_toggle_wrap">
                 <div class="heading_box">
                     {$btr->general_metatags|escape}
                     <i class="fn_tooltips" title="{$btr->tooltip_general_metatags|escape}">
@@ -290,11 +294,11 @@
     {*Описание элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed match fn_toggle_wrap tabs">
+            <div class="fn_step-8 boxed match fn_toggle_wrap tabs">
                 <div class="heading_tabs">
                     <div class="tab_navigation">
                         <a href="#tab1" class="tab_navigation_link">{$btr->general_short_description|escape}</a>
-                        <a href="#tab2" class="tab_navigation_link">{$btr->general_full_description|escape}</a>
+                        <a href="#tab2" class="fn_step9 tab_navigation_link">{$btr->general_full_description|escape}</a>
                     </div>
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="icon-arrow-down"></i></a>
@@ -312,7 +316,7 @@
                 </div>
                 <div class="row">
                    <div class="col-lg-12 col-md-12 mt-1">
-                        <button type="submit" class="btn btn_small btn_blue float-md-right">
+                        <button type="submit" class="fn_step-9 btn btn_small btn_blue float-md-right">
                             {include file='svg_icon.tpl' svgId='checked'}
                             <span>{$btr->general_apply|escape}</span>
                         </button>
@@ -323,7 +327,14 @@
     </div>
 </form>
 
+{* Learning script *}
+{include file='learning_hints.tpl' hintId='hint_category'}
+
 
 {* Подключаем Tiny MCE *}
 {include file='tinymce_init.tpl'}
 {* On document load *}
+
+
+
+

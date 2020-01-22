@@ -19,7 +19,7 @@ class BrandsController extends AbstractController
         $currentSort = $brandsHelper->getCurrentSort();
         
         /*Выбираем все бренды*/
-        $brands = $brandsHelper->getBrandsList($filter, $currentSort);
+        $brands = $brandsHelper->getList($filter, $currentSort);
         $this->design->assign('brands', $brands);
 
         $this->response->setContent('brands.tpl');

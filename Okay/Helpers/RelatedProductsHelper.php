@@ -20,6 +20,7 @@ class RelatedProductsHelper
      * @param RelatedProductsInterface $relatedObjectsEntity экземпляр класса, в котором стоит вызвать метод getRelatedProducts()
      * @param array $filter аргумент метода getRelatedProducts()
      * @return mixed|void|null
+     * @throws \Exception
      */
     public function getRelatedProductsList(RelatedProductsInterface $relatedObjectsEntity, array $filter)
     {
@@ -36,7 +37,7 @@ class RelatedProductsHelper
                 'limit' => count($relatedIds),
                 'visible' => 1,
             ];
-            foreach ($this->productsHelper->getProductList($relatedFilter) as $p) {
+            foreach ($this->productsHelper->getList($relatedFilter) as $p) {
                 $relatedProducts[$p->id] = $p;
             }
             foreach ($relatedProducts as $id=>$r) {

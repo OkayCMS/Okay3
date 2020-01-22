@@ -2,7 +2,7 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->currency_currencies|escape}
@@ -61,8 +61,8 @@
             <form method=post class="fn_form_list">
                 <input type="hidden" name="session_id" value="{$smarty.session.id}">
                 <input type="hidden" name="lang_id" value="{$lang_id}" />
-                <div class="okay_list">
-                    <div class="currencies_wrap clearfix">
+                <div class="okay_list fn_step-2">
+                    <div class="fn_step-1 currencies_wrap clearfix">
                         {*Шапка таблицы*}
                         <div class="okay_list_head">
                             <div class="okay_list_heading okay_list_drag"></div>
@@ -78,7 +78,7 @@
                         {*Параметры элемента*}
                         <div id="currencies_block" class="okay_list_body sortable">
                             {foreach $currencies as $c}
-                                <div class="okay_list_body_item">
+                                <div class="fn_step-2 okay_list_body_item">
                                     <div class="okay_list_row">
                                         <div class="okay_list_boding okay_list_drag move_zone">
                                             {include file='svg_icon.tpl' svgId='drag_vertical'}
@@ -184,7 +184,7 @@
                                 </div>
                             {/foreach}
                             {*СОздание нового элемента*}
-                            <div id="new_currency" class="okay_list_body sortable" style="display: none">
+                            <div id="new_currency" class="fn_new_currency fn_step-3 okay_list_body sortable" style="display: none">
                                 <div class="okay_list_body_item">
                                     <div class="okay_list_row">
                                         <div class="okay_list_boding okay_list_drag move_zone">
@@ -299,6 +299,8 @@
     </div>
 </div>
 
+{include file='learning_hints.tpl' hintId='hint_currency'}
+
 <script>
     var сurrency_recalculate = '{$btr->currency_recalculate|escape}';
     var сurrency_recalculate_rate = '{$btr->currency_recalculate_rate|escape}';
@@ -312,8 +314,8 @@
 
         var confirm = true;
         // Добавление валюты
-        var curr = $('#new_currency').clone(true);
-        $('#new_currency').remove().removeAttr('id');
+        var curr = $('.fn_new_currency').clone(true);
+        $('.fn_new_currency').remove().removeAttr('id');
         $('a#add_currency').click(function() {
             $(curr).clone(true).appendTo('#currencies_block').fadeIn('slow').find("input[name*=currency][name*=name]").focus();
             return false;

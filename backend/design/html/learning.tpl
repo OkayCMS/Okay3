@@ -16,7 +16,7 @@
     </div>
 </div>
 
-<div class="boxed">
+<div class="boxed boxed--progress-bar">
     <div class="row">
         <div class="col-lg-12 col-md-12 ">
             <div class="row">
@@ -38,61 +38,64 @@
         </div>
     </div>
 </div>
-<div class="row">
-    {foreach $lessons as $lesson}
 
-    <div class="col-md-12">
-        <div class="learning_boxed">
-            <div class="learning_boxed__video">
-                <div class="fn_video_open learning_boxed__img">
-                    <img src="{$lesson->preview}" class="video_open" data-video="{$lesson->video}" />
-                    <span class="video__button">
-                        <svg width="45" height="45" viewBox="0 0 68 48"><path class="video__button-shape" d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"></path><path class="video__button-icon" d="M 45,24 27,14 27,34"></path></svg>
-                    </span>
-                </div>
-            </div>
-            <div class="learning_boxed__details">
-                <div class="learning_boxed__header">
-                    <div class="fn_video_open" data-video="{$lesson->video}">{$lesson->title|escape}</div>
-                </div>
-                <div class="learning_boxed__body">
-                    <div>{$lesson->description|escape}</div>
-                </div>
-                <div class="learning_boxed__footer">
-                    <a class="learning_boxed__link" href="{url controller=$lesson->target_module}" target="_blank">
-                        <span>{$lesson->button}</span>
-                        <svg viewBox="0 0 487.958 487.958" width="20px" height="20px">
-                            <path fill="currentColor" d="M483.058,215.613l-215.5-177.6c-4-3.3-9.6-4-14.3-1.8c-4.7,2.2-7.7,7-7.7,12.2v93.6c-104.6,3.8-176.5,40.7-213.9,109.8
-                            c-32.2,59.6-31.9,130.2-31.6,176.9c0,3.8,0,7.4,0,10.8c0,6.1,4.1,11.5,10.1,13.1c1.1,0.3,2.3,0.4,3.4,0.4c4.8,0,9.3-2.5,11.7-6.8
-                            c73-128.7,133.1-134.9,220.2-135.2v93.3c0,5.2,3,10,7.8,12.2s10.3,1.5,14.4-1.8l215.4-178.2c3.1-2.6,4.9-6.4,4.9-10.4
-                            S486.158,218.213,483.058,215.613z M272.558,375.613v-78.1c0-3.6-1.4-7-4-9.5c-2.5-2.5-6-4-9.5-4c-54.4,0-96.1,1.5-136.6,20.4
-                            c-35,16.3-65.3,44-95.2,87.5c1.2-39.7,6.4-87.1,28.1-127.2c34.4-63.6,101-95.1,203.7-96c7.4-0.1,13.4-6.1,13.4-13.5v-78.2
-                            l180.7,149.1L272.558,375.613z"/>
+<div class="learning_card__list">
+    {foreach $lessons as $lesson}
+        <div class="learning_card__item">
+            <div class="learning_card__inner">
+                <div class="learning_card__header">
+                    <div class="icon_learning hint-right-middle-t-white-s-small-mobile  hint-anim" data-hint="{$btr->lesson_type}">
+                        <svg viewBox="0 0 181.207 181.207" width="20px" height="20px">
+                            <path fill="currentColor" d="M176.805,62.738L92.701,34.067c-1.361-0.464-2.834-0.464-4.195,0L4.402,62.738C1.77,63.636-0.001,66.11,0,68.892
+            c0.001,2.783,1.772,5.256,4.407,6.152l32.694,11.121v33.883c0,1.62,0.604,3.181,1.695,4.378
+            c13.356,14.657,32.383,23.063,52.2,23.063c19.622,0,37.853-7.858,51.333-22.127c1.141-1.207,1.775-2.804,1.775-4.464V86.215
+            l13.498-4.612v16.343c-1.52,1.19-2.5,3.037-2.5,5.116v15.855c0,3.59,2.91,6.5,6.5,6.5s6.5-2.91,6.5-6.5v-15.855
+            c0-2.08-0.98-3.927-2.5-5.116V78.87l11.205-3.828c2.631-0.899,4.399-3.373,4.398-6.153
+            C181.206,66.108,179.437,63.635,176.805,62.738z M131.105,118.235c-10.799,10.501-24.944,16.253-40.108,16.253
+            c-15.348,0-30.114-6.18-40.896-17.036V90.587l38.597,13.128c0.679,0.231,1.386,0.346,2.093,0.346c0.71,0,1.421-0.116,2.102-0.349
+            l38.213-13.056V118.235z M90.786,90.694L26.664,68.883l63.939-21.797l63.979,21.811L90.786,90.694z"/>
                         </svg>
-                    </a>
-                    {if $lesson->done}
-                        <div class="lesson_done_icon">
-                            <svg viewBox="0 0 363.025 363.024" width="20px" height="20px">
-                                <path fill="currentColor" d="M181.512,363.024C81.43,363.024,0,281.601,0,181.513C0,81.424,81.43,0,181.512,0
-                                c100.083,0,181.513,81.424,181.513,181.513C363.025,281.601,281.595,363.024,181.512,363.024z M181.512,11.71
-                                C87.88,11.71,11.71,87.886,11.71,181.513s76.17,169.802,169.802,169.802c93.633,0,169.803-76.175,169.803-169.802
-                                S275.145,11.71,181.512,11.71z"/>
-                                <polygon fill="currentColor" points="147.957,258.935 83.068,194.046 91.348,185.767 147.957,242.375 271.171,119.166
-                                279.451,127.445"/>
+                        <i class="learning_card__header-category">{$lesson->button}</i>
+                    </div>
+                    <div class="learning_card__bookmark hint-top-right-t-info-s-small-mobile  hint-anim {if $lesson->done}learning_card__bookmark--done{/if}" {if $lesson->done}data-hint="{$btr->lesson_status_done}"{else}data-hint="{$btr->lesson_status_not_done}"{/if}>
+                        <svg viewBox="0 0 57 109">
+                            <path fill="currentColor" d="M55.2581768,1.68472072 C55.4963653,1.99229417 55.9264683,2.49612939 56.0964433,3.13700841 C56.2097599,3.56426109 56.2519834,5.17933791 56.2231139,7.98223886 L56.2231139,107.862169 L56.2231139,108.198446 L54.3316672,108.198446 L31.7336208,93.0756154 L7.60113862,107.862169 L5.75307495,107.862169 L5.75307495,6.37648608 C5.75307495,6.30890507 5.75307495,6.13481848 5.75307495,5.01912143 C5.66354505,4.99969682 4.34603562,5.0760989 3.17031126,5.01912143 C2.37863609,4.98075559 1.63339871,4.78553375 1.43802847,4.59524702 C0.0310234451,3.22485204 2.05721932,0.297207262 2.83338791,0.0743018154 C3.30404348,-0.0608642931 18.0701757,-0.0116148851 47.1317847,0.222050039 C48.3458258,0.23181133 51.4117414,0.098494554 53.0022991,0.566857956 C53.9351979,0.841563897 55.0199882,1.37714727 55.2581768,1.68472072 Z"></path>
+                            <path fill="currentColor" d="M5.75675723,4.70498479 C5.75675723,1.64840033 5.07444433,0.186950855 3.70981853,0.320636374 C3.6022952,0.308972102 3.51184528,0.308972102 3.43846878,0.320636374 C3.36509229,0.332300645 3.17764187,0.376476982 2.87611754,0.453165385 C2.70892271,0.520918007 2.58633026,0.592984069 2.50834017,0.669363572 C2.43035008,0.745743075 2.28191228,0.93911018 2.06302678,1.24946489 L1.47106804,2.55582953 L1.3205017,3.1102027 L1.38880379,3.88608585 L1.8679792,4.44088638 L2.75902248,4.60316775 L3.70981853,4.70498479 L4.7174867,4.70498479 L5.75675723,4.70498479 C5.75675723,7.76156925 5.75675723,7.76156925 5.75675723,4.70498479 Z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="learning_card__body">
+                    <div class="learning_card__title" title="{$lesson->title|escape}">{$lesson->title|escape}</div>
+                    <div class="learning_card__description">{$lesson->description|escape}</div>
+                </div>
+                <div class="learning_card__footer">
+                    <a class="learning_card__button" href="{url controller=$lesson->target_module}&multipage" target="_blank">{$btr->lesson_explore}</a>
+                    <div class="learning_card__informers">
+                        {if $lesson->video}
+                        <span class="fn_video_open learning_card__informer learning_card__video hint-top-right-t-info-s-small-mobile  hint-anim" data-hint="{$btr->lesson_video}">
+                            <svg class="video_open" data-video="{$lesson->video}" width="40px" height="40px" viewBox="0 0 215.094 215.094" >
+                                <path fill="currentColor" d="M28.302,32.547C12.673,32.547,0,45.22,0,60.849v93.396c0,15.629,12.673,28.302,28.302,28.302h158.491
+                                c15.629,0,28.301-12.673,28.301-28.302V60.849c0-15.629-12.672-28.302-28.301-28.302H28.302z M90.547,145.583V69.511l50,38.036
+                                L90.547,145.583z"/>
                             </svg>
-                        </div>
-                    {else}
-                    <form method="POST">
-                        <input type="hidden" name="session_id" value="{$smarty.session.id}" />
-                        <input type="hidden" name="lesson_id" value="{$lesson->id}" />
-                        <button class="btn btn_mini btn_border_dark" name="action" value="lesson_done">{$btr->lesson_done}</button>
-                    </form>
-                    {/if}
+                        </span>
+                        {/if}
+                        {*if !$lesson->done}
+                             <form class="learning_card__informer hint-top-middle-t-info-s-small-mobile  hint-anim" data-hint="{$btr->lesson_skip}"  method="POST">
+                                <input type="hidden" name="session_id" value="{$smarty.session.id}" />
+                                <input type="hidden" name="lesson_id" value="{$lesson->id}" />
+                                <button class="learning_card__done" name="action" title="{$btr->lesson_skip}" value="lesson_skip">
+                                    <svg width="12px" height="12px" viewBox="0 0 163.861 163.861">
+                                        <path fill="currentColor" d="M34.857,3.613C20.084-4.861,8.107,2.081,8.107,19.106v125.637c0,17.042,11.977,23.975,26.75,15.509L144.67,97.275
+            c14.778-8.477,14.778-22.211,0-30.686L34.857,3.613z"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        {/if*}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
     {/foreach}
 </div>
 

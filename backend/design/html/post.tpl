@@ -92,16 +92,18 @@
                 {*Название элемента сайта*}
                 <div class="row d_flex">
                     <div class="col-lg-10 col-md-9 col-sm-12">
-                        <div class="heading_label">
-                            {$btr->general_name|escape}
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control" name="name" type="text" value="{$post->name|escape}"/>
-                            <input name="id" type="hidden" value="{$post->id|escape}"/>
+                        <div class="fn_step-1">
+                            <div class="heading_label">
+                                {$btr->general_name|escape}
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" name="name" type="text" value="{$post->name|escape}"/>
+                                <input name="id" type="hidden" value="{$post->id|escape}"/>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-xs-12 col-lg-6 col-md-10">
-                                <div class="">
+                                <div class="fn_step-2">
                                     <div class="input-group">
                                         <span class="input-group-addon">URL</span>
                                         <input name="url" class="fn_meta_field form-control fn_url {if $post->id}fn_disabled{/if}" {if $post->id}readonly=""{/if} type="text" value="{$post->url|escape}" />
@@ -121,7 +123,7 @@
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
-                            <div class="activity_of_switch_item"> {* row block *}
+                            <div class="fn_step-3 activity_of_switch_item"> {* row block *}
                                 <div class="okay_switch clearfix">
                                     <label class="switch_label">{$btr->general_enable|escape}</label>
                                     <label class="switch switch-default">
@@ -141,7 +143,7 @@
     {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-4 col-md-12 pr-0">
-            <div class="boxed fn_toggle_wrap min_height_210px">
+            <div class="fn_step-4 boxed fn_toggle_wrap min_height_210px">
                 <div class="heading_box">
                     {$btr->general_image|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -178,7 +180,7 @@
         </div>
         {*Параметры элемента*}
         <div class="col-lg-3 col-md-12 pr-0">
-            <div class="boxed fn_toggle_wrap min_height_210px">
+            <div class="fn_step-5 boxed fn_toggle_wrap min_height_210px">
                 <div class="heading_box">
                     {$btr->post_setting|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -213,7 +215,7 @@
             </div>
         </div>
          <div class="col-lg-5 col-md-12">
-            <div class="boxed fn_toggle_wrap min_height_210px">
+            <div class="fn_step-6 boxed fn_toggle_wrap min_height_210px">
                 {backend_compact_product_list
                     title=$btr->general_recommended
                     name='related_products'
@@ -228,7 +230,7 @@
     {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed match fn_toggle_wrap">
+            <div class="fn_step-7 boxed match fn_toggle_wrap">
                 <div class="heading_box">
                     {$btr->general_metatags|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -263,7 +265,7 @@
     {*Описание элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed match fn_toggle_wrap tabs">
+            <div class="fn_step-8 boxed match fn_toggle_wrap tabs">
                 <div class="heading_tabs">
                     <div class="tab_navigation">
                         <a href="#tab1" class="heading_box tab_navigation_link">{$btr->general_short_description|escape}</a>
@@ -295,6 +297,9 @@
         </div>
     </div>
 </form>
+
+{* Learning script *}
+{include file='learning_hints.tpl' hintId='hint_post'}
 
 {* Подключаем Tiny MCE *}
 {include file='tinymce_init.tpl'}

@@ -810,11 +810,8 @@
         padding: 10px 0px;
     }
     .tab {
-        display: block;
+        display: block!important;
         padding: 0px 20px;
-    }
-    .mobile_tab__content {
-        padding: 5px 0px 20px;
     }
     .footer__payments {
         text-align: center;

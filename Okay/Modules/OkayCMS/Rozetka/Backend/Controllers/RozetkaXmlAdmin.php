@@ -86,8 +86,8 @@ class RozetkaXmlAdmin extends IndexAdmin
 
         $allCategories       = $categoriesEntity->getCategoriesTree();
         $allBrands           = $brandsEntity->find(['limit' => $brandsEntity->count()]);
-        $relatedProducts     = $productsHelper->getProductList(['to_rozetka' => 1]);
-        $notRelatedProducts  = $productsHelper->getProductList(['not_to_rozetka' => 1]);
+        $relatedProducts     = $productsHelper->getList(['to_rozetka' => 1]);
+        $notRelatedProducts  = $productsHelper->getList(['not_to_rozetka' => 1]);
         
         $this->design->assign('categories', $allCategories);
         $this->design->assign('brands', $allBrands);

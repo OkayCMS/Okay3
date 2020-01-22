@@ -3,13 +3,13 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->general_categories|escape} - {$categoriesCount}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url controller=CategoryAdmin return=$smarty.server.REQUEST_URI}">
+                <a class="fn_learning_create_category btn btn_small btn-info" href="{url controller=CategoryAdmin return=$smarty.server.REQUEST_URI}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->categories_add|escape}</span>
                 </a>
@@ -51,7 +51,7 @@
                 <div class="okay_list_body categories_wrap sortable ">
                 {if $categories}
                     {foreach $categories as $category}
-                        <div class="fn_row okay_list_body_item   fn_sort_item">
+                        <div class="fn_step-1 fn_row okay_list_body_item fn_sort_item">
                             <div class="okay_list_row ">
                                 <input type="hidden" name="positions[{$category->id}]" value="{$category->position}" />
 
@@ -102,7 +102,7 @@
 
                                 <div class=" okay_list_setting">
                                     {*open*}
-                                    <a href="../{url_generator route="category" url=$category->url}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
+                                    <a href="{url_generator route="category" url=$category->url absolute=1}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
                                         {include file='svg_icon.tpl' svgId='icon_desktop'}
                                     </a>
 
@@ -156,6 +156,9 @@
         </div>
     {/if}
 </div>
+
+{* Learning script *}
+{include file='learning_hints.tpl' hintId='hint_categories'}
 
 <script>
     $(document).on("click", ".fn_ajax_toggle", function () {

@@ -6,7 +6,7 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-12 col-md-12">
+    <div class="col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {if !$delivery->id}
@@ -17,7 +17,6 @@
             </div>
         </div>
     </div>
-    <div class="col-md-12 col-lg-12 col-sm-12 float-xs-right"></div>
 </div>
 
 {*Вывод успешных сообщений*}
@@ -71,20 +70,22 @@
                 <div class="row d_flex">
                     <div class="col-lg-10 col-md-9 col-sm-12">
                         {*Название элемента сайта*}
-                        <div class="heading_label">
-                            {$btr->general_name|escape}
-                            <i class="fn_tooltips" title="{$btr->tooltip_general_name_delivery|escape}">
-                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                            </i>
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control mb-h" name="name" type="text" value="{$delivery->name|escape}"/>
-                            <input name="id" type="hidden" value="{$delivery->id|escape}"/>
+                        <div class="fn_step-1">
+                            <div class="heading_label">
+                                {$btr->general_name|escape}
+                                <i class="fn_tooltips" title="{$btr->tooltip_general_name_delivery|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control mb-h" name="name" type="text" value="{$delivery->name|escape}"/>
+                                <input name="id" type="hidden" value="{$delivery->id|escape}"/>
+                            </div>
                         </div>
                         {get_design_block block="delivery_general"}
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
-                        <div class="activity_of_switch">
+                        <div class="fn_step-2 activity_of_switch">
                             <div class="activity_of_switch_item"> {* row block *}
                                 <div class="okay_switch clearfix">
                                     <label class="switch_label">{$btr->general_enable|escape}</label>
@@ -95,8 +96,18 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="activity_of_switch_item"> {* row block *}
+                                <div class="okay_switch clearfix">
+                                    <label class="switch_label">{$btr->hide_front_delivery_price|escape}</label>
+                                    <label class="switch switch-default">
+                                        <input class="switch-input" name="hide_front_delivery_price" value='1' type="checkbox" id="visible_checkbox" {if $delivery->hide_front_delivery_price}checked=""{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            {get_design_block block="delivery_switch_checkboxes"}
                         </div>
-                        {get_design_block block="delivery_switch_checkboxes"}
                     </div>
                 </div>
             </div>
@@ -106,7 +117,7 @@
     {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-4 col-md-12 pr-0">
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="fn_step-3 boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->general_image|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -142,7 +153,7 @@
             </div>
         </div>
         <div class="col-lg-8 col-md-12">
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="fn_step-4 boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->delivery_type|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -218,7 +229,7 @@
     
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="fn_step-5 boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->delivery_type|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -291,7 +302,7 @@
     {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="fn_step-6 boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->delivery_payments|escape}
                     <i class="fn_tooltips" title="{$btr->tooltip_delivery_payments|escape}">
@@ -333,7 +344,7 @@
     {*Описание элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed match fn_toggle_wrap tabs">
+            <div class="fn_step-7 boxed match fn_toggle_wrap tabs">
                 <div class="heading_tabs">
                     <div class="tab_navigation">
                         <a href="#tab1" class="tab_navigation_link">{$btr->delivery_description|escape}</a>
@@ -351,7 +362,7 @@
                 </div>
                 <div class="row">
                    <div class="col-lg-12 col-md-12 mt-1">
-                        <button type="submit" class="btn btn_small btn_blue float-md-right">
+                        <button type="submit" class="fn_step-8 btn btn_small btn_blue float-md-right">
                             {include file='svg_icon.tpl' svgId='checked'}
                             <span>{$btr->general_apply|escape}</span>
                         </button>
@@ -361,6 +372,10 @@
         </div>
     </div>
 </form>
+
+{* Learning script *}
+{include file='learning_hints.tpl' hintId='hint_delivery'}
+
 {* Подключаем Tiny MCE *}
 {include file='tinymce_init.tpl'}
 

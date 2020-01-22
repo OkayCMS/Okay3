@@ -17,7 +17,7 @@
             </div>
             {if $page->id}
                 <div class="box_btn_heading">
-                    <a class="btn btn_small btn-info add" target="_blank" href="../{url_generator route="page" url=$page->url}">
+                    <a class="btn btn_small btn-info add" target="_blank" href="{url_generator route="page" url=$page->url absolute=1}">
                         {include file='svg_icon.tpl' svgId='icon_desktop'}
                         <span>{$btr->general_open|escape}</span>
                     </a>
@@ -25,7 +25,6 @@
             {/if}
         </div>
     </div>
-    <div class="col-md-12 col-lg-12 col-sm-12 float-xs-right"></div>
 </div>
 
 {*Вывод успешных сообщений*}
@@ -85,12 +84,14 @@
                 {*Название элемента сайта*}
                 <div class="row d_flex">
                     <div class="col-lg-10 col-md-9 col-sm-12">
-                        <div class="heading_label">
-                            {$btr->general_name|escape}
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control" name="name" type="text" value="{$page->name|escape}"/>
-                            <input name="id" type="hidden" value="{$page->id|escape}"/>
+                        <div class="">
+                            <div class="heading_label">
+                                {$btr->general_name|escape}
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" name="name" type="text" value="{$page->name|escape}"/>
+                                <input name="id" type="hidden" value="{$page->id|escape}"/>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-xs-12 col-lg-6 col-md-10">
@@ -110,8 +111,10 @@
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-12">
-                                <span class="heading_label">{$btr->page_h1|escape}</span>
-                                <input name="name_h1" class="form-control" type="text" value="{$page->name_h1|escape}" />
+                                <div class="">
+                                    <span class="heading_label">{$btr->page_h1|escape}</span>
+                                    <input name="name_h1" class="form-control" type="text" value="{$page->name_h1|escape}" />
+                                </div>
                             </div>
                         </div>
                         {get_design_block block="page_general"}
@@ -174,18 +177,20 @@
     <div class="row">
         <div class="col-lg-12 col-md-12">
             <div class="boxed match fn_toggle_wrap tabs">
-                <div class="heading_tabs">
-                    <div class="tab_navigation">
-                        <a href="#tab1" class="heading_box tab_navigation_link">{$btr->general_full_description|escape}</a>
+                <div class="">
+                    <div class="heading_tabs">
+                        <div class="tab_navigation">
+                            <a href="#tab1" class="heading_box tab_navigation_link">{$btr->general_full_description|escape}</a>
+                        </div>
+                        <div class="toggle_arrow_wrap fn_toggle_card text-primary">
+                            <a class="btn-minimize" href="javascript:;" ><i class="icon-arrow-down"></i></a>
+                        </div>
                     </div>
-                    <div class="toggle_arrow_wrap fn_toggle_card text-primary">
-                        <a class="btn-minimize" href="javascript:;" ><i class="icon-arrow-down"></i></a>
-                    </div>
-                </div>
-                <div class="toggle_body_wrap on fn_card">
-                    <div class="tab_container">
-                        <div id="tab1" class="tab">
-                            <textarea name="description" id="fn_editor" class="editor_small">{$page->description|escape}</textarea>
+                    <div class="toggle_body_wrap on fn_card">
+                        <div class="tab_container">
+                            <div id="tab1" class="tab">
+                                <textarea name="description" id="fn_editor" class="editor_small">{$page->description|escape}</textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -201,5 +206,6 @@
         </div>
     </div>
 </form>
+
 {* Подключаем Tiny MCE *}
 {include file='tinymce_init.tpl'}

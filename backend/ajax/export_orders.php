@@ -11,7 +11,6 @@ use Okay\Core\Database;
 
 require_once 'configure.php';
 
-/*˜˜˜˜(˜˜˜˜˜˜˜) ˜˜˜ ˜˜˜˜˜ ˜˜˜˜˜˜˜˜*/
 $columnsNames = [
     'id'=>           'Order ID',
     'date'=>         'Order date',
@@ -58,42 +57,30 @@ session_write_close();
 unset($_SESSION['lang_id']);
 unset($_SESSION['admin_lang_id']);
 
-// ˜˜˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜ 1251
-setlocale(LC_ALL, 'ru_RU.1251');
-$sqlQuery = $queryFactory->newSqlQuery()->setStatement('SET NAMES cp1251');
-$db->query($sqlQuery);
-
-// ˜˜˜˜˜˜˜˜, ˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜˜
 $page = $request->get('page');
 if(empty($page) || $page==1) {
     $page = 1;
-    // ˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜˜ - ˜˜˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜ ˜˜˜˜˜˜˜˜
     if(is_writable($exportFilesDir.$filename)) {
         unlink($exportFilesDir.$filename);
     }
 }
 
-// ˜˜˜˜˜˜˜˜˜ ˜˜˜˜ ˜˜˜˜˜˜˜˜ ˜˜ ˜˜˜˜˜˜˜˜˜˜
 $f = fopen($exportFilesDir.$filename, 'ab');
 
-$filter = array();
-
-$filter['page'] = $page;
+$filter          = [];
+$filter['page']  = $page;
 $filter['limit'] = $ordersCount;
 
-// ˜˜˜˜˜˜
 $statusId = $request->get('status', 'integer');
 if (!empty($statusId)) {
     $filter['status'] = $statusId;
 }
 
-// ˜˜˜˜˜
 $labelId = $request->get('label', 'integer');
 if(!empty($labelId)) {
     $filter['label'] = $labelId;
 }
 
-// ˜˜˜˜
 $fromDate = $request->get('from_date');
 $toDate = $request->get('to_date');
 
@@ -104,15 +91,12 @@ if (!empty($toDate)) {
     $filter['to_date'] = $toDate;
 }
 
-// ˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜˜ - ˜˜˜˜˜˜˜ ˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜
 if($page == 1) {
     fputcsv($f, $columnsNames, $columnDelimiter);
 }
 
-// ˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜
 $mainCurrency =  $currenciesEntity->getMainCurrency();
 
-// ˜˜˜ ˜˜˜˜˜˜
 $orders = $ordersEntity->find($filter);
 if (!empty($orders)) {
     foreach($orders as $o) {
@@ -133,6 +117,11 @@ if($ordersCount*$page < $totalOrders) {
 }
 
 fclose($f);
+
+file_put_contents(
+    $exportFilesDir.$filename,
+    iconv( "utf-8", "windows-1251//IGNORE", file_get_contents($exportFilesDir.$filename))
+);
 
 if($data) {
     $response->setContent(json_encode($data), RESPONSE_JSON)->sendContent();

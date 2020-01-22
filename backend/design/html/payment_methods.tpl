@@ -47,7 +47,7 @@
                 {*Параметры элемента*}
                 <div class="deliveries_wrap okay_list_body sortable">
                     {foreach $payment_methods as $payment_method}
-                        <div class="fn_row okay_list_body_item fn_sort_item">
+                        <div class="fn_step-1 fn_row okay_list_body_item fn_sort_item">
                             <div class="okay_list_row">
                                 <input type="hidden" name="positions[{$payment_method->id}]" value="{$payment_method->position}">
 
@@ -126,3 +126,6 @@
         </div>
     {/if}
 </div>
+
+{* Learning script *}
+{include file='learning_hints.tpl' hintId='hint_payments'}

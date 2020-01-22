@@ -61,11 +61,11 @@ class BackendProductsRequest
         }
 
         foreach($productVariants as $key => $variant) {
-            if (empty($variant->name)  &&
-                empty($variant->sku)   &&
-                empty((float) $variant->price) &&
-                empty($variant->compare_price)) {
-
+            if (empty($variant->name)         &&
+                empty($variant->sku)          &&
+                trim($variant->price)         === "" &&
+                trim($variant->compare_price) === ""
+            ) {
                 unset($productVariants[$key]);
             }
         }

@@ -103,7 +103,7 @@
 
                                         <div class="okay_list_setting okay_list_pages_setting">
                                             {*open*}
-                                            <a href="../{url_generator route="page" url=$page->url}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
+                                            <a href="{url_generator route="page" url=$page->url absolute=1}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
                                                 {include file='svg_icon.tpl' svgId='icon_desktop'}
                                             </a>
 

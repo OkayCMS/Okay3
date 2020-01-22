@@ -271,7 +271,7 @@ class MainHelper
     public function getAllLanguages()
     {
         foreach ($this->allLanguages as $l) {
-            $l->url = $this->getLangUlr($l->id);
+            $l->url = $this->getLangUrl($l->id);
         }
         return ExtenderFacade::execute(__METHOD__, $this->allLanguages, func_get_args());
     }
@@ -284,7 +284,7 @@ class MainHelper
      */
     public function getCurrentLanguage()
     {
-        $this->currentLanguage->url = $this->getLangUlr($this->currentLanguage->id);
+        $this->currentLanguage->url = $this->getLangUrl($this->currentLanguage->id);
         return ExtenderFacade::execute(__METHOD__, $this->currentLanguage, func_get_args());
     }
 
@@ -345,7 +345,7 @@ class MainHelper
      * @return string
      * @throws \Exception
      */
-    private function getLangUlr($langId)
+    private function getLangUrl($langId)
     {
         /** @var Router $router */
         $router = $this->SL->getService(Router::class);

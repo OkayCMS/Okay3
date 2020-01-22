@@ -15,6 +15,12 @@ class CategoryRoute extends AbstractRoute
     const TYPE_NO_PREFIX          = 'no_prefix';
     const TYPE_PREFIX_AND_PATH    = 'prefix_and_path';
     const TYPE_NO_PREFIX_AND_PATH = 'no_prefix_and_path';
+    const SLASH_END               = 'category_routes_template_slash_end';
+
+    public function hasSlashAtEnd()
+    {
+        return intval($this->settings->get(static::SLASH_END)) === 1 && $this->hasNoFilters();
+    }
 
     protected function getStrategy()
     {
@@ -31,5 +37,10 @@ class CategoryRoute extends AbstractRoute
         }
 
         return new DefaultStrategy();
+    }
+
+    private function hasNoFilters()
+    {
+        return empty($this->params[1]);
     }
 }

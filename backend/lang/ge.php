@@ -144,6 +144,7 @@ $lang['general_delete_request'] = 'მოთხოვნის წაშლა';
 $lang['general_design_message'] = 'აქ თქვენ შეგიძლიათ რედაქტირება გაუკეთოთ თქვენი საიტის ბირთვის ფაილებს.';
 $lang['general_design_message2'] = 'რედაქტირების დაწყებამდე, აუცილებლად შექმენით თქვენი შაბლონის სარეზერვო ასლი.';
 $lang['general_design_message3'] = 'ეს განყოფილება საშუალებას გაძლევთ ნახოთ შეტყობინებების შაბლონები debug რეჟიმში.';
+$lang['general_translation_attention'] = 'ეს განყოფილება შეიცავს საიტის ყველა ელემენტის თარგმანს. რედაქტირებისთვის - უბრალოდ გადადით სასურველ თარგმანიზე და შეიყვანეთ თქვენთვის საჭირო მნიშვნელობა.';
 $lang['general_discount'] = 'ფასდაკლება';
 $lang['general_do_disable'] = 'გამორთვა';
 $lang['general_do_enable'] = 'ჩართვა';
@@ -663,13 +664,7 @@ $lang['currency_cents_display'] = 'ხურდის ასახვა';
 $lang['currency_currencies'] = 'ვალუტა';
 $lang['currency_delete'] = 'ვალუტის წაშლა';
 $lang['currency_iso'] = 'ISO';
-$lang['currency_message'] = 'ფასის ათწილადი ნიშნების რაოდენობა მოქმედებს მხოლოდ ფასების ასახვაზე.
-შესაძლებელია ვიზუალური შეცდომები ვალუტის კონვერტაციის დროს.
-
-მაგალითისათვის განვიხილოთ შემდეგი სიტუაცია: 
-პროდუქტის ღირებულებაა 98,10 ლარი.
-თუ ათწილადი ნიშნების რაოდენობა 0-ს ტოლია, ფასის ასახვა იქნება 98 ლარი.
-მაგრამ 10 ერთეული პროდუქტის ასახვა კალათში გამოისახება როგორც 981 ლარი.';
+$lang['currency_message'] = 'ფასის ათწილადი ნიშნების რაოდენობა მოქმედებს მხოლოდ ფასების ასახვაზე.შესაძლებელია ვიზუალური შეცდომები ვალუტის კონვერტაციის დროს.მაგალითისათვის განვიხილოთ შემდეგი სიტუაცია: პროდუქტის ღირებულებაა 98,10 ლარი.თუ ათწილადი ნიშნების რაოდენობა 0-ს ტოლია, ფასის ასახვა იქნება 98 ლარი.მაგრამ 10 ერთეული პროდუქტის ასახვა კალათში გამოისახება როგორც 981 ლარი.';
 $lang['currency_name'] = 'დასახელება';
 $lang['currency_rate'] = 'კურსი';
 $lang['currency_recalculate'] = 'გადავთვალოთ ფასები';
@@ -1050,6 +1045,10 @@ $lang['learning_title'] = 'სწავლა';
 $lang['learning_welcome'] = 'კეთილი იყოს თქვენი მობრძანება OkayCMS';
 $lang['learning_annotation'] = 'გაეცანით სისტემის მდიდარ ფუნქციონირებას';
 $lang['lesson_done'] = 'შესრულებულია';
+$lang['lesson_skip'] = 'გამოტოვეთ';
+$lang['lesson_video'] = 'ნახეთ ვიდეო';
+$lang['lesson_explore'] = 'გაეცანით';
+$lang['lesson_type'] = 'განყოფილება მენიუში';
 $lang['skip_learning'] = 'სწავლის გამოტოვება';
 $lang['we_use_of_learning'] = 'თქვენ იყენებთ';
 $lang['of_system'] = 'სისტემის შესაძლებლობები';
@@ -1083,3 +1082,256 @@ $lang['allow_to_visible_empty_categories'] = 'ცარიელი კატე
 $lang['allow_to_visible_empty_categories_notice'] = 'თუ გამორთეთ ეს პარამეტრი, მაშინ პროდუქციის გარეშე კატეგორიები არ იქნება ნაჩვენები კატალოგში, მაგრამ ის ხელმისაწვდომი იქნება მომხმარებლისთვის და საძიებო სისტემებისთვის პირდაპირი ბმულის საშუალებით. თუ პარამეტრი ჩართულია';
 $lang['no_modules'] = 'არ არის მოდულები';
 $lang['settings_advantages'] = 'Advantages';
+$lang['lesson_status_done'] = 'დასრულებულია';
+$lang['lesson_status_not_done'] = 'არ დასრულებულა';
+
+$lang['learning_hint_next'] = 'Дальше';
+$lang['learning_hint_prev'] = 'Назад';
+$lang['learning_hint_done'] = 'Завершить';
+$lang['learning_hint_next_done'] = 'Перейти';
+$lang['learning_hint_meta_data'] = '<p><strong>Мета-данные</strong> - это скрытые данные от пользователя необходимые для поискового продвижения<br><strong>Meta-title</strong> - заголовок страницы<br><strong>Meta-keywords</strong> - список ключевых слов<br><strong>Meta-description</strong> - описание страницы<br></p>';
+$lang['learning_hint_success'] = '<p>Остался последний шаг - это сохранить все настройки</p><p>Нажмите на кнопку <strong>Применить</strong></p>';
+
+$lang['learning_hint_categories_intro'] = '<p><strong>Категории</strong> - важная часть для построения структуры сайта и основа всего сайта.</p><p>Старайтесь не допускать категорий со слишком большим количеством товаров.</p>';
+$lang['learning_hint_categories_intro2'] = '<p>Мы сейчас находимся на странице вывода категорий. Отображаются они ввиде списка, в котором можно легко ими управлять.</p>';
+$lang['learning_hint_categories_item'] = '<p>Давайте рассмотрим возможности управления, на примере уже созданной категории</p>';
+$lang['learning_hint_categories_subicon'] = '<p>При нажатии на иконку <i class="fa fa-plus-square"></i> , вы сможете увидеть список дочерних категорий.</p>';
+$lang['learning_hint_categories_move_zone'] = '<p>С помощью элемента <i class="fa fa-arrows-v"></i> , вы сможете перемещать категорию, меняя его положение в списке</p>';
+$lang['learning_hint_categories_check'] = '<p>Отмечая категории <strong>чекбоксами</strong>, вы можете задавать им одно действия. Например удалить все отмеченные категории в одно действие</p>';
+$lang['learning_hint_categories_photo'] = '<p><strong>Изображение</strong> категории, позволяет визуально быстро найти нужную нам категорию.</p>';
+$lang['learning_hint_categories_name'] = '<p>Собственно и само название категории</p>';
+$lang['learning_hint_categories_status'] = '<p>Быстро можно отключить и включить отображение категории на сайте</p>';
+$lang['learning_hint_categories_setting'] = '<p>Также есть возможность для бысторого перехода на страницу категории</p>';
+$lang['learning_hint_categories_add'] = '<p>Мы ознакомились с возможностью управления списком категорий. Теперь давайте перейдем на страницу добавления / редактирования категории</p><p>Нажмите <strong>"Перейти"</strong> чтобы продолжить</p>';
+
+$lang['learning_hint_category_intro'] = '<p>Мы перешли на <strong>страницу категории</strong>. Здесь обычно добавляются или редактируются сами категории.</p><p>Давайте подробнее рассмотрим поля, которые вам прийдется заполнять при создании новой категорий.</p>';
+$lang['learning_hint_category_name'] = '<p>В это поле вводим <strong>название категории</strong> которое будет выводиться на сайте.</p><p class="required"> Обязательное к заполнению поле</p>';
+$lang['learning_hint_category_url'] = '<p><strong>URL</strong> - ссылка данной категории. После ввода названия она создается автоматически.</p>';
+$lang['learning_hint_category_activity'] = '<p><strong>Активность</strong> включает или отключает отображение категории для покупателей в каталоге.</p>';
+$lang['learning_hint_category_images'] = '<p>В разделе <strong>Изображение</strong> можно загрузить иконку для категории.</p><p class="required"> поддерживающие форматы jpeg, png, gif </p>';
+$lang['learning_hint_category_h1'] = '<p>Если вам требуется задать <strong>заголовок Н1</strong> отличающийся от названия категории - впишите его сюда</p>';
+$lang['learning_hint_category_tree'] = '<p>Корневая категория, внутри которой будет находиться данная категория</p>';
+$lang['learning_hint_category_descriptions'] = '<p>В этом разделе можно написать <strong>Краткое описание</strong> и <strong>Полное описание</strong> для категорий</p>';
+$lang['learning_hint_category_finish'] = '<p>Вы прошли обучение и теперь сможете правильно создавать категории</p><p>Нажмите <strong>"Завершить"</strong> чтобы перейти к следующему уроку</p>';
+
+$lang['learning_hint_brands_intro'] = '<p>Одной из главных составляющих любого сайта является <strong>бренд товара</strong>. Товары известных брендов всегда пользуются спросом и используются в сортировках и фильтрах на сайте.</p><p> При поиске конкретного товара покупатели обращают внимание на производителя товара, поэтому чаще всего ищут товар по бренду.</p>';
+$lang['learning_hint_brands_intro2'] = '<p>Мы сейчас находимся на <strong>странице вывода брендов</strong>. Отображаются они ввиде списка, в котором можно легко ими управлять.</p>';
+$lang['learning_hint_brands_item'] = '<p>Давайте рассмотрим возможности управления, на примере уже созданного бренда</p>';
+$lang['learning_hint_brands_move_zone'] = '<p>С помощью элемента <i class="fa fa-arrows-v"></i> , вы сможете перемещать бренд, меняя его положение в списке</p>';
+$lang['learning_hint_brands_check'] = '<p>Отмечая бренды <strong>чекбоксами</strong>, вы можете задавать им одно действия. Например удалить все отмеченные в одно действие</p>';
+$lang['learning_hint_brands_photo'] = '<p><strong>Изображение бренда</strong>, позволяет визуально быстро найти нужную нам категорию.</p>';
+$lang['learning_hint_brands_name'] = '<p>Собственно и само название бренда</p>';
+$lang['learning_hint_brands_status'] = '<p>Быстро можно отключить и включить отображение бренда на сайте</p>';
+$lang['learning_hint_brands_setting'] = '<p>Также есть возможность для бысторого перехода на страницу бренда</p>';
+$lang['learning_hint_brands_add'] = '<p>Мы ознакомились с возможностью управления списком бренда. Теперь давайте перейдем на страницу добавления / редактирования категории</p><p>Нажмите <strong>"Перейти"</strong> чтобы продолжить</p>';
+
+$lang['learning_hint_brand_intro'] = '<p>Мы перешли на <strong>страницу бренда</strong>. Здесь обычно добавляются или редактируются сами бренды.</p><p>Давайте подробнее рассмотрим поля, которые вам прийдется заполнять при создании нового бренда.</p>';
+$lang['learning_hint_brand_name'] = '<p>В это поле вводим <strong>название бренда</strong> которое будет выводиться на сайте.</p><p class="required"> Обязательное к заполнению поле</p>';
+$lang['learning_hint_brand_url'] = '<p><strong>URL</strong> - ссылка данного бренда. После ввода названия она создается автоматически.</p></p>';
+$lang['learning_hint_brand_activity'] = '<p><strong>Активность</strong> включает или отключает отображение бренда на сайте.</p>';
+$lang['learning_hint_brand_images'] = '<p>В разделе <strong>Изображение</strong> можно загрузить фото для бренда.</p><p class="required"> поддерживающие форматы jpeg, png, gif </p>';
+$lang['learning_hint_brand_descriptions'] = '<p>В этом разделе можно написать <strong>Краткое описание</strong> и <strong>Полное описание</strong> для бренда</p>';
+$lang['learning_hint_brand_finish'] = '<p>Вы прошли обучение и теперь сможете правильно создавать бренд</p><p>Нажмите <strong>"Завершить"</strong> чтобы перейти к следующему уроку</p>';
+
+$lang['learning_hint_features_intro'] = '<p>Одной из главных составляющих любого сайта является <strong>свойство товара</strong>. Товары известных брендов всегда пользуются спросом и используются в сортировках и фильтрах на сайте.</p><p> При поиске конкретного товара покупатели обращают внимание на производителя товара, поэтому чаще всего ищут товар по бренду.</p>';
+$lang['learning_hint_features_intro2'] = '<p>Мы сейчас находимся на <strong>странице вывода брендов</strong>. Отображаются они ввиде списка, в котором можно легко ими управлять.</p>';
+$lang['learning_hint_features_sorting'] = '<p>Давайте рассмотрим возможности управления, на примере уже созданного бренда</p>';
+$lang['learning_hint_features_item'] = '<p>Давайте рассмотрим возможности управления, на примере уже созданного бренда</p>';
+$lang['learning_hint_features_move_zone'] = '<p>С помощью элемента <i class="fa fa-arrows-v"></i> , вы сможете перемещать бренд, меняя его положение в списке</p>';
+$lang['learning_hint_features_check'] = '<p>Отмечая бренды <strong>чекбоксами</strong>, вы можете задавать им одно действия. Например удалить все отмеченные в одно действие</p>';
+$lang['learning_hint_features_name'] = '<p><strong>Изображение бренда</strong>, позволяет визуально быстро найти нужную нам категорию.</p>';
+$lang['learning_hint_features_category'] = '<p>Собственно и само название бренда</p>';
+$lang['learning_hint_features_status'] = '<p>Быстро можно отключить и включить отображение бренда на сайте</p>';
+$lang['learning_hint_features_setting'] = '<p>Также есть возможность для бысторого перехода на страницу бренда</p>';
+$lang['learning_hint_features_add'] = '<p>Мы ознакомились с возможностью управления списком бренда. Теперь давайте перейдем на страницу добавления / редактирования категории</p><p>Нажмите <strong>"Перейти"</strong> чтобы продолжить</p>';
+
+$lang['learning_hint_feature_intro'] = '<p>Мы перешли на <strong>страницу свойства</strong>. Здесь обычно добавляются или редактируются сами свойства.</p><p>Давайте подробнее рассмотрим поля, которые вам прийдется заполнять при создании нового свойства.</p>';
+$lang['learning_hint_feature_name'] = '<p><p>В это поле вводим <strong>название свойства</strong> которое будет выводиться на сайте.</p><p class="required"> Обязательное к заполнению поле</p>';
+$lang['learning_hint_feature_url'] = '<p><strong>URL</strong> - ссылка данной свойства. После ввода названия она создается автоматически.</p></p>';
+$lang['learning_hint_feature_link'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_feature_activity'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_feature_filter'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_feature_list'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_feature_list_sorting'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_feature_item'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_feature_move_zone'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_feature_list_name'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_feature_value_translit'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_feature_value_products_num'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_feature_value_index'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_feature_union'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_feature_finish'] = '<p>Вы прошли обучение и теперь сможете правильно добавлять свойства</p><p>Нажмите <strong>"Завершить"</strong> чтобы перейти к следующему уроку</p>';
+
+$lang['learning_hint_products_intro'] = '<p><strong>Товар</strong> - значимая часть контента любого интернет-магазина.</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_products_intro2'] = '<p>Мы сейчас находимся на странице вывода товаров. Отображаются они ввиде списка, в котором можно легко ими управлять.</p>';
+$lang['learning_hint_products_sorting'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_products_sorting2'] = '<p>С помощью стрелочек можно сортировать товары в админ панели по различным условиям</p>';
+$lang['learning_hint_products_item'] = '<p>Давайте рассмотрим возможности управления, на примере уже созданного товара</p>';
+$lang['learning_hint_products_move_zone'] = '<p>С помощью элемента <i class="fa fa-arrows-v"></i> , вы сможете перемещать товар, меняя его положение в списке</p>';
+$lang['learning_hint_products_check'] = '<p>Отмечая товар <strong>чекбоксами</strong>, вы можете задавать им одно действия. Например удалить все отмеченные товары в одно действие</p>';
+$lang['learning_hint_products_photo'] = '<p><strong>Изображение</strong> товара, позволяет визуально быстро найти нужный вам товар.</p>';
+$lang['learning_hint_products_name'] = '<p>Название товара, бренд товара и варианты товара</p>';
+$lang['learning_hint_products_list_price'] = '<p>Для удобства у каждого товара выведена цена с валютой </p>';
+$lang['learning_hint_products_list_count'] = '<p>И количество товаров в наличии</p>';
+$lang['learning_hint_products_status'] = '<p>Можно быстро отключить и включить отображение товара на сайте</p>';
+$lang['learning_hint_products_setting'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_products_add'] = '<p>Мы ознакомились с возможностью управления списком товаров. Теперь давайте перейдем на страницу добавления / редактирования товара</p><p>Нажмите <strong>"Перейти"</strong> чтобы продолжить</p>';
+
+$lang['learning_hint_product_intro'] = '<p>Мы перешли на <strong>страницу товара</strong>. Здесь обычно добавляются или редактируются сами товары.</p><p>Давайте подробнее рассмотрим поля, которые вам прийдется заполнять при создании нового товара.</p>';
+$lang['learning_hint_product_name'] = '<p>В это поле вводим <strong>название товара</strong> которое будет выводиться на сайте.</p><p class="required"> Обязательное к заполнению поле</p>';
+$lang['learning_hint_product_url'] = '<p><strong>URL</strong> - ссылка товара. После ввода названия она создается автоматически.</p></p>';
+$lang['learning_hint_product_activity'] = '<p><strong>Активность</strong> включает или отключает отображение товара для покупателей на сайте.</p>';
+$lang['learning_hint_product_hits'] = '<p><strong>Хит продаж</strong> включает или отключает отображение товара на главной в блоке «Хиты продаж».</p>';
+$lang['learning_hint_product_images'] = '<p>В разделе <strong>Изображение</strong> можно загрузить несколько изображений для товара.</p><p class="required"> поддерживающие форматы jpeg, png, gif </p>';
+$lang['learning_hint_product_brand'] = '<p><strong>Бренд</strong> помогает упорядочить продукцию на сайте вашей компании. Объединяйте товары в бренды, чтобы покупателям было удобнее просматривать их</p>';
+$lang['learning_hint_product_category'] = '<p><strong>Категории</strong> используются для быстрого поиска нужного товара или услуги на сайте</p>';
+$lang['learning_hint_product_variant'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><p><strong>Артикул</strong> - sed do eiusmod tempor incididunt ut</p><p><strong>Название</strong> - sed do eiusmod tempor incididunt ut</p><p><strong>Цена</strong> - sed do eiusmod tempor incididunt ut</p><p><strong>Старая цена</strong> - sed do eiusmod tempor incididunt ut</p><p><strong>Вес</strong> - sed do eiusmod tempor incididunt ut</p><p><strong>Кол-во</strong> - sed do eiusmod tempor incididunt ut</p><p><strong>Ед. изм.</strong> - sed do eiusmod tempor incididunt ut</p>';
+$lang['learning_hint_product_promo'] = '<p><strong>Промо-изображения</strong> на товарах могут рассказать покупателю, что на данный товар действует акция, спецпредолжение по доставке или оплате, подарок к товару и т.д.</p><p>Вы можете загрузить своё промо изображение</p><p class="required"> поддерживающие форматы jpeg, png, gif </p>';
+$lang['learning_hint_product_rating'] = '<p><strong>Рейтинг товара</strong> отображается на карточке товара и показывает, насколько высоко пользователи оценили товар.</p>';
+$lang['learning_hint_product_features'] = '<p><strong>Свойства товара</strong> помогают покупателям быстрее оценить товар, определиться с покупкой и сделать заказ</p>';
+$lang['learning_hint_product_recommended'] = '<p><strong>Рекомендуемые товары</strong> - это список товаров, рекомендуемых к покупке вместе с выбранным товаром</p>';
+$lang['learning_hint_product_descriptions'] = '<p>В этом разделе можно написать <strong>Краткое описание</strong> и <strong>Полное описание</strong> для товара</p>';
+$lang['learning_hint_product_finish'] = '<p>Вы прошли обучение и теперь сможете правильно создавать товар</p><p>Нажмите <strong>"Завершить"</strong> чтобы перейти к следующему уроку</p>';
+
+$lang['learning_hint_page_intro'] = '<p><strong>Страницы</strong> – описание о текущей странице</p>';
+$lang['learning_hint_page_name'] = '<p><strong>Название</strong> - название страницы, которое будет выводиться на сайте. (например: Контакты)</p>';
+$lang['learning_hint_page_url'] = '<p><strong>URL</strong> - ссылка данного свойства. После ввода названия, она создается автоматически.</p>';
+$lang['learning_hint_page_h1'] = '<p><strong>Заголовок H1</strong> - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_page_activity'] = '<p><strong>Активность</strong> включает или отключает отображение страицы для покупателей на сайте.</p>';
+$lang['learning_hint_page_descriptions'] = '<p>В разделе <strong>Полное описание</strong> можно написать текст для страницы</p>';
+$lang['learning_hint_page_finish'] = '<p>Вы прошли обучение и теперь сможете правильно создавать страницы</p><p>Нажмите <strong>"Завершить"</strong> чтобы перейти к следующему уроку</p>';
+
+$lang['learning_hint_currency_intro'] = '<p><strong>Валютность</strong> может быть полезна для тех, кто закупает товар в разных валютах. Вы можете добавлять цены на товары в одной валюте, а отображать на сайте в другой. При изменении курса – все цены на сайте пересчитываются автоматически.</p>';
+$lang['learning_hint_currency_intro2'] = '<p><strong> Важно</strong> понимать, что <strong>Основной валютой</strong> сайта считается та, которая стоит первой в списке. Для того чтобы сменить основную валюту, просто перетяните нужную вам валюту на первое место</p>';
+$lang['learning_hint_currency_start'] = '<p>В этом списке отображаются все созданные валюты для вашего магазина. Давайте рассмотрим как они настраиваются.</p>';
+$lang['learning_hint_currency_name'] = '<p>В этом поле указывают <strong>название валюты</strong>, которое отображается на сайте в блоке смены валюты.</p>';
+$lang['learning_hint_currency_sign'] = '<p><strong>Знак</strong> необходим для того чтобы покупатель понимал в какой валюте указана цена товара. Отображается он, как правило возле цен товаров</p>';
+$lang['learning_hint_currency_iso'] = '<p><strong>Код ISO</strong> - код валюты в формате ISO3, необходимый для идентификации в различных платежных систем</p><p class="example_text"> Например: Рубли - RUR, Гривны - UAH, Доллары - USD, и т.д.</p>';
+$lang['learning_hint_currency_course'] = '<p><strong>Курс валюты</strong> - это его коэффициент относительно основной валюты. У основной валюты, курс всегда должен равен единице</p>';
+$lang['learning_hint_currency_course2'] = '<p>Для всех остальных валют значение задаётся по принципу "Сколько основной валюты в этой валюте?".</p> <p class="example_text">Например: 1 доллар($) равен 65 рублям(руб).</p>';
+$lang['learning_hint_currency_activity'] = '<p><strong>Активность</strong> включает или отключает отображение валюты для покупателей на сайте.</p>';
+$lang['learning_hint_currency_cent'] = '<p>Вы можете <strong>включить</strong> или <strong>отключить</strong> отображение копеек у цены товара.</p>';
+$lang['learning_hint_currency_finish'] = '<p>Вы прошли обучение и теперь сможете настраивать и создавать валюты.</p><p>Нажмите <strong>"Завершить"</strong> чтобы перейти к следующему уроку</p>';
+
+$lang['learning_hint_deliveries_intro'] = '<p><strong>Способы доставки</strong> - это важная часть при оформлении заказа. У покупателя должна быть возможность выбрать, как он хочет получить свой товар. Это может быть доставка курьером по адресу, самовывоз из магазина или доставка до почтового отделения вашего города.</p>';
+$lang['learning_hint_deliveries_intro2'] = '<p>Мы сейчас находимся на <strong>странице вывода способов доставки</strong>. Отображаются они ввиде списка, в котором можно легко ими управлять.</p>';
+$lang['learning_hint_deliveries_item'] = '<p>Давайте рассмотрим возможности управления, на примере уже созданной доставки</p>';
+$lang['learning_hint_deliveries_move_zone'] = '<p>С помощью элемента <i class="fa fa-arrows-v"></i> , вы сможете перемещать доставку, меняя его положение в списке</p>';
+$lang['learning_hint_deliveries_check'] = '<p>Отмечая доставки <strong>чекбоксами</strong>, вы можете задавать им одно действия. Например удалить все отмеченные в одно действие</p>';
+$lang['learning_hint_deliveries_photo'] = '<p><strong>Изображение</strong> позволяет визуально быстро найти нужный вам способ доставки.</p>';
+$lang['learning_hint_deliveries_name'] = '<p>Название способа доставки</p>';
+$lang['learning_hint_deliveries_terms'] = '<p>В этом блоке выводятся условия доставки</p>';
+$lang['learning_hint_deliveries_status'] = '<p>Быстро можно отключить и включить отображение способа доставки на сайте</p>';
+$lang['learning_hint_deliveries_add'] = '<p>Мы ознакомились с возможностью управления списком способов доставки. Теперь давайте перейдем на страницу добавления / редактирования доставки</p><p>Нажмите <strong>"Перейти"</strong> чтобы продолжить</p>';
+
+$lang['learning_hint_delivery_intro'] = '<p>Мы перешли на <strong>страницу способа доставки</strong>. Здесь обычно добавляются или редактируются сами доставки.</p><p>Давайте подробнее рассмотрим поля, которые вам прийдется заполнять при создании нового способа доставки.</p>';
+$lang['learning_hint_delivery_name'] = '<p>В это поле вводим <strong>название способа доставки</strong> которое будет выводиться на сайте.</p><p class="required"> Обязательное к заполнению поле</p>';
+$lang['learning_hint_delivery_activity'] = '<p><strong>Активность</strong> включает или отключает способ доставки на сайте.</p>';
+$lang['learning_hint_delivery_images'] = '<p>В разделе <strong>Изображение</strong> можно загрузить иконку для способа доставки.</p>';
+$lang['learning_hint_delivery_type'] = '<p>В этом разделе нужно настроить стоимость доставки.</p><p> Есть три типа оплаты:</p> <p><strong>-Платная</strong> - нужно указать "стоимость" и мин. сумму заказа для бесплатной доставки, если необходимо. </p><p><strong>-Бесплатная</strong></p><p><strong>-Оплачивается отдельно</strong></p>';
+$lang['learning_hint_delivery_module'] = '<p>У некоторых доставках</p>';
+$lang['learning_hint_delivery_payments'] = '<p>Теперь к доставке нужно привязать один или несколько доступных способов оплаты</p>';
+$lang['learning_hint_delivery_descriptions'] = '<p>В этом разделе можно задать <strong>описание способа доставки</strong></p>';
+$lang['learning_hint_delivery_finish'] = '<p>Вы прошли обучение и теперь сможете правильно создавать способы доставки</p><p>Нажмите <strong>"Завершить"</strong> чтобы перейти к следующему уроку</p>';
+
+$lang['learning_hint_payments_intro'] = '<p><strong>Способы оплаты</strong> - это важная часть при оформлении заказа. У покупателя должна быть возможность выбрать, как он хочет оплатить свой заказ. Это может быть оплата наличными или через какой то банковский перевод.</p>';
+$lang['learning_hint_payments_intro2'] = '<p>Мы сейчас находимся на <strong>странице вывода способов оплаты</strong>. Отображаются они ввиде списка, в котором можно легко ими управлять.</p>';
+$lang['learning_hint_payments_item'] = '<p>Давайте рассмотрим возможности управления, на примере уже созданной оплаты</p>';
+$lang['learning_hint_payments_move_zone'] = '<p>С помощью элемента <i class="fa fa-arrows-v"></i> , вы сможете перемещать оплату, меняя его положение в списке</p>';
+$lang['learning_hint_payments_check'] = '<p>Отмечая оплаты <strong>чекбоксами</strong>, вы можете задавать им одно действия. Например удалить все отмеченные в одно действие</p>';
+$lang['learning_hint_payments_photo'] = '<p><strong>Изображение</strong> позволяет визуально быстро найти нужный вам способ оплаты.</p>';
+$lang['learning_hint_payments_name'] = '<p>Название способа оплаты</p>';
+$lang['learning_hint_payments_status'] = '<p>Быстро можно отключить и включить отображение одного из способов оплат</p>';
+$lang['learning_hint_payments_add'] = '<p>Мы ознакомились с возможностью управления списком способов оплат. Теперь давайте перейдем на страницу добавления / редактирования оплаты</p><p>Нажмите <strong>"Перейти"</strong> чтобы продолжить</p>';
+
+$lang['learning_hint_payment_intro'] = '<p><p>Мы перешли на <strong>страницу способа оплаты</strong>. Здесь обычно добавляются или редактируются сами оплаты.</p><p>Давайте подробнее рассмотрим поля, которые вам прийдется заполнять при создании нового способа оплаты.</p>';
+$lang['learning_hint_payment_name'] = '<p>В это поле вводим <strong>название способа оплаты</strong> которое будет выводиться на сайте.</p><p class="required"> Обязательное к заполнению поле</p>';
+$lang['learning_hint_payment_activity'] = '<p><strong>Активность</strong> включает или отключает способ оплаты на сайте.</p>';
+$lang['learning_hint_payment_images'] = '<p>В разделе <strong>Изображение</strong> можно загрузить иконку для способа оплаты.</p>';
+$lang['learning_hint_payment_type'] = '<p>В этом разделе нужно настроить модуль оплаты.</p>';
+$lang['learning_hint_payment_delivery'] = '<p>Теперь оплату нужно привязать к одной или нескольким доступных способам доставки</p>';
+$lang['learning_hint_payment_descriptions'] = '<p>В этом разделе можно задать <strong>описание способа оплаты</strong></p>';
+$lang['learning_hint_payment_finish'] = '<p>Вы прошли обучение и теперь сможете правильно создавать способы оплаты</p><p>Нажмите <strong>"Завершить"</strong> чтобы перейти к следующему уроку</p>';
+
+$lang['learning_hint_settings_catalog_intro'] = '<p><strong>Настройки каталога</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
+$lang['learning_hint_settings_catalog__products_on_page'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
+$lang['learning_hint_settings_catalog_products_max'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
+$lang['learning_hint_settings_catalog_posts_on_page'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
+$lang['learning_hint_settings_catalog_products_comparcion'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_settings_catalog_units'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_settings_catalog_cents'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_settings_catalog_thousands'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_settings_catalog_not_in_stock'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_settings_catalog_preorder_not_in_stock'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_settings_catalog_truncate_table'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_settings_catalog_watermark'] = '<p>Вы прошли обучение и теперь сможете правильно создавать способы оплаты</p><p>Нажмите <strong>"Завершить"</strong> чтобы перейти к следующему уроку</p>';
+
+$lang['learning_hint_orders_intro'] = '<p><strong>Заказы</strong> - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_orders_intro2'] = '<p>Мы сейчас находимся на странице вывода заказов. Отображаются они ввиде списка, в котором можно легко ими управлять.</p>';
+$lang['learning_hint_orders_sorting'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_orders_item'] = '<p>Давайте рассмотрим возможности управления, на примере уже созданного заказа</p>';
+$lang['learning_hint_orders_check'] = '<p>Отмечая заказ <strong>чекбоксами</strong>, вы можете задавать им одно действия. Например удалить все отмеченные заказы в одно действие</p>';
+$lang['learning_hint_orders_id'] = '<p><strong>Номер заказа</strong>, позволяет быстро найти нужный вам заказ.</p>';
+$lang['learning_hint_orders_name'] = '<p>В этом блоке мы видим <strong>ФИО</strong> покупателя и дату заказа</p>';
+$lang['learning_hint_orders_status'] = '<p>Для удобства у каждого товара выведена цена с валютой </p>';
+$lang['learning_hint_orders_count'] = '<p>В этом блок указано количство товаров в заказе, а по клику на  <i class="fn_icon_arrow fa fa-angle-down fa-lg m-t-2 rotate_180"></i> , вы сможете увидеть краткий список заказа.</p>';
+$lang['learning_hint_orders_total'] = '<p>Общая сумма заказа в указанной валюте</p>';
+$lang['learning_hint_orders_marker'] = '<p>Для удобства, заказу можно назначить определенную метку.</p>';
+$lang['learning_hint_orders_add'] = '<p>Мы ознакомились с возможностью управления списком заказов. Теперь давайте перейдем на страницу добавления / редактирования заказа</p><p>Нажмите <strong>"Перейти"</strong> чтобы продолжить</p>';
+
+$lang['learning_hint_order_intro'] = '<p>Мы перешли на <strong>страницу заказа</strong>.</p><p>Давайте подробнее рассмотрим поля, с которыми вам прийдется работать.</p>';
+$lang['learning_hint_order_intro2'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_order_toolbar'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_order_toolbar__status'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_order_toolbar__print'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_order_toolbar__markers'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_order_toolbar__button'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_order_left_content'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_order_parameters'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_order_right_content'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_order_to_email'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_order_finish'] = '<p>Вы прошли обучение и теперь сможете правильно работать с заказами</p><p>Нажмите <strong>"Завершить"</strong> чтобы перейти к следующему уроку</p>';
+
+$lang['learning_hint_settings_notify_intro'] = '<p><strong>Настройки уведомлений</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
+$lang['learning_hint_settings_notify_emails'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
+$lang['learning_hint_settings_notify_reverce'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
+$lang['learning_hint_settings_notify_comments'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
+$lang['learning_hint_settings_notify_sender_name'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_settings_notify_email_lang'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_settings_notify_auto_approved'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_settings_notify_smtp'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_settings_notify_smtp2'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_settings_notify_finish'] = '<p>Вы прошли обучение и теперь сможете правильно настраивать уведомления</p><p>Нажмите <strong>"Завершить"</strong> чтобы перейти к следующему уроку</p>';
+
+$lang['learning_hint_seo_patterns_intro'] = '<p><strong>Настройки уведомлений</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
+$lang['learning_hint_seo_patterns_intro2'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
+$lang['learning_hint_seo_patterns_list'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><p><strong>Виберите одну из категорий, что бы продолжить</strong></p>';
+$lang['learning_hint_seo_patterns_right'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>';
+$lang['learning_hint_seo_patterns_right2'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_seo_patterns_finish'] = '<p>Вы прошли обучение и теперь сможете правильно настраивать уведомления</p><p>Нажмите <strong>"Завершить"</strong> чтобы перейти к следующему уроку</p>';
+
+$lang['learning_hint_blog_intro'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_blog_intro2'] = '<p>Мы сейчас находимся на <strong>странице блога</strong>. Здесь статьи отображаютя в виде списка, в котором можно легко ими управлять.</p>';
+$lang['learning_hint_blog_sorting'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+$lang['learning_hint_blog_item'] = '<p>Давайте рассмотрим возможности управления, на примере уже созданной статьи</p>';
+$lang['learning_hint_blog_check'] = '<p>Отмечая статьи <strong>чекбоксами</strong>, вы можете задавать им одно действия. Например удалить все отмеченные в одно действие</p>';
+$lang['learning_hint_blog_photo'] = '<p><strong>Наличие изображения</strong>, позволяет нам, визуально быстро найти нужную нам статью.</p>';
+$lang['learning_hint_blog_name'] = '<p>Собственно и само название статьи</p>';
+$lang['learning_hint_blog_type'] = '<p>В этом блоке выводится тип статьи.</p>';
+$lang['learning_hint_blog_status'] = '<p>Быстро можно отключить и включить отображение статьи в блоге</p>';
+$lang['learning_hint_blog_setting'] = '<p>Также есть возможность для бысторого перехода на страницу сайта</p>';
+$lang['learning_hint_blog_add'] = '<p>Мы ознакомились с возможностью управления списком статей. Теперь давайте перейдем на страницу добавления / редактирования статьи</p><p>Нажмите <strong>"Перейти"</strong> чтобы продолжить</p>';
+
+$lang['learning_hint_post_intro'] = '<p>Мы перешли на <strong>страницу записи</strong>. Здесь обычно добавляются или редактируются сами статьи.</p><p>Давайте подробнее рассмотрим поля, которые вам прийдется заполнять при создании новой записи.</p>';
+$lang['learning_hint_post_name'] = '<p>В это поле вводим <strong>название статьи</strong> которое будет выводиться на сайте.</p><p class="required"> Обязательное к заполнению поле</p>';
+$lang['learning_hint_post_url'] = '<p><strong>URL</strong> - ссылка данной статьи. После ввода названия она создается автоматически.</p></p>';
+$lang['learning_hint_post_activity'] = '<p><strong>Активность</strong> включает или отключает отображение статьи на сайте.</p>';
+$lang['learning_hint_post_images'] = '<p>В разделе <strong>Изображение</strong> можно загрузить фото для статьи.</p><p class="required"> поддерживающие форматы jpeg, png, gif </p>';
+$lang['learning_hint_post_parameters'] = '<p>Здесь нужно бедет статье указать тип записи и дату публикации</p>';
+$lang['learning_hint_post_product'] = '<p>Этот блок отвечают за привязку товару к статье</p>';
+$lang['learning_hint_post_descriptions'] = '<p>В этом разделе можно написать <strong>Краткое описание</strong> и <strong>Полное описание</strong> для статьи</p>';
+$lang['learning_hint_post_finish'] = '<p>Вы прошли обучение и теперь сможете правильно создавать бренд</p><p>Нажмите <strong>"Завершить"</strong> чтобы перейти к следующему уроку</p>';
+
+$lang['settings_router_url_slash_end'] = 'slash ბოლოს';
+$lang['settings_router_url_slash_end_notice'] = 'ამ ჯგუფის ყველა მისამართს ბოლოს და ბოლოს დაემატებათ სლაიდი';
+$lang['hide_front_delivery_price'] = 'დაფარეთ ფასი';

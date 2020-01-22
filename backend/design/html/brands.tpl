@@ -75,7 +75,7 @@
                 {*Параметры элемента*}
                 <div class="okay_list_body sort_extended">
                     {foreach $brands as $brand}
-                        <div class="fn_row okay_list_body_item fn_sort_item">
+                        <div class="fn_step-1 fn_row okay_list_body_item fn_sort_item">
                             <div class="okay_list_row ">
                                 <input type="hidden" name="positions[{$brand->id}]" value="{$brand->position}" />
 
@@ -115,7 +115,7 @@
                                 </div>
 
                                 <div class="okay_list_setting">
-                                    <a href="../{url_generator route="brand" url=$brand->url}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
+                                    <a href="{url_generator route="brand" url=$brand->url absolute=1}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
                                         {include file='svg_icon.tpl' svgId='icon_desktop'}
                                     </a>
 
@@ -179,6 +179,9 @@
         </div>
     {/if}
 </div>
+
+{* Learning script *}
+{include file='learning_hints.tpl' hintId='hint_brands'}
 
 {literal}
     <script>

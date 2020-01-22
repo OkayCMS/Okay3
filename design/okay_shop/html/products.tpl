@@ -2,7 +2,7 @@
 {* The canonical address of the page *}
 {if $set_canonical || $current_page_num > 1 || $is_all_pages}
     {if $category}
-        {$canonical="{url_generator route='category' url=$category->url absolute=1}" scope=global}
+        {$canonical="{if $cannonical}{$cannonical}{else}{url_generator route='category' url=$category->url absolute=1}{/if}" scope=global}
     {elseif $brand}
         {$canonical="{url_generator route='brand' url=$brand->url absolute=1}" scope=global}
     {elseif $route_name == 'discounted'}

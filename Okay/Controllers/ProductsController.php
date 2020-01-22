@@ -134,7 +134,7 @@ class ProductsController extends AbstractController
         }
 
         // Товары
-        $products = $productsHelper->getProductList($filter, $sortProducts);
+        $products = $productsHelper->getList($filter, $sortProducts);
         $this->design->assign('products', $products);
 
         if ($this->request->get('ajax','boolean')) {
@@ -177,7 +177,7 @@ class ProductsController extends AbstractController
         $filter['visible'] = true;
         $filter['limit'] = 10;
 
-        $products = $productsHelper->getProductList($filter, 'name');
+        $products = $productsHelper->getList($filter, 'name');
 
         $suggestions = [];
         if (!empty($products)) {

@@ -33,12 +33,18 @@ use Okay\Core\Routes\CategoryRoute;
 use Okay\Core\Routes\BrandRoute;
 use Okay\Core\Routes\BlogItemRoute;
 use Okay\Core\Routes\NewsItemRoute;
+use Okay\Core\Routes\AllBlogRoute;
+use Okay\Core\Routes\AllNewsRoute;
+use Okay\Core\Routes\AllBrandsRoute;
 
-$productRouteParams  = (new ProductRoute())->generateRouteParams();
-$categoryRouteParams = (new CategoryRoute())->generateRouteParams();
-$brandRouteParams    = (new BrandRoute())->generateRouteParams();
-$blogItemRouteParams = (new BlogItemRoute())->generateRouteParams();
-$newsItemRouteParams = (new NewsItemRoute())->generateRouteParams();
+$productRouteParams   = (new ProductRoute())->generateRouteParams();
+$categoryRouteParams  = (new CategoryRoute())->generateRouteParams();
+$brandRouteParams     = (new BrandRoute())->generateRouteParams();
+$blogItemRouteParams  = (new BlogItemRoute())->generateRouteParams();
+$newsItemRouteParams  = (new NewsItemRoute())->generateRouteParams();
+$allBlogRouteParams   = (new AllBlogRoute())->generateRouteParams();
+$allNewsRouteParams   = (new AllNewsRoute())->generateRouteParams();
+$allBrandsRouteParams = (new AllBrandsRoute())->generateRouteParams();
 
 return [
     'main' => [
@@ -265,31 +271,31 @@ return [
         ],
     ],
     'brands' => [
-        'slug' => 'brands',
+        'slug' => $allBrandsRouteParams->getSlug(),
+        'patterns' => $allBrandsRouteParams->getPatterns(),
         'params' => [
             'controller' => 'BrandsController',
             'method' => 'render',
         ],
+        'defaults' => $allBrandsRouteParams->getDefaults(),
     ],
     'blog' => [
-        'slug' => 'blog',
+        'slug' => $allBlogRouteParams->getSlug(),
+        'patterns' => $allBlogRouteParams->getPatterns(),
         'params' => [
             'controller' => 'BlogController',
             'method' => 'fetchBlog',
         ],
-        'defaults' => [
-            '{$typePost}' => 'blog',
-        ],
+        'defaults' => $allBlogRouteParams->getDefaults(),
     ],
     'news' => [
-        'slug' => 'news',
+        'slug' => $allNewsRouteParams->getSlug(),
+        'patterns' => $allNewsRouteParams->getPatterns(),
         'params' => [
             'controller' => 'BlogController',
             'method' => 'fetchBlog',
         ],
-        'defaults' => [
-            '{$typePost}' => 'news',
-        ],
+        'defaults' => $allNewsRouteParams->getDefaults(),
     ],
     'product' => [
         'slug' => $productRouteParams->getSlug(),

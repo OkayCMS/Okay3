@@ -50,10 +50,6 @@ class BackendTranslations
      */
     public function addTranslation($var, $translation)
     {
-        if (isset($this->$var)) {
-            $this->_logger->notice("Backend translation var \"{$var}\" already exists");
-        }
-        
         $var = preg_replace('~[^\w]~', '', $var);
         $this->$var = $translation;
     }

@@ -37,7 +37,7 @@ class ChainExtender extends AbstractExtender
             if (static::isFirstExtension($i, $extensions)) {
                 $extendedOutput = call_user_func_array([$classExtender, $currentExtensions->method], array_merge([$output], $input));
             } else {
-                $extendedOutput = call_user_func_array([$classExtender, $currentExtensions->method], array_merge([$output], $extendedOutput));
+                $extendedOutput = call_user_func_array([$classExtender, $currentExtensions->method], array_merge([$output], [$extendedOutput]));
             }
             
         }

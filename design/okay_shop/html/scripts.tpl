@@ -76,7 +76,7 @@
     {* Карточка товара, ошибка в форме *}
     {if $controller == 'ProductController' && $error}
         $( window ).on( 'load', function() {
-            $( '.tab_navigation a' ).removeClass( 'selected' );
+            $( '.tabs__navigation a' ).removeClass( 'selected' );
             $( '.tab' ).hide();
             $( 'a[href="#comments"]' ).addClass( 'selected' );
              $( '#comments').show();
@@ -85,7 +85,7 @@
     {elseif $controller == 'ProductController'}
         $( window ).on( 'load', function() {
             if( location.hash.search('comment') !=-1 ) {
-                $( '.tab_navigation a' ).removeClass( 'selected' );
+                $( '.tabs__navigation a' ).removeClass( 'selected' );
                 $( '.tab' ).hide();
                 $( 'a[href="#comments"]' ).addClass( 'selected' );
                  $( '#comments').show();

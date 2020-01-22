@@ -9,7 +9,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>{$btr->email_new_order|escape} № {$order->id}</title>
+    <title>{$lang->email_new_order|escape} № {$order->id}</title>
     <meta name="x-apple-disable-message-reformatting">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="telephone=no" name="format-detection">
@@ -90,7 +90,7 @@
                                                                     <tbody>
                                                                     <tr>
                                                                         <td class="esd-block-text" align="left">
-                                                                            <h4>{$btr->email_details_order|escape}:</h4>
+                                                                            <h4>{$lang->email_details_order|escape}:</h4>
                                                                         </td>
                                                                     </tr>
                                                                     </tbody>
@@ -106,52 +106,52 @@
                                                     <table class="es-table-infobox" cellspacing="1" cellpadding="1" border="0" align="left">
                                                         <tbody>
                                                         <tr valign="top">
-                                                            <td class="es-p5t es-p5b" width="180px"><span>{$btr->email_order_number_s|escape}:</span></td>
+                                                            <td class="es-p5t es-p5b" width="180px"><span>{$lang->email_order_number_s|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>№ {$order->id}</span></td>
                                                         </tr>
                                                         <tr valign="top">
-                                                            <td class="es-p5t es-p5b" width="180px"><span>{$btr->email_order_date_s|escape}:</span></td>
+                                                            <td class="es-p5t es-p5b" width="180px"><span>{$lang->email_order_date_s|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$order->date|date}:{$order->date|time}</span></td>
                                                         </tr>
                                                         <tr valign="top">
-                                                            <td class="es-p5t es-p5b" width="180px"><span>{$btr->email_order_status_s|escape}:</span></td>
+                                                            <td class="es-p5t es-p5b" width="180px"><span>{$lang->email_order_status_s|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$order_status->name|escape}</span></td>
                                                         </tr>
                                                         <tr valign="top">
-                                                            <td class="es-p5t es-p5b" width="180px"><span>{$btr->email_payment_status|escape}:</span></td>
+                                                            <td class="es-p5t es-p5b" width="180px"><span>{$lang->email_payment_status|escape}:</span></td>
                                                             <td class="es-p5t es-p5b">
                                                                         <span>
                                                                             {if $order->paid == 1}
-                                                                                 {$btr->email_paid|escape}
+                                                                                 {$lang->email_paid|escape}
                                                                              {else}
-                                                                                 {$btr->email_not_paid|escape}
+                                                                                 {$lang->email_not_paid|escape}
                                                                              {/if}
                                                                         </span>
                                                             </td>
                                                         </tr>
                                                         <tr valign="top">
-                                                            <td class="es-p5t es-p5b" width="180px"><span>{$btr->email_order_name|escape}:</span></td>
+                                                            <td class="es-p5t es-p5b" width="180px"><span>{$lang->email_order_name|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$order->name|escape}</span></td>
                                                         </tr>
                                                         <tr valign="top">
-                                                            <td class="es-p5t es-p5b" width="180px"><span>{$btr->email_order_email|escape}:</span></td>
+                                                            <td class="es-p5t es-p5b" width="180px"><span>{$lang->email_order_email|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$order->email|escape}</span></td>
                                                         </tr>
                                                         {if $order->phone}
                                                         <tr valign="top">
-                                                            <td class="es-p5t es-p5b" width="180px"><span>{$btr->email_order_phone|escape}:</span></td>
+                                                            <td class="es-p5t es-p5b" width="180px"><span>{$lang->email_order_phone|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$order->phone|escape}</span></td>
                                                         </tr>
                                                         {/if}
                                                         {if $order->address}
                                                         <tr valign="top">
-                                                            <td class="es-p5t es-p5b" width="180px"><span>{$btr->email_order_address|escape}:</span></td>
+                                                            <td class="es-p5t es-p5b" width="180px"><span>{$lang->email_order_address|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$order->address|escape}</span></td>
                                                         </tr>
                                                         {/if}
                                                         {if $order->comment}
                                                         <tr valign="top">
-                                                            <td class="es-p5t es-p5b" width="180px"><span>{$btr->email_order_comment|escape}:</span></td>
+                                                            <td class="es-p5t es-p5b" width="180px"><span>{$lang>email_order_comment|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$order->comment|escape|nl2br}</span></td>
                                                         </tr>
                                                         {/if}
@@ -190,7 +190,7 @@
                                                                     <tbody>
                                                                     <tr>
                                                                         <td class="esd-block-text" align="left">
-                                                                            <h4>{$btr->email_order_purchases}:</h4>
+                                                                            <h4>{$lang->email_order_purchases}:</h4>
                                                                         </td>
                                                                     </tr>
                                                                     </tbody>
@@ -338,14 +338,14 @@
                                                                                 <tbody>
                                                                                 {if $order->discount}
                                                                                 <tr>
-                                                                                    <td style="text-align: right; font-size: 18px; line-height: 150%;">{$btr->email_order_discount}:</td>
+                                                                                    <td style="text-align: right; font-size: 18px; line-height: 150%;">{$lang->email_order_discount}:</td>
                                                                                     <td style="text-align: right; font-size: 18px; line-height: 150%; color: #000;">{$order->discount}&nbsp;%</td>
                                                                                 </tr>
                                                                                 {/if}
 
                                                                                 {if $order->coupon_discount>0}
                                                                                 <tr>
-                                                                                    <td style="text-align: right; font-size: 18px; line-height: 150%;">{$btr->email_order_coupon} {$order->coupon_code}:</td>
+                                                                                    <td style="text-align: right; font-size: 18px; line-height: 150%;">{$lang->email_order_coupon} {$order->coupon_code}:</td>
                                                                                     <td style="text-align: right; font-size: 18px; line-height: 150%; color: #000;">&minus;{$order->coupon_discount}&nbsp;{$currency->sign}</td>
                                                                                 </tr>
                                                                                 {/if}
@@ -360,7 +360,7 @@
                                                                                 {/if}
 
                                                                                 <tr class="es-p5t">
-                                                                                    <td style="text-align: right; font-size: 20px; line-height: 150%;"><strong>{$btr->email_order_total}:</strong></td>
+                                                                                    <td style="text-align: right; font-size: 20px; line-height: 150%;"><strong>{$lang->email_order_total}:</strong></td>
                                                                                     <td style="text-align: right; font-size: 20px; line-height: 150%; color: #F36D17;"><strong>{$order->total_price|convert:$currency->id}&nbsp;{$currency->sign}</strong></td>
                                                                                 </tr>
                                                                                 {get_design_block block="front_email_order_user_total"}

@@ -12,6 +12,13 @@ use Okay\Core\Settings;
 abstract class AbstractRoute
 {
     /**
+     * Данная константа переопределяется в наследниках и в ней указывается
+     * название свойста Okay\Core\Setting::class, которое отвечает за определение
+     * слеша в конце в конкретной группе роутов
+     */
+    const SLASH_END = '';
+
+    /**
      * @var Settings
      */
     protected $settings;
@@ -21,8 +28,15 @@ abstract class AbstractRoute
      */
     protected $strategy;
 
-    public function __construct()
+    /**
+     * Параметры которые были пойманы роутером при помощи регулярных выражения
+     */
+    protected $params;
+
+    public function __construct($params = [])
     {
+        $this->params = $params;
+
         $serviceLocator = ServiceLocator::getInstance();
         $this->settings = $serviceLocator->getService(Settings::class);
         $this->strategy = $this->getStrategy();
@@ -63,6 +77,8 @@ abstract class AbstractRoute
 
         return substr($uri, 3);
     }
+
+    abstract public function hasSlashAtEnd();
 
     abstract protected function getStrategy();
 }

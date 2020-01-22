@@ -22,6 +22,7 @@ class DeliveriesEntity extends Entity
         'image',
         'settings',
         'module_id',
+        'hide_front_delivery_price',
     ];
 
     protected static $langFields = [

@@ -76,6 +76,11 @@
     <link href="design/js//fancybox/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
     <script src="design/js/fancybox/jquery.fancybox.min.js"></script>
 
+    <link href="design/js/intro_js/introjs.css" rel="stylesheet" type="text/css" />
+    <script src="design/js/intro_js/intro.js"></script>
+    <script src="design/js/intro_js/intro_okay.js"></script>
+
+
     {if in_array($smarty.get.controller, array("OrdersAdmin", "PostAdmin", "ReportStatsAdmin", "CouponsAdmin", "CategoryStatsAdmin"))}
         <script src="design/js/jquery/datepicker/jquery.ui.datepicker-{$manager->lang}.js"></script>
     {/if}
@@ -101,11 +106,142 @@
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P6T2LJP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     {/if}
     <!-- End Google Tag Manager (noscript) -->
-
-    <a href="javascript:;" id="fix_logo" class="hidden-lg-down"></a>
+    <header class="navbar">
+        <div class="container-fluid">
+            <div id="mobile_menu" class="fn_mobile_menu hidden-xl-up  text_white">
+                {include file='svg_icon.tpl' svgId='mobile_menu'}
+            </div>
+            <div class="admin_switches">
+                <div class="box_adswitch">
+                    <a class="btn_admin" href="{url_generator route="main" absolute=1}">
+                    {include file='svg_icon.tpl' svgId='icon_desktop'}
+                    <span class="">{$btr->index_go_to_site|escape}</span>
+                    </a>
+                </div>
+            </div>
+            <div class="admin_switches admin_switches_two hidden-sm-down">
+                {include file="video_help.tpl"}
+            </div>
+            <div id="mobile_menu_right" class="fn_mobile_menu_right hidden-md-up  text_white float-xs-right">
+                {include file='svg_icon.tpl' svgId='mobile_menu2'}
+            </div>
+            <div id="quickview" class="fn_quickview">
+                <div class="sidebar_header hidden-md-up">
+                        <span class="fn_switch_quickview menu_switch">
+                            <span class="menu_hamburger"></span>
+                        </span>
+                    <a class="logo_box">
+                        <img src="design/images/logo_title.png" alt="OkayCMS"/>
+                    </a>
+                </div>
+                <div class="admin_exit hidden-sm-down">
+                    <a href="{$rootUrl}?logout">
+                        <span class="hidden-lg-down">{$btr->index_exit|escape}</span>
+                        {include file='svg_icon.tpl' svgId='exit'}
+                    </a>
+                </div>
+                {*Техподдержка*}
+                <div class="admin_techsupport">
+                    <div class="techsupport_inner">
+                        <a {if $support_info->public_key} data-hint="{$support_info->balance|balance}"{else} data-hint="Not active" {/if}  class="hint-bottom-middle-t-info-s-small-mobile  hint-anim"  href="index.php?controller=SupportAdmin">
+                            <span class="quickview_hidden">{$btr->index_support|escape}</span>
+                            {include file='svg_icon.tpl' svgId='techsupport'}
+                            {if $support_info->public_key}
+                            <span class="counter">{$support_info->new_messages}</span>
+                            {/if}
+                        </a>
+                        <div class="techsupport_toggle hidden-md-up">
+                            {if $support_info->public_key}
+                            <span>{$support_info->balance|balance}</span>
+                            {else}
+                            <span>Not active</span>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+                {*Счетчики уведомлений*}
+                <div class="admin_notification">
+                    <div class="notification_inner">
+                            <span class="notification_title" href="">
+                                <span class="quickview_hidden">{$btr->index_notifications|escape}</span>
+                                {include file='svg_icon.tpl' svgId='notify'}
+                                {if $all_counter}
+                                    <span class="counter">{$all_counter}</span>
+                                {/if}
+                            </span>
+                        <div class="notification_toggle">
+                            {if $new_orders_counter > 0}
+                            <div class="notif_item">
+                                <a href="index.php?controller=OrdersAdmin" class="l_notif">
+                                            <span class="notif_icon boxed_notify">
+                                                {include file='svg_icon.tpl' svgId='left_orders'}
+                                            </span>
+                                    <span class="notif_title">{$btr->general_orders|escape}</span>
+                                </a>
+                                <span class="notif_count">{$new_orders_counter}</span>
+                            </div>
+                            {/if}
+                            {if $new_comments_counter > 0}
+                            <div class="notif_item">
+                                <a href="index.php?controller=CommentsAdmin" class="l_notif">
+                                            <span class="notif_icon boxed_warning">
+                                                {include file='svg_icon.tpl' svgId='left_comments'}
+                                            </span>
+                                    <span class="notif_title">{$btr->general_comments|escape}</span>
+                                </a>
+                                <span class="notif_count">{$new_comments_counter}</span>
+                            </div>
+                            {/if}
+                            {if $new_feedbacks_counter > 0}
+                            <div class="notif_item">
+                                <a href="index.php?controller=FeedbacksAdmin" class="l_notif">
+                                            <span class="notif_icon boxed_yellow">
+                                                {include file='svg_icon.tpl' svgId='email'}
+                                            </span>
+                                    <span class="notif_title">{$btr->general_feedback|escape}</span>
+                                </a>
+                                <span class="notif_count">{$new_feedbacks_counter}</span>
+                            </div>
+                            {/if}
+                            {if $new_callbacks_counter > 0}
+                            <div class="notif_item">
+                                <a href="index.php?controller=CallbacksAdmin" class="l_notif">
+                                            <span class="notif_icon boxed_attention">
+                                                {include file='svg_icon.tpl' svgId='phone'}
+                                            </span>
+                                    <span class="notif_title">{$btr->general_callback|escape}</span>
+                                </a>
+                                <span class="notif_count">{$new_callbacks_counter}</span>
+                            </div>
+                            {/if}
+                            {if !$new_orders_counter > 0 && !$new_comments_counter > 0 && !$new_feedbacks_counter > 0 && !$new_callbacks_counter > 0}
+                            <div class="notif_item">
+                                <span class="notif_title">{$btr->index_no_notification|escape}</span>
+                            </div>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+                <div class="admin_languages" >
+                    <div class="languages_inner">
+                        <span class="languages_title hidden-md-up">{$btr->general_languages|escape}</span>
+                        {include file="include_languages.tpl"}
+                    </div>
+                </div>
+                <div class="admin_exit hidden-md-up">
+                    <a href="{$rootUrl}?logout">
+                        <span class="">{$btr->index_exit|escape}</span>
+                        {include file='svg_icon.tpl' svgId='exit'}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
     <nav id="admin_catalog" class="fn_left_menu">
         <div id="mob_menu"></div>
         <div class="sidebar_header">
+            <a href="javascript:;" id="fix_logo" class="hidden-lg-down"></a>
+
             <a class="logo_box">
                 <img src="design/images/logo_title.png" alt="OkayCMS"/>
             </a>
@@ -139,7 +275,7 @@
                                         <div class="fn_backend_menu_section" data-section_name="{$section}">{$section}</div>
                                     {/if}
 
-                                    <a class="nav-link {if $items|count > 1}fn_item_switch nav-dropdown-toggle{/if}" href="{if $items|count > 1}javascript:;{else}index.php?controller={$items|reset}{/if}">
+                                    <a class="fn_learning_{$section} nav-link {if $items|count > 1}fn_item_switch nav-dropdown-toggle{/if}" href="{if $items|count > 1}javascript:;{else}index.php?controller={$items|reset}{/if}">
                                         <span class="{$section} title">{$btr->getTranslation({$section})}</span>
                                         <span class="icon-thumbnail">
                                             {if !empty($additional_section_icons[$section])}
@@ -172,7 +308,7 @@
                                             {foreach $items as $title=>$mod}
                                                 <li class="{if $title == $menu_selected}active{/if}">
                                                     <input type="hidden" name="manager_menu[{$section|escape}][{$title|escape}]" value="{$mod|escape}" />
-                                                    <a class="nav-link" href="index.php?controller={$mod}">
+                                                    <a class="fn_learning_{$mod} nav-link" href="index.php?controller={$mod}">
                                                         <span class="icon-thumbnail">
                                                             {if (isset($menu_counters[$title]) && !empty($menu_counters[$title])) || $config->dev_mode}
                                                                 <span class="menu_counter">
@@ -201,141 +337,10 @@
     {*Верхняя шапка*}
     <div class="page-container">
         <a href='{url_generator route="main" absolute=1}' class='admin_bookmark'></a>
-        <header class="navbar">
-            <div class="container-fluid">
-                <div id="mobile_menu" class="fn_mobile_menu hidden-xl-up  text_white">
-                    {include file='svg_icon.tpl' svgId='mobile_menu'}
-                </div>
-                <div class="admin_switches">
-                    <div class="box_adswitch">
-                        <a class="btn_admin" href="{url_generator route="main" absolute=1}">
-                            {include file='svg_icon.tpl' svgId='icon_desktop'}
-                            <span class="">{$btr->index_go_to_site|escape}</span>
-                        </a>
-                    </div>
-                </div>
 
-                <div class="admin_switches admin_switches_two hidden-sm-down">
-                    {include file="video_help.tpl"}
-                </div>
-                <div id="mobile_menu_right" class="fn_mobile_menu_right hidden-md-up  text_white float-xs-right">
-                    {include file='svg_icon.tpl' svgId='mobile_menu2'}
-                </div>
-                <div id="quickview" class="fn_quickview">
-                    <div class="sidebar_header hidden-md-up">
-                        <span class="fn_switch_quickview menu_switch">
-                            <span class="menu_hamburger"></span>
-                        </span>
-                        <a class="logo_box">
-                            <img src="design/images/logo_title.png" alt="OkayCMS"/>
-                        </a>
-                    </div>
-                    <div class="admin_exit hidden-sm-down">
-                        <a href="{$rootUrl}?logout">
-                            <span class="hidden-lg-down">{$btr->index_exit|escape}</span>
-                            {include file='svg_icon.tpl' svgId='exit'}
-                        </a>
-                    </div>
-                    {*Техподдержка*}
-                    <div class="admin_techsupport">
-                        <div class="techsupport_inner">
-                            <a {if $support_info->public_key} data-hint="{$support_info->balance|balance}"{else} data-hint="Not active" {/if}  class="hint-bottom-middle-t-info-s-small-mobile  hint-anim"  href="index.php?controller=SupportAdmin">
-                                <span class="quickview_hidden">{$btr->index_support|escape}</span>
-                                {include file='svg_icon.tpl' svgId='techsupport'}
-                                {if $support_info->public_key}
-                                    <span class="counter">{$support_info->new_messages}</span>
-                                {/if}
-                            </a>
-                            <div class="techsupport_toggle hidden-md-up">
-                                {if $support_info->public_key}
-                                    <span>{$support_info->balance|balance}</span>
-                                {else}
-                                    <span>Not active</span>
-                                {/if}
-                            </div>
-                        </div>
-                    </div>
-                    {*Счетчики уведомлений*}
-                    <div class="admin_notification">
-                        <div class="notification_inner">
-                            <span class="notification_title" href="">
-                                <span class="quickview_hidden">{$btr->index_notifications|escape}</span>
-                                {include file='svg_icon.tpl' svgId='notify'}
-                                {if $all_counter}
-                                    <span class="counter">{$all_counter}</span>
-                                {/if}
-                            </span>
-                            <div class="notification_toggle">
-                                {if $new_orders_counter > 0}
-                                    <div class="notif_item">
-                                        <a href="index.php?controller=OrdersAdmin" class="l_notif">
-                                            <span class="notif_icon boxed_notify">
-                                                {include file='svg_icon.tpl' svgId='left_orders'}
-                                            </span>
-                                            <span class="notif_title">{$btr->general_orders|escape}</span>
-                                        </a>
-                                        <span class="notif_count">{$new_orders_counter}</span>
-                                    </div>
-                                {/if}
-                                {if $new_comments_counter > 0}
-                                    <div class="notif_item">
-                                        <a href="index.php?controller=CommentsAdmin" class="l_notif">
-                                            <span class="notif_icon boxed_warning">
-                                                {include file='svg_icon.tpl' svgId='left_comments'}
-                                            </span>
-                                            <span class="notif_title">{$btr->general_comments|escape}</span>
-                                        </a>
-                                        <span class="notif_count">{$new_comments_counter}</span>
-                                    </div>
-                                {/if}
-                                {if $new_feedbacks_counter > 0}
-                                    <div class="notif_item">
-                                        <a href="index.php?controller=FeedbacksAdmin" class="l_notif">
-                                            <span class="notif_icon boxed_yellow">
-                                                {include file='svg_icon.tpl' svgId='email'}
-                                            </span>
-                                            <span class="notif_title">{$btr->general_feedback|escape}</span>
-                                        </a>
-                                        <span class="notif_count">{$new_feedbacks_counter}</span>
-                                    </div>
-                                {/if}
-                                {if $new_callbacks_counter > 0}
-                                    <div class="notif_item">
-                                        <a href="index.php?controller=CallbacksAdmin" class="l_notif">
-                                            <span class="notif_icon boxed_attention">
-                                                {include file='svg_icon.tpl' svgId='phone'}
-                                            </span>
-                                            <span class="notif_title">{$btr->general_callback|escape}</span>
-                                        </a>
-                                        <span class="notif_count">{$new_callbacks_counter}</span>
-                                    </div>
-                                {/if}
-                                {if !$new_orders_counter > 0 && !$new_comments_counter > 0 && !$new_feedbacks_counter > 0 && !$new_callbacks_counter > 0}
-                                <div class="notif_item">
-                                    <span class="notif_title">{$btr->index_no_notification|escape}</span>
-                                </div>
-                                {/if}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="admin_languages" >
-                        <div class="languages_inner">
-                            <span class="languages_title hidden-md-up">{$btr->general_languages|escape}</span>
-                            {include file="include_languages.tpl"}
-                        </div>
-                    </div>
-                    <div class="admin_exit hidden-md-up">
-                        <a href="{$rootUrl}?logout">
-                            <span class="">{$btr->index_exit|escape}</span>
-                            {include file='svg_icon.tpl' svgId='exit'}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </header>
         <div class="main">
-            <div class="container-fluid animated fadeIn">
-                <div class="">
+            <div class="container-fluid">
+                <div class="min_content_fix">
                     {if $content}
                         {$content}
                     {else}

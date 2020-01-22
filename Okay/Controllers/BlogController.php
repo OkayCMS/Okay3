@@ -97,7 +97,7 @@ class BlogController extends AbstractController
         // Посты
         $currentSort = $blogHelper->getCurrentSort();
         
-        $posts = $blogHelper->getPostsList($filter, $currentSort);
+        $posts = $blogHelper->getList($filter, $currentSort);
         
         // Передаем в шаблон
         $this->design->assign('posts', $posts);

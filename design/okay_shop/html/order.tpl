@@ -94,7 +94,7 @@
                                 </div>
                             {/if}
 
-                            {if $order->separate_delivery || !$order->separate_delivery && $order->delivery_price > 0}
+                            {if !$delivery->hide_front_delivery_price && ($order->separate_delivery || !$order->separate_delivery && $order->delivery_price > 0)}
                                 <div class="purchase_detail__item">
                                     <div class="purchase_detail__column_name">
                                         <div class="purchase_detail__name">{$delivery->name|escape}:</div>
@@ -209,7 +209,7 @@
                         <div class="block form form_cart">
                             <div class="h6" data-language="order_details">{$lang->order_details}</div>
                             {* Order details *}
-                            <div class="block padding">
+                            <div class="block padding block__description--style">
                                 <table class="order_details">
                                     <tr>
                                         <td>

@@ -29,9 +29,8 @@ class CallbackController extends AbstractController
             'reasonCode'
         ];
 
-        $data = json_decode(file_get_contents("php://input"), true);
-
-        $orderId = $this->matchOrderIdFromInputData($data);
+        $data = json_decode(file_get_contents("php://input"));
+        $orderId = $data->orderReference;
 
         $order = $ordersEntity->get((int) $orderId);
         if (empty($order)) {
@@ -43,7 +42,7 @@ class CallbackController extends AbstractController
             throw new \Exception('Invalid payment method');
         }
 
-        $amount = !empty($data['amount']) ? $data['amount'] : null;
+        $amount = !empty($data->amount) ? $data->amount : null;
         $w4pAmount = round($amount, 2);
         $orderAmount = round($money->convert($order->total_price, $method->currency_id, false), 2);
         if ($orderAmount != $w4pAmount) {
@@ -55,18 +54,18 @@ class CallbackController extends AbstractController
         $sign = array();
         foreach ($keysForSignature as $dataKey) {
             if (array_key_exists($dataKey, $data)) {
-                $sign [] = $data[$dataKey];
+                $sign [] = $data->$dataKey;
             }
         }
 
         $sign = implode(';', $sign);
         $sign = hash_hmac('md5', $sign, $settings['wayforpay_secretkey']);
-        if (!empty($data["merchantSignature"]) && $data["merchantSignature"] != $sign) {
+        if (!empty($data->merchantSignature) && $data->merchantSignature != $sign) {
             throw new \Exception('Invalid merchant signature');
         }
 
         $responseToGateway = [
-            'orderReference' => $data['orderReference'],
+            'orderReference' => $data->orderReference,
             'status'         => 'accept',
             'time'           => time()
         ];
@@ -80,7 +79,7 @@ class CallbackController extends AbstractController
         $sign = hash_hmac('md5', $sign, $settings['wayforpay_secretkey']);
         $responseToGateway['signature'] = $sign;
 
-        if (!empty($data['transactionStatus']) &&  $data['transactionStatus'] == 'Approved' && !$order->paid) {
+        if (!empty($data->transactionStatus) &&  $data->transactionStatus == 'Approved' && !$order->paid) {
             $ordersEntity->update((int) $order->id, ['paid' => 1]);
             $ordersEntity->close((int) $order->id);
             $notify->emailOrderUser((int) $order->id);
@@ -88,16 +87,5 @@ class CallbackController extends AbstractController
         }
 
         $this->response->setContent(json_encode($responseToGateway), RESPONSE_JSON);
-    }
-
-    private function matchOrderIdFromInputData($data)
-    {
-        $orderParse = !empty($data['orderReference']) ? explode('#', $data['orderReference']) : null;
-
-        if (is_array($orderParse)) {
-            return reset($orderParse);
-        }
-
-        return $orderParse;
     }
 }

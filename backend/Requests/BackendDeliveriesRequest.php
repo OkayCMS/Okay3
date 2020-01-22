@@ -22,15 +22,16 @@ class BackendDeliveriesRequest
     public function postDelivery()
     {
         $delivery = new \stdClass();
-        $delivery->id               = $this->request->post('id', 'integer');
-        $delivery->enabled          = $this->request->post('enabled', 'boolean');
-        $delivery->name             = $this->request->post('name');
-        $delivery->description      = $this->request->post('description');
-        $delivery->price            = $this->request->post('price');
-        $delivery->free_from        = $this->request->post('free_from');
-        $delivery->paid             = $this->request->post('delivery_type') === 'paid' ? 1 : 0;
-        $delivery->separate_payment = $this->request->post('separate_payment','boolean');
-        $delivery->module_id        = $this->request->post('module_id', 'integer');
+        $delivery->id                        = $this->request->post('id', 'integer');
+        $delivery->enabled                   = $this->request->post('enabled', 'boolean');
+        $delivery->name                      = $this->request->post('name');
+        $delivery->description               = $this->request->post('description');
+        $delivery->price                     = $this->request->post('price');
+        $delivery->free_from                 = $this->request->post('free_from');
+        $delivery->paid                      = $this->request->post('delivery_type') === 'paid' ? 1 : 0;
+        $delivery->separate_payment          = $this->request->post('separate_payment','boolean');
+        $delivery->module_id                 = $this->request->post('module_id', 'integer');
+        $delivery->hide_front_delivery_price = $this->request->post('hide_front_delivery_price', 'integer');
 
         return ExtenderFacade::execute(__METHOD__, $delivery, func_get_args());
     }

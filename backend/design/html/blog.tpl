@@ -40,7 +40,7 @@
     <div class="row">
         {*Блок фильтров*}
         <div class="col-lg-12 col-md-12 ">
-            <div class="fn_toggle_wrap">
+            <div class="fn_toggle_wrap ">
                 <div class="heading_box visible_md">
                     {$btr->general_filter|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -50,7 +50,7 @@
                 <div class="boxed_sorting toggle_body_wrap off fn_card">
                 <div class="row">
                     <div class="col-md-3 col-lg-3 col-sm-12">
-                        <div class="">
+                        <div class="fn_step-0">
                             <select class="selectpicker px-0"  onchange="location = this.value;">
                                 <option value="{url controller=BlogAdmin type_post=null keyword=null id=null page=null}" {if !$type_post}selected=""{/if} >{$btr->general_all|escape}</option>
                                 <option value="{url controller=BlogAdmin type_post="blog" keyword=null id=null page=null}" {if $type_post == "blog"}selected=""{/if} >{$btr->blog_articles|escape}</option>
@@ -94,7 +94,7 @@
                         {*Параметры элемента*}
                         <div class="okay_list_body">
                             {foreach $posts as $post}
-                                <div class="fn_row okay_list_body_item">
+                                <div class="fn_step-1 fn_row okay_list_body_item">
                                     <div class="okay_list_row">
 
                                         <div class="okay_list_boding okay_list_check">
@@ -203,3 +203,6 @@
         </div>
     {/if}
 </div>
+
+{* Learning script *}
+{include file='learning_hints.tpl' hintId='hint_blog'}

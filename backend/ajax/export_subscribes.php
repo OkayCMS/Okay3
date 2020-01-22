@@ -43,11 +43,6 @@ if (!$managers->access('users', $managersEntity->get($_SESSION['admin']))) {
     exit();
 }
 
-// Excel ��������� ������ ��������� 1251
-setlocale(LC_ALL, 'ru_RU.1251');
-$sqlQuery = $queryFactory->newSqlQuery()->setStatement('SET NAMES cp1251');
-$db->query($sqlQuery);
-
 $page = $request->get('page');
 if(empty($page) || $page==1) {
     $page = 1;
@@ -86,6 +81,11 @@ if($subscribesCount*$page < $totalSubscribes) {
 }
 
 fclose($f);
+
+file_put_contents(
+    $exportFilesDir.$filename,
+    iconv( "utf-8", "windows-1251//IGNORE", file_get_contents($exportFilesDir.$filename))
+);
 
 if ($data) {
     $response->setContent(json_encode($data), RESPONSE_JSON)->sendContent();

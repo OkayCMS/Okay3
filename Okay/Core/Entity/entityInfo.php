@@ -6,6 +6,28 @@ namespace Okay\Core\Entity;
 
 trait entityInfo
 {
+
+    /**
+     * Метод возвращает все поля сущности, за исключением переданных
+     * 
+     * @var array $excludedFields поля, которые нужно исключить
+     * @return array
+     */
+    final public static function getDifferentFields($excludedFields)
+    {
+        $fields = static::getFields();
+        $langFields = static::getLangFields();
+        $additionalFields = static::getAdditionalFields();
+
+        $allFields = array_merge($fields, $langFields, $additionalFields);
+        foreach ($excludedFields as $field) {
+            if (($fieldKey = array_search($field, $allFields)) !== false && isset($allFields[$fieldKey])) {
+                unset($allFields[$fieldKey]);
+            }
+        }
+        
+        return (array)$allFields;
+    }
     
     /**
      * @var array $fields

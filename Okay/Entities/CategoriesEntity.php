@@ -31,6 +31,7 @@ class CategoriesEntity extends Entity
     protected static $langFields = [
         'name',
         'name_h1',
+        'auto_h1',
         'meta_title',
         'meta_keywords',
         'meta_description',
@@ -92,6 +93,8 @@ class CategoriesEntity extends Entity
     
     public function add($category)
     {
+        $category->level_depth = $this->determineLevelDepth($category);
+
         $id = parent::add($category);
         unset($this->categoriesTree);
         unset($this->allCategories);
@@ -100,6 +103,9 @@ class CategoriesEntity extends Entity
     
     public function update($ids, $category)
     {
+        $category = (object) $category;
+        $category->level_depth = $this->determineLevelDepth($category);
+
         parent::update($ids, $category);
         unset($this->categoriesTree);
         unset($this->allCategories);
@@ -455,5 +461,15 @@ class CategoriesEntity extends Entity
         $categories = $this->db->results($field);
         $this->flush();
         return $categories;
+    }
+
+    private function determineLevelDepth($category)
+    {
+        if (empty($category->parent_id)) {
+            return 1;
+        }
+
+        $parentCategory = $this->allCategories[$category->parent_id];
+        return $parentCategory->level + 1;
     }
 }

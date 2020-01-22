@@ -17,7 +17,7 @@
             </div>
             {if $product->id && !empty($product->url)}
                 <div class="box_btn_heading">
-                    <a class="btn btn_small btn-info add" target="_blank" href="../{url_generator route="product" url=$product->url}" >
+                    <a class="btn btn_small btn-info add" target="_blank" href="{url_generator route='product' url=$product->url absolute=1}" >
                         {include file='svg_icon.tpl' svgId='icon_desktop'}
                         <span>{$btr->general_open|escape}</span>
                     </a>
@@ -95,19 +95,21 @@
                 {*Название элемента сайта*}
                 <div class="row d_flex">
                     <div class="col-lg-10 col-md-9 col-sm-12">
-                        <div class="heading_label heading_label--required">
-                            <span>{$btr->general_name|escape}</span>
-                            <i class="fn_tooltips" title="{$btr->tooltip_general_name|escape}">
-                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                            </i>
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control" name="name" type="text" value="{$product->name|escape}"/>
-                            <input id="product_id" name="id" type="hidden" value="{$product->id|escape}"/>
+                        <div class="fn_step-1">
+                            <div class="heading_label heading_label--required">
+                                <span>{$btr->general_name|escape}</span>
+                                <i class="fn_tooltips" title="{$btr->tooltip_general_name|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" name="name" type="text" value="{$product->name|escape}"/>
+                                <input id="product_id" name="id" type="hidden" value="{$product->id|escape}"/>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-xs-12 col-lg-6 col-md-10">
-                                <div class="">
+                                <div class="fn_step-2">
                                     <div class="input-group">
                                         <span class="input-group-addon">URL</span>
                                         <input name="url" class="fn_meta_field form-control fn_url {if $product->id}fn_disabled{/if}" {if $product->id}readonly=""{/if} type="text" value="{$product->url|escape}" />
@@ -127,7 +129,7 @@
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
-                            <div class="activity_of_switch_item"> {* row block *}
+                            <div class="fn_step-3 activity_of_switch_item"> {* row block *}
                                 <div class="okay_switch clearfix">
                                     <label class="switch_label">
                                         {$btr->general_enable|escape}
@@ -142,7 +144,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="activity_of_switch_item"> {* row block *}
+                            <div class="fn_step-4 activity_of_switch_item"> {* row block *}
                                 <div class="okay_switch clearfix">
                                     <label class="switch_label">
                                         {$btr->general_bestseller|escape}
@@ -168,7 +170,7 @@
     {*Изображения товара*}
     <div class="row">
         <div class="col-lg-8 col-md-12 pr-0 ">
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="fn_step-5 boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->product_images|escape}
                     <i class="fn_tooltips" title="{$btr->tooltip_product_images|escape}">
@@ -213,56 +215,56 @@
 
         {*Параметры элемента*}
         <div class="col-lg-4 col-md-12 ">
-            <div class="boxed fn_toggle_wrap min_height_230px">
-                <div class="heading_label">
-                    {$btr->general_brand|escape}
-                    <i class="fn_tooltips" title="{$btr->tooltip_general_brand|escape}">
-                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                    </i>
-                    <div class="toggle_arrow_wrap fn_toggle_card text-primary">
-                        <a class="btn-minimize" href="javascript:;" ><i class="icon-arrow-down"></i></a>
+            <div class="boxed min_height_230px">
+                <div class="fn_step-6">
+                    <div class="heading_label">
+                        {$btr->general_brand|escape}
+                        <i class="fn_tooltips" title="{$btr->tooltip_general_brand|escape}">
+                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                        </i>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12 toggle_body_wrap on fn_card ">
+                    <div class="">
                         <select name="brand_id" class="selectpicker mb-1{if !$brands} hidden{/if} fn_meta_brand" data-live-search="true">
                             <option value="0" {if !$product->brand_id}selected=""{/if} data-brand_name="">{$btr->general_not_set|escape}</option>
                             {foreach $brands as $brand}
-                                <option value="{$brand->id}" {if $product->brand_id == $brand->id}selected=""{/if} data-brand_name="{$brand->name|escape}">{$brand->name|escape}</option>
+                            <option value="{$brand->id}" {if $product->brand_id == $brand->id}selected=""{/if} data-brand_name="{$brand->name|escape}">{$brand->name|escape}</option>
                             {/foreach}
                         </select>
-                        <div class="heading_label heading_label--required">
-                            <span>{$btr->general_category|escape}</span>
-                            <i class="fn_tooltips" title="{$btr->tooltip_general_category|escape}">
-                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                            </i>
-                        </div>
-                        <div id="product_cats">
-                            {assign var ='first_category' value=reset($product_categories)}
-                            <select class="selectpicker  mb-1 fn_product_category fn_meta_categories" data-live-search="true">
-                                <option value="0" selected="" disabled="" data-category_name="">{$btr->product_select_category}</option>
-                                {function name=category_select level=0}
-                                    {foreach $categories as $category}
-                                        <option value="{$category->id}" {if $category->id == $first_category->id}selected{/if} data-category_name="{$category->name|escape}">{section sp $level}- {/section}{$category->name|escape}</option>
-                                        {category_select categories=$category->subcategories level=$level+1}
-                                    {/foreach}
-                                {/function}
-                                {category_select categories=$categories}
-                            </select>
-                            <div id="sortable_cat" class="fn_product_categories_list">
-                                {foreach $product_categories as $product_category}
-                                    <div class="fn_category_item product_category_item {if $product_category@first}first_category{/if}">
-                                        <span class="product_cat_name">{$product_category->name|escape}</span>
-                                        <label class="fn_delete_product_cat fa fa-times" for="id_{$product_category->id}"></label>
-                                        <input id="id_{$product_category->id}" type="checkbox" value="{$product_category->id}" data-cat_name="{$product_category->name|escape}" checked="" name="categories[]">
-                                    </div>
+                    </div>
+                </div>
+
+                <div class="fn_step-7">
+                    <div class="heading_label heading_label--required">
+                        <span>{$btr->general_category|escape}</span>
+                        <i class="fn_tooltips" title="{$btr->tooltip_general_category|escape}">
+                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                        </i>
+                    </div>
+                    <div id="product_cats">
+                        {assign var ='first_category' value=reset($product_categories)}
+                        <select class="selectpicker  mb-1 fn_product_category fn_meta_categories" data-live-search="true">
+                            <option value="0" selected="" disabled="" data-category_name="">{$btr->product_select_category}</option>
+                            {function name=category_select level=0}
+                                {foreach $categories as $category}
+                                    <option value="{$category->id}" {if $category->id == $first_category->id}selected{/if} data-category_name="{$category->name|escape}">{section sp $level}- {/section}{$category->name|escape}</option>
+                                    {category_select categories=$category->subcategories level=$level+1}
                                 {/foreach}
-                            </div>
-                            <div class="fn_category_item fn_new_category_item product_category_item">
-                                <span class="product_cat_name"></span>
-                                <label class="fn_delete_product_cat fa fa-times" for=""></label>
-                                <input id="" type="checkbox" value="" name="categories[]" data-cat_name="">
-                            </div>
+                            {/function}
+                            {category_select categories=$categories}
+                        </select>
+                        <div id="sortable_cat" class="fn_product_categories_list">
+                            {foreach $product_categories as $product_category}
+                                <div class="fn_category_item product_category_item {if $product_category@first}first_category{/if}">
+                                    <span class="product_cat_name">{$product_category->name|escape}</span>
+                                    <label class="fn_delete_product_cat fa fa-times" for="id_{$product_category->id}"></label>
+                                    <input id="id_{$product_category->id}" type="checkbox" value="{$product_category->id}" data-cat_name="{$product_category->name|escape}" checked="" name="categories[]">
+                                </div>
+                            {/foreach}
+                        </div>
+                        <div class="fn_category_item fn_new_category_item product_category_item">
+                            <span class="product_cat_name"></span>
+                            <label class="fn_delete_product_cat fa fa-times" for=""></label>
+                            <input id="" type="checkbox" value="" name="categories[]" data-cat_name="">
                         </div>
                     </div>
                 </div>
@@ -274,7 +276,7 @@
     {*Варианты товара*}
     <div class="row">
         <div class="col-lg-12 col-md-12 ">
-            <div class="boxed fn_toggle_wrap match_matchHeight_true">
+            <div class="fn_step-8 boxed fn_toggle_wrap match_matchHeight_true">
                 <div class="heading_box">
                     {$btr->general_options|escape}
                     <i class="fn_tooltips" title="{$btr->tooltip_general_options|escape}">
@@ -444,7 +446,7 @@
     {*Промо-изображения товара*}
     <div class="row">
         <div class="col-lg-8 col-md-12 pr-0 ">
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="fn_step-9 boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->product_promotions|escape}
                     <i class="fn_tooltips" title="{$btr->tooltip_product_promotions|escape}">
@@ -494,7 +496,7 @@
         </div>
         {*Рейтинг*}
         <div class="col-lg-4 col-md-12">
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="fn_step-10 boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->product_rating|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -528,7 +530,7 @@
     {*Свойства товара*}
     <div class="row">
         <div class="col-lg-6 col-md-12 pr-0 ">
-            <div class="boxed fn_toggle_wrap min_height_210px">
+            <div class="fn_step-11 boxed fn_toggle_wrap min_height_210px">
             <div class="heading_box">
                 {$btr->product_features|escape}
                 <i class="fn_tooltips" title="{$btr->tooltip_product_features|escape}">
@@ -643,7 +645,7 @@
 
         {*Связанные товары*}
         <div class="col-lg-6 col-md-12">
-            <div class="boxed fn_toggle_wrap min_height_210px">
+            <div class="fn_step-12 boxed fn_toggle_wrap min_height_210px">
                 <div class="heading_box">
                     {$btr->general_recommended|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -714,7 +716,7 @@
     {*Метаданные товара*}
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed match fn_toggle_wrap">
+            <div class="fn_step-13 boxed match fn_toggle_wrap">
                 <div class="heading_box">
                     {$btr->general_metatags|escape}
                     <i class="fn_tooltips" title="{$btr->tooltip_general_metatags|escape}">
@@ -764,7 +766,7 @@
     {*Описание элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed match fn_toggle_wrap tabs">
+            <div class="fn_step-14 boxed match fn_toggle_wrap tabs">
                 <div class="heading_tabs">
                     <div class="tab_navigation">
                         <a href="#tab1" class="heading_box tab_navigation_link">
@@ -794,7 +796,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-12 col-md-12 mt-1">
-                        <button type="submit" class="btn btn_small btn_blue float-md-right">
+                        <button type="submit" class="fn_step-15 btn btn_small btn_blue float-md-right">
                             {include file='svg_icon.tpl' svgId='checked'}
                             <span>{$btr->general_apply|escape}</span>
                         </button>
@@ -804,6 +806,10 @@
         </div>
     </div>
 </form>
+
+{* Learning script *}
+{include file='learning_hints.tpl' hintId='hint_product'}
+
 {* Подключаем Tiny MCE *}
 {include file='tinymce_init.tpl'}
 {* On document load *}
@@ -1149,5 +1155,6 @@
                 $(this).val('∞');
         });
     });
+
 </script>
 {/literal}

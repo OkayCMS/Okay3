@@ -307,6 +307,12 @@ class BackendProductsHelper
         return ExtenderFacade::execute(__METHOD__, $relatedProducts, func_get_args());
     }
 
+    public function getProductsSortName()
+    {
+        $sort = $this->request->get('sort', 'string', null);
+        return ExtenderFacade::execute(__METHOD__, $sort, func_get_args());
+    }
+    
     public function buildFilter()
     {
         // Пагинация
@@ -526,8 +532,11 @@ class BackendProductsHelper
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
-    public function findProductsForProductsAdmin($filter)
+    public function findProductsForProductsAdmin($filter, $sortName)
     {
+        
+        $this->productsEntity->order($sortName);
+        
         $products  = $this->productsEntity->mappedBy('id')->find($filter);
 
         $imagesIds = [];

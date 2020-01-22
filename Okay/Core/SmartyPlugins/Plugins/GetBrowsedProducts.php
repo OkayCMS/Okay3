@@ -40,7 +40,7 @@ class GetBrowsedProducts extends Func
             $browsedProductsIds = array_slice($browsedProductsIds, 0, $params['limit']);
         }
 
-        $products = $this->productsHelper->getProductList(['id' => $browsedProductsIds]);
+        $products = $this->productsHelper->getList(['id' => $browsedProductsIds]);
 
         $browsedProducts = [];
         foreach($browsedProductsIds as  $browsedProductId) {

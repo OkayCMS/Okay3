@@ -501,6 +501,29 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
             }
         }
     }
+
+    public function find(array $filter = [])
+    {
+        $this->setUp();
+        $this->buildPagination($filter);
+        $this->buildFilter($filter);
+        $this->select->distinct(true);
+        $this->select->cols($this->getAllFields());
+        $this->select->cache();
+//print $this->select;
+        $this->db->query($this->select, false);
+
+        // Получаем результирующие поля сущности
+        $resultFields = $this->getAllFieldsWithoutAlias();
+        $field = null;
+        // Если запрашивали одну колонку, отдадим массив строк, а не объектов
+        if (count($resultFields) == 1) {
+            $field = reset($resultFields);
+        }
+
+        $results = $this->getResults($field, $this->mappedBy);
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $results, func_get_args());
+    }
     
     protected function customOrder($order = null, array $orderFields = [], array $additionalData = [])
     {
@@ -535,6 +558,36 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
                                 product_id=p.id LIMIT 1
                         )
                     LIMIT 1) ASC"
+                ];
+                break;
+            case 'stock':
+                $maxOrderAmount = $this->settings->get('max_order_amount');
+                $orderFields = [
+                    "(SELECT IFNULL(pv.stock, {$maxOrderAmount})
+                    FROM __variants pv
+                    WHERE
+                        p.id = pv.product_id
+                        AND pv.position=(SELECT MIN(position)
+                            FROM __variants
+                            WHERE
+                                product_id=p.id LIMIT 1
+                        )
+                    LIMIT 1) ASC",
+                ];
+                break;
+            case 'stock_desc':
+                $maxOrderAmount = $this->settings->get('max_order_amount');
+                $orderFields = [
+                    "(SELECT IFNULL(pv.stock, {$maxOrderAmount})
+                    FROM __variants pv
+                    WHERE
+                        p.id = pv.product_id
+                        AND pv.position=(SELECT MIN(position)
+                            FROM __variants
+                            WHERE
+                                product_id=p.id LIMIT 1
+                        )
+                    LIMIT 1) DESC",
                 ];
                 break;
             case 'rand':

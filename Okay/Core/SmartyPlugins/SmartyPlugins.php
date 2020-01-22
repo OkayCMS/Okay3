@@ -19,6 +19,8 @@ use Okay\Core\DesignBlocks;
 use Okay\Core\TemplateConfig;
 use Okay\Core\OkayContainer\Reference\ParameterReference as PR;
 use Okay\Core\OkayContainer\Reference\ServiceReference as SR;
+use Okay\Helpers\BlogHelper;
+use Okay\Helpers\BrandsHelper;
 use Okay\Helpers\FilterHelper;
 use Okay\Helpers\ProductsHelper;
 
@@ -32,12 +34,14 @@ $plugins = [
         'class' => Plugins\GetBrands::class,
         'arguments' => [
             new SR(EntityFactory::class),
+            new SR(BrandsHelper::class),
         ],
     ],
     Plugins\GetPosts::class => [
         'class' => Plugins\GetPosts::class,
         'arguments' => [
             new SR(EntityFactory::class),
+            new SR(BlogHelper::class),
         ],
     ],
     Plugins\GetFeaturedProducts::class => [

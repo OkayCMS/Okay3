@@ -45,32 +45,32 @@
                 {*Параметры элемента*}
                 <div class="toggle_body_wrap on fn_card">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 fn_step-1">
                             <div class="heading_label">{$btr->settings_notify_emails|escape}</div>
                             <div class="mb-1">
                                  <input name="order_email" class="form-control" type="text" value="{$settings->order_email|escape}" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 fn_step-2">
                             <div class="heading_label">{$btr->settings_notify_reverce|escape}</div>
                             <div class="mb-1">
                                 <input name="notify_from_email" class="form-control" type="text" value="{$settings->notify_from_email|escape}" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 fn_step-3">
                             <div class="heading_label">{$btr->settings_notify_comments|escape}</div>
                             <div class="mb-1">
                                 <input name="comment_email" class="form-control" type="text" value="{$settings->comment_email|escape}" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 fn_step-4">
                             <div class="heading_label">{$btr->settings_notify_sender_name|escape}</div>
                             <div class="mb-1">
                                 <input name="notify_from_name" class="form-control" type="text" value="{$settings->notify_from_name|escape}" />
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 fn_step-5">
                             <div class="heading_label">{$btr->settings_notify_email_lang|escape}</div>
                             <div class="mb-1">
                                 <select name="email_lang" class="selectpicker">
@@ -82,7 +82,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 fn_step-6">
                             <div class="heading_label">{$btr->settings_notify_auto_approved}</div>
                             <div class="mb-1">
                                 <select name="auto_approved" class="selectpicker">
@@ -111,7 +111,7 @@
 
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed fn_toggle_wrap">
+            <div class="fn_step-7 fn_step-8 boxed fn_toggle_wrap">
                 <div class="heading_box">
                     {$btr->settings_notify_smtp|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -194,6 +194,9 @@
         </div>
     </div>
 </form>
+
+{* Learning script *}
+{include file='learning_hints.tpl' hintId='hint_settings_notify'}
 
 <script>
     $(document).on('click', '.fn_test_smtp', function() {

@@ -10,7 +10,6 @@ use Okay\Core\Response;
 
 require_once 'configure.php';
 
-/*����(�������) ��� ����� ��������*/
 $columnsNames = [
     'category_name' => '���������',
     'product_name'  => '�������� ������',
@@ -43,16 +42,10 @@ $reportStatEntity     = $entityFactory->get(ReportStatEntity::class);
 $categoriesEntity     = $entityFactory->get(CategoriesEntity::class);
 
 
-if (!$managers->access('stats', $managersEntity->get($_SESSION['admin']))) {
+if (!$managers->access('sales_report', $managersEntity->get($_SESSION['admin']))) {
     exit();
 }
 
-// ������ ������ ������ 1251
-setlocale(LC_ALL, 'ru_RU.1251');
-$sqlQuery = $queryFactory->newSqlQuery()->setStatement('SET NAMES cp1251');
-$db->query($sqlQuery);
-
-// ��������, ������� ������������
 $page = $request->get('page');
 if (empty($page) || $page==1) {
     $page = 1;
@@ -62,10 +55,7 @@ if (empty($page) || $page==1) {
     }
 }
 
-// ��������� ���� �������� �� ����������
 $f = fopen($exportFilesDir.$filename, 'ab');
-
-// ���� ������ ������� - ������� � ������ ������ �������� �������
 if ($page == 1) {
     fputcsv($f, $columnsNames, $columnDelimiter);
 }
@@ -148,7 +138,7 @@ foreach ($reportStatPurchases as $u) {
 }
 
 $total = [
-    'category_name' => '�����',
+    'category_name' => 'Категогия',
     'product_name'  => ' ',
     'price'         => $totalSum,
     'amount'        => $totalAmount
@@ -156,6 +146,11 @@ $total = [
 
 fputcsv($f, $total, $columnDelimiter);
 fclose($f);
+
+file_put_contents(
+    $exportFilesDir.$filename,
+    iconv( "utf-8", "windows-1251//IGNORE", file_get_contents($exportFilesDir.$filename))
+);
 
 if ($statCount*$page < $totalCount) {
     $data = ['end'=>false, 'page'=>$page, 'totalpages'=>$totalCount/$statCount];

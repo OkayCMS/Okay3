@@ -8,7 +8,7 @@ use Okay\Core\EntityFactory;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Entities\BrandsEntity;
 
-class BrandsHelper
+class BrandsHelper implements GetListInterface
 {
     
     private $entityFactory;
@@ -27,17 +27,42 @@ class BrandsHelper
     {
         return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
-    
-    public function getBrandsList($filter = [], $sort = null)
+
+    /**
+     * @inheritDoc
+     */
+    public function getList($filter = [], $sortName = null, $excludedFields = null)
     {
+
+        if ($excludedFields === null) {
+            $excludedFields = [
+                'description',
+                'meta_title',
+                'meta_keywords',
+                'meta_description',
+            ];
+        }
+        
         /** @var BrandsEntity $brandsEntity */
         $brandsEntity = $this->entityFactory->get(BrandsEntity::class);
 
-        if ($sort !== null) {
-            $brandsEntity->order($sort, $this->getOrderBrandsAdditionalData());
+        // Исключаем колонки, которые нам не нужны
+        if (is_array($excludedFields) && !empty($excludedFields)) {
+            $brandsEntity->cols(BrandsEntity::getDifferentFields($excludedFields));
+        }
+        
+        if ($sortName !== null) {
+            $brandsEntity->order($sortName, $this->getOrderBrandsAdditionalData());
         }
         $brands = $brandsEntity->find($filter);
-        
+        return ExtenderFacade::execute(__METHOD__, $brands, func_get_args());
+    }
+
+    // Данный метод остаётся для обратной совместимости, но объявлен как deprecated, и будет удалён в будущих версиях
+    public function getBrandsList($filter = [], $sort = null)
+    {
+        trigger_error('Method ' . __METHOD__ . ' is deprecated. Please use getList', E_USER_DEPRECATED);
+        $brands = $this->getList($filter, $sort, false);
         return ExtenderFacade::execute(__METHOD__, $brands, func_get_args());
     }
 

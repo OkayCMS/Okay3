@@ -13,7 +13,7 @@ use Okay\Entities\FeaturesValuesEntity;
 use Okay\Entities\FeaturesEntity;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
-class ProductsHelper
+class ProductsHelper implements GetListInterface
 {
     private $entityFactory;
     private $moneyHelper;
@@ -39,31 +39,56 @@ class ProductsHelper
 
         return ExtenderFacade::execute(__METHOD__, reset($products), func_get_args());
     }
-    
-    public function getProductList($filter = [], $sortProducts = null)
+
+    /**
+     * @inheritDoc
+     */
+    public function getList($filter = [], $sortName = null, $excludedFields = null)
     {
+        if ($excludedFields === null) {
+            $excludedFields = [
+                'description',
+                'meta_title',
+                'meta_keywords',
+                'meta_description',
+            ];
+        }
+
         /** @var ProductsEntity $productsEntity */
         $productsEntity = $this->entityFactory->get(ProductsEntity::class);
-        
+
+        // Исключаем колонки, которые нам не нужны
+        if (is_array($excludedFields) && !empty($excludedFields)) {
+            $productsEntity->cols(ProductsEntity::getDifferentFields($excludedFields));
+        }
+
         if (isset($filter['featured'])) {
             $productsEntity->addHighPriority('featured');
         }
-        
+
         if ($this->settings->get('missing_products') === MISSING_PRODUCTS_HIDE) {
             $filter['in_stock'] = true;
         }
-        
-        $productsEntity->order($sortProducts, $this->getOrderProductsAdditionalData());
-        
+
+        $productsEntity->order($sortName, $this->getOrderProductsAdditionalData());
+
         $products = $productsEntity->mappedBy('id')->find($filter);
 
         if (empty($products)) {
-            return ExtenderFacade::execute(__METHOD__, [], [$filter, $sortProducts]);
+            return ExtenderFacade::execute(__METHOD__, [], func_get_args());
         }
 
         $products = $this->attachVariants($products);
         $products = $this->attachMainImages($products);
 
+        return ExtenderFacade::execute(__METHOD__, $products, func_get_args());
+    }
+    
+    // Данный метод остаётся для обратной совместимости, но объявлен как deprecated, и будет удалён в будущих версиях
+    public function getProductList($filter = [], $sortProducts = null)
+    {
+        trigger_error('Method ' . __METHOD__ . ' is deprecated. Please use getList', E_USER_DEPRECATED);
+        $products = $this->getList($filter, $sortProducts, false);
         return ExtenderFacade::execute(__METHOD__, $products, func_get_args());
     }
 

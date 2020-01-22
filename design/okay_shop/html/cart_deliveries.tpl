@@ -22,6 +22,7 @@
 							   data-delivery_price="{$delivery->price}"
 							   data-is_free_delivery="{$delivery->is_free_delivery|intval}"
 							   data-separate_payment="{$delivery->separate_payment|intval}"
+							   data-hide_front_delivery_price="{$delivery->hide_front_delivery_price|intval}"
 							   type="radio"
 							   name="delivery_id" 
 							   value="{$delivery->id}"
@@ -31,7 +32,7 @@
 						</svg>
 						<div class="delivery__name">
 							{$delivery->name|escape}
-							<span class="delivery__name_price">(<span class="fn_delivery_price">{$delivery->delivery_price_text}</span>)</span>
+							<span class="delivery__name_price {if $delivery->hide_front_delivery_price}hidden{/if}">(<span class="fn_delivery_price">{$delivery->delivery_price_text}</span>)</span>
 						</div>
 						{if $delivery->image}
 							<div class="delivery__image">

@@ -151,6 +151,24 @@ class Router {
             $pattern = $baseRoute . $this->getPattern($route);
             
             $router->all($pattern, function(...$params) use ($router, $route, $request, $settings, $language, $baseRoute, $routeName) {
+
+                // TODO подумать над тем как это отрефакторить
+                $flexibleRoute = self::$routeFactory->create($routeName, $params);
+                if ($flexibleRoute) {
+                    $currentUri           = $_SERVER['REQUEST_URI'];
+                    $lastSymbolCurrentUrl = mb_substr($currentUri, -1, 1);
+
+                    if ($flexibleRoute->hasSlashAtEnd() && $lastSymbolCurrentUrl !== "/") {
+                        $this->response->redirectTo($currentUri.'/', 302);
+                        return;
+                    }
+
+                    if (! $flexibleRoute->hasSlashAtEnd() && $lastSymbolCurrentUrl === "/") {
+                        $this->response->redirectTo(mb_substr($currentUri, 0, -1), 302);
+                        return;
+                    }
+                }
+
                 self::$currentRouteName = $routeName;
                 $request->setBasePath($router->getBasePath());
 
@@ -291,10 +309,10 @@ class Router {
         return $this->routeRequiredParams;
     }
     
-    public static function generateUrl($routeName, $params = [], $isAbsolute = false, $langId = null) // todo наблюдать, нормально ли будет работать статически
+    public static function generateUrl($routeName, $params = [], $isAbsolute = false, $langId = null)
     {
         $route = self::$routeFactory->create($routeName);
-        if ($route !== false) {
+        if ($route !== false && !empty($params['url'])) {
             $params['url'] = $route->generateSlugUrl($params['url']);
         }
 
@@ -302,7 +320,7 @@ class Router {
             throw new \Exception('Empty param "route"');
         }
 
-        if (!$route = self::getRouteByName($routeName)) {
+        if (!$routeInfo = self::getRouteByName($routeName)) {
             throw new \Exception("Route \"{$routeName}\" not found");
         }
 
@@ -316,7 +334,7 @@ class Router {
             }
         }
 
-        $slug = $route['slug'];
+        $slug = $routeInfo['slug'];
         
         $result = trim(strtr($slug, $urlData), '/');
 
@@ -330,6 +348,14 @@ class Router {
         
         if ($isAbsolute === true) {
             $result = Request::getRootUrl() . '/' . $result;
+        } else {
+            // Все урлы строим абсолютными, относительно домена, даже если сайт в подпапке, добавим и подпапку
+            $result = Request::getSubDir() . '/' . $result;
+        }
+
+        // TODO здесь есть скрытая связь с FilterHelper. Это может привести к багам, подумать над тем, чтобы решить это
+        if (is_object($route) && method_exists($route, 'hasSlashAtEnd') && $route->hasSlashAtEnd()) {
+            return rtrim($result, '/').'/';
         }
 
         return $result;

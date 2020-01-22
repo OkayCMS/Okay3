@@ -19,6 +19,7 @@
 4. Стилизация списков на всех страницах
 5. Catalog menu
 6. Header_style
+7. Learning style
 
 
 *//* ==================================================
@@ -56,13 +57,14 @@ body {
     line-height: 1.2;
     color: #848484;
     font-weight: normal;
-    background-color: #FBFBFB;
+    background-color: #edeff0;
     max-width: 100%;
     min-width: 320px;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     max-width: 100%;
-    overflow: hidden;
+    /*overflow: hidden;*/
+    padding: 55px 0 0 !important;
 }
 .design_block_parent_element {
     position: relative;
@@ -108,13 +110,8 @@ body {
 .main {
     width: 100%;
     padding: 0;
-    padding-top: 55px;
     margin: 0;
-    min-height: 100%;
-    height: calc(100% - 55px);
     position: relative;
-    width: 100%;
-    overflow: auto;
 }
 
 .border_img{
@@ -381,8 +378,8 @@ body:not(.top-nav) header.navbar {
     width: 100%;
     height: 100%;
     padding-left: 70px;
-    position: fixed;
-    overflow: hidden;
+    /*position: fixed;*/
+    /*overflow: hidden;*/
 }
 .okay_list_heading .hidden_check_1{
     display: none;
@@ -395,10 +392,39 @@ body:not(.top-nav) header.navbar {
 .okay_list_heading a{
     color: #fff;
     margin-left: 3px;
+    display: flex;
 }
 .okay_list_heading a svg{
-    width: 18px;
-    height: 18px;
+     width: 18px;
+     height: 18px;
+     margin-left: 5px;
+     -webkit-box-flex: 0;
+     -webkit-flex: 0 0 23px;
+     -ms-flex: 0 0 23px;
+     flex: 0 0 23px;
+     max-width: 23px;
+     max-width: 23px;
+     position: relative;
+     top: 0px;
+     fill: #fff;
+ }
+.okay_list_heading .main_image_id.active .left_s,
+.okay_list_heading .name.active .left_s,
+.okay_list_heading .price.active .left_s,
+.okay_list_heading .stock.active .left_s,
+.okay_list_heading .visible.active .left_s{
+    fill: rgb(32, 168, 216);
+}
+.okay_list_heading a.main_image_id_desc.active svg .right_s,
+.okay_list_heading .name_desc.active svg .right_s,
+.okay_list_heading .price_desc.active svg .right_s,
+.okay_list_heading .stock_desc.active svg .right_s,
+.okay_list_heading .visible_desc.active svg .right_s{
+    fill: rgb(32, 168, 216);
+}
+.reset_sort.hint-anim{
+    font-family: 'Open Sans', sans-serif!important;
+    text-transform: initial!important;
 }
 
 /************************************************************************* Links  */
@@ -2238,17 +2264,17 @@ label.switch_label {
 .okay_list .okay_list_boding.okay_list_comments_name a:hover{
     color: #02bcf2;
 }
-.okay_list .okay_list_photo a{
-    border: 1px solid #eee;
-    display: block;
-    border-radius: 3px;
-    width: 60px;
-    height: 60px;
-    text-align: center;
-    line-height: 55px;
-    margin: 0px auto;
-    background: #fff
-}
+/*.okay_list .okay_list_photo a{*/
+    /*border: 1px solid #eee;*/
+    /*display: block;*/
+    /*border-radius: 3px;*/
+    /*width: 60px;*/
+    /*height: 60px;*/
+    /*text-align: center;*/
+    /*line-height: 55px;*/
+    /*margin: 0px auto;*/
+    /*background: #fff*/
+/*}*/
 .okay_list .okay_list_brands_photo a{
     border: 1px solid #eee;
     display: block;
@@ -6248,6 +6274,239 @@ div.tox-fullscreen {
     display: none!important;
 }
 /******************** Learning style */
+
+.boxed--progress-bar{
+    padding: 20px 15px;
+    margin-bottom: 20px;
+}
+.learning_card__list{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-align: stretch;
+    -webkit-align-items: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    margin-right: -7px;
+    margin-left: -7px;
+    margin-bottom: 15px;
+    list-style: none;
+}
+.learning_card__item{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    position: relative;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 33.3%;
+    -ms-flex: 0 0 33.3%;
+    flex: 0 0 33.3%;
+    max-width: 33.3%;
+    min-height: 320px;
+    padding-right: 7px;
+    padding-left: 7px;
+    margin-bottom: 40px;
+}
+.learning_card__inner {
+    font-family: 'Nunito', 'Open Sans', sans-serif;
+    position: relative;
+    background: #fff;
+    width: 100%;
+    border: 2px solid rgba(0,0,0,0.07);
+    border-bottom: none;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.06);
+    border-radius: 5px 5px 4px 4px;
+    display: block;
+    min-height: 310px;
+    padding: 88px 30px 30px;
+}
+.learning_card__inner:after,
+.learning_card__inner:before {
+    content: "";
+    background: #fff;
+    height: 5px;
+    display: block;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.07) inset, 0 2px 0 rgba(0,0,0,0.07);
+    border-radius: 0 0 4px 4px;
+    position: absolute;
+    top: 100%;
+    right: 10px;
+    left: 10px;
+    transition: .1s ease-in-out;
+}
+.learning_card__inner:before {
+    height: 10px;
+    left: 20px;
+    right: 20px;
+}
+.learning_card__header {
+    background-color: rgb(43, 48, 59);
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    border-radius: 4px 4px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    justify-items: center;
+    height: 54px;
+    color:rgb(255, 255, 255);
+    font-size: 14px;
+    padding: 0 30px;
+    transition: background-color 300ms 0s ease;
+}
+.icon_learning{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-right: 15px;
+    color: #fff;
+}
+.learning_card__bookmark{
+    position: absolute;
+    top: -2px;
+    right: 20px;
+    color: rgb(229, 71, 71);
+}
+.learning_card__bookmark--done{
+    color: rgb(79, 201, 104);
+}
+.learning_card__bookmark svg{
+    height: 45px;
+    width: 45px;
+}
+.learning_card__bookmark.hint-anim::after{
+    right: 15px;
+}
+.learning_card__bookmark.hint-anim::before {
+    right: 30px;
+}
+.learning_card__header .icon_learning svg {
+    height: 26px;
+    width: 26px;
+    margin-right: 10px;
+}
+.learning_card__body{
+    height: 150px;
+}
+.learning_card__type {
+    display: block;
+    margin: 0 0 8px;
+    line-height: 14px;
+    font-size: 14px;
+    color:rgb(123, 139, 142);
+    font-weight: 700;
+}
+.learning_card__title {
+    font-size: 20px;
+    line-height: 24px;
+    margin: 0 0 20px;
+    color:rgb(75, 86, 88);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 700;
+}
+.learning_card__description{
+    position: relative;
+    z-index: 0;
+    font-size: 14px;
+    overflow: hidden;
+    margin: 0;
+    color: rgb(123, 139, 142);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    max-height: 90px;
+    -webkit-box-orient: vertical;
+    line-height: 1.45;
+}
+.learning_card__footer {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+.learning_card__informers{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.learning_card__button {
+    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, width 0.3s ease, opacity 0.3s ease;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    height: 30px;
+    padding: 0 20px;
+    font-weight: 600;
+    line-height: 26px;
+    border: solid 2px rgb(132, 115, 196);
+    color:rgb(132, 115, 196);
+    background-color:transparent;
+    font-size: 14px;
+}
+.learning_card__button:hover {
+    color: #fff;
+    background-color: rgb(132, 115, 196);
+    border-color: rgb(132, 115, 196);
+}
+.learning_card__informer{
+    margin-left: 10px;
+}
+.learning_card__informer--win svg{
+    width: 48px;
+    height: 48px;
+    position:relative;
+    top: 7px;
+}
+.learning_card__done,
+.learning_card__video {
+    position: relative;
+    background-color: transparent;
+    display: inline-block;
+    color:rgb(188, 193, 197);
+    padding: 0;
+    text-align: center;
+    line-height: 40px;
+    width: 40px;
+    cursor: pointer;
+    height: 40px;
+    transition: all 300ms 0s ease;
+}
+.learning_card__done svg,
+.learning_card__video svg{
+    position: relative;
+    left: 1px;
+}
+.learning_card__video:hover {
+    color: #FF0000;
+}
+.learning_card__done:hover{
+    border: 2px solid #576366;
+    color: #576366;
+}
 .progress-bar__wrap{
     -ms-flex-negative: 0;
     flex-shrink: 0;
@@ -6263,174 +6522,32 @@ div.tox-fullscreen {
     -webkit-box-pack: justify;
     -webkit-justify-content: space-between;
     -ms-flex-pack: justify;
-}
-.learning_boxed{
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: stretch;
-    -webkit-align-items: stretch;
-    -ms-flex-align: stretch;
-    align-items: stretch;
-    -webkit-box-pack: start;
-    -webkit-justify-content: flex-start;
-    -ms-flex-pack: start;
-    justify-content: flex-start;
-    border: 1px solid rgb(230, 230, 230);
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 3px;
-    background: #fff;
-}
-.learning_boxed__video{
-    -webkit-box-flex: 0;
-    -webkit-flex: 0 0 250px;
-    -ms-flex: 0 0 250px;
-    flex: 0 0 250px;
-    max-width: 250px;
-    position: relative;
-}
-.learning_boxed__video img{
-    border: 1px solid rgb(238, 238, 238);
-    display: block;
-    border-radius: 3px;
-    cursor: pointer;
-    width: 230px;
-    height: auto;
-    background: rgb(255, 255, 255);
-}
-.learning_boxed__details{
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    -webkit-flex-basis: 0;
-    -ms-flex-preferred-size: 0;
-    flex-basis: 0;
-    -webkit-box-flex: 1;
-    -webkit-flex-grow: 1;
-    -ms-flex-positive: 1;
-    flex-grow: 1;
-    max-width: 100%;
-}
-.learning_boxed__header{
-    -ms-flex-negative: 0;
-    flex-shrink: 0;
-    font-family: 'Open Sans Condensed', sans-serif;
-    font-weight: 700;
-    color: rgb(43, 48, 59);
-    font-size: 18px;
-    line-height: 22px;
-    margin-bottom: 10px;
-    position: relative;
-}
-.learning_boxed__body{
-    -webkit-box-flex: 1;
-    -ms-flex: 1 0 auto;
-    flex: 1 0 auto;
-    position: relative;
-    font-style: normal;
-    font-stretch: normal;
-    letter-spacing: normal;
-    padding-bottom: 15px;
-    font-weight: 400;
-    color: rgb(100, 100, 100);
-    font-size: 14px;
-    line-height: 1.6;
-    padding-right: 150px;
-}
-.learning_boxed__footer{
-    -ms-flex-negative: 0;
-    flex-shrink: 0;
-    display: flex;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    align-items: center;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    justify-content: space-between;
-    -webkit-box-pack: justify;
-    -webkit-justify-content: space-between;
-    -ms-flex-pack: justify;
-}
-.learning_boxed__link{
-    color: rgb(32, 168, 216);
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.2;
-    display: -webkit-inline-box;
-    display: -webkit-inline-flex;
-    display: -ms-inline-flexbox;
-    display: inline-flex;
-    align-items: center;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-}
-.learning_boxed__link svg{
-    width: 18px;
-    height: 18px;
-    margin-left: 10px;
-}
-.video__button{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 1;
-    display: block;
-    padding: 0;
-    width: 68px;
-    height: 48px;
-    border: none;
-    background-color: transparent;
-    transform: translate(-50%, -50%);
-    cursor: pointer
-}
-.video__button-shape {
-    fill: #212121;
-    fill-opacity: 0.6;
-}
-.video__button-icon {
-    fill: #ffffff;
-}
-.video__button:focus {
-    outline: none;
-}
-.learning_boxed__img{
-    position: relative;
-}
-.learning_boxed__img:hover .video__button-shape,
-.video__button:focus .video__button-shape {
-    fill: #ff0000;
-    fill-opacity: 1;
+    margin-top: 10px;
 }
 .progress-bar-holder{
     width: 100%;
     border: 1px solid rgb(230, 230, 230);
-    background: rgba(11, 152, 47, 0.1);
+    background: rgb(237, 239, 240);
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
     margin-right: 15px;
 }
 .progress-bar{
-    font-family: 'Open Sans Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 20px;
+    font-family: 'Nunito', 'Open Sans', sans-serif;
+    font-size: 16px;
     color: #fff;
     font-weight: bold;
     text-align: center;
-    background: rgb(11, 152, 47);
+    background: rgb(58, 154, 78);
+    background-image: -webkit-linear-gradient(135deg, rgba(255, 255, 255, 0.125) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.125) 50%, rgba(255, 255, 255, 0.125) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.125) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.125) 50%, rgba(255, 255, 255, 0.125) 75%, transparent 75%, transparent);
+    background-size: 35px 35px;
+    -webkit-animation: cssProgressActive 2s linear infinite;
+    -ms-animation: cssProgressActive 2s linear infinite;
+    animation: cssProgressActive 2s linear infinite;
     width: 0px;
-    height: 32px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -6439,6 +6556,14 @@ div.tox-fullscreen {
     -moz-border-radius: 4px;
     border-radius: 4px;
 }
+@keyframes cssProgressActive {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 35px 35px;
+    }
+}
 #fn_video{
     width: 1000px;
     max-width: 100%;
@@ -6446,11 +6571,10 @@ div.tox-fullscreen {
 }
 .video_adaptive{
     position: relative;
-    padding-bottom: 56.25%; /* задаёт высоту контейнера для 16:9 (если 4:3 — поставьте 75%) */
+    padding-bottom: 56.25%;
     padding-top: 30px;
     height: 0;
     overflow: hidden;
-
 }
 .video_adaptive .youtube{
     position: absolute;
@@ -6459,18 +6583,6 @@ div.tox-fullscreen {
     width: 100%;
     height: 100%;
 }
-.lesson_done_icon{
-    position: absolute;
-    top: 25px;
-    right: 15px;
-    width: 70px;
-}
-.lesson_done_icon svg{
-    color: rgb(11, 152, 47);
-    width: 45px;
-    height: 45px;
-}
-
 .manager_menu_section_icon {
     transform: translateY(-2px);
     display: block;
@@ -6498,6 +6610,21 @@ div.tox-fullscreen {
 }
 .okay_type_radio {
     width: 100%;
+    height: auto;
+    display: flex;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    align-items: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    text-align: left;
+    padding: 10px 0;
+    cursor: pointer;
+    margin: 0;
+}
+.okay_type_radio_no_width {
     height: auto;
     display: flex;
     display: -webkit-box;
@@ -6645,4 +6772,13 @@ ul.submenu .menu_counter {
 
 .system_position {
     float: right;
+}
+
+.settings_router_switch {
+    float: right;
+    transform: translateY(-37px);
+}
+
+.settings_router_switch_title {
+    position: relative; top: 4px; padding-left: 4px;
 }

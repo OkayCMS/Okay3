@@ -642,9 +642,13 @@ class FilterHelper
                 }
 
                 $baseUrl = $this->router->generateUrl($this->router->getCurrentRouteName(), $routeParams, true, $l->id);
-                $baseUrl = trim($baseUrl, '/');
                 $chpuUrl = $this->filterChpuUrl($furl, $featuresAltLang);
                 $chpuUrl = trim($chpuUrl, '/');
+
+                if (!empty($chpuUrl)) {
+                    $baseUrl = trim($baseUrl, '/');
+                }
+
                 $l->url = $baseUrl . (!empty($chpuUrl) ? '/' . $chpuUrl : '');
             }
         }

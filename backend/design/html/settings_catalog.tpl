@@ -60,37 +60,37 @@
                 {*Параметры элемента*}
                 <div class="toggle_body_wrap on fn_card">
                     <div class="row">
-                        <div class="col-lg-4 col-md-6">
+                        <div class="fn_step-1 col-lg-4 col-md-6">
                             <div class="heading_label">{$btr->settings_catalog_products_on_page|escape}</div>
                             <div class="mb-1">
                                <input name="products_num" class="form-control" type="text" value="{$settings->products_num|escape}" />
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-6">
+                        <div class="fn_step-2 col-lg-4 col-md-6">
                             <div class="heading_label">{$btr->settings_catalog_products_max|escape}</div>
                             <div class="mb-1">
                                 <input name="max_order_amount" class="form-control" type="text" value="{$settings->max_order_amount|escape}" />
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-6">
+                        <div class="fn_step-3 col-lg-4 col-md-6">
                             <div class="heading_label">{$btr->settings_catalog_posts_on_page|escape}</div>
                             <div class="mb-1">
                                 <input name="posts_num" class="form-control" type="text" value="{$settings->posts_num|escape}" />
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-6">
+                        <div class="fn_step-4 col-lg-4 col-md-6">
                             <div class="heading_label">{$btr->settings_catalog_products_comparcion|escape}</div>
                             <div class="mb-1">
                                 <input name="comparison_count" class="form-control" type="text" value="{$settings->comparison_count|escape}" />
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-6">
+                        <div class="fn_step-5 col-lg-4 col-md-6">
                             <div class="heading_label">{$btr->settings_catalog_units|escape}</div>
                             <div class="mb-1">
                                <input name="units" class="form-control" type="text" value="{$settings->units|escape}" />
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-6">
+                        <div class="fn_step-6 col-lg-4 col-md-6">
                             <div class="heading_label">{$btr->settings_catalog_cents|escape}</div>
                             <div class="mb-1">
                                <select name="decimals_point" class="selectpicker">
@@ -99,7 +99,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-6">
+                        <div class="fn_step-7 col-lg-4 col-md-6">
                             <div class="heading_label">{$btr->settings_catalog_thousands|escape}</div>
                             <div class="mb-1">
                                <select name="thousands_separator" class="selectpicker">
@@ -109,7 +109,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-6">
+                        <div class="fn_step-8 col-lg-4 col-md-6">
                             <div class="heading_label">
                                 {$btr->settings_catalog_not_in_stock|escape}
                                 <i class="fn_tooltips" title="{$btr->tooltip_settings_catalog_not_in_stock|escape}">
@@ -125,32 +125,38 @@
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6 mt-2">
-                            <div class="heading_label boxes_inline">{$btr->settings_catalog_preorder_not_in_stock|escape}</div>
-                            <div class="boxes_inline">
-                               <div class="okay_switch clearfix">
-                                    <label class="switch switch-default">
-                                        <input class="switch-input" name="is_preorder" value='1' type="checkbox" {if $settings->is_preorder}checked=""{/if}/>
-                                        <span class="switch-label"></span>
-                                        <span class="switch-handle"></span>
-                                    </label>
+                            <div class="fn_step-9">
+                                <div class="heading_label boxes_inline">{$btr->settings_catalog_preorder_not_in_stock|escape}</div>
+                                <div class="boxes_inline">
+                                   <div class="okay_switch clearfix">
+                                        <label class="switch switch-default">
+                                            <input class="switch-input" name="is_preorder" value='1' type="checkbox" {if $settings->is_preorder}checked=""{/if}/>
+                                            <span class="switch-label"></span>
+                                            <span class="switch-handle"></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-lg-4 col-md-6 mt-2">
-                            <div class="heading_label boxes_inline">{$btr->allow_to_visible_empty_categories|escape}</div>
-                            <div class="boxes_inline">
-                                <div class="okay_switch clearfix">
-                                    <label class="switch switch-default">
-                                        <input class="switch-input" name="show_empty_categories" value='1' type="checkbox" {if $settings->show_empty_categories}checked=""{/if}/>
-                                        <span class="switch-label"></span>
-                                        <span class="switch-handle"></span>
-                                    </label>
+                            <div class="fn_step-10">
+                                <div class="heading_label boxes_inline">
+                                    {$btr->allow_to_visible_empty_categories|escape}
+                                    <i class="fn_tooltips" title="{$btr->allow_to_visible_empty_categories_notice|escape}">
+                                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                    </i>
+                                </div>
+                                <div class="boxes_inline">
+                                    <div class="okay_switch clearfix">
+                                        <label class="switch switch-default">
+                                            <input class="switch-input" name="show_empty_categories" value='1' type="checkbox" {if $settings->show_empty_categories}checked=""{/if}/>
+                                            <span class="switch-label"></span>
+                                            <span class="switch-handle"></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                            <i class="fn_tooltips" title="{$btr->allow_to_visible_empty_categories_notice|escape}">
-                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                            </i>
                         </div>
                     </div>
                 </div>
@@ -168,7 +174,7 @@
 
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed fn_toggle_wrap ">
+            <div class="fn_step-11 boxed fn_toggle_wrap ">
                 <div class="heading_box">
                     {$btr->title_truncate_table|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -211,7 +217,7 @@
     {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed fn_toggle_wrap ">
+            <div class="fn_step-12 boxed fn_toggle_wrap ">
                 <div class="heading_box">
                     {$btr->settings_catalog_watermark|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -291,6 +297,9 @@
         </div>
     </div>
 </form>
+
+{include file='learning_hints.tpl' hintId='hint_settings_catalog'}
+
 <script>
     $(document).on("click", ".fn_truncate_table", function () {
         $('.fn_truncate_table_confirm').fadeIn(500);

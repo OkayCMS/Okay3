@@ -111,7 +111,7 @@ class BrandController extends AbstractController
         }
 
         // Товары
-        $products = $productsHelper->getProductList($filter, $sortProducts);
+        $products = $productsHelper->getList($filter, $sortProducts);
         $this->design->assign('products', $products);
 
         if ($this->request->get('ajax','boolean')) {

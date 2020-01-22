@@ -34,7 +34,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     {if $controller == 'CategoryController' || $controller == 'BrandController' || $controller == 'ProductsController'}
-        {if $set_canonical}
+        {if $set_canonical && !$need_indexing}
             <meta name="robots" content="noindex,nofollow">
         {elseif $sort}
             <meta name="robots" content="noindex,follow">
@@ -140,7 +140,7 @@
     {* Language attribute *}
     {foreach $languages as $l}
         {if $l->enabled}
-            <link rel="alternate" hreflang="{$l->href_lang}" href="{preg_replace('/^(.+)\/$/', '$1', $l->url)}">
+            <link rel="alternate" hreflang="{$l->href_lang}" href="{$l->url}">
         {/if}
     {/foreach}
 

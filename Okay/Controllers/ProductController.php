@@ -77,7 +77,7 @@ class ProductController extends AbstractController
             foreach ($relatedPosts as $r_post) {
                 $filterPost['id'][] = $r_post->post_id;
             }
-            $posts = $blogHelper->getPostsList($filterPost);
+            $posts = $blogHelper->getList($filterPost);
             $this->design->assign('related_posts', $posts);
         }
 

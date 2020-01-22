@@ -11,10 +11,17 @@ class ProductMetadataHelper extends CommonMetadataHelper
     
     public function getH1()
     {
+        $defaultProductsSeoPattern = (object)$this->settings->get('default_products_seo_pattern');
+
+        $category = $this->design->getVar('category');
         $product  = $this->design->getVar('product');
         $h1 = $product->name;
 
-        if (count($product->variants) == 1 && !empty($product->variant->name)) {
+        if (! empty($category->auto_h1)) {
+            $h1 = $category->auto_h1;
+        } elseif(!empty($defaultProductsSeoPattern->auto_h1)) {
+            $h1 = $defaultProductsSeoPattern->auto_h1;
+        } elseif (count($product->variants) == 1 && !empty($product->variant->name)) {
             $h1 .= ' ' . $product->variant->name;
         }
         $h1 = $this->compileMetadata($h1);

@@ -123,7 +123,7 @@ class OrderAdmin extends IndexAdmin
             $subtotal = 0;
             $hasVariantNotInStock = false;
             foreach ($purchases as $purchase) {
-                if (($purchase->amount > $purchase->variant->stock || !$purchase->variant->stock) && !$hasVariantNotInStock) {
+                if ((empty($purchase->variant) || $purchase->amount > $purchase->variant->stock || !$purchase->variant->stock) && !$hasVariantNotInStock) {
                     $hasVariantNotInStock = true;
                 }
                 $subtotal += $purchase->price * $purchase->amount;

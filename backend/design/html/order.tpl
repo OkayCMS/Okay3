@@ -10,8 +10,8 @@
 
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="wrap_heading">
-                <div class="box_heading heading_page">
+            <div class="fn_step-1 wrap_heading order_toolbar">
+                <div class="box_heading heading_page order_toolbar__heading">
                     {if $order->id}
                         {$btr->general_order_number|escape} {$order->id|escape}
                     {else}
@@ -19,20 +19,20 @@
                     {/if}
                 </div>
                 {*Статус заказа*}
-                <div class="boxes_inline">
+                <div class="boxes_inline order_toolbar__status">
                     <select class="selectpicker" name="status_id">
                         {foreach $all_status as $status_item}
                             <option value="{$status_item->id}" {if $order->status_id == $status_item->id}selected=""{/if} {if $hasVariantNotInStock && !$order->closed && $status_item->is_close} disabled{/if} >{$status_item->name|escape}</option>
                         {/foreach}
                     </select>
                 </div>
-                <div data-hint="{$btr->order_print|escape}" class="boxes_inline hint-bottom-middle-t-info-s-small-mobile  hint-anim ml-h">
+                <div data-hint="{$btr->order_print|escape}" class="boxes_inline hint-bottom-middle-t-info-s-small-mobile  hint-anim ml-h order_toolbar__print">
                     <a href="{url view=print id=$order->id return=null}" target="_blank" title="{$btr->order_print|escape}" class="print_block">
                         <i class="fa fa-print"></i>
                     </a>
                 </div>
                 {*Метки заказа*}
-                <div class="box_btn_heading ml-h hidden-xs-down">
+                <div class="box_btn_heading ml-h hidden-xs-down order_toolbar__markers">
                     <div class="add_order_marker">
                         <span class="fn_ajax_label_wrapper">
                             <span class="fn_labels_show box_labels_show box_btn_heading ml-h">{include file='svg_icon.tpl' svgId='tag'} <span>{$btr->general_select_label|escape}</span> </span>
@@ -55,8 +55,8 @@
                     </div>
                 </div>
                 {if $order->id && !empty($order->url)}
-                    <div class="box_btn_heading">
-                        <a class="btn btn_small btn-info add" target="_blank" href="../{url_generator route="order" url=$order->url}" >
+                    <div class="box_btn_heading order_toolbar__button">
+                        <a class="btn btn_small btn-info add" target="_blank" href="{url_generator route="order" url=$order->url absolute=1}" >
                             {include file='svg_icon.tpl' svgId='icon_desktop'}
                             <span>{$btr->general_open|escape}</span>
                         </a>
@@ -138,7 +138,7 @@
     <div class="row">
         {*left_column*}
         <div class="col-xl-8 break_1300_12  pr-0">
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="boxed fn_toggle_wrap min_height_230px fn_step-2">
                 <div class="heading_box">
                     {$btr->order_content|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -315,7 +315,7 @@
             </div>
 
             {*Информация по заказу*}
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="boxed fn_toggle_wrap min_height_230px fn_step-3">
                 <div class="heading_box">
                     {$btr->order_parameters|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -445,7 +445,7 @@
         {*right_column*}
         {*Информация о заказчике/детали заказа*}
         <div class="col-xl-4 break_1300_12">
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="boxed fn_toggle_wrap min_height_230px fn_step-4">
                 <div class="heading_box">
                     {$btr->order_buyer_information|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -546,7 +546,7 @@
                 {include file='svg_icon.tpl' svgId='checked'}
                 <span>{$btr->general_apply|escape}</span>
             </button>
-            <div class="checkbox_email float-sm-right text_dark mr-1">
+            <div class="checkbox_email float-sm-right text_dark mr-1 fn_step-5">
                 <input id="order_to_email" name="notify_user" type="checkbox" class="hidden_check_1"  value="1" />
                 <label for="order_to_email" class="checkbox_label mr-h"></label>
                 <span>{$btr->order_email|escape}</span>
@@ -555,7 +555,7 @@
     </div>
 </form>
 
-
+{include file='learning_hints.tpl' hintId='hint_order'}
 {literal}
 <script src="design/js/autocomplete/jquery.autocomplete-min.js"></script>
 <link rel="stylesheet" type="text/css" href="design/js/autocomplete/styles.css" media="screen" />

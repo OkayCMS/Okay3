@@ -22,7 +22,7 @@
 <div class="boxed fn_toggle_wrap">
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="fn_toggle_wrap">
+            <div class="fn_step-1 fn_toggle_wrap">
                 <div class="heading_box visible_md">
                     {$btr->general_filter|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -90,7 +90,7 @@
                 {*Параметры элемента*}
                 <div class="okay_list_body features_wrap sort_extended">
                 {foreach $features as $feature}
-                    <div class="fn_row okay_list_body_item fn_sort_item">
+                    <div class="fn_step-2 fn_row okay_list_body_item fn_sort_item">
                         <div class="okay_list_row ">
                             <input type="hidden" name="positions[{$feature->id}]" value="{$feature->position}" />
 
@@ -196,6 +196,9 @@
         </div>
     {/if}
 </div>
+
+{* Learning script *}
+{include file='learning_hints.tpl' hintId='hint_features'}
 
 {literal}
     <script>

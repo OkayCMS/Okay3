@@ -18,7 +18,7 @@
                     <div class="form__header">
                         <div class="form__title">
                             {include file="svg.tpl" svgId="note_icon"}
-                            <span data-language="product_write_comment">Заполните форму</span>
+                            <span data-language="login_title_form">{$lang->login_title_form}</span>
                         </div>
                     </div>
                     

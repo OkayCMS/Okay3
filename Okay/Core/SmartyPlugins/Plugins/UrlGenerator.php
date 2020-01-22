@@ -20,8 +20,10 @@ class UrlGenerator extends Func
 
     public function run($params)
     {
-        $routeName = '';
+        $routeName  = '';
         $isAbsolute = false;
+        $langId     = null;
+
         if (isset($params['route'])) {
             $routeName = $params['route'];
         }
@@ -29,8 +31,12 @@ class UrlGenerator extends Func
             $isAbsolute = (bool)$params['absolute'];
             unset($params['absolute']);
         }
+        if (isset($params['lang_id'])) {
+            $langId = (int) $params['lang_id'];
+            unset($params['lang_id']);
+        }
         unset($params['route']);
         
-        return $this->router->generateUrl($routeName, $params, $isAbsolute);
+        return $this->router->generateUrl($routeName, $params, $isAbsolute, $langId);
     }
 }

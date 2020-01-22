@@ -82,6 +82,7 @@
                 {*Название элемента сайта*}
                 <div class="row d_flex">
                     <div class="col-lg-10 col-md-9 col-sm-12">
+                        <div class="fn_step-1">
                         <div class="heading_label heading_label--required">
                             <span>{$btr->general_name|escape}</span>
                             <i class="fn_tooltips" title="{$btr->tooltip_general_name_feature|escape}">
@@ -92,9 +93,10 @@
                             <input class="form-control" name="name" type="text" value="{$feature->name|escape}"/>
                             <input name="id" type="hidden" value="{$feature->id|escape}"/>
                         </div>
+                        </div>
                         <div class="row">
                             <div class="col-xs-12 col-lg-6 col-md-6">
-                                <div class="">
+                                <div class="fn_step-2">
                                     <div class="input-group">
                                         <span class="input-group-addon">URL</span>
                                         <input name="url" class="form-control fn_url {if $feature->id}fn_disabled{/if}" {if $feature->id}readonly=""{/if} type="text" value="{$feature->url|escape}" />
@@ -110,6 +112,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 mt-q">
+                                <div class="fn_step-3">
                                 <div class="heading_label boxes_inline">
                                     {$btr->feature_url_in_product|escape}
                                 </div>
@@ -122,6 +125,7 @@
                                         </label>
                                     </div>
                                 </div>
+                                </div>
                             </div>
                         </div>
                         {get_design_block block="feature_general"}
@@ -129,7 +133,7 @@
                     <div class="col-lg-2 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
                             <div class="activity_of_switch_item"> {* row block *}
-                                <div class="okay_switch clearfix">
+                                <div class="fn_step-4 okay_switch clearfix">
                                     <label class="switch_label">{$btr->feature_filter|escape}
                                         <i class="fn_tooltips" title="{$btr->tooltip_feature_url_in_product|escape}">
                                             {include file='svg_icon.tpl' svgId='icon_tooltips'}
@@ -140,9 +144,10 @@
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>
-                                    {get_design_block block="feature_switch_checkboxes"}
+
                                 </div>
                             </div>
+                            {get_design_block block="feature_switch_checkboxes"}
                         </div>
                     </div>
                 </div>
@@ -153,7 +158,7 @@
     {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-6 col-md-12 pr-0">
-            <div class="boxed fn_toggle_wrap min_height_210px">
+            <div class="fn_step-5 boxed fn_toggle_wrap min_height_210px">
                 <div class="heading_box">
                     {$btr->feature_in_categories|escape}
                     <i class="fn_tooltips" title="{$btr->tooltip_feature_in_categories|escape}">
@@ -195,7 +200,7 @@
             </div>
         </div>
         <div class="col-lg-6 col-md-12">
-            <div class="boxed match fn_toggle_wrap min_height_210px">
+            <div class="fn_step-6 boxed match fn_toggle_wrap min_height_210px">
                 <div class="heading_box">
                     {$btr->general_metatags|escape}
                     <i class="fn_tooltips" title="{$btr->tooltip_general_metatags|escape}">
@@ -250,7 +255,7 @@
                 </div>
                 <div class="toggle_body_wrap on fn_card fn_sort_list">
 
-                    <div class="row mb-1">
+                    <div class="fn_step-7 row mb-1">
                         <div class="col-lg-8 col-md-7 col-sm 12">
                             <button type="button" class="btn btn_small btn-info fn_add_value float-lg-left mr-1">
                                 {include file='svg_icon.tpl' svgId='plus'}
@@ -304,8 +309,8 @@
                         </div>
                         <div class="okay_list_body fn_feature_values_list sort_extended fn_values_list">
                             {foreach $features_values as $fv}
-                                <div class="fn_row okay okay_list_body_item fn_sort_item">
-                                    <div class="okay_list_row">
+                                <div class="fn_step-8 fn_row okay okay_list_body_item fn_sort_item">
+                                    <div class=" okay_list_row">
                                         <input type="hidden" name="feature_values[id][]" value="{$fv->id|escape}">
                                         <input class="hidden_check" type="checkbox" name="check[]" value="{$fv->id}" />
                                         <input type="hidden" class="fn_value_to_delete" name="values_to_delete[]" disabled="" value="{$fv->id|escape}">
@@ -426,7 +431,7 @@
     </div>
 
     {if $feature->id}
-    <div class="boxed fn_toggle_wrap">
+    <div class="fn_step-9 boxed fn_toggle_wrap">
         <div class="heading_box">
             {$btr->feature_union_values|escape}
             <i class="fn_tooltips" title="{$btr->tooltip_feature_union_values|escape}">
@@ -456,13 +461,15 @@
 
     <div class="row">
         <div class="col-lg-12 col-md-12 mb-2">
-            <button type="submit" class="btn btn_small btn_blue float-md-right">
+            <button type="submit" class="fn_step-9 btn btn_small btn_blue float-md-right">
                 {include file='svg_icon.tpl' svgId='checked'}
                 <span>{$btr->general_apply|escape}</span>
             </button>
         </div>
     </div>
 </form>
+
+{include file='learning_hints.tpl' hintId='hint_feature'}
 
 {* On document load *}
 {if $feature->id}

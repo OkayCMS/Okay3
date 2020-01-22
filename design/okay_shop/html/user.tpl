@@ -102,7 +102,7 @@
                             <span data-language="user_my_orders">{$lang->user_my_orders}</span>
                         </div>
                         <div class="block_explanation__body">
-                            <div class="table_wrapper">
+                            <div class="table_wrapper block__description--style">
                                 <table class="table">
                                     <thead>
                                     <tr>

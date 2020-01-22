@@ -13,7 +13,7 @@
                         {if $categories}
                             <div class="level_{$level} {if $level == 1}filter__catalog_menu {else}filter__subcatalog {/if}">
                                 {foreach $categories as $c}
-                                    {if $c->visible}
+                                    {if $c->visible && ($c->has_products || $settings->show_empty_categories)}
                                         <div class="filter__catalog_item has_child">
                                             <{if $c->id == $category->id}b{else}a{/if} class="filter__catalog_link{if $c->subcategories} sub_cat{/if}{if $category->id == $c->id} selected{/if}" href="{url_generator route="category" url=$c->url}" data-category="{$c->id}">
                                                 {if $c->image}

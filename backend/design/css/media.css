@@ -12,7 +12,7 @@
         text-align: center;
         line-height: 84px;
         background-color: #272b35;
-        padding-left: 15px;
+        padding-left: 10px;
         top: 0;
         left: 0;
     }
@@ -254,7 +254,14 @@
         width: 30px;
         height: 30px;
     }
-
+    .learning_card__item{
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 50%;
+        -ms-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 50%;
+        min-height: 50%;
+    }
 
 }
 
@@ -265,6 +272,10 @@
     .boxed_sorting.toggle_body_wrap{
         display: block
     }
+    .min_content_fix{
+        min-height: calc(100vh - 90px);
+    }
+
 }
 @media only screen and (max-width : 767px) {
     .heading_page {
@@ -739,6 +750,14 @@
     .mb_mobile_seofilter{
         margin-bottom: 10px;
     }
+    .learning_card__item{
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 100%;
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+        min-height: 100%;
+    }
 }
 /* Extra Small Devices, Phones */
 @media (min-width : 576px) {
@@ -879,7 +898,8 @@
         margin-bottom: 15px;
     }
     .progress-bar{
-        height: 40px;
+        height: 26px;
+        font-size: 14px;
     }
     .progress-bar__wrap form{
         width: 100%;
@@ -926,6 +946,31 @@
     .okay_type_radio_wrap {
         height: auto;
     }
+
+    .boxed_learning--bg::after,
+    .boxed_learning--bg::before {
+        content: none;
+    }
+    .wrap_heading {padding: 10px 0;}
+    .boxed_learning--bg .heading_box {
+        margin-top: 15px;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+    .learning_card__body { height: 120px;}
+    .learning_card__inner {
+        min-height: 250px;
+        padding: 70px 15px 15px;
+    }
+    .learning_card__title {
+        font-size: 18px;
+        margin: 0 0 10px;
+    }
+    .learning_card__description {
+        font-size: 14px;
+        max-height: 60px;
+    }
+
 
 }
 

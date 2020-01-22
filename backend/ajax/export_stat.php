@@ -50,14 +50,9 @@ $reportStatEntity     = $entityFactory->get(ReportStatEntity::class);
 $categoriesEntity     = $entityFactory->get(CategoriesEntity::class);
 
 
-if (!$managers->access('stats', $managersEntity->get($_SESSION['admin']))) {
+if (!$managers->access('category_stats', $managersEntity->get($_SESSION['admin']))) {
     exit();
 }
-
-// Эксель кушает только 1251
-setlocale(LC_ALL, 'ru_RU.1251');
-$sqlQuery = $queryFactory->newSqlQuery()->setStatement('SET NAMES cp1251');
-$db->query($sqlQuery);
 
 // Страница, которую экспортируем
 $page = $request->get('page');
@@ -119,13 +114,19 @@ foreach ($categories_list as $c) {
     fputcsv($f, $c, $columnDelimiter);
 }
 
-$total = ['name' => 'Имя',
+$total = [
+    'name' => 'Имя',
     'amount' => $totalAmount,
     'price'=>$totalPrice
 ];
 
 fputcsv($f, $total, $columnDelimiter);
 fclose($f);
+
+file_put_contents(
+    $exportFilesDir.$filename,
+    iconv( "utf-8", "windows-1251//IGNORE", file_get_contents($exportFilesDir.$filename))
+);
 
 $data = true;
 

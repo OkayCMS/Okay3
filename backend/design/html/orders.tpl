@@ -67,7 +67,7 @@
 <div class="boxed fn_toggle_wrap">
     <div class="row">
         <div class="col-lg-12 col-md-12 ">
-            <div class="fn_toggle_wrap">
+            <div class="fn_step-0 fn_toggle_wrap">
                 <div class="heading_box visible_md">
                     {$btr->general_filter|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -169,7 +169,7 @@
                         {*Параметры элемента*}
                         <div class="okay_list_body">
                             {foreach $orders as $order}
-                            <div class="fn_row okay_list_body_item " style="border-left: 5px solid #{$order->status_color};">
+                            <div class="fn_step-1 fn_row okay_list_body_item " style="border-left: 5px solid #{$order->status_color};">
                                 <div class="okay_list_row">
                                     <div class="okay_list_boding okay_list_check">
                                         <input class="hidden_check" type="checkbox" id="id_{$order->id}" name="check[]" value="{$order->id}"/>
@@ -343,6 +343,9 @@
     {/if}
 </div>
 
+{* Learning script *}
+{include file='learning_hints.tpl' hintId='hint_orders'}
+
 <script src="{$rootUrl}/backend/design/js/piecon/piecon.js"></script>
 
 {* On document load *}
@@ -361,6 +364,12 @@ $(function() {
     });
     $(".fn_delete_labels_hide").click(function(){
         $(this).closest('.box_labels_hide').removeClass("active_labels");
+    });
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest(".fn_ajax_label_wrapper ").find('.active_labels').length) {
+            $('.fn_labels_hide').removeClass("active_labels");
+        }
+        e.stopPropagation();
     });
 
     if($(window).width() >= 1199 ){

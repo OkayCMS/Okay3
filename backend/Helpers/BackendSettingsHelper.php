@@ -260,20 +260,33 @@ class BackendSettingsHelper
         $this->settings->set('category_routes_template',                  $this->request->post('category_routes_template'));
         $this->settings->set('category_routes_template__default',         $this->request->post('category_routes_template__default'));
         $this->settings->set('category_routes_template__prefix_and_path', $this->request->post('category_routes_template__prefix_and_path'));
+        $this->settings->set('category_routes_template_slash_end',        $this->request->post('category_routes_template_slash_end'));
 
         $this->settings->set('product_routes_template',                      $this->request->post('product_routes_template'));
         $this->settings->set('product_routes_template__prefix_and_path',     $this->request->post('product_routes_template__prefix_and_path'));
         $this->settings->set('product_routes_template__prefix_and_category', $this->request->post('product_routes_template__prefix_and_category'));
         $this->settings->set('product_routes_template__default',             $this->request->post('product_routes_template__default'));
+        $this->settings->set('product_routes_template_slash_end',            $this->request->post('product_routes_template_slash_end'));
 
-        $this->settings->set('brand_routes_template',          $this->request->post('brand_routes_template'));
-        $this->settings->set('brand_routes_template__default', $this->request->post('brand_routes_template__default'));
+        $this->settings->set('brand_routes_template',           $this->request->post('brand_routes_template'));
+        $this->settings->set('brand_routes_template__default',  $this->request->post('brand_routes_template__default'));
+        $this->settings->set('brand_routes_template_slash_end', $this->request->post('brand_routes_template_slash_end'));
 
-        $this->settings->set('blog_item_routes_template',          $this->request->post('blog_item_routes_template'));
-        $this->settings->set('blog_item_routes_template__default', $this->request->post('blog_item_routes_template__default'));
+        $this->settings->set('blog_item_routes_template',           $this->request->post('blog_item_routes_template'));
+        $this->settings->set('blog_item_routes_template__default',  $this->request->post('blog_item_routes_template__default'));
+        $this->settings->set('blog_item_routes_template_slash_end', $this->request->post('blog_item_routes_template_slash_end'));
 
-        $this->settings->set('news_item_routes_template',          $this->request->post('news_item_routes_template'));
-        $this->settings->set('news_item_routes_template__default', $this->request->post('news_item_routes_template__default'));
+        $this->settings->set('news_item_routes_template',           $this->request->post('news_item_routes_template'));
+        $this->settings->set('news_item_routes_template__default',  $this->request->post('news_item_routes_template__default'));
+        $this->settings->set('news_item_routes_template_slash_end', $this->request->post('news_item_routes_template_slash_end'));
+
+        $this->settings->set('all_brands_routes_template__default', $this->request->post('all_brands_routes_template__default'));
+        $this->settings->set('all_blog_routes_template__default',   $this->request->post('all_blog_routes_template__default'));
+        $this->settings->set('all_news_routes_template__default',   $this->request->post('all_news_routes_template__default'));
+
+        $this->settings->set('all_brands_routes_template_slash_end', $this->request->post('all_brands_routes_template_slash_end'));
+        $this->settings->set('all_blog_routes_template_slash_end',   $this->request->post('all_blog_routes_template_slash_end'));
+        $this->settings->set('all_news_routes_template_slash_end',   $this->request->post('all_news_routes_template_slash_end'));
 
         $this->settings->set('global_unique_url',                  $this->request->post('global_unique_url'));
 

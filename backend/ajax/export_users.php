@@ -15,14 +15,14 @@ $exportFilesDir  = 'backend/files/export_users/';
 $filename        = 'users.csv';
 
 $columnsNames = [
-    'name'       => 'Имя',
+    'name'       => 'пїЅпїЅпїЅ',
     'email'      => 'Email',
-    'phone'      => 'Телефон',
-    'address'    => 'Адрес',
-    'group_name' => 'Группа',
-    'discount'   => 'Скидка',
-    'created'    => 'Дата',
-    'last_ip'    => 'Последний IP'
+    'phone'      => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+    'address'    => 'пїЅпїЅпїЅпїЅпїЅ',
+    'group_name' => 'пїЅпїЅпїЅпїЅпїЅпїЅ',
+    'discount'   => 'пїЅпїЅпїЅпїЅпїЅпїЅ',
+    'created'    => 'пїЅпїЅпїЅпїЅ',
+    'last_ip'    => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ IP'
 ];
 
 /** @var Database $db */
@@ -44,12 +44,6 @@ if (!$managers->access('users', $managersEntity->get($_SESSION['admin']))) {
     exit();
 }
 
-// Эксель кушает только 1251
-setlocale(LC_ALL, 'ru_RU.1251');
-$sqlQuery = $queryFactory->newSqlQuery()->setStatement('SET NAMES cp1251');
-$db->query($sqlQuery);
-
-// Страница, которую экспортируем
 $page = $request->get('page');
 if(empty($page) || $page==1) {
     $page = 1;
@@ -58,10 +52,7 @@ if(empty($page) || $page==1) {
     }
 }
 
-// Открываем файл экспорта на добавление
 $f = fopen($exportFilesDir.$filename, 'ab');
-
-// Если начали сначала - добавим в первую строку названия колонок
 if($page == 1) {
     fputcsv($f, $columnsNames, $columnDelimiter);
 }
@@ -74,8 +65,7 @@ if($request->get('group_id')) {
 }
 $filter['sort'] = $request->get('sort');
 
-// Выбираем пользователей
-$users = array();
+$users = [];
 foreach($usersEntity->find($filter) as $u) {
     $str = array();
     foreach($columnsNames as $n=>$c) {
@@ -93,6 +83,11 @@ if($usersCount*$page < $totalUsers) {
 }
 
 fclose($f);
+
+file_put_contents(
+    $exportFilesDir.$filename,
+    iconv( "utf-8", "windows-1251//IGNORE", file_get_contents($exportFilesDir.$filename))
+);
 
 if ($data) {
     $response->setContent(json_encode($data), RESPONSE_JSON)->sendContent();

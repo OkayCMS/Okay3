@@ -1,13 +1,14 @@
 {* Breadcrumb navigation *}
+{$level = 1}
 {if $controller != "MainController"}
-    <ol class="breadcrumbs d-flex flex-wrap align-items-center">
+    <ol itemscope itemtype="https://schema.org/BreadcrumbList" class="breadcrumbs d-flex flex-wrap align-items-center">
         {* The link to the homepage *}
-        <li class="d-inline-flex align-items-center breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
-            <a itemprop="url" aria-label="{$lang->breadcrumb_home}" href="{url_generator route='main'}" >
-                <span itemprop="title" data-language="breadcrumb_home" title="{$lang->breadcrumb_home}">
-                    {include file="svg.tpl" svgId="home_icon"}
-                </span>
+        <li itemprop="itemListElement" itemscope
+            itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+            <a itemprop="item" href="{url_generator route='main'}">
+                <span itemprop="name" data-language="breadcrumb_home" title="{$lang->breadcrumb_home}">{$lang->breadcrumb_home}</span>
             </a>
+            <meta itemprop="position" content="{$level++}" />
         </li>
 
         {* Categories page *}
@@ -16,14 +17,20 @@
                 {foreach from=$category->path item=cat}
                     {if !$cat@last}
                         {if $cat->visible}
-                            <li class="d-inline-flex align-items-center breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
-                                <a itemprop="url" href="{url_generator route='category' url=$cat->url}">
-                                    <span itemprop="title">{$cat->name|escape}</span>
+                            <li itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                                <a itemprop="item" href="{url_generator route='category' url=$cat->url}">
+                                    <span itemprop="name">{$cat->name|escape}</span>
                                 </a>
+                                <meta itemprop="position" content="{$level++}" />
                             </li>
                         {/if}
                     {else}
-                        <li class="d-inline-flex align-items-center breadcrumbs__item">{$cat->name|escape}</li>
+                        <li itemprop="itemListElement" itemscope
+                            itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                            <span itemprop="name">{$cat->name|escape}</span>
+                            <meta itemprop="position" content="{$level++}" />
+                        </li>
                     {/if}
                 {/foreach}
             {/if}
@@ -31,69 +38,122 @@
         {* Products list page *}
         {elseif $controller == "ProductsController"}
             {if !empty($keyword)}
-                <li class="d-inline-flex align-items-center breadcrumbs__item" data-language="general_search">{$lang->general_search}</li>
+                <li itemprop="itemListElement" itemscope
+                    itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                    <span itemprop="name" data-language="general_search">{$lang->general_search}</span>
+                    <meta itemprop="position" content="{$level++}" />
+                </li>
             {else}
-                <li class="d-inline-flex align-items-center breadcrumbs__item">{$h1|escape}</li>
+                <li itemprop="itemListElement" itemscope
+                    itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                    <span itemprop="name">{$h1|escape}</span>
+                    <meta itemprop="position" content="{$level++}" />
+                </li>
             {/if}
             
         {* Brand list page *}
         {elseif $controller == "BrandController"}
-            <li class="d-inline-flex align-items-center breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
-                <a itemprop="url" href="{url_generator route='brands'}" data-language="breadcrumb_brands">
-                    <span itemprop="title">{$lang->breadcrumb_brands}</span>
+            <li itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                <a itemprop="item" href="{url_generator route='brands'}">
+                    <span itemprop="name" data-language="breadcrumb_brands">{$lang->breadcrumb_brands}</span>
+                    <meta itemprop="position" content="{$level++}" />
                 </a>
             </li>
-            <li class="d-inline-flex align-items-center breadcrumbs__item">{$brand->name|escape}</li>
+            <li itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                <span itemprop="name">{$brand->name|escape}</span>
+                <meta itemprop="position" content="{$level++}" />
+            </li>
 
         {* Brand list page *}
         {elseif $controller == "BrandsController"}
-            <li class="d-inline-flex align-items-center breadcrumbs__item">{$page->name|escape}</li>
+            <li itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                <span itemprop="name">{$page->name|escape}</span>
+                <meta itemprop="position" content="{$level++}" />
+            </li>
 
         {* Product page *}
         {elseif $controller == "ProductController"}
             {foreach from=$category->path item=cat}
                 {if $cat->visible}
-                    <li class="d-inline-flex align-items-center breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
-                        <a itemprop="url" href="{url_generator route='category' url=$cat->url}">
-                            <span itemprop="title">{$cat->name|escape}</span>
+                    <li itemprop="itemListElement" itemscope
+                        itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                        <a itemprop="item" href="{url_generator route='category' url=$cat->url}">
+                            <span itemprop="name">{$cat->name|escape}</span>
                         </a>
+                        <meta itemprop="position" content="{$level++}" />
                     </li>
                 {/if}
             {/foreach}
-            <li class="d-inline-flex align-items-center breadcrumbs__item">{$product->name|escape}</li>
+            <li itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                <span itemprop="name">{$product->name|escape}</span>
+                <meta itemprop="position" content="{$level++}" />
+            </li>
 
         {* Page *}
         {elseif $controller == "FeedbackController" || $controller == "PageController"}
-            <li class="d-inline-flex align-items-center breadcrumbs__item">{$page->name|escape}</li>
+            <li itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                <span itemprop="name">{$page->name|escape}</span>
+                <meta itemprop="position" content="{$level++}" />
+            </li>
 
         {* Cart page *}
         {elseif $controller == "CartController"}
-            <li class="d-inline-flex align-items-center breadcrumbs__item" data-language="breadcrumb_cart">{$lang->breadcrumb_cart}</li>
+            <li itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                <span itemprop="name" data-language="breadcrumb_cart">{$lang->breadcrumb_cart}</span>
+                <meta itemprop="position" content="{$level++}" />
+            </li>
 
         {* Order page *}
         {elseif $controller == "OrderController"}
-            <li class="d-inline-flex align-items-center breadcrumbs__item" data-language="breadcrumb_order">{$lang->breadcrumb_order} {$order->id}</li>
+            <li itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                <span itemprop="name">{$lang->breadcrumb_order} {$order->id}</span>
+                <meta itemprop="position" content="{$level++}" />
+            </li>
 
         {* Password remind page *}
         {elseif $controller == "LoginController" && $smarty.get.action == "password_remind"}
-            <li class="d-inline-flex align-items-center breadcrumbs__item" data-language="breadcrumbs_password_remind">{$lang->breadcrumbs_password_remind}</li>
+            <li itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                <span itemprop="name" data-language="breadcrumbs_password_remind">{$lang->breadcrumbs_password_remind}</span>
+                <meta itemprop="position" content="{$level++}" />
+            </li>
 
         {* Login page *}
         {elseif $controller == "LoginController"}
-            <li class="d-inline-flex align-items-center breadcrumbs__item" data-language="breadcrumbs_enter">{$lang->breadcrumbs_enter}</li>
+            <li itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                <span itemprop="name" data-language="breadcrumbs_enter">{$lang->breadcrumbs_enter}</span>
+                <meta itemprop="position" content="{$level++}" />
+            </li>
 
         {* Register page *}
         {elseif $controller == "RegisterController"}
-            <li class="d-inline-flex align-items-center breadcrumbs__item" data-language="breadcrumbs_registration">{$lang->breadcrumbs_registration}</li>
+            <li itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                <span itemprop="name" data-language="breadcrumbs_registration">{$lang->breadcrumbs_registration}</span>
+                <meta itemprop="position" content="{$level++}" />
+            </li>
 
         {* User account page *}
         {elseif $controller == "UserController"}
-            <li class="d-inline-flex align-items-center breadcrumbs__item" data-language="breadcrumbs_user">{$lang->breadcrumbs_user}</li>
+            <li itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                <span itemprop="name" data-language="breadcrumbs_user">{$lang->breadcrumbs_user}</span>
+                <meta itemprop="position" content="{$level++}" />
+            </li>
 
         {* Blog page *}
         {elseif $controller == "BlogController"}
             {if $post}
-                <li class="d-inline-flex align-items-center breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                <li itemprop="itemListElement" itemscope
+                    itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
 
                     {if $post->type_post == "news"}
                         {$prev_url = {url_generator route='news'}}
@@ -101,42 +161,59 @@
                         {$prev_url = {url_generator route='blog'}}
                     {/if}
                     
-                    <a itemprop="url" href="{$prev_url}">
-                        <span itemprop="title">
-                            {if $post->type_post == "news"}
-                                <span data-language="main_news">{$lang->main_news}</span>
-                            {else}
-                                <span data-language="breadcrumbs_blog">{$lang->breadcrumbs_blog}</span>
-                            {/if}
-                        </span>
+                    <a itemprop="item" href="{$prev_url}">
+                        {if $post->type_post == "news"}
+                            <span itemprop="name" data-language="main_news">{$lang->main_news}</span>
+                        {else}
+                            <span itemprop="name" data-language="breadcrumbs_blog">{$lang->breadcrumbs_blog}</span>
+                        {/if}
                     </a>
+                    <meta itemprop="position" content="{$level++}" />
                 </li>
-                <li class="d-inline-flex align-items-center breadcrumbs__item">
-                    {$post->name|escape}
+                <li itemprop="itemListElement" itemscope
+                    itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                    <span itemprop="name">{$post->name|escape}</span>
+                    <meta itemprop="position" content="{$level++}" />
                 </li>
             {else}
-                <li class="d-inline-flex align-items-center breadcrumbs__item" data-language="breadcrumbs_blog">
+                <li itemprop="itemListElement" itemscope
+                    itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
                     {if $typePost == "news"}
-                        {$lang->main_news}
+                        <span itemprop="name" data-language="main_news">{$lang->main_news}</span>
                     {else}
-                        {$lang->breadcrumbs_blog}
+                        <span itemprop="name" data-language="breadcrumbs_blog">{$lang->breadcrumbs_blog}</span>
                     {/if}
+                    <meta itemprop="position" content="{$level++}" />
                 </li>
             {/if}
         {elseif $controller == 'ComparisonController'}
-            <li class="d-inline-flex align-items-center breadcrumbs__item" data-language="breadcrumb_comparison">{$lang->breadcrumb_comparison}</li>
+            <li itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                <span itemprop="name" data-language="breadcrumb_comparison">{$lang->breadcrumb_comparison}</span>
+                <meta itemprop="position" content="{$level++}" />
+            </li>
         {elseif $controller == 'WishListController'}
-            <li class="d-inline-flex align-items-center breadcrumbs__item" data-language="breadcrumb_wishlist">{$lang->breadcrumb_wishlist}</li>
+            <li itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                <span itemprop="name" data-language="breadcrumb_wishlist">{$lang->breadcrumb_wishlist}</span>
+                <meta itemprop="position" content="{$level++}" />
+            </li>
         {elseif !empty($breadcrumbs) && is_array($breadcrumbs)}
             {foreach $breadcrumbs as $url => $name}
                 {if !$name@last}
-                    <li class="d-inline-flex align-items-center breadcrumbs__item" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
-                        <a itemprop="url" href="{$url|escape}">
-                            <span itemprop="title">{$name|escape}</span>
+                    <li itemprop="itemListElement" itemscope
+                        itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                        <a itemprop="item" href="{$url|escape}">
+                            <span itemprop="name">{$name|escape}</span>
                         </a>
+                        <meta itemprop="position" content="{$level++}" />
                     </li>
                 {else}
-                    <li class="d-inline-flex align-items-center breadcrumbs__item">{$name|escape}</li>
+                    <li itemprop="itemListElement" itemscope
+                        itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                        <span itemprop="name">{$name|escape}</span>
+                        <meta itemprop="position" content="{$level++}" />
+                    </li>
                 {/if}
             {/foreach}
         {/if}

@@ -9,7 +9,7 @@ use Okay\Core\EntityFactory;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Entities\BlogEntity;
 
-class BlogHelper
+class BlogHelper implements GetListInterface
 {
     
     private $entityFactory;
@@ -23,16 +23,33 @@ class BlogHelper
     {
         return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
-    
-    public function getPostsList($filter = [], $sort = null)
+
+    /**
+     * @inheritDoc
+     */
+    public function getList($filter = [], $sortName = null, $excludedFields = null)
     {
+        if ($excludedFields === null) {
+            $excludedFields = [
+                'description',
+                'meta_title',
+                'meta_keywords',
+                'meta_description',
+            ];
+        }
+        
         /** @var BlogEntity $blogEntity */
         $blogEntity = $this->entityFactory->get(BlogEntity::class);
 
-        if ($sort !== null) {
-            $blogEntity->order($sort, $this->getOrderPostsAdditionalData());
+        // Исключаем колонки, которые нам не нужны
+        if (is_array($excludedFields) && !empty($excludedFields)) {
+            $blogEntity->cols(BlogEntity::getDifferentFields($excludedFields));
         }
         
+        if ($sortName !== null) {
+            $blogEntity->order($sortName, $this->getOrderPostsAdditionalData());
+        }
+
         $posts = $blogEntity->cols([
             'id',
             'url',
@@ -42,7 +59,15 @@ class BlogHelper
             'name',
             'annotation',
         ])->find($filter);
-        
+
+        return ExtenderFacade::execute(__METHOD__, $posts, func_get_args());
+    }
+
+    // Данный метод остаётся для обратной совместимости, но объявлен как deprecated, и будет удалён в будущих версиях
+    public function getPostsList($filter = [], $sort = null)
+    {
+        trigger_error('Method ' . __METHOD__ . ' is deprecated. Please use getList', E_USER_DEPRECATED);
+        $posts = $this->getList($filter, $sort, false);
         return ExtenderFacade::execute(__METHOD__, $posts, func_get_args());
     }
 

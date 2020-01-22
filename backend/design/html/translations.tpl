@@ -33,6 +33,16 @@
     </div>
 {/if}
 
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="boxed boxed_attention">
+            <div class="">
+                {$btr->general_translation_attention|escape}
+            </div>
+        </div>
+    </div>
+</div>
+
 {*Главная форма страницы*}
 <div class="boxed fn_toggle_wrap">
     <form class="fn_form_list" method="post">

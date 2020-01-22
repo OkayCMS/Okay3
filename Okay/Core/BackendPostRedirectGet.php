@@ -39,10 +39,10 @@ class BackendPostRedirectGet
     public function redirect()
     {
         if (empty($_SESSION['new_entity_id'])) {
-            $this->response->redirectTo($this->request->getRootUrl() . $_SERVER['REQUEST_URI']);
+            $this->response->redirectTo($this->request->url());
         }
 
-        $this->response->redirectTo($this->request->getRootUrl() . $_SERVER['REQUEST_URI'] . "&id={$_SESSION['new_entity_id']}");
+        $this->response->redirectTo($this->request->url(['id' => $_SESSION['new_entity_id']]));
     }
 
     public function storeNewEntityId($id)

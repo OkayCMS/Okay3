@@ -48,9 +48,11 @@ class ProductsAdmin extends IndexAdmin
             $backendVariantsHelper->updateStocksAndPrices($stocks, $prices);
 
             // Сортировка
-            $positions = $productRequest->postPositions();
-            list($ids, $positions) = $backendProductsHelper->sortPositions($positions);
-            $backendProductsHelper->updatePositions($ids, $positions);
+            if (empty($backendProductsHelper->getProductsSortName())) {
+                $positions = $productRequest->postPositions();
+                list($ids, $positions) = $backendProductsHelper->sortPositions($positions);
+                $backendProductsHelper->updatePositions($ids, $positions);
+            }
 
             // Действия с выбранными
             $ids = $productRequest->postCheckedIds();
@@ -105,7 +107,7 @@ class ProductsAdmin extends IndexAdmin
             $pagesCount = 0;
         }
 
-        $products   = $backendProductsHelper->findProductsForProductsAdmin($filter);
+        $products   = $backendProductsHelper->findProductsForProductsAdmin($filter, $backendProductsHelper->getProductsSortName());
         $currencies = $backendCurrenciesHelper->findAllCurrencies();
 
         $this->design->assign('category_id',    $categoryId);

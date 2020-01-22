@@ -6,14 +6,13 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         {if !$payment_method->id}
             <div class="heading_page">{$btr->payment_method_add|escape}</div>
         {else}
             <div class="heading_page">{$payment_method->name|escape}</div>
         {/if}
-    </div>
-    <div class="col-lg-7 col-md-7 text-xs-right float-xs-right"></div>
+     </div>
 </div>
 
 {*Вывод успешных сообщений*}
@@ -69,20 +68,22 @@
                 {*Название элемента сайта*}
                 <div class="row d_flex">
                     <div class="col-lg-10 col-md-9 col-sm-12">
-                        <div class="heading_label">
-                            {$btr->general_name|escape}
-                            <i class="fn_tooltips" title="{$btr->tooltip_general_name_payments|escape}">
-                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                            </i>
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control mb-h" name="name" type="text" value="{$payment_method->name|escape}"/>
-                            <input name="id" type="hidden" value="{$payment_method->id|escape}"/>
+                        <div class="fn_step-1">
+                            <div class="heading_label">
+                                {$btr->general_name|escape}
+                                <i class="fn_tooltips" title="{$btr->tooltip_general_name_payments|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control mb-h" name="name" type="text" value="{$payment_method->name|escape}"/>
+                                <input name="id" type="hidden" value="{$payment_method->id|escape}"/>
+                            </div>
                         </div>
                         {get_design_block block="payment_general"}
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
-                        <div class="activity_of_switch">
+                        <div class="fn_step-2 activity_of_switch">
                             <div class="activity_of_switch_item"> {* row block *}
                                 <div class="okay_switch clearfix">
                                     <label class="switch_label">{$btr->general_enable|escape}</label>
@@ -104,7 +105,7 @@
     {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-4 col-md-12 pr-0">
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="fn_step-3 boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->general_image|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -140,7 +141,7 @@
             </div>
         </div>
         <div class="col-lg-8 col-md-12">
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="fn_step-4 boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->payment_method_settings|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -225,7 +226,7 @@
     {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed fn_toggle_wrap min_height_230px">
+            <div class="fn_step-6 boxed fn_toggle_wrap min_height_230px">
                 <div class="heading_box">
                     {$btr->payment_method_shipping|escape}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
@@ -271,7 +272,7 @@
     {*Описание элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="boxed match fn_toggle_wrap tabs">
+            <div class="fn_step-7 boxed match fn_toggle_wrap tabs">
                 <div class="heading_tabs">
                     <div class="tab_navigation">
                         <a href="#tab1" class="tab_navigation_link">{$btr->payment_method_description|escape}</a>
@@ -289,7 +290,7 @@
                 </div>
                 <div class="row">
                    <div class="col-lg-12 col-md-12 mt-1">
-                        <button type="submit" class="btn btn_small btn_blue float-md-right">
+                        <button type="submit" class="fn_step-8 btn btn_small btn_blue float-md-right">
                             {include file='svg_icon.tpl' svgId='checked'}
                             <span>{$btr->general_apply|escape}</span>
                         </button>
@@ -299,6 +300,9 @@
         </div>
     </div>
 </form>
+
+{* Learning script *}
+{include file='learning_hints.tpl' hintId='hint_payment'}
 
 {* Подключаем Tiny MCE *}
 {include file='tinymce_init.tpl'}

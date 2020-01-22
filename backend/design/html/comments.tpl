@@ -128,11 +128,11 @@
                                                 {if $level == 0}
                                                     {$btr->comments_to_the|escape}
                                                     {if $comment->type == "product"}
-                                                        {$btr->comments_product|escape}  <a href="../{url_generator route="product" url=$comment->product->url}" target="_blank">{$comment->product->name|escape}</a>
+                                                        {$btr->comments_product|escape}  <a href="{url_generator route="product" url=$comment->product->url absolute=1}" target="_blank">{$comment->product->name|escape}</a>
                                                     {elseif $comment->type == "blog"}
-                                                        {$btr->comments_article|escape} <a href="../{url_generator route="blog_item" url=$comment->post->url}" target="_blank">{$comment->post->name|escape}</a>
+                                                        {$btr->comments_article|escape} <a href="{url_generator route="blog_item" url=$comment->post->url absolute=1}" target="_blank">{$comment->post->name|escape}</a>
                                                     {elseif $comment->type == "news"}
-                                                        {$btr->comments_news|escape} <a href="../{url_generator route="news_item" url=$comment->post->url}" target="_blank">{$comment->post->name|escape}</a>
+                                                        {$btr->comments_news|escape} <a href="{url_generator route="news_item" url=$comment->post->url absolute=1}" target="_blank">{$comment->post->name|escape}</a>
                                                     {/if}
                                                 {/if}
                                             </div>

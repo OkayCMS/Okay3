@@ -2,10 +2,15 @@
 <html {if $language->href_lang} lang="{$language->href_lang|escape}"{/if} prefix="og: http://ogp.me/ns#">
 <head>
     {* Meta data *}
+    {get_design_block block="front_before_head_content"}
     {include "head.tpl"}
+    {get_design_block block="front_after_head_content"}
 </head>
 
 <body class="d-flex flex-column {if $controller == 'MainController'}main_page{else}other_page{/if}">
+    <div>
+        {get_design_block block="front_start_body_content"}
+    </div>
 
     {if !empty($counters['body_top'])}
         <script>ut_tracker.start('parsing:body_top:counters');</script>

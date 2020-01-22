@@ -1293,10 +1293,11 @@ select{
     margin-right: 10px;
 }
 .accordion__arrow {
+    transform: rotate(180deg);
     font-size: 14px;
 }
 .accordion__title.active .accordion__arrow {
-    transform: rotate(180deg);
+    transform: rotate(0deg);
     transition: all 0.2s ease-in-out;
 }
 .accordion__content {
