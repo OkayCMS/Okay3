@@ -8,6 +8,12 @@
             </h1>
         </div>
 
+        {if $description}
+            <div class="block block--boxed block--border">
+                {$description}
+            </div>
+        {/if}
+        
         <div class="block__body">
             <form id="captcha_id" method="post" name="cart" class="fn_validate_cart">
 

@@ -92,8 +92,8 @@ class WishList
 
     public function addItem($productId)
     {
-        $items = !empty($_COOKIE['wishlist']) ? json_decode($_COOKIE['wishlist']) : array();
-        $items = $items && is_array($items) ? $items : array();
+        $items = !empty($_COOKIE['wishlist']) ? json_decode($_COOKIE['wishlist']) : [];
+        $items = $items && is_array($items) ? $items : [];
         if (!in_array($productId, $items)) {
             $items[] = $productId;
         }
@@ -106,7 +106,7 @@ class WishList
     /*Удаление товара из корзины*/
     public function deleteItem($productId)
     {
-        $items = !empty($_COOKIE['wishlist']) ? json_decode($_COOKIE['wishlist']) : array();
+        $items = !empty($_COOKIE['wishlist']) ? json_decode($_COOKIE['wishlist']) : [];
         if (!is_array($items)) {
             return;
         }

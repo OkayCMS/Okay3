@@ -24,28 +24,49 @@ class AllProductsMetadataHelper extends CommonMetadataHelper
         }
     }
 
-    public function getH1()
+    /**
+     * @inheritDoc
+     */
+    public function getH1Template()
     {
         if ($keyword = $this->design->getVar('keyword')) {
             /** @var FrontTranslations $translations */
             $translations = $this->SL->getService(FrontTranslations::class);
             $h1 = $translations->getTranslation('general_search') . ' ' . $keyword;
         } else {
-            $h1 = parent::getH1();
+            $h1 = parent::getH1Template();
         }
-
-        $h1 = $this->compileMetadata($h1);
+        
         return ExtenderFacade::execute(__METHOD__, $h1, func_get_args());
     }
 
-    public function getMetaTitle()
+    /**
+     * @inheritDoc
+     */
+    public function getDescriptionTemplate()
+    {
+        if ($keyword = $this->design->getVar('keyword')) {
+            /** @var FrontTranslations $translations */
+            $translations = $this->SL->getService(FrontTranslations::class);
+            $description = $translations->getTranslation('general_search') . ' ' . $keyword;
+        } else {
+            $description = parent::getDescriptionTemplate();
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $description, func_get_args());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMetaTitleTemplate()
     {
         if ($keyword = $this->design->getVar('keyword')) {
             /** @var FrontTranslations $translations */
             $translations = $this->SL->getService(FrontTranslations::class);
             $metaTitle = $translations->getTranslation('general_search') . ' ' . $keyword;
         } else {
-            $metaTitle = parent::getMetaTitle();
+            $metaTitle = parent::getMetaTitleTemplate();
         }
 
         $isAllPages = $this->design->getVar('is_all_pages');
@@ -56,36 +77,39 @@ class AllProductsMetadataHelper extends CommonMetadataHelper
             $translations = $this->SL->getService(FrontTranslations::class);
             $metaTitle .= $translations->getTranslation('meta_page') . ' ' . $currentPageNum;
         }
-
-        $metaTitle = $this->compileMetadata($metaTitle);
+        
         return ExtenderFacade::execute(__METHOD__, $metaTitle, func_get_args());
     }
 
-    public function getMetaKeywords()
+    /**
+     * @inheritDoc
+     */
+    public function getMetaKeywordsTemplate()
     {
         if ($keyword = $this->design->getVar('keyword')) {
             /** @var FrontTranslations $translations */
             $translations = $this->SL->getService(FrontTranslations::class);
             $metaKeywords = $translations->getTranslation('general_search') . ' ' . $keyword;
         } else {
-            $metaKeywords = parent::getMetaTitle();
+            $metaKeywords = parent::getMetaKeywordsTemplate();
         }
-
-        $metaKeywords = $this->compileMetadata($metaKeywords);
+        
         return ExtenderFacade::execute(__METHOD__, $metaKeywords, func_get_args());
     }
 
-    public function getMetaDescription()
+    /**
+     * @inheritDoc
+     */
+    public function getMetaDescriptionTemplate()
     {
         if ($keyword = $this->design->getVar('keyword')) {
             /** @var FrontTranslations $translations */
             $translations = $this->SL->getService(FrontTranslations::class);
             $metaDescription = $translations->getTranslation('general_search') . ' ' . $keyword;
         } else {
-            $metaDescription = parent::getMetaTitle();
+            $metaDescription = parent::getMetaDescriptionTemplate();
         }
-
-        $metaDescription = $this->compileMetadata($metaDescription);
+        
         return ExtenderFacade::execute(__METHOD__, $metaDescription, func_get_args());
     }
     

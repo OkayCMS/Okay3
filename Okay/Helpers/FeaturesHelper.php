@@ -108,7 +108,7 @@ class FeaturesHelper
         $this->featuresValuesEntity->deleteProductValue($productId, null, array_keys($featuresNames));
 
         $valuesTransaction = "INSERT IGNORE INTO `__products_features_values` (`product_id`, `value_id`) VALUES ";
-        $sqlValues = array();
+        $sqlValues = [];
 
         foreach ($featuresNames as $featureId => $featureName) {
             $this->featuresEntity->addFeatureCategory($featureId, $categoryId);

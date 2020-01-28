@@ -36,32 +36,37 @@ class PrefixAndPathStrategy extends AbstractRouteStrategy
             return '';
         }
         $category = $this->categoriesEntity->get((string) $url);
-        return $category->path_url;
+        return trim($category->path_url, '/');
     }
 
     public function generateRouteParams($url)
     {
-        $prefix = $this->settings->get('category_routes_template__prefix_and_path');
-
+        $prefix = $this->settings->get('category_routes_template__prefix_and_path') . '/';
         $allCategories = $this->categoriesEntity->find();
 
         $matchedRoute = null;
         foreach($allCategories as $category) {
-            if ($this->compareUrlStartsNoSuccess($prefix.$category->path_url, $url)) {
+            $urlPath = trim($category->path_url, '/');
+            if ($this->compareUrlStartsNoSuccess($prefix.$urlPath, $url)) {
                 continue;
             }
+            
+            if ($this->matchHasHigherPriority($matchedRoute, $prefix.$urlPath)) {
 
-            if ($this->matchHasHigherPriority($matchedRoute, $prefix.$category->path_url)) {
+                $urlParts = explode('/', $urlPath);
+                $lastPart = array_pop($urlParts);
+                $pathPrefix = '';
+                if (!empty($urlParts)) {
+                    $pathPrefix = implode('/', $urlParts) . '/';
+                }
+                $filter = trim($this->matchFiltersUrl($prefix.$urlPath, $url), '/');
                 $matchedRoute = [
                     $prefix.'{$url}{$filtersUrl}',
                     [
-                        '{$url}' => $category->path_url,
-                        '{$filtersUrl}' => '/'.$this->matchFiltersUrl($prefix.$category->path_url, $url),
+                        '{$url}' => "{$pathPrefix}({$lastPart})",
+                        '{$filtersUrl}' => "/?(" . $filter . ")",
                     ],
-                    [
-                        '{$url}' => $category->url,
-                        '{$filtersUrl}' => $this->matchFiltersUrl($prefix.$category->path_url, $url),
-                    ]
+                    []
                 ];
             }
         }

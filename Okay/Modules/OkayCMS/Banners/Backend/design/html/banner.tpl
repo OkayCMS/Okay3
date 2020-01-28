@@ -81,18 +81,6 @@
                                 <div class="mt-h">
                                     <span class="boxes_inline">
                                         <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
-                                        <input class="switch-input" name="show_all_pages" value='1' type="checkbox" {if $banner->show_all_pages}checked=""{/if}/>
-                                        <span class="switch-label"></span>
-                                        <span class="switch-handle"></span>
-                                    </label>
-                                    </span>
-                                    <span class="boxes_inline heading_label">{$btr->banner_show_group|escape}</span>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-sm-12">
-                                <div class="mt-h">
-                                    <span class="boxes_inline">
-                                        <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
                                         <input class="switch-input" name="use_individual_shortcode" value='1' type="checkbox" {if $banner->individual_shortcode}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
@@ -226,6 +214,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="col-lg-4 col-md-6 col-sm-12">
                             <div class="banner_card">
                                 <div class="banner_card_header">
@@ -250,6 +239,32 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="mt-h">
+                                    <span class="boxes_inline">
+                                        <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
+                                        <input class="switch-input" name="show_all_pages" value='1' type="checkbox" {if $banner->show_all_pages}checked=""{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                    </span>
+                                <span class="boxes_inline heading_label">{$btr->banner_show_group|escape}</span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="mt-h">
+                                    <span class="boxes_inline">
+                                        <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
+                                        <input class="switch-input" name="show_all_products" value='1' type="checkbox" {if $banner->show_all_products}checked=""{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                    </span>
+                                <span class="boxes_inline heading_label">{$btr->banner_show_all_products|escape}</span>
                             </div>
                         </div>
                     </div>

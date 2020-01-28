@@ -36,6 +36,7 @@ use Okay\Core\Routes\NewsItemRoute;
 use Okay\Core\Routes\AllBlogRoute;
 use Okay\Core\Routes\AllNewsRoute;
 use Okay\Core\Routes\AllBrandsRoute;
+use Okay\Core\Routes\PageRoute;
 
 $productRouteParams   = (new ProductRoute())->generateRouteParams();
 $categoryRouteParams  = (new CategoryRoute())->generateRouteParams();
@@ -45,6 +46,7 @@ $newsItemRouteParams  = (new NewsItemRoute())->generateRouteParams();
 $allBlogRouteParams   = (new AllBlogRoute())->generateRouteParams();
 $allNewsRouteParams   = (new AllNewsRoute())->generateRouteParams();
 $allBrandsRouteParams = (new AllBrandsRoute())->generateRouteParams();
+$pageRouteParams      = (new PageRoute())->generateRouteParams();
 
 return [
     'main' => [
@@ -343,13 +345,12 @@ return [
         'defaults' => $newsItemRouteParams->getDefaults(),
     ],
     'page' => [
-        'slug' => '{$url}',
-        'patterns' => [
-            '{$url}' => '(.*)',
-        ],
+        'slug' => $pageRouteParams->getSlug(),
+        'patterns' => $pageRouteParams->getPatterns(),
         'params' => [
             'controller' => 'PageController',
             'method' => 'render',
         ],
+        'defaults' => $pageRouteParams->getDefaults(),
     ],
 ];

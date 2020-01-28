@@ -27,3 +27,5 @@ $lang['okaycms__yandex_xml_vendor_model__adult'] = 'Sexual Products';
 $lang['okaycms__yandex_xml_vendor_model__country_of_origin'] = 'Country of origin';
 $lang['okaycms__yandex_xml_vendor_model__country_of_origin_notify'] = 'Products for adults';
 $lang['okaycms__yandex_xml_vendor_model__upload_products'] = 'Selection of goods for unloading';
+$lang['okaycms__yandex_xml_vendor_model__products_per_page'] = 'Quantity of goods in one data package';
+$lang['okaycms__yandex_xml_vendor_model__products_per_page_title'] = 'With a large catalog, there may not be enough memory to unload all products once, so they are divided into packages. The less memory (RAM) on the server, the less this parameter should be. It can also be lifted to find the optimal speed of formation of unloading';

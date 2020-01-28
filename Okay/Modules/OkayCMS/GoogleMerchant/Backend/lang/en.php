@@ -28,3 +28,5 @@ $lang['okaycms__google_merchant__color'] = 'Color';
 $lang['okaycms__google_merchant__color_notify'] = 'Select feature';
 $lang['okaycms__google_merchant__upload_products'] = 'Selection products for upload';
 $lang['okaycms__google_merchant__use_variant_name_like_size'] = 'Use variant name like a size (for clothes)';
+$lang['okaycms__google_merchant__products_per_page'] = 'Quantity of goods in one data package';
+$lang['okaycms__google_merchant__products_per_page_title'] = 'With a large catalog, there may not be enough memory to unload all products once, so they are divided into packages. The less memory (RAM) on the server, the less this parameter should be. It can also be lifted to find the optimal speed of formation of unloading';

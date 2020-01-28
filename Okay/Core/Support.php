@@ -31,7 +31,7 @@ class Support
         $this->entityFactory = $entityFactory;
     }
 
-    public function addComment($params = array()) {
+    public function addComment($params = []) {
         $supportInfoEntity = $this->entityFactory->get(SupportInfoEntity::class);
         $info = $supportInfoEntity->getInfo();
         if (empty($info->public_key) || empty($params)) {
@@ -56,7 +56,7 @@ class Support
         return $this->supportRequest($params);
     }
 
-    public function addTopic($params = array()) {
+    public function addTopic($params = []) {
         $supportInfoEntity = $this->entityFactory->get(SupportInfoEntity::class);
         $info = $supportInfoEntity->getInfo();
         if (empty($info->public_key) || empty($params)) {
@@ -67,7 +67,7 @@ class Support
         return $this->supportRequest($params);
     }
 
-    public function getTopic($params = array('page'=>1)) {
+    public function getTopic($params = ['page' => 1]) {
         $supportInfoEntity = $this->entityFactory->get(SupportInfoEntity::class);
         $info = $supportInfoEntity->getInfo();
         if (empty($info->public_key) || empty($params)) {
@@ -79,7 +79,7 @@ class Support
         return $this->supportRequest($params);
     }
 
-    public function getTopics($params = array('page'=>1)) {
+    public function getTopics($params = ['page' => 1]) {
         $supportInfoEntity = $this->entityFactory->get(SupportInfoEntity::class);
         $info = $supportInfoEntity->getInfo();
         if (empty($info->public_key) || empty($params)) {
@@ -126,7 +126,7 @@ class Support
         return $this->supportRequest($params);
     }
 
-    private function supportRequest($params = array()) {
+    private function supportRequest($params = []) {
         if (empty($params) || empty($params['action'])) {
             return false;
         }

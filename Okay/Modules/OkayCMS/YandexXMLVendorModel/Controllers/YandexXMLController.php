@@ -47,41 +47,64 @@ class YandexXMLController extends AbstractController
         if ($this->settings->get('okaycms__yandex_xml_vendor_model__upload_only_available_to_yandex')) {
             $filter['in_stock'] = 1;
         }
-        
-        $products = $productsEntity->cols([
-            'description',
-            'name',
-            'id',
-            'brand_id',
-            'url',
-            'annotation',
-            'main_category_id',
-        ])
-            ->mappedBy('id')
-            ->find($filter);
 
-        if (!empty($products)) {
-            $products = $productsHelper->attachVariants($products, $filter);
+        $productsIds = $productsEntity->cols(['id'])->find($filter);
+
+        if (!empty($productsIds)) {
+            $allBrands = $brandsEntity->mappedBy('id')->find(['product_id' => $productsIds]);
+            $this->design->assign('all_brands', $allBrands);
+        }
+
+        $this->design->assign('all_categories', $categoriesEntity->find());
+
+        $this->response->setContentType(RESPONSE_XML);
+
+        $this->response->sendHeaders();
+        $this->response->sendStream(pack('CCC', 0xef, 0xbb, 0xbf));
+        $this->response->sendStream($this->design->fetch('feed_head.xml.tpl'));
+
+        // Выдаём товары пачками
+        $itemsPerPage = $this->settings->get('okaycms__yandex_xml_vendor_model__products_per_page');
+        $itemsPerPage = !empty($itemsPerPage) ? $itemsPerPage : 1000;
+        $productsCount = $productsEntity->count($filter);
+
+        $pages = ceil($productsCount/$itemsPerPage);
+        $pages = max(1, $pages);
+
+        $variantsFilter = $filter;
+        
+        // Проходимся пагинацией, выводим товары пачками
+        for ($page = 1; $page <= $pages; $page++) {
+            $filter['limit'] = $itemsPerPage;
+            $filter['page'] = $page;
+
+            $products = $productsEntity->cols([
+                'description',
+                'name',
+                'id',
+                'brand_id',
+                'url',
+                'annotation',
+                'main_category_id',
+            ])
+                ->mappedBy('id')
+                ->find($filter);
+            
+            $products = $productsHelper->attachVariants($products, $variantsFilter);
             $products = $productsHelper->attachImages($products);
             $products = $this->sliceImagesByProduct($products, 10);
             $products = $productsHelper->attachFeatures($products);
 
-            $countryOfOrigin = $this->settings->okaycms__yandex_xml_vendor_model__country_of_origin;
+            $countryOfOrigin = $this->settings->get('okaycms__yandex_xml_vendor_model__country_of_origin');
             if (!empty($countryOfOrigin)) {
                 $products = $this->attachCountryOfOriginParameter($products);
             }
 
             $this->design->assign('products', $products);
-            
-            $allBrands = $brandsEntity->mappedBy('id')->find(['product_id' => array_keys($products)]);
-            $this->design->assign('all_brands', $allBrands);
+            $this->response->sendStream($this->design->fetch('feed_offers.xml.tpl'));
         }
-        
-        $this->design->assign('all_categories', $categoriesEntity->find());
-        
-        $this->response->setContent(pack('CCC', 0xef, 0xbb, 0xbf));
-        $this->response->setContent($this->design->fetch('feed.xml.tpl'), RESPONSE_XML);
-        
+
+        $this->response->sendStream($this->design->fetch('feed_footer.xml.tpl'));
     }
     
     private function addAllChildrenToList(CategoriesEntity $categoriesEntity, $categories, $uploadCategories)

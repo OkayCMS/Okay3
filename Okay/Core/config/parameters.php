@@ -27,6 +27,7 @@ return [
     'root_dir' => '{$root_dir}',
     'logger' => [
         'file' => __DIR__ . '/../../log/app.log',
+        'max_files_rotation' => 10,
     ],
     'db' => [
         'driver'   => '{$db_driver}',

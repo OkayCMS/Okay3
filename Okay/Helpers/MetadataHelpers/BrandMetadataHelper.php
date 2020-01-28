@@ -17,108 +17,117 @@ class BrandMetadataHelper extends CommonMetadataHelper
 {
  
     private $metaArray = [];
-    private $seoFilterPattern;
     private $metaDelimiter = ', ';
     private $autoMeta;
 
-    public function getH1()
+    /**
+     * @inheritDoc
+     */
+    public function getH1Template()
     {
         $brand = $this->design->getVar('brand');
         $filterAutoMeta = $this->getFilterAutoMeta();
 
-        if ($pageH1 = parent::getH1()) {
-            $autoH1 = $pageH1;
+        if ($pageH1 = parent::getH1Template()) {
+            $h1 = $pageH1;
         } elseif (!empty($filterAutoMeta->h1)) {
-            $autoH1 = $brand->name . ' ' . $filterAutoMeta->h1;
+            $h1 = $brand->name . ' ' . $filterAutoMeta->h1;
         } else {
-            $autoH1 = $brand->name;
+            $h1 = $brand->name;
         }
-        
-        $h1 = $this->compileMetadata($autoH1);
+
         return ExtenderFacade::execute(__METHOD__, $h1, func_get_args());
     }
-    
-    public function getDescription()
+
+    /**
+     * @inheritDoc
+     */
+    public function getDescriptionTemplate()
     {
         $brand = $this->design->getVar('brand');
         $isFilterPage = $this->design->getVar('is_filter_page');
         $isAllPages = $this->design->getVar('is_all_pages');
         $currentPageNum = $this->design->getVar('current_page_num');
         $filterAutoMeta = $this->getFilterAutoMeta();
-        
+
         if ((int)$currentPageNum > 1 || $isAllPages === true) {
-            $autoDescription = '';
-        } elseif ($pageDescription = parent::getDescription()) {
-            $autoDescription = $pageDescription;
+            $description = '';
+        } elseif ($pageDescription = parent::getDescriptionTemplate()) {
+            $description = $pageDescription;
         /*} elseif (!empty($filterAutoMeta->description)) {
-            $autoDescription = $filterAutoMeta->description;*/
+            $description = $filterAutoMeta->description;*/
         } elseif ($isFilterPage === false) {
-            $autoDescription = $brand->description;
+            $description = $brand->description;
         } else {
-            $autoDescription = '';
+            $description = '';
         }
 
-        $description = $this->compileMetadata($autoDescription);
         return ExtenderFacade::execute(__METHOD__, $description, func_get_args());
     }
-    
-    public function getMetaTitle()
+
+    /**
+     * @inheritDoc
+     */
+    public function getMetaTitleTemplate()
     {
         $brand = $this->design->getVar('brand');
         $filterAutoMeta = $this->getFilterAutoMeta();
         $isAllPages = $this->design->getVar('is_all_pages');
         $currentPageNum = $this->design->getVar('current_page_num');
-        
-        if ($pageTitle = parent::getMetaTitle()) {
-            $autoMetaTitle = $pageTitle;
+
+        if ($pageTitle = parent::getMetaTitleTemplate()) {
+            $metaTitle = $pageTitle;
         } elseif (!empty($filterAutoMeta->meta_title)) {
-            $autoMetaTitle = $brand->meta_title . ' ' . $filterAutoMeta->meta_title;
+            $metaTitle = $brand->meta_title . ' ' . $filterAutoMeta->meta_title;
         } else {
-            $autoMetaTitle = $brand->meta_title;
+            $metaTitle = $brand->meta_title;
         }
 
         // Добавим номер страницы к тайтлу
         if ((int)$currentPageNum > 1 && $isAllPages !== true) {
             /** @var FrontTranslations $translations */
             $translations = $this->SL->getService(FrontTranslations::class);
-            $autoMetaTitle .= $translations->getTranslation('meta_page') . ' ' . $currentPageNum;
+            $metaTitle .= $translations->getTranslation('meta_page') . ' ' . $currentPageNum;
         }
-        
-        $metaTitle = $this->compileMetadata($autoMetaTitle);
+
         return ExtenderFacade::execute(__METHOD__, $metaTitle, func_get_args());
     }
-    
-    public function getMetaKeywords()
+
+    /**
+     * @inheritDoc
+     */
+    public function getMetaKeywordsTemplate()
     {
         $brand = $this->design->getVar('brand');
         $filterAutoMeta = $this->getFilterAutoMeta();
-        
-        if ($pageKeywords = parent::getMetaKeywords()) {
-            $autoMetaKeywords = $pageKeywords;
+
+        if ($pageKeywords = parent::getMetaKeywordsTemplate()) {
+            $metaKeywords = $pageKeywords;
         } elseif (!empty($filterAutoMeta->meta_keywords)) {
-            $autoMetaKeywords = $brand->meta_keywords . ' ' . $filterAutoMeta->meta_keywords;
+            $metaKeywords = $brand->meta_keywords . ' ' . $filterAutoMeta->meta_keywords;
         } else {
-            $autoMetaKeywords = $brand->meta_keywords;
+            $metaKeywords = $brand->meta_keywords;
         }
 
-        $metaKeywords = $this->compileMetadata($autoMetaKeywords);
         return ExtenderFacade::execute(__METHOD__, $metaKeywords, func_get_args());
     }
-    
-    public function getMetaDescription()
+
+    /**
+     * @inheritDoc
+     */
+    public function getMetaDescriptionTemplate()
     {
         $brand = $this->design->getVar('brand');
         $filterAutoMeta = $this->getFilterAutoMeta();
-        
-        if ($pageMetaDescription = parent::getMetaDescription()) {
-            $autoMetaDescription = $pageMetaDescription;
-        } elseif (!empty($filterAutoMeta->meta_description)) {
-            $autoMetaDescription = $brand->meta_description . ' ' . $filterAutoMeta->meta_description;
-        } else {
-            $autoMetaDescription = $brand->meta_description;
-        }
 
-        $metaDescription = $this->compileMetadata($autoMetaDescription);
+        if ($pageMetaDescription = parent::getMetaDescriptionTemplate()) {
+            $metaDescription = $pageMetaDescription;
+        } elseif (!empty($filterAutoMeta->meta_description)) {
+            $metaDescription = $brand->meta_description . ' ' . $filterAutoMeta->meta_description;
+        } else {
+            $metaDescription = $brand->meta_description;
+        }
+        
         return ExtenderFacade::execute(__METHOD__, $metaDescription, func_get_args());
     }
 

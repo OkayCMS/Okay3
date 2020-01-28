@@ -58,3 +58,4 @@ $lang['banner_settings_nav'] = 'სანავიგაციო ისრე�
 $lang['banner_settings_dots'] = 'ნავიგაციის წერტილები';
 $lang['banner_settings_as_slider'] = 'ბანერების ჯგუფი, როგორც სლაიდერი';
 $lang['banner_shortcode_exists'] = 'ეს კომბინაცია უკვე გამოიყენება.';
+$lang['banner_show_all_products'] = 'ჩვენება პროდუქტის ყველა ბარათზე';

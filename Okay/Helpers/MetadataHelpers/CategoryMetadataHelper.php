@@ -21,28 +21,33 @@ class CategoryMetadataHelper extends CommonMetadataHelper
     private $metaDelimiter = ', ';
     private $autoMeta;
 
-    public function getH1()
+    /**
+     * @inheritDoc
+     */
+    public function getH1Template()
     {
         $category = $this->design->getVar('category');
         $seoFilterPattern = $this->getSeoFilterPattern();
         $filterAutoMeta = $this->getFilterAutoMeta();
 
         $categoryH1 = !empty($category->name_h1) ? $category->name_h1 : $category->name;
-        if ($pageH1 = parent::getH1()) {
-            $autoH1 = $pageH1;
+        if ($pageH1 = parent::getH1Template()) {
+            $h1 = $pageH1;
         } elseif (!empty($seoFilterPattern->h1)) {
-            $autoH1 = $seoFilterPattern->h1;
+            $h1 = $seoFilterPattern->h1;
         } elseif (!empty($filterAutoMeta->h1)) {
-            $autoH1 = $categoryH1 . ' ' . $filterAutoMeta->h1;
+            $h1 = $categoryH1 . ' ' . $filterAutoMeta->h1;
         } else {
-            $autoH1 = $categoryH1;
+            $h1 = $categoryH1;
         }
-        
-        $h1 = $this->compileMetadata($autoH1);
+
         return ExtenderFacade::execute(__METHOD__, $h1, func_get_args());
     }
-    
-    public function getDescription()
+
+    /**
+     * @inheritDoc
+     */
+    public function getDescriptionTemplate()
     {
         $category = $this->design->getVar('category');
         $isFilterPage = $this->design->getVar('is_filter_page');
@@ -50,26 +55,25 @@ class CategoryMetadataHelper extends CommonMetadataHelper
         $currentPageNum = $this->design->getVar('current_page_num');
         $seoFilterPattern = $this->getSeoFilterPattern();
         $filterAutoMeta = $this->getFilterAutoMeta();
-        
+
         if ((int)$currentPageNum > 1 || $isAllPages === true) {
-            $autoDescription = '';
-        } elseif ($pageDescription = parent::getDescription()) {
-            $autoDescription = $pageDescription;
+            $description = '';
+        } elseif ($pageDescription = parent::getDescriptionTemplate()) {
+            $description = $pageDescription;
         } elseif (!empty($seoFilterPattern->description)) {
-            $autoDescription = $seoFilterPattern->description;
+            $description = $seoFilterPattern->description;
         /*} elseif (!empty($filterAutoMeta->description)) {
-            $autoDescription = $filterAutoMeta->description;*/
+            $description = $filterAutoMeta->description;*/
         } elseif ($isFilterPage === false) {
-            $autoDescription = $category->description;
+            $description = $category->description;
         } else {
-            $autoDescription = '';
+            $description = '';
         }
 
-        $description = $this->compileMetadata($autoDescription);
         return ExtenderFacade::execute(__METHOD__, $description, func_get_args());
     }
     
-    public function getMetaTitle() // todo проверить как отработают экстендеры если их навесить на этот метод (где юзается parent::getMetaTitle())
+    public function getMetaTitleTemplate() // todo проверить как отработают экстендеры если их навесить на этот метод (где юзается parent::getMetaTitle())
     {
         $category = $this->design->getVar('category');
         $seoFilterPattern = $this->getSeoFilterPattern();
@@ -77,64 +81,61 @@ class CategoryMetadataHelper extends CommonMetadataHelper
         $isAllPages = $this->design->getVar('is_all_pages');
         $currentPageNum = $this->design->getVar('current_page_num');
         
-        if ($pageTitle = parent::getMetaTitle()) {
-            $autoMetaTitle = $pageTitle;
+        if ($pageTitle = parent::getMetaTitleTemplate()) {
+            $metaTitle = $pageTitle;
         } elseif (!empty($seoFilterPattern->meta_title)) {
-            $autoMetaTitle = $seoFilterPattern->meta_title;
+            $metaTitle = $seoFilterPattern->meta_title;
         } elseif (!empty($filterAutoMeta->meta_title)) {
-            $autoMetaTitle = $category->meta_title . ' ' . $filterAutoMeta->meta_title;
+            $metaTitle = $category->meta_title . ' ' . $filterAutoMeta->meta_title;
         } else {
-            $autoMetaTitle = $category->meta_title;
+            $metaTitle = $category->meta_title;
         }
 
         // Добавим номер страницы к тайтлу
         if ((int)$currentPageNum > 1 && $isAllPages !== true) {
             /** @var FrontTranslations $translations */
             $translations = $this->SL->getService(FrontTranslations::class);
-            $autoMetaTitle .= $translations->getTranslation('meta_page') . ' ' . $currentPageNum;
+            $metaTitle .= $translations->getTranslation('meta_page') . ' ' . $currentPageNum;
         }
         
-        $metaTitle = $this->compileMetadata($autoMetaTitle);
         return ExtenderFacade::execute(__METHOD__, $metaTitle, func_get_args());
     }
     
-    public function getMetaKeywords()
+    public function getMetaKeywordsTemplate()
     {
         $category = $this->design->getVar('category');
         $seoFilterPattern = $this->getSeoFilterPattern();
         $filterAutoMeta = $this->getFilterAutoMeta();
         
-        if ($pageKeywords = parent::getMetaKeywords()) {
-            $autoMetaKeywords = $pageKeywords;
+        if ($pageKeywords = parent::getMetaKeywordsTemplate()) {
+            $metaKeywords = $pageKeywords;
         } elseif (!empty($seoFilterPattern->meta_keywords)) {
-            $autoMetaKeywords = $seoFilterPattern->meta_keywords;
+            $metaKeywords = $seoFilterPattern->meta_keywords;
         } elseif (!empty($filterAutoMeta->meta_keywords)) {
-            $autoMetaKeywords = $category->meta_keywords . ' ' . $filterAutoMeta->meta_keywords;
+            $metaKeywords = $category->meta_keywords . ' ' . $filterAutoMeta->meta_keywords;
         } else {
-            $autoMetaKeywords = $category->meta_keywords;
+            $metaKeywords = $category->meta_keywords;
         }
 
-        $metaKeywords = $this->compileMetadata($autoMetaKeywords);
         return ExtenderFacade::execute(__METHOD__, $metaKeywords, func_get_args());
     }
     
-    public function getMetaDescription()
+    public function getMetaDescriptionTemplate()
     {
         $category = $this->design->getVar('category');
         $seoFilterPattern = $this->getSeoFilterPattern();
         $filterAutoMeta = $this->getFilterAutoMeta();
         
-        if ($pageMetaDescription = parent::getMetaDescription()) {
-            $autoMetaDescription = $pageMetaDescription;
+        if ($pageMetaDescription = parent::getMetaDescriptionTemplate()) {
+            $metaDescription = $pageMetaDescription;
         } elseif (!empty($seoFilterPattern->meta_description)) {
-            $autoMetaDescription = $seoFilterPattern->meta_description;
+            $metaDescription = $seoFilterPattern->meta_description;
         } elseif (!empty($filterAutoMeta->meta_description)) {
-            $autoMetaDescription = $category->meta_description . ' ' . $filterAutoMeta->meta_description;
+            $metaDescription = $category->meta_description . ' ' . $filterAutoMeta->meta_description;
         } else {
-            $autoMetaDescription = $category->meta_description;
+            $metaDescription = $category->meta_description;
         }
 
-        $metaDescription = $this->compileMetadata($autoMetaDescription);
         return ExtenderFacade::execute(__METHOD__, $metaDescription, func_get_args());
     }
 

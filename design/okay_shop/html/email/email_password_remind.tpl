@@ -1,5 +1,5 @@
 {* Письмо восстановления пароля *}
-{$subject = $lang->email_password_subject scope=global}
+{$subject = `$lang->email_password_subject` scope=global}
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -11,7 +11,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="telephone=no" name="format-detection">
 
-    {include "email/email_head.tpl"}
+    {include "design/{get_theme}/html/email/email_head.tpl"}
 </head>
 
 <body>
@@ -22,7 +22,7 @@
             <td class="es-p0t es-p0b" valign="center">
 
                 {* Header email *}
-                {include "email/email_header.tpl"}
+                {include "design/{get_theme}/html/email/email_header.tpl"}
 
                 <table class="es-content" cellspacing="0" cellpadding="0" align="center">
                     <tbody>
@@ -83,7 +83,7 @@
                 </table>
 
                 {* Footer email *}
-                {include "email/email_footer.tpl"}
+                {include "design/{get_theme}/html/email/email_footer.tpl"}
 
             </td>
         </tr>

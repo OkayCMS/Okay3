@@ -7,10 +7,15 @@ namespace Okay\Core\Adapters\Response;
 class Image extends AbstractResponse
 {
 
+    public function getSpecialHeaders()
+    {
+        return [
+            'Content-type: image',
+        ];
+    }
+    
     public function send($content)
     {
-        header('Content-type: image', true);
-
         print implode('', $content);
     }
 }

@@ -31,7 +31,7 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
             return '';
         }
         $category = $this->categoriesEntity->get((string) $url);
-        return $category->path_url;
+        return trim($category->path_url, '/');
     }
 
     public function generateRouteParams($url)
@@ -45,16 +45,22 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
             }
 
             if ($this->matchHasHigherPriority($matchedRoute, $category->path_url)) {
+                $urlPath = trim($category->path_url, '/');
+
+                $urlParts = explode('/', $urlPath);
+                $lastPart = array_pop($urlParts);
+                $pathPrefix = '';
+                if (!empty($urlParts)) {
+                    $pathPrefix = implode('/', $urlParts) . '/';
+                }
+                $filter = trim($this->matchFiltersUrl($urlPath, $url), '/');
                 $matchedRoute = [
                     '{$url}{$filtersUrl}',
                     [
-                        '{$url}' => $category->path_url,
-                        '{$filtersUrl}' => '/'.$this->matchFiltersUrl($category->path_url, $url),
+                        '{$url}' => "{$pathPrefix}({$lastPart})",
+                        '{$filtersUrl}' => "/?(" . $filter . ")",
                     ],
-                    [
-                        '{$url}' => $category->url,
-                        '{$filtersUrl}' => $this->matchFiltersUrl($category->path_url, $url),
-                    ]
+                    []
                 ];
             }
         }

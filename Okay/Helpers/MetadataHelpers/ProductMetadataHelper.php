@@ -8,8 +8,11 @@ use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class ProductMetadataHelper extends CommonMetadataHelper
 {
-    
-    public function getH1()
+
+    /**
+     * @inheritDoc
+     */
+    public function getH1Template()
     {
         $defaultProductsSeoPattern = (object)$this->settings->get('default_products_seo_pattern');
 
@@ -24,11 +27,14 @@ class ProductMetadataHelper extends CommonMetadataHelper
         } elseif (count($product->variants) == 1 && !empty($product->variant->name)) {
             $h1 .= ' ' . $product->variant->name;
         }
-        $h1 = $this->compileMetadata($h1);
+        
         return ExtenderFacade::execute(__METHOD__, $h1, func_get_args());
     }
-    
-    public function getDescription()
+
+    /**
+     * @inheritDoc
+     */
+    public function getDescriptionTemplate()
     {
         $category = $this->design->getVar('category');
         $product  = $this->design->getVar('product');
@@ -41,58 +47,67 @@ class ProductMetadataHelper extends CommonMetadataHelper
                 $description = $defaultProductsSeoPattern->auto_description;
             }
         }
-        $description = $this->compileMetadata($description);
+        
         return ExtenderFacade::execute(__METHOD__, $description, func_get_args());
-    } 
-    
-    public function getMetaTitle()
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMetaTitleTemplate()
     {
         $category = $this->design->getVar('category');
         $product  = $this->design->getVar('product');
         $defaultProductsSeoPattern = (object)$this->settings->get('default_products_seo_pattern');
-        
+
         if (!empty($category) && !empty($category->auto_meta_title)) {
-            $autoMetaTitle = $category->auto_meta_title;
+            $metaTitle = $category->auto_meta_title;
         } elseif (!empty($defaultProductsSeoPattern->auto_meta_title)) {
-            $autoMetaTitle = $defaultProductsSeoPattern->auto_meta_title;
+            $metaTitle = $defaultProductsSeoPattern->auto_meta_title;
         } else {
-            $autoMetaTitle = $product->meta_title;
+            $metaTitle = $product->meta_title;
         }
-        $metaTitle = $this->compileMetadata($autoMetaTitle);
+        
         return ExtenderFacade::execute(__METHOD__, $metaTitle, func_get_args());
     }
-    
-    public function getMetaKeywords()
+
+    /**
+     * @inheritDoc
+     */
+    public function getMetaKeywordsTemplate()
     {
         $category = $this->design->getVar('category');
         $product  = $this->design->getVar('product');
         $defaultProductsSeoPattern = (object)$this->settings->get('default_products_seo_pattern');
-        
+
         if (!empty($category) && !empty($category->auto_meta_keywords)) {
-            $autoMetaKeywords = $category->auto_meta_keywords;
+            $metaKeywords = $category->auto_meta_keywords;
         } elseif (!empty($defaultProductsSeoPattern->auto_meta_keywords)) {
-            $autoMetaKeywords = $defaultProductsSeoPattern->auto_meta_keywords;
+            $metaKeywords = $defaultProductsSeoPattern->auto_meta_keywords;
         } else {
-            $autoMetaKeywords = $product->meta_keywords;
+            $metaKeywords = $product->meta_keywords;
         }
-        $metaKeywords = $this->compileMetadata($autoMetaKeywords);
+        
         return ExtenderFacade::execute(__METHOD__, $metaKeywords, func_get_args());
     }
-    
-    public function getMetaDescription()
+
+    /**
+     * @inheritDoc
+     */
+    public function getMetaDescriptionTemplate()
     {
         $category = $this->design->getVar('category');
         $product  = $this->design->getVar('product');
         $defaultProductsSeoPattern = (object)$this->settings->get('default_products_seo_pattern');
-        
+
         if (!empty($category) && !empty($category->auto_meta_desc)) {
-            $autoMetaDescription = $category->auto_meta_desc;
+            $metaDescription = $category->auto_meta_desc;
         } elseif (!empty($defaultProductsSeoPattern->auto_meta_desc)) {
-            $autoMetaDescription = $defaultProductsSeoPattern->auto_meta_desc;
+            $metaDescription = $defaultProductsSeoPattern->auto_meta_desc;
         } else {
-            $autoMetaDescription = $product->meta_description;
+            $metaDescription = $product->meta_description;
         }
-        $metaDescription = $this->compileMetadata($autoMetaDescription);
+        
         return ExtenderFacade::execute(__METHOD__, $metaDescription, func_get_args());
     }
 

@@ -67,6 +67,21 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="activity_of_switch_item left_indent"> {* row block *}
+                                <div class="okay_switch clearfix">
+                                    <label class="switch_label">
+                                        {$btr->page_routes_template_slash_end|escape}
+                                        <i class="fn_tooltips" title="{$btr->page_routes_template_slash_end_notice|escape}">
+                                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                        </i>
+                                    </label>
+                                    <label class="switch switch-default">
+                                        <input class="switch-input" name="page_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->page_routes_template_slash_end}checked=""{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                </div>
+                            </div>
                             {get_design_block block="settings_router_switth_checkboxes"}
                         </div>
                     </div>

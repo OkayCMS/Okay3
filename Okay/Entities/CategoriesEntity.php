@@ -93,6 +93,7 @@ class CategoriesEntity extends Entity
     
     public function add($category)
     {
+        $category = (object) $category;
         $category->level_depth = $this->determineLevelDepth($category);
 
         $id = parent::add($category);

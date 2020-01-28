@@ -10,6 +10,8 @@ use Okay\Entities\VariantsEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\ImagesEntity;
 use Okay\Core\Modules\Extender\ExtenderFacade;
+use Okay\Helpers\MoneyHelper;
+use Okay\Helpers\ProductsHelper;
 
 class Comparison
 {
@@ -30,16 +32,23 @@ class Comparison
     
     private $settings;
 
+    /**
+     * @var MoneyHelper
+     */
+    private $moneyHelper;
+
     public function __construct(
         EntityFactory $entityFactory,
-        Settings $settings
+        Settings      $settings,
+        MoneyHelper   $moneyHelper
     ){
-        $this->productsEntity = $entityFactory->get(ProductsEntity::class);
-        $this->variantsEntity = $entityFactory->get(VariantsEntity::class);
-        $this->imagesEntity   = $entityFactory->get(ImagesEntity::class);
-        $this->featuresEntity   = $entityFactory->get(FeaturesEntity::class);
+        $this->productsEntity         = $entityFactory->get(ProductsEntity::class);
+        $this->variantsEntity         = $entityFactory->get(VariantsEntity::class);
+        $this->imagesEntity           = $entityFactory->get(ImagesEntity::class);
+        $this->featuresEntity         = $entityFactory->get(FeaturesEntity::class);
         $this->featuresValuesEntity   = $entityFactory->get(FeaturesValuesEntity::class);
-        $this->settings       = $settings;
+        $this->settings               = $settings;
+        $this->moneyHelper            = $moneyHelper;
     }
 
     public function get()
@@ -65,14 +74,15 @@ class Comparison
                     $product->features = [];
                 }
 
-                $variants = $this->variantsEntity->find(array('product_id'=>$products_ids));
+                $variants = $this->variantsEntity->find(['product_id'=>$products_ids]);
+                $variants = $this->moneyHelper->convertVariantsPriceToMainCurrency($variants);
 
                 foreach($variants as $variant) {
                     $products[$variant->product_id]->variants[] = $variant;
                 }
 
                 if (!empty($images_ids)) {
-                    $images = $this->imagesEntity->find(array('id'=>$images_ids));
+                    $images = $this->imagesEntity->find(['id'=>$images_ids]);
                     foreach ($images as $image) {
                         if (isset($products[$image->product_id])) {
                             $products[$image->product_id]->image = $image;
@@ -80,7 +90,7 @@ class Comparison
                     }
                 }
 
-                $featuresValues = $this->featuresValuesEntity->mappedBy('id')->find(array('product_id'=>$products_ids));
+                $featuresValues = $this->featuresValuesEntity->mappedBy('id')->find(['product_id'=>$products_ids]);
 
                 $productsValues = [];
                 foreach ($this->featuresValuesEntity->getProductValuesIds($products_ids) as $pv) {
@@ -151,8 +161,8 @@ class Comparison
 
     public function addItem($productId)
     {
-        $items = !empty($_COOKIE['comparison']) ? json_decode($_COOKIE['comparison']) : array();
-        $items = $items && is_array($items) ? $items : array();
+        $items = !empty($_COOKIE['comparison']) ? json_decode($_COOKIE['comparison']) : [];
+        $items = $items && is_array($items) ? $items : [];
         if (!in_array($productId, $items)) {
             $items[] = $productId;
             if ($this->settings->comparison_count && $this->settings->comparison_count < count($items)) {
@@ -168,7 +178,7 @@ class Comparison
     /*Удаление товара из корзины*/
     public function deleteItem($productId)
     {
-        $items = !empty($_COOKIE['comparison']) ? json_decode($_COOKIE['comparison']) : array();
+        $items = !empty($_COOKIE['comparison']) ? json_decode($_COOKIE['comparison']) : [];
         if (!is_array($items)) {
             ExtenderFacade::execute(__METHOD__, null, func_get_args());
             return;

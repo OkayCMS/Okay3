@@ -28,3 +28,5 @@ $lang['okaycms__google_merchant__color'] = 'ფერი';
 $lang['okaycms__google_merchant__color_notify'] = 'შეარჩიეთ ქონება';
 $lang['okaycms__google_merchant__upload_products'] = 'აირჩიეთ პროდუქტები, რომ ჩამოტვირთოთ';
 $lang['okaycms__google_merchant__use_variant_name_like_size'] = 'გამოიყენეთ ვარიანტის სახელი, როგორც ზომით (ტანსაცმლისთვის)';
+$lang['okaycms__google_merchant__products_per_page'] = 'საქონლის რაოდენობა ერთ მონაცემთა პაკეტში';
+$lang['okaycms__google_merchant__products_per_page_title'] = 'დიდი კატალოგის საშუალებით შეიძლება არ იყოს საკმარისი მეხსიერება ყველა პროდუქტის ერთდროულად გადმოტვირთვისთვის, ამიტომ ისინი იყოფა პაკეტებად. რაც უფრო ნაკლები მეხსიერება (RAM) სერვერზე, მით ნაკლები უნდა იყოს ეს პარამეტრი. მისი ამოღება ასევე შესაძლებელია გადმოტვირთვის ფორმირების ოპტიმალური სიჩქარის მოსაძებნად';

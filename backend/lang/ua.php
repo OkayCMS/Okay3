@@ -1346,3 +1346,6 @@ $lang['common_routes_brands'] = 'Список брендів';
 $lang['common_routes_posts'] = 'Список постів';
 $lang['common_routes_news'] = 'Список новин';
 $lang['hide_front_delivery_price'] = 'Приховати ціну';
+
+$lang['page_routes_template_slash_end'] = 'Слеш в кінці інформаційних сторінок';
+$lang['page_routes_template_slash_end_notice'] = 'Сторінки контактів, оплати і доставки і т.п.';

@@ -153,6 +153,17 @@
                         </div>
                         <div class="col-md-6 mb-1">
                             <div class="heading_label">
+                                <strong>{$btr->okaycms__google_merchant__products_per_page|escape}</strong>
+                                <i class="fn_tooltips" title="{$btr->okaycms__google_merchant__products_per_page_title|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </div>
+                            <div class="mb-1">
+                                <input name="okaycms__google_merchant__products_per_page" class="form-control" placeholder="1000" type="text" value="{$settings->okaycms__google_merchant__products_per_page}" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-1">
+                            <div class="heading_label">
                                 <strong>{$btr->okaycms__google_merchant__color}</strong> <span>({$btr->okaycms__google_merchant__color_notify})</span>
                             </div>
                             <div class="mb-1">

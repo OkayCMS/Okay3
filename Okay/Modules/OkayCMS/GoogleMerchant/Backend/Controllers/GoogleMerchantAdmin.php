@@ -52,6 +52,7 @@ class GoogleMerchantAdmin extends IndexAdmin
             $productsToXml     = $this->request->post('related_products');
             $productsNotToXml  = $this->request->post('not_related_products');
 
+            $this->settings->set('okaycms__google_merchant__products_per_page', $this->request->post('okaycms__google_merchant__products_per_page'));
             $this->settings->set('okaycms__google_merchant__company', $this->request->post('okaycms__google_merchant__company'));
             $this->settings->set('okaycms__google_merchant__color', $this->request->post('okaycms__google_merchant__color'));
 

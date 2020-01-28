@@ -17,72 +17,67 @@ class PostMetadataHelper extends CommonMetadataHelper
 {
  
 
-    public function getH1()
+    public function getH1Template()
     {
         $post = $this->design->getVar('post');
 
-        if ($pageH1 = parent::getH1()) {
-            $autoH1 = $pageH1;
+        if ($pageH1 = parent::getH1Template()) {
+            $h1 = $pageH1;
         } else {
-            $autoH1 = $post->name;
+            $h1 = $post->name;
         }
         
-        $h1 = $this->compileMetadata($autoH1);
         return ExtenderFacade::execute(__METHOD__, $h1, func_get_args());
     }
     
-    public function getDescription()
+    public function getDescriptionTemplate()
     {
         $post = $this->design->getVar('post');
         
-        if ($pageDescription = parent::getDescription()) {
-            $autoDescription = $pageDescription;
+        if ($pageDescription = parent::getDescriptionTemplate()) {
+            $description = $pageDescription;
         } else {
-            $autoDescription = $post->description;
+            $description = $post->description;
         }
 
-        $description = $this->compileMetadata($autoDescription);
         return ExtenderFacade::execute(__METHOD__, $description, func_get_args());
     }
     
-    public function getMetaTitle()
+    public function getMetaTitleTemplate()
     {
         $post = $this->design->getVar('post');
-        if ($pageTitle = parent::getMetaTitle()) {
-            $autoMetaTitle = $pageTitle;
+        if ($pageTitle = parent::getMetaTitleTemplate()) {
+            $metaTitle = $pageTitle;
         } else {
-            $autoMetaTitle = $post->meta_title;
+            $metaTitle = $post->meta_title;
         }
         
-        $metaTitle = $this->compileMetadata($autoMetaTitle);
         return ExtenderFacade::execute(__METHOD__, $metaTitle, func_get_args());
     }
     
-    public function getMetaKeywords()
+    public function getMetaKeywordsTemplate()
     {
         $post = $this->design->getVar('post');
         
-        if ($pageKeywords = parent::getMetaKeywords()) {
-            $autoMetaKeywords = $pageKeywords;
+        if ($pageKeywords = parent::getMetaKeywordsTemplate()) {
+            $metaKeywords = $pageKeywords;
         } else {
-            $autoMetaKeywords = $post->meta_keywords;
+            $metaKeywords = $post->meta_keywords;
         }
 
-        $metaKeywords = $this->compileMetadata($autoMetaKeywords);
         return ExtenderFacade::execute(__METHOD__, $metaKeywords, func_get_args());
     }
     
-    public function getMetaDescription()
+    public function getMetaDescriptionTemplate()
     {
         $post = $this->design->getVar('post');
         
-        if ($pageMetaDescription = parent::getMetaDescription()) {
-            $autoMetaDescription = $pageMetaDescription;
+        if ($pageMetaDescription = parent::getMetaDescriptionTemplate()) {
+            $metaDescription = $pageMetaDescription;
         } else {
-            $autoMetaDescription = $post->meta_description;
+            $metaDescription = $post->meta_description;
         }
 
-        $metaDescription = $this->compileMetadata($autoMetaDescription);
         return ExtenderFacade::execute(__METHOD__, $metaDescription, func_get_args());
     }
 }

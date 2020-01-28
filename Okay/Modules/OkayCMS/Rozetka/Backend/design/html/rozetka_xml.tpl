@@ -101,6 +101,42 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="boxed fn_toggle_wrap">
+                <div class="heading_box">
+                    {$btr->okaycms__rozetka_xml__params|escape}
+                    <div class="toggle_arrow_wrap fn_toggle_card text-primary">
+                        <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
+                    </div>
+                </div>
+                <div class="toggle_body_wrap on fn_card">
+                    <div class="row">
+                        <div class="col-md-6 mb-1">
+                            <div class="heading_label">
+                                <strong>{$btr->okaycms__rozetka_xml__products_per_page|escape}</strong>
+                                <i class="fn_tooltips" title="{$btr->okaycms__rozetka_xml__products_per_page_title|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </div>
+                            <div class="mb-1">
+                                <input name="okaycms__rozetka_xml__products_per_page" class="form-control" placeholder="1000" type="text" value="{$settings->okaycms__rozetka_xml__products_per_page}" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 ">
+                            <button type="submit" class="btn btn_small btn_blue float-md-right">
+                                <span>{$btr->general_apply|escape}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-6 col-md-6">

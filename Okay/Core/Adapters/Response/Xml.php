@@ -6,11 +6,16 @@ namespace Okay\Core\Adapters\Response;
 
 class Xml extends AbstractResponse
 {
+
+    public function getSpecialHeaders()
+    {
+        return [
+            'Content-type: text/xml; charset=UTF-8',
+        ];
+    }
     
     public function send($content)
     {
-        header('Content-type: text/xml; charset=UTF-8', true);
-
         print implode('', $content);
     }
 }

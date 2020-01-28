@@ -38,8 +38,8 @@ class Furl extends Func
         $baseUrl = $this->router->generateUrl($routeName, $routeParams, $isAbsolute);
         $chpuUrl = $this->filterHelper->filterChpuUrl($params, [], $smarty);
         
-        $baseUrl = trim($baseUrl, '/');
-        $chpuUrl = trim($chpuUrl, '/');
+        $baseUrl = rtrim($baseUrl, '/');
+        $chpuUrl = ltrim($chpuUrl, '/');
         
         return $baseUrl . '/' . $chpuUrl;
         

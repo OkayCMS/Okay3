@@ -15,6 +15,7 @@ class Response
     private $headers;
     private $type;
     private $license;
+    private $isStream = false;
     private $statusCode = 200;
     
     public function __construct(AdapterManager $adapterManager, License $license)
@@ -77,9 +78,41 @@ class Response
     {
         return $this->type;
     }
+
+    /**
+     * В отличии от метода sendContent(), этот метод непосредственно сейчас отправляет данные.
+     * Нужно обязательно до первого его вызова установить тип данных setContent(), и вызвать sendHeaders()
+     * 
+     * Пример:
+     * $response->setContentType(RESPONSE_XML);
+     * $response->sendHeaders();
+     * $response->sendStream('<xml>');
+     * $response->sendStream('</xml>');
+     * 
+     * @param string $content
+     * @param null $type
+     */
+    public function sendStream($content, $type = null)
+    {
+        $this->isStream = true;
+        
+        if ($type !== null) {
+            $this->type = trim($type);
+        }
+        
+        /** @var Adapters\Response\AbstractResponse $adapter */
+        $adapter = $this->adapterManager->getAdapter($this->type);
+
+        $this->license->setResponseType($this->type);
+        $adapter->send([$content]);
+    }
     
     public function sendContent()
     {
+        if ($this->isStream === true) {
+            return;
+        }
+        
         /** @var Adapters\Response\AbstractResponse $adapter */
         $adapter = $this->adapterManager->getAdapter($this->type);
 
@@ -96,7 +129,15 @@ class Response
     {
         $this->commitStatusCode();
 
-        foreach ($this->headers as $header) {
+        /** @var Adapters\Response\AbstractResponse $adapter */
+        $adapter = $this->adapterManager->getAdapter($this->type);
+
+        // Добавляем специальные заголовки, от драйвера
+        foreach ($adapter->getSpecialHeaders() as $header) {
+            $this->addHeader($header, true);
+        }
+        
+        foreach ($this->headers as $k=>$header) {
             list($headerContent, $replace, $responseCode) = $header;
 
             if (is_null($responseCode)) {
@@ -105,6 +146,7 @@ class Response
             }
 
             header($headerContent, $replace, $responseCode);
+            unset($this->headers[$k]);
         }
     }
 

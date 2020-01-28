@@ -1,7 +1,7 @@
 
 {$meta_title=$btr->category_stats_sales scope=global}
 
-{*Название страницы*}
+{*РќР°Р·РІР°РЅРёРµ СЃС‚СЂР°РЅРёС†С‹*}
 <div class="row">
     <div class="col-lg-7 col-md-7">
         <div class="wrap_heading">
@@ -15,7 +15,7 @@
     </div>
 </div>
 
-{*Главная форма страницы*}
+{*Р“Р»Р°РІРЅР°СЏ С„РѕСЂРјР° СЃС‚СЂР°РЅРёС†С‹*}
 <div class="boxed fn_toggle_wrap">
     <div class="row">
         <div class="col-lg-12 col-md-12 ">
@@ -32,7 +32,7 @@
                         <div class="row">
                             <div class="col-md-11 col-lg-11 col-xl-7 col-sm-12">
                                 <div class="date">
-                                    {*Блок фильтров*}
+                                    {*Р‘Р»РѕРє С„РёР»СЊС‚СЂРѕРІ*}
                                     <form class="date_filter row" method="get">
                                         <input type="hidden" name="controller" value="CategoryStatsAdmin" />
                                         <div class="col-md-5 col-lg-5 pr-0 pl-0">
@@ -109,13 +109,13 @@
     <form method="post" class="fn_form_list">
         <input type="hidden" name="session_id" value="{$smarty.session.id}" />
         <div class="okay_list products_list fn_sort_list">
-            {*Шапка таблицы*}
+            {*РЁР°РїРєР° С‚Р°Р±Р»РёС†С‹*}
             <div class="okay_list_head">
                 <div class="okay_list_heading okay_list_categorystats_categories">{$btr->general_category|escape}</div>
                 <div class="okay_list_heading okay_list_categorystats_total">{$btr->general_sales_amount|escape}</div>
                 <div class="okay_list_heading okay_list_categorystats_setting">{$btr->general_amount|escape}</div>
             </div>
-            {*Параметры элемента*}
+            {*РџР°СЂР°РјРµС‚СЂС‹ СЌР»РµРјРµРЅС‚Р°*}
             <div class="okay_list_body">
                 {function name=categories_list_tree level=0}
                     {foreach $categories as $category}

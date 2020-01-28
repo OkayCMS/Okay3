@@ -1335,3 +1335,6 @@ $lang['learning_hint_post_finish'] = '<p>Вы прошли обучение и �
 $lang['settings_router_url_slash_end'] = 'slash ბოლოს';
 $lang['settings_router_url_slash_end_notice'] = 'ამ ჯგუფის ყველა მისამართს ბოლოს და ბოლოს დაემატებათ სლაიდი';
 $lang['hide_front_delivery_price'] = 'დაფარეთ ფასი';
+
+$lang['page_routes_template_slash_end'] = 'ინფორმაციის მოჭრა გვერდების ბოლოს';
+$lang['page_routes_template_slash_end_notice'] = 'კონტაქტების გვერდები, გადახდა და მიწოდება და ა.შ.';

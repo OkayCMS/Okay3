@@ -152,19 +152,18 @@ class Router {
             
             $router->all($pattern, function(...$params) use ($router, $route, $request, $settings, $language, $baseRoute, $routeName) {
 
-                // TODO подумать над тем как это отрефакторить
                 $flexibleRoute = self::$routeFactory->create($routeName, $params);
                 if ($flexibleRoute) {
                     $currentUri           = $_SERVER['REQUEST_URI'];
                     $lastSymbolCurrentUrl = mb_substr($currentUri, -1, 1);
 
                     if ($flexibleRoute->hasSlashAtEnd() && $lastSymbolCurrentUrl !== "/") {
-                        $this->response->redirectTo($currentUri.'/', 302);
+                        $this->response->redirectTo($currentUri.'/', 301);
                         return;
                     }
 
                     if (! $flexibleRoute->hasSlashAtEnd() && $lastSymbolCurrentUrl === "/") {
-                        $this->response->redirectTo(mb_substr($currentUri, 0, -1), 302);
+                        $this->response->redirectTo(mb_substr($currentUri, 0, -1), 301);
                         return;
                     }
                 }

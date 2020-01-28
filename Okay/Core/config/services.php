@@ -4,6 +4,8 @@
 namespace Okay\Core;
 
 
+use Monolog\Handler\ChromePHPHandler;
+use Monolog\Handler\RotatingFileHandler;
 use Okay\Core\Entity\UrlUniqueValidator;
 use Okay\Core\Modules\ModuleDesign;
 use Okay\Core\Modules\ModulesEntitiesFilters;
@@ -220,10 +222,17 @@ $services = [
             ],
         ]
     ],
-    StreamHandler::class => [
-        'class' => StreamHandler::class,
+    ChromePHPHandler::class => [
+        'class' => ChromePHPHandler::class,
+        'arguments' => [
+            Logger::DEBUG,
+        ],
+    ],
+    RotatingFileHandler::class => [
+        'class' => RotatingFileHandler::class,
         'arguments' => [
             new PR('logger.file'),
+            new PR('logger.max_files_rotation'),
             Logger::DEBUG,
         ],
     ],
@@ -234,7 +243,13 @@ $services = [
             [
                 'method' => 'pushHandler',
                 'arguments' => [
-                    new SR(StreamHandler::class),
+                    new SR(ChromePHPHandler::class),
+                ]
+            ],
+            [
+                'method' => 'pushHandler',
+                'arguments' => [
+                    new SR(RotatingFileHandler::class),
                 ]
             ],
         ]
@@ -303,6 +318,7 @@ $services = [
         'arguments' => [
             new SR(EntityFactory::class),
             new SR(Settings::class),
+            new SR(MoneyHelper::class),
         ],
     ],
     WishList::class => [

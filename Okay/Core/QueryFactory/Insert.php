@@ -68,7 +68,7 @@ class Insert extends AbstractQuery
         return $this;
     }
 
-    public function addRow(array $cols = array())
+    public function addRow(array $cols = [])
     {
         $this->queryObject->addRow($cols);
         return $this;

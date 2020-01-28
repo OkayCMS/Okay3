@@ -46,35 +46,60 @@ class RozetkaController extends AbstractController
         if ($this->settings->get('upload_only_available_to_rozetka')) {
             $filter['in_stock'] = 1;
         }
-        
-        $products = $productsEntity->cols([
-            'description',
-            'name',
-            'id',
-            'brand_id',
-            'url',
-            'annotation',
-            'main_category_id',
-        ])
-            ->mappedBy('id')
-            ->find($filter);
 
-        if (!empty($products)) {
-            $products = $productsHelper->attachVariants($products, $filter);
-            $products = $productsHelper->attachImages($products);
-            $products = $productsHelper->attachFeatures($products, ['feed'=>1]);
-            
-            $this->design->assign('products', $products);
-            
-            $allBrands = $brandsEntity->mappedBy('id')->find(['product_id' => array_keys($products)]);
+        $productsIds = $productsEntity->cols(['id'])->find($filter);
+
+        if (!empty($productsIds)) {
+            $allBrands = $brandsEntity->mappedBy('id')->find(['product_id' => $productsIds]);
             $this->design->assign('all_brands', $allBrands);
         }
-        
+
         $this->design->assign('all_categories', $categoriesEntity->find());
+
+        $this->response->setContentType(RESPONSE_XML);
+
+        $this->response->sendHeaders();
+        $this->response->sendStream(pack('CCC', 0xef, 0xbb, 0xbf));
+        $this->response->sendStream($this->design->fetch('feed_head.xml.tpl'));
+
+        // Выдаём товары пачками
+        $itemsPerPage = $this->settings->get('okaycms__rozetka_xml__products_per_page');
+        $itemsPerPage = !empty($itemsPerPage) ? $itemsPerPage : 1000;
+        $productsCount = $productsEntity->count($filter);
+
+        $pages = ceil($productsCount/$itemsPerPage);
+        $pages = max(1, $pages);
         
-        $this->response->setContent(pack('CCC', 0xef, 0xbb, 0xbf));
-        $this->response->setContent($this->design->fetch('feed.xml.tpl'), RESPONSE_XML);
+        $variantsFilter = $filter;
         
+        // Проходимся пагинацией, выводим товары пачками
+        for ($page = 1; $page <= $pages; $page++) {
+            $filter['limit'] = $itemsPerPage;
+            $filter['page'] = $page;
+
+            $products = $productsEntity->cols([
+                'description',
+                'name',
+                'id',
+                'brand_id',
+                'url',
+                'annotation',
+                'main_category_id',
+            ])
+                ->mappedBy('id')
+                ->find($filter);
+            
+            if (!empty($products)) {
+                $products = $productsHelper->attachVariants($products, $variantsFilter);
+                $products = $productsHelper->attachImages($products);
+                $products = $productsHelper->attachFeatures($products, ['feed' => 1]);
+            }
+            
+            $this->design->assign('products', $products);
+            $this->response->sendStream($this->design->fetch('feed_offers.xml.tpl'));
+        }
+
+        $this->response->sendStream($this->design->fetch('feed_footer.xml.tpl'));
     }
     
     private function addAllChildrenToList(CategoriesEntity $categoriesEntity, $categories, $uploadCategories)

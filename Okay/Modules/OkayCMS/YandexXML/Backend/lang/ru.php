@@ -28,3 +28,5 @@ $lang['okaycms__yandex_xml__country_of_origin'] = 'Страна производ
 $lang['okaycms__yandex_xml__country_of_origin_notify'] = 'Укажите имя свойства, которое будет содержать данный параметр';
 $lang['okaycms__yandex_xml__upload_products'] = 'Выбор товаров для выгрузки';
 $lang['okaycms__yandex_xml__add_to_yandex_feed'] = 'Добавить товар в выгрузку Yandex';
+$lang['okaycms__yandex_xml__products_per_page'] = 'Количество товаров в одном пакете данных';
+$lang['okaycms__yandex_xml__products_per_page_title'] = 'При большом каталоге может не хватать памяти выгрузить все товары единоразово, поэтому они делятся на пакеты. Чем меньше памяти (ОЗУ) на сервере, тем меньше должен быть этот параметр. Также его можно поднимать, для поиска оптимальной скорости формирования выгрузки';

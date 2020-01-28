@@ -18,7 +18,6 @@ class MoneyHelper
         $this->entityFactory = $entityFactory;
     }
 
-    // TODO подумать над тем, чтобы данный метод был immutable
     public function convertVariantsPriceToMainCurrency(array $variants = [])
     {
         if (empty($variants)) {
@@ -32,7 +31,6 @@ class MoneyHelper
         return ExtenderFacade::execute(__METHOD__, $variants, func_get_args());
     }
 
-    // TODO подумать над тем, чтобы данный метод был immutable
     public function convertVariantPriceToMainCurrency($variant)
     {
         if (empty($variant)) {

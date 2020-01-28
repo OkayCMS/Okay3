@@ -103,7 +103,7 @@ class Settings
     public function initSettings()
     {
         // Выбираем из базы ОБЩИЕ настройки и записываем их в переменную
-        $this->vars = array();
+        $this->vars = [];
         
         $select = $this->queryFactory->newSelect();
         
@@ -117,7 +117,7 @@ class Settings
         }
     
         // Выбираем из базы настройки с переводами к текущему языку
-        $this->vars_lang = array();
+        $this->vars_lang = [];
         $multi = $this->getSettings();
         if (is_array($multi)) {
             foreach ($multi as $s) {

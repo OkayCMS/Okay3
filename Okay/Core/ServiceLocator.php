@@ -40,12 +40,12 @@ class ServiceLocator
      * @param $service
      * @return object
      */
-    public function getService($service) // todo добавить type hint
+    public function getService($service)
     {
         return $this->DI->get($service);
     }
     
-    public function hasService($service) // todo добавить type hint
+    public function hasService($service)
     {
         return $this->DI->has($service);
     }

@@ -6782,3 +6782,7 @@ ul.submenu .menu_counter {
 .settings_router_switch_title {
     position: relative; top: 4px; padding-left: 4px;
 }
+
+.left_indent {
+    padding-left: 35px;
+}

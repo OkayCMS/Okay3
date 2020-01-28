@@ -40,6 +40,10 @@ class RouteFactory
             return new AllBrandsRoute($params);
         }
 
+        if ($routeName === 'page') {
+            return new PageRoute($params);
+        }
+
         return false;
     }
 }

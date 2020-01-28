@@ -19,6 +19,13 @@ class Html extends AbstractResponse
         $this->design = $serviceLocator->getService(Design::class);
     }
 
+    public function getSpecialHeaders()
+    {
+        return [
+            'Content-type: text/html; charset=utf-8',
+        ];
+    }
+    
     public function send($contents)
     {
         $resultContent = '';
@@ -47,8 +54,6 @@ class Html extends AbstractResponse
         if (is_null($wrapper)) {
             $wrapper = 'index.tpl';
         }
-
-        header('Content-type: text/html; charset=utf-8', true);
 
         if (!empty($wrapper)) {
             print $this->design->fetch($wrapper);

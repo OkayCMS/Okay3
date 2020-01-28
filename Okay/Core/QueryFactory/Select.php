@@ -79,25 +79,25 @@ class Select extends AbstractQuery implements SelectInterface, SubselectInterfac
         return $this;
     }
 
-    public function join($join, $spec, $cond = null, array $bind = array())
+    public function join($join, $spec, $cond = null, array $bind = [])
     {
         $this->queryObject->join($join, $spec, $cond, $bind);
         return $this;
     }
 
-    public function innerJoin($spec, $cond = null, array $bind = array())
+    public function innerJoin($spec, $cond = null, array $bind = [])
     {
         $this->queryObject->innerJoin($spec, $cond, $bind);
         return $this;
     }
 
-    public function leftJoin($spec, $cond = null, array $bind = array())
+    public function leftJoin($spec, $cond = null, array $bind = [])
     {
         $this->queryObject->leftJoin($spec, $cond, $bind);
         return $this;
     }
 
-    public function joinSubSelect($join, $spec, $name, $cond = null, array $bind = array())
+    public function joinSubSelect($join, $spec, $name, $cond = null, array $bind = [])
     {
         $this->queryObject->joinSubSelect($join, $spec, $name, $cond, $bind);
         return $this;

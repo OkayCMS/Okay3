@@ -20,6 +20,7 @@ class BannersEntity extends Entity
         'brands',
         'individual_shortcode',
         'settings',
+        'show_all_products',
     ];
 
     protected static $defaultOrderFields = [

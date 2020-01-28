@@ -288,7 +288,8 @@ class BackendSettingsHelper
         $this->settings->set('all_blog_routes_template_slash_end',   $this->request->post('all_blog_routes_template_slash_end'));
         $this->settings->set('all_news_routes_template_slash_end',   $this->request->post('all_news_routes_template_slash_end'));
 
-        $this->settings->set('global_unique_url',                  $this->request->post('global_unique_url'));
+        $this->settings->set('global_unique_url',              $this->request->post('global_unique_url'));
+        $this->settings->set('page_routes_template_slash_end', $this->request->post('page_routes_template_slash_end'));
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }

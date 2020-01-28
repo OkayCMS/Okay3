@@ -237,7 +237,7 @@ class Languages
     public function getEntitiesLangInfo()
     {
         $results = [];
-        $namespace = 'Okay\Entities'; // todo у модульности это будет решать сервис модулей
+        $namespace = 'Okay\Entities';
         if ($classes = ClassFinder::getClassesInNamespace($namespace)) {
             /** @var Entity $class */
             foreach ($classes as $class) {

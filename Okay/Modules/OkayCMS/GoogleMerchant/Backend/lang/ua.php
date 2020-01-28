@@ -28,3 +28,5 @@ $lang['okaycms__google_merchant__color'] = 'Колір';
 $lang['okaycms__google_merchant__color_notify'] = 'Виберіть властивість';
 $lang['okaycms__google_merchant__upload_products'] = 'Вибір продуктів для завантаження';
 $lang['okaycms__google_merchant__use_variant_name_like_size'] = 'Використовувати назву варіанта, як розмір (для одягу)';
+$lang['okaycms__google_merchant__products_per_page'] = 'Кількість товарів в одному пакеті даних';
+$lang['okaycms__google_merchant__products_per_page_title'] = 'При великому каталозі може не вистачати пам\'яті вивантажити усі товари одноразово, тому вони діляться на пакети. Чим менше пам\'яті (ОЗУ) на сервері, тим менше повинен бути цей параметр. Також його можна піднімати, для пошуку оптимальної швидкості формування вивантаження';

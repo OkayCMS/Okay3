@@ -48,40 +48,63 @@ class YandexXMLController extends AbstractController
             $filter['in_stock'] = 1;
         }
         
-        $products = $productsEntity->cols([
-            'description',
-            'name',
-            'id',
-            'brand_id',
-            'url',
-            'annotation',
-            'main_category_id',
-        ])
-            ->mappedBy('id')
-            ->find($filter);
+        $productsIds = $productsEntity->cols(['id'])->find($filter);
 
-        if (!empty($products)) {
-            $products = $productsHelper->attachVariants($products, $filter);
-            $products = $productsHelper->attachImages($products);
-            $products = $this->sliceImagesByProduct($products, 10);
-            $products = $productsHelper->attachFeatures($products);
-
-            $countryOfOrigin = $this->settings->okaycms__yandex_xml__country_of_origin;
-            if (!empty($countryOfOrigin)) {
-                $products = $this->attachCountryOfOriginParameter($products);
-            }
-
-            $this->design->assign('products', $products);
-            
-            $allBrands = $brandsEntity->mappedBy('id')->find(['product_id' => array_keys($products)]);
+        if (!empty($productsIds)) {
+            $allBrands = $brandsEntity->mappedBy('id')->find(['product_id' => $productsIds]);
             $this->design->assign('all_brands', $allBrands);
         }
         
         $this->design->assign('all_categories', $categoriesEntity->find());
         
-        $this->response->setContent(pack('CCC', 0xef, 0xbb, 0xbf));
-        $this->response->setContent($this->design->fetch('feed.xml.tpl'), RESPONSE_XML);
+        $this->response->setContentType(RESPONSE_XML);
         
+        $this->response->sendHeaders();
+        $this->response->sendStream(pack('CCC', 0xef, 0xbb, 0xbf));
+        $this->response->sendStream($this->design->fetch('feed_head.xml.tpl'));
+
+        // Выдаём товары пачками
+        $itemsPerPage = $this->settings->get('okaycms__yandex_xml__products_per_page');
+        $itemsPerPage = !empty($itemsPerPage) ? $itemsPerPage : 1000;
+        $productsCount = $productsEntity->count($filter);
+
+        $pages = ceil($productsCount/$itemsPerPage);
+        $pages = max(1, $pages);
+
+        $variantsFilter = $filter;
+        
+        // Проходимся пагинацией, выводим товары пачками
+        for ($page = 1; $page <= $pages; $page++) {
+            $filter['limit'] = $itemsPerPage;
+            $filter['page'] = $page;
+
+            $products = $productsEntity->cols([
+                'description',
+                'name',
+                'id',
+                'brand_id',
+                'url',
+                'annotation',
+                'main_category_id',
+            ])
+                ->mappedBy('id')
+                ->find($filter);
+            
+            $products = $productsHelper->attachVariants($products, $variantsFilter);
+            $products = $productsHelper->attachImages($products);
+            $products = $this->sliceImagesByProduct($products, 10);
+            $products = $productsHelper->attachFeatures($products);
+
+            $countryOfOrigin = $this->settings->get('okaycms__yandex_xml__country_of_origin');
+            if (!empty($countryOfOrigin)) {
+                $products = $this->attachCountryOfOriginParameter($products);
+            }
+
+            $this->design->assign('products', $products);
+            $this->response->sendStream($this->design->fetch('feed_offers.xml.tpl'));
+        }
+
+        $this->response->sendStream($this->design->fetch('feed_footer.xml.tpl'));
     }
     
     private function addAllChildrenToList(CategoriesEntity $categoriesEntity, $categories, $uploadCategories)
@@ -115,12 +138,12 @@ class YandexXMLController extends AbstractController
     {
         $countryOfOriginParamId = $this->settings->get('okaycms__yandex_xml__country_of_origin');
 
-        foreach($products as $id => $product) {
+        foreach ($products as $id => $product) {
             if (empty($product->features)) {
                 continue;
             }
 
-            foreach($product->features as $feature) {
+            foreach ($product->features as $feature) {
                 if ($feature->id == $countryOfOriginParamId) {
                     $products[$id]->country_of_origin = reset($feature->values)->value;
                 }

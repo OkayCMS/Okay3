@@ -6047,6 +6047,7 @@ CREATE TABLE `ok_okaycms__banners` (
   `position` int(11) DEFAULT '0',
   `visible` tinyint(1) DEFAULT '1',
   `show_all_pages` tinyint(1) DEFAULT '1',
+  `show_all_products` tinyint(1) DEFAULT '0',
   `categories` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `pages` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `brands` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -6055,11 +6056,12 @@ CREATE TABLE `ok_okaycms__banners` (
   PRIMARY KEY (`id`),
   KEY `position` (`position`),
   KEY `visible` (`visible`),
-  KEY `show_all_pages` (`show_all_pages`)
+  KEY `show_all_pages` (`show_all_pages`),
+  KEY `show_all_products` (`show_all_products`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `ok_okaycms__banners` (`id`, `name`, `position`, `visible`, `show_all_pages`, `categories`, `pages`, `brands`, `individual_shortcode`, `settings`) VALUES
-(1,	'Home banners',	1,	1,	0,	'0',	'0,1',	'0',	'',	'a:6:{s:9:\"as_slider\";s:1:\"1\";s:8:\"autoplay\";s:1:\"1\";s:4:\"loop\";s:1:\"1\";s:3:\"nav\";s:1:\"1\";s:4:\"dots\";s:1:\"1\";s:14:\"rotation_speed\";s:4:\"3500\";}');
+INSERT INTO `ok_okaycms__banners` (`id`, `name`, `position`, `visible`, `show_all_pages`, `show_all_products`, `categories`, `pages`, `brands`, `individual_shortcode`, `settings`) VALUES
+(1,	'Home banners',	1,	1,	0,	0,	'0',	'0,1',	'0',	'',	'a:6:{s:9:\"as_slider\";s:1:\"1\";s:8:\"autoplay\";s:1:\"1\";s:4:\"loop\";s:1:\"1\";s:3:\"nav\";s:1:\"1\";s:4:\"dots\";s:1:\"1\";s:14:\"rotation_speed\";s:4:\"3500\";}');
 
 DROP TABLE IF EXISTS `ok_okaycms__banners_images`;
 CREATE TABLE `ok_okaycms__banners_images` (

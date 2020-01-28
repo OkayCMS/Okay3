@@ -15,3 +15,6 @@ $lang['products_for_upload'] = 'Products for upload';
 $lang['products_not_for_upload'] = 'Products not for upload';
 $lang['select_products'] = 'Select product';
 $lang['add_products'] = 'Add product';
+$lang['okaycms__rozetka_xml__params'] = 'Upload Settings';
+$lang['okaycms__rozetka_xml__products_per_page'] = 'Quantity of goods in one data package';
+$lang['okaycms__rozetka_xml__products_per_page_title'] = 'With a large catalog, there may not be enough memory to unload all products once, so they are divided into packages. The less memory (RAM) on the server, the less this parameter should be. It can also be lifted to find the optimal speed of formation of unloading';

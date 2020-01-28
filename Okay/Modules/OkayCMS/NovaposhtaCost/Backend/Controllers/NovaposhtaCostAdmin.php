@@ -16,8 +16,8 @@ class NovaposhtaCostAdmin extends IndexAdmin
             $this->settings->set('newpost_key', $this->request->post('newpost_key'));
             $this->settings->set('newpost_currency_id', $this->request->post('currency_id'));
             $this->settings->set('newpost_city', $this->request->post('newpost_city'));
-            $this->settings->set('newpost_weight', $this->request->post('newpost_weight'));
-            $this->settings->set('newpost_volume', $this->request->post('newpost_volume'));
+            $this->settings->set('newpost_weight', str_replace(',', '.', $this->request->post('newpost_weight')));
+            $this->settings->set('newpost_volume', str_replace(',', '.', $this->request->post('newpost_volume')));
             $this->settings->set('newpost_use_volume', $this->request->post('newpost_use_volume'));
             $this->settings->set('newpost_use_assessed_value', $this->request->post('newpost_use_assessed_value'));
             $this->design->assign('message_success', 'saved');

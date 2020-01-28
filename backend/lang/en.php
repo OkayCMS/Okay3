@@ -1345,3 +1345,6 @@ $lang['common_routes_brands'] = 'Brand List';
 $lang['common_routes_posts'] = 'Post list';
 $lang['common_routes_news'] = 'News list';
 $lang['hide_front_delivery_price'] = 'Hide delivery price';
+
+$lang['page_routes_template_slash_end'] = 'Slash at the end of information pages';
+$lang['page_routes_template_slash_end_notice'] = 'Pages of contacts, payment and delivery, etc.';

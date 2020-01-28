@@ -52,6 +52,7 @@ class YandexXmlAdmin extends IndexAdmin
             $productsToXml     = $this->request->post('related_products');
             $productsNotToXml  = $this->request->post('not_related_products');
 
+            $this->settings->set('okaycms__yandex_xml_vendor_model__products_per_page', $this->request->post('okaycms__yandex_xml_vendor_model__products_per_page'));
             $this->settings->set('okaycms__yandex_xml_vendor_model__company', $this->request->post('okaycms__yandex_xml_vendor_model__company'));
             $this->settings->set('okaycms__yandex_xml_vendor_model__country_of_origin', $this->request->post('okaycms__yandex_xml_vendor_model__country_of_origin'));
             $salesNotes = $this->request->post('okaycms__yandex_xml_vendor_model__sales_notes');

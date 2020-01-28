@@ -158,9 +158,10 @@
                                 </div>
                             </div>
                         </div>
+
+                        {get_design_block block="settings_catalog_general"}
                     </div>
                 </div>
-                {get_design_block block="settings_catalog_general"}
             </div>
         </div>
     </div>

@@ -78,7 +78,7 @@ class ImportOrders extends AbstractImport
                 $order->id = $ordersEntity->add($order);
             }
 
-            $purchases_ids = array();
+            $purchases_ids = [];
             // Товары
             foreach ($xmlOrder->Товары->Товар as $xmlProduct) {
                 $purchase = null;

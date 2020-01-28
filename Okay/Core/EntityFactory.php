@@ -22,10 +22,6 @@ class EntityFactory
         $this->logger = $logger;
     }
 
-    /*public function registerEntity($entityName, $entity) { // todo это нужно будет для модулей
-        $this->$entityName = $entity;
-    }*/
-
     /**
      * @param $class
      * @return object

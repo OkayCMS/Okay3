@@ -30,6 +30,7 @@ class BannerAdmin extends IndexAdmin
             $banner->name = $this->request->post('name');
             $banner->visible = $this->request->post('visible', 'boolean');
             $banner->show_all_pages = (int)$this->request->post('show_all_pages');
+            $banner->show_all_products = (int)$this->request->post('show_all_products');
             $banner->categories = implode(",",$this->request->post('categories'));
             $banner->brands = implode(",",$this->request->post('brands'));
             $banner->pages = implode(",",$this->request->post('pages'));

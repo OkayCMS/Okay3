@@ -216,11 +216,11 @@ class Image
         if ($type == 'product') {
             $image_sizes = explode('|', $this->settings->get('products_image_sizes'));
             if (empty($image_sizes[0])) {
-                $image_sizes = array();
+                $image_sizes = [];
             }
             if (!in_array($size, $image_sizes)) {
                 if (empty($image_sizes[0])) {
-                    $image_sizes = array();
+                    $image_sizes = [];
                 }
                 $image_sizes[] = $size;
                 $this->settings->set('products_image_sizes', implode('|', $image_sizes));
@@ -228,7 +228,7 @@ class Image
         } else {
             $image_sizes = explode('|', $this->settings->get('image_sizes'));
             if (empty($image_sizes[0])) {
-                $image_sizes = array();
+                $image_sizes = [];
             }
             if (!in_array($size, $image_sizes)) {
                 $image_sizes[] = $size;
@@ -249,7 +249,7 @@ class Image
      * @param array   $cropParams
      * @return string
      */
-    public function addResizeParams($filename, $width = 0, $height = 0, $setWatermark = false, $cropParams = array()) // todo сделать protected
+    public function addResizeParams($filename, $width = 0, $height = 0, $setWatermark = false, $cropParams = []) // todo сделать protected
     {
         if('.' != ($dirname = pathinfo($filename,  PATHINFO_DIRNAME))) {
             $file = $dirname.'/'.pathinfo($filename, PATHINFO_FILENAME);

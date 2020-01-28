@@ -39,6 +39,7 @@ class Init extends AbstractInit
             (new EntityField('position'))->setTypeInt(11)->setDefault(0)->setIndex(),
             (new EntityField('visible'))->setTypeTinyInt(1, true)->setDefault(1)->setIndex(),
             (new EntityField('show_all_pages'))->setTypeTinyInt(1, true)->setDefault(1)->setIndex(),
+            (new EntityField('show_all_products'))->setTypeTinyInt(1, true)->setDefault(0)->setIndex(),
             (new EntityField('categories'))->setTypeVarchar(255)->setDefault(''),
             (new EntityField('pages'))->setTypeVarchar(255)->setDefault(''),
             (new EntityField('brands'))->setTypeVarchar(255)->setDefault(''),

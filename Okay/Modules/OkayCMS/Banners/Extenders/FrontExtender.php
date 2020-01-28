@@ -80,10 +80,18 @@ class FrontExtender implements ExtensionInterface
         }
         
         $this->design->assign('page', $page);
-        $bannersFilter = [
-            'visible' => true,
-            'show_on' => $showOnFilter,
-        ];
+        
+        if ($this->design->getVar('product')) {
+            $bannersFilter = [
+                'visible' => true,
+                'show_all_products' => true,
+            ];
+        } else {
+            $bannersFilter = [
+                'visible' => true,
+                'show_on' => $showOnFilter,
+            ];
+        }
         
         /** @var BannersEntity $bannersEntity */
         $bannersEntity = $this->entityFactory->get(BannersEntity::class);

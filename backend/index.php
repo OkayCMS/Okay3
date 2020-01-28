@@ -113,12 +113,6 @@ $response->addHeader('Pragma: no-cache');
 $backendControllerName = $request->get('controller');
 $backendControllerName = preg_replace("/[^A-Za-z0-9\.]+/", "", $backendControllerName);
 
-$lessonsEntity = $entityFactory->get(\Okay\Entities\LessonsEntity::class);
-if ($lessonsEntity->count(['not_done' => 1]) == 0) {
-    $managers->removeControllersPermissionByModuleName('LearningAdmin');
-    $managerMenu->removeMenuItem('left_settings', 'learning_title');
-}
-
 $manager = null;
 if (!empty($_SESSION['admin'])) {
     $manager = $managersEntity->get($_SESSION['admin']);

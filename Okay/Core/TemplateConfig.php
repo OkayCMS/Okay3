@@ -346,15 +346,11 @@ class TemplateConfig
      */
     public function getTheme()
     {
-        if (!empty($this->theme)) {
-            return $this->theme;
-        }
-        
         $adminTheme = $this->adminTheme;
         $adminThemeManagers = $this->adminThemeManagers;
         if (!empty($_SESSION['admin']) && !empty($adminTheme) && $this->theme != $this->adminTheme) {
             if (empty($adminThemeManagers) || in_array($_SESSION['admin'], $this->adminThemeManagers)) {
-                $this->theme = $this->adminTheme;
+                return $this->adminTheme;
             }
         }
         

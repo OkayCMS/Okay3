@@ -164,13 +164,19 @@ class Design
                 break;
         }
     }
-    
-    /*Подключение переменной в шаблон*/
+
+    /**
+     * @param string $var
+     * @param string $value
+     * @param bool $dynamicJs Если установить в true, переменная будет доступна в файле scripts.tpl клиентского шаблона,
+     * как обычная Smarty переменная
+     * @return \Smarty_Internal_Data
+     */
     public function assign($var, $value, $dynamicJs = false)
     {
         
         if ($dynamicJs === true) {
-            $_SESSION['dynamic_js']['js_vars'][$var] = $value;
+            $_SESSION['dynamic_js']['vars'][$var] = $value;
         }
         
         return $this->smarty->assign($var, $value);
