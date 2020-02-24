@@ -59,3 +59,6 @@ $lang['banner_settings_dots'] = 'ნავიგაციის წერტი�
 $lang['banner_settings_as_slider'] = 'ბანერების ჯგუფი, როგორც სლაიდერი';
 $lang['banner_shortcode_exists'] = 'ეს კომბინაცია უკვე გამოიყენება.';
 $lang['banner_show_all_products'] = 'ჩვენება პროდუქტის ყველა ბარათზე';
+$lang['banner_faq_id_group'] = 'უნიკალური იდენტიფიკატორი შეგიძლიათ გამოიყენოთ ბანერების ჯგუფის სტილიზაციისთვის. კოდში მას ემატება პრეფიქსი fn_banner_.';
+$lang['banner_label_id_group'] = 'Id ჯგუფის ბანერი';
+$lang['banner_label_individual_shortcode'] = 'კოდირების სახელი';

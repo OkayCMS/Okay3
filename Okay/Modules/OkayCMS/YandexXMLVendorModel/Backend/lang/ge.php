@@ -29,3 +29,4 @@ $lang['okaycms__yandex_xml_vendor_model__country_of_origin_notify'] = 'მიუ
 $lang['okaycms__yandex_xml_vendor_model__upload_products'] = 'საქონლის შერჩევა გადმოტვირთვისთვის';
 $lang['okaycms__yandex_xml_vendor_model__products_per_page'] = 'საქონლის რაოდენობა ერთ მონაცემთა პაკეტში';
 $lang['okaycms__yandex_xml_vendor_model__products_per_page_title'] = 'დიდი კატალოგის საშუალებით შეიძლება არ იყოს საკმარისი მეხსიერება ყველა პროდუქტის ერთდროულად გადმოტვირთვისთვის, ამიტომ ისინი იყოფა პაკეტებად. რაც უფრო ნაკლები მეხსიერება (RAM) სერვერზე, მით ნაკლები უნდა იყოს ეს პარამეტრი. მისი ამოღება ასევე შესაძლებელია გადმოტვირთვის ფორმირების ოპტიმალური სიჩქარის მოსაძებნად';
+$lang['okaycms__yandex_xml_vendor_model__import_field'] = 'Yandex XML Vendor Model';

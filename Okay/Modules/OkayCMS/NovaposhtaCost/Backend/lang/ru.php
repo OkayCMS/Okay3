@@ -21,4 +21,7 @@ $lang['order_np_redelivery'] = 'Наложенный платеж';
 $lang['order_np_city'] = 'Город';
 $lang['order_np_warehouse'] = 'Пункт выдачи';
 $lang['settings_np_currency'] = 'Укажите валюту "гривны" для корректной работы модуля';
-
+$lang['payment_np_cash_on_delivery'] = 'Разрешить оплату наложенным платежем';
+$lang['payment_np_payment_method_name'] = 'Способ оплаты';
+$lang['payment_np_cash_on_delivery_type'] = 'Список способов оплаты для оплаты наложенным платежом';
+$lang['okaycms__np__import_field'] = 'Объём варианта';

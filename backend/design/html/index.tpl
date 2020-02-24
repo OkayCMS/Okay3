@@ -83,6 +83,7 @@
 
     {if in_array($smarty.get.controller, array("OrdersAdmin", "PostAdmin", "ReportStatsAdmin", "CouponsAdmin", "CategoryStatsAdmin"))}
         <script src="design/js/jquery/datepicker/jquery.ui.datepicker-{$manager->lang}.js"></script>
+        <script src="design/js/jquery/datepicker/jquery.datepicker.extension.range.min.js"></script>
     {/if}
     <script src="design/js/toastr.min.js"></script>
     <script src="design/js/Sortable.js"></script>
@@ -1035,11 +1036,9 @@
                 cur_tabs = $(this).find('.tab_container');
             if(cur_nav.children('.selected').size() > 0) {
                 $(cur_nav.children('.selected').attr("href")).show();
-                cur_tabs.css('height', cur_tabs.children($(cur_nav.children('.selected')).attr("href")).outerHeight());
             } else {
                 cur_nav.children().first().addClass('selected');
                 cur_tabs.children().first().show();
-                cur_tabs.css('height', cur_tabs.children().first().outerHeight());
             }
         });
 
@@ -1054,7 +1053,6 @@
             cur_nav.children().removeClass('selected');
             $(this).addClass('selected');
             $($(this).attr("href")).fadeIn(200);
-            cur_tabs.css('height', cur_tabs.children($(this).attr("href")).outerHeight());
         });
         /*Скрипт табов end*/
 

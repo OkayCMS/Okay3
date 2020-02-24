@@ -2,6 +2,7 @@
 
 use Okay\Core\Design;
 use Okay\Entities\OrderLabelsEntity;
+use Okay\Admin\Helpers\BackendOrderHistoryHelper;
 
 require_once 'configure.php';
 
@@ -13,7 +14,10 @@ if (!$managers->access('orders', $manager)) {
 $design = $DI->get(Design::class);
 
 /** @var OrderLabelsEntity $orderLabelsEntity */
-$orderLabelsEntity = $entityFactory->get(OrderLabelsEntity::class); 
+$orderLabelsEntity = $entityFactory->get(OrderLabelsEntity::class);
+
+/** @var BackendOrderHistoryHelper $orderHistoryHelper */
+$orderHistoryHelper = $DI->get(BackendOrderHistoryHelper::class);
 
 $design->setTemplatesDir('backend/design/html');
 $design->setCompiledDir('backend/design/compiled');
@@ -31,11 +35,13 @@ if ($request->method("post")) {
         switch ($state) {
             case "add" : {
                 $orderLabelsEntity->addOrderLabels($order_id, (array)$label_id);
+                $orderHistoryHelper->setLabel($order_id, (int)$label_id);
                 $result['success'] = true;
                 break;
             }
             case "remove": {
                 $orderLabelsEntity->deleteOrderLabels($order_id, (array)$label_id);
+                $orderHistoryHelper->removeLabel($order_id, (int)$label_id);
                 $result['success'] = true;
                 break;
             }

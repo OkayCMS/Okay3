@@ -25,7 +25,7 @@ class Insert extends AbstractQuery
         return $this;
     }
 
-    public function ignore($ignore = null)
+    public function ignore($ignore = true)
     {
         if (method_exists($this->queryObject, 'ignore')) {
             $this->queryObject->ignore($ignore);

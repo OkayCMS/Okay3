@@ -6,9 +6,9 @@
 {/if}
 
 {*Название страницы*}
-<div class="row">
-    <div class="col-lg-7 col-md-12">
-        <div class="wrap_heading">
+<div class="main_header">
+    <div class="main_header__item">
+        <div class="main_header__inner">
             {if $products_count}
                 <div class="box_heading heading_page">
                     {if $category->name || $brand->name}
@@ -31,14 +31,14 @@
             {*{get_design_block block="products_heading"}*}
         </div>
     </div>
-    <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
-        <div class="boxed_search">
+    <div class="main_header__item">
+        <div class="main_header__inner">
             <form class="search" method="get">
             <input type="hidden" name="controller" value="ProductsAdmin">
-            <div class="input-group">
+            <div class="input-group input-group--search">
                 <input name="keyword" class="form-control" placeholder="{$btr->products_search|escape}" type="text" value="{$keyword|escape}" >
                 <span class="input-group-btn">
-                    <button type="submit" class="btn btn_blue"><i class="fa fa-search"></i> <span class="hidden-md-down"></span></button>
+                    <button type="submit" class="btn"><i class="fa fa-search"></i></button>
                 </span>
             </div>
             </form>
@@ -97,7 +97,7 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="pull-right">
-                            <select onchange="location = this.value;" class="selectpicker">
+                            <select onchange="location = this.value;" class="selectpicker form-control">
                                 <option value="{url limit=5}" {if $current_limit == 5}selected{/if}>{$btr->general_show_by|escape} 5</option>
                                 <option value="{url limit=10}" {if $current_limit == 10}selected{/if}>{$btr->general_show_by|escape} 10</option>
                                 <option value="{url limit=25}" {if $current_limit == 25}selected{/if}>{$btr->general_show_by|escape} 25</option>
@@ -141,7 +141,7 @@
                                     {$sort = 'main_image_id'}
                                 {/if}
                                 <a href="{url sort=$sort page=null}" class="{$sort}{if $smarty.get.sort == 'main_image_id' || $smarty.get.sort == 'main_image_id_desc'} active{/if}">
-                                    {$btr->general_photo|escape} {include file='svg_icon.tpl' svgId='sorts2'}
+                                    {$btr->general_photo|escape} {include file='svg_icon.tpl' svgId='sorting'}
                                 </a>
                             </div>
                             <div class="okay_list_heading okay_list_name">
@@ -151,7 +151,7 @@
                                     {$sort = 'name'}
                                 {/if}
                                 <a href="{url sort=$sort page=null}" class="{$sort}{if $smarty.get.sort == 'name' || $smarty.get.sort == 'name_desc'} active{/if}">
-                                    {$btr->general_name|escape} {include file='svg_icon.tpl' svgId='sorts2'}
+                                    {$btr->general_name|escape} {include file='svg_icon.tpl' svgId='sorting'}
                                 </a>
                             </div>
                             <div class="okay_list_heading okay_list_price">
@@ -161,7 +161,7 @@
                                     {$sort = 'price'}
                                 {/if}
                                 <a href="{url sort=$sort page=null}" class="{$sort}{if $smarty.get.sort == 'price' || $smarty.get.sort == 'price_desc'} active{/if}">
-                                    {$btr->general_price|escape} {include file='svg_icon.tpl' svgId='sorts2'}
+                                    {$btr->general_price|escape} {include file='svg_icon.tpl' svgId='sorting'}
                                 </a>
                             </div>
                             <div class="okay_list_heading okay_list_count">
@@ -171,7 +171,7 @@
                                     {$sort = 'stock'}
                                 {/if}
                                 <a href="{url sort=$sort page=null}" class="{$sort}{if $smarty.get.sort == 'stock' || $smarty.get.sort == 'stock_desc'} active{/if}">
-                                    {$btr->general_qty|escape} {include file='svg_icon.tpl' svgId='sorts2'}
+                                    {$btr->general_qty|escape} {include file='svg_icon.tpl' svgId='sorting'}
                                 </a>
                             </div>
                             <div class="okay_list_heading okay_list_status">
@@ -181,7 +181,7 @@
                                     {$sort = 'visible'}
                                 {/if}
                                 <a href="{url sort=$sort page=null}" class="{$sort}{if $smarty.get.sort == 'visible' || $smarty.get.sort == 'visible_desc'} active{/if}">
-                                    {$btr->general_enable|escape} {include file='svg_icon.tpl' svgId='sorts2'}
+                                    {$btr->general_enable|escape} {include file='svg_icon.tpl' svgId='sorting'}
                                 </a>
                             </div>
                             <div class="okay_list_heading okay_list_setting okay_list_products_setting">{$btr->general_activities|escape}</div>
@@ -217,19 +217,19 @@
                                         </div>
                                         <div class="okay_list_boding okay_list_name">
 
-                                            <a class="link" href="{url controller=ProductAdmin id=$product->id return=$smarty.server.REQUEST_URI}">
+                                            <a class="text_400 link" href="{url controller=ProductAdmin id=$product->id return=$smarty.server.REQUEST_URI}">
                                                 {$product->name|escape}
                                                 {if $product->variants[0]->name}
                                                     <span class="text_grey">({$product->variants[0]->name|escape})</span>
                                                 {/if}
                                                 <div class="hidden-lg-up mt-q">
-                                                <span class="text_primary text_600">{$product->variants[0]->price} {if isset($currencies[$product->variants[0]->currency_id])}
+                                                <span class="text_primary text_500">{$product->variants[0]->price} {if isset($currencies[$product->variants[0]->currency_id])}
                                                           {$currencies[$product->variants[0]->currency_id]->code|escape}
                                                       {/if}</span>
                                                     <span class="text_500">{if $product->variants[0]->infinity}∞{else}{$product->variants[0]->stock}{/if} {if $product->variants[0]->units}{$product->variants[0]->units|escape}{else}{$settings->units|escape}{/if}</span>
                                                 </div>
                                                 {if $all_brands[$product->brand_id]->name}
-                                                <div class="okay_list_name_brand">{$btr->general_brand|escape} {$all_brands[$product->brand_id]->name|escape}</div>
+                                                <div class="okay_list_name_brand text_400 text_grey">{$btr->general_brand|escape} {$all_brands[$product->brand_id]->name|escape}</div>
                                                 {/if}
                                             </a>
                                             {if $product->variants|count > 1}
@@ -277,8 +277,8 @@
                                                 </button>
 
                                                 {*open*}
-                                                <a href="{url_generator route="product" url=$product->url absolute=1}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
-                                                    {include file='svg_icon.tpl' svgId='icon_desktop'}
+                                                <a href="{url_generator route='product' url=$product->url absolute=1}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
+                                                    {include file='svg_icon.tpl' svgId='eye'}
                                                 </a>
 
                                                 {*copy*}
@@ -296,7 +296,7 @@
                                         <div class="okay_list_boding okay_list_close">
                                             {*delete*}
                                             <button data-hint="{$btr->general_delete_product|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                                {include file='svg_icon.tpl' svgId='delete'}
+                                                {include file='svg_icon.tpl' svgId='trash'}
                                             </button>
                                         </div>
                                     </div>
@@ -357,7 +357,7 @@
                                     <label class="okay_ckeckbox" for="check_all_2"></label>
                                 </div>
                                 <div class="okay_list_option">
-                                    <select name="action" class="selectpicker products_action">
+                                    <select name="action" class="selectpicker form-control products_action">
                                         <option value="enable">{$btr->general_do_enable|escape}</option>
                                         <option value="disable">{$btr->general_do_disable|escape}</option>
                                         <option value="set_featured">{$btr->products_mark_bestseller|escape}</option>
@@ -378,14 +378,14 @@
 
                                 <div class="fn_additional_params">
                                     <div class="fn_move_to_page col-lg-12 col-md-12 col-sm-12 hidden fn_hide_block">
-                                        <select name="target_page" class="selectpicker dropup">
+                                        <select name="target_page" class="selectpicker form-control dropup">
                                             {section target_page $pages_count}
                                                 <option value="{$smarty.section.target_page.index+1}">{$smarty.section.target_page.index+1}</option>
                                             {/section}
                                         </select>
                                     </div>
                                     <div class="fn_move_to_category col-lg-12 col-md-12 col-sm-12 hidden fn_hide_block">
-                                        <select name="target_category" class="selectpicker dropup" data-live-search="true" data-size="10">
+                                        <select name="target_category" class="selectpicker form-control dropup" data-live-search="true" data-size="10">
                                             {function name=category_select_btn level=0}
                                                 {foreach $categories as $category}
                                                     <option value='{$category->id}'>{section sp $level}&nbsp;&nbsp;&nbsp;&nbsp;{/section}{$category->name|escape}</option>
@@ -396,7 +396,7 @@
                                         </select>
                                     </div>
                                     <div class="fn_move_to_brand col-lg-12 col-md-12 col-sm-12 hidden fn_hide_block">
-                                        <select name="target_brand" class="selectpicker dropup" data-live-search="true" data-size="{if $brands|count<10}{$brands|count}{else}10{/if}">
+                                        <select name="target_brand" class="selectpicker form-control dropup" data-live-search="true" data-size="{if $brands|count<10}{$brands|count}{else}10{/if}">
                                             <option value="0">{$btr->general_not_set|escape}</option>
                                             {foreach $all_brands as $b}
                                                 <option value="{$b->id}">{$b->name|escape}</option>

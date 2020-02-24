@@ -5,11 +5,9 @@
     <div class="col-lg-7 col-md-7">
         <div class="heading_page">
             {$btr->import_products|escape}
-            <div class="export_block export_users hint-bottom-middle-t-info-s-small-mobile  hint-anim" data-hint="{$btr->general_example|escape}">
-                <a class="export_block" href="files/import/example.csv" target="_blank">
-                   <i class="fa fa-file"></i>
-                </a>
-            </div>
+            <a class="export_block export_users hint-bottom-middle-t-info-s-small-mobile  hint-anim" data-hint="{$btr->general_example|escape}" href="files/import/example.csv" target="_blank">
+                {include file='svg_icon.tpl' svgId='export'}
+            </a>
         </div>
     </div>
 </div>
@@ -121,6 +119,12 @@
                                                 </option>
                                             {/foreach}
                                         </optgroup>
+                                        {$block = {get_design_block block="import_fields_association"}}
+                                        {if $block}
+                                            <optgroup label="{$btr->import_modules_fields}">
+                                                {$block}
+                                            </optgroup>
+                                        {/if}
                                         <optgroup label="{$btr->import_shop_features}">
                                             {foreach $features as $feature}
                                                 <option value="{$feature|escape}" data-label="{$feature|escape}">

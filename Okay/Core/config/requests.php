@@ -12,6 +12,7 @@ use Okay\Admin\Requests\BackendDeliveriesRequest;
 use Okay\Admin\Requests\BackendFeaturesRequest;
 use Okay\Admin\Requests\BackendFeaturesValuesRequest;
 use Okay\Admin\Requests\BackendFeedbacksRequest;
+use Okay\Admin\Requests\BackendMenuRequest;
 use Okay\Admin\Requests\BackendOrderSettingsRequest;
 use Okay\Admin\Requests\BackendOrdersRequest;
 use Okay\Admin\Requests\BackendCategoriesRequest;
@@ -143,6 +144,12 @@ $requestContainers = [
     ],
     BackendPagesRequest::class => [
         'class' => BackendPagesRequest::class,
+        'arguments' => [
+            new SR(Request::class),
+        ]
+    ],
+    BackendMenuRequest::class => [
+        'class' => BackendMenuRequest::class,
         'arguments' => [
             new SR(Request::class),
         ]

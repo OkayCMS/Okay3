@@ -28,11 +28,13 @@ class RozetkaXmlAdmin extends IndexAdmin
             $database->query(
                 $update->table(CategoriesEntity::getTable())->set('to_rozetka', 1)
             );
+            $categoriesEntity->initCategories();
         } elseif($this->request->post('remove_all_categories')) {
             $update = $queryFactory->newUpdate();
             $database->query(
                 $update->table(CategoriesEntity::getTable())->set('to_rozetka', 0)
             );
+            $categoriesEntity->initCategories();
         } elseif ($this->request->post('add_all_brands')) {
             $update = $queryFactory->newUpdate();
             $database->query(
@@ -56,6 +58,8 @@ class RozetkaXmlAdmin extends IndexAdmin
             $database->query(
                 $update->table(CategoriesEntity::getTable())->set('to_rozetka', 0)
             );
+            $categoriesEntity->initCategories();
+            
             if (!empty($categoriesToXml)) {
                 $categoriesEntity->update($categoriesToXml, ['to_rozetka' => 1]);
             }

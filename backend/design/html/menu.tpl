@@ -80,22 +80,19 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-6 col-sm-12">
-                                <div class="input-group">
-                                    <span class="boxes_inline heading_label">{$btr->menu_id_enter|escape}</span>
-                                    <span class="boxes_inline bnr_id_grup">
-                                        <input name="group_id" class="form-control" type="text" value="{$menu->group_id|escape}" />
-                                    </span>
+                                <div class="">
+                                    <span class="heading_label">{$btr->menu_id_enter|escape}</span>
+                                    <input name="group_id" class="form-control" type="text" value="{$menu->group_id|escape}" />
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-12">
-                                <div class="input-group">
-                                    <span class="boxes_inline heading_label">{$btr->menu_var_for_insert|escape}</span>
-                                    <span class="boxes_inline bnr_id_grup">
-                                        <input class="form-control" type="text" value="{$menu->var|escape}" readonly />
-                                    </span>
+                                <div class="">
+                                    <span class="heading_label">{$btr->menu_var_for_insert|escape}</span>
+                                    <input class="form-control" type="text" value="{$menu->var|escape}" readonly />
                                 </div>
                             </div>
                         </div>
+                        {get_design_block block="menu_general"}
                     </div>
                     {*Видимость элемента*}
                     <div class="col-lg-2 col-md-3 col-sm-12">
@@ -111,6 +108,7 @@
                                 </div>
                             </div>
                         </div>
+                        {get_design_block block="menu_switch_checkboxes"}
                     </div>
                 </div>
             </div>
@@ -139,6 +137,7 @@
                             <div class="okay_list_heading okay_list_status">{$btr->menu_general_target_blank|escape}</div>
                             <div class="okay_list_heading okay_list_menu_setting">{$btr->menu_general_add|escape}</div>
                             <div class="okay_list_heading okay_list_close"></div>
+                            {get_design_block block="menu_items_head_row"}
                         </div>
                         {assign var="index" value=1}
                         {function name=menu_items}
@@ -183,10 +182,13 @@
                                                     {include file='svg_icon.tpl' svgId='add'}
                                                 </a>
                                             </div>
+                                            
+                                            {get_design_block block="menu_items_item_row" vars=['menu_items' => $menu_items]}
+                                            
                                             <div class="okay_list_boding okay_list_close">
                                                 {*delete*}
                                                 <a href="javascript:;" data-hint="{$btr->general_delete|escape}" class="btn_close fn_remove_menuitem hint-bottom-right-t-info-s-small-mobile hint-anim">
-                                                    {include file='svg_icon.tpl' svgId='delete'}
+                                                    {include file='svg_icon.tpl' svgId='trash'}
                                                 </a>
                                             </div>
                                         </div>
@@ -233,6 +235,9 @@
                                         {include file='svg_icon.tpl' svgId='add'}
                                     </a>
                                 </div>
+                                
+                                {get_design_block block="menu_items_item_row"}
+                                
                                 <div class="okay_list_boding okay_list_close">
                                     {*delete*}
                                     <a href="javascript:;" data-hint="{$btr->general_delete|escape}" class="btn_close fn_remove_menuitem hint-bottom-right-t-info-s-small-mobile hint-anim">

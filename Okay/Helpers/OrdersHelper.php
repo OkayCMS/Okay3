@@ -5,6 +5,7 @@ namespace Okay\Helpers;
 
 
 use Okay\Core\EntityFactory;
+use Okay\Core\UserReferer\UserReferer;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\PaymentsEntity;
 use Okay\Entities\PurchasesEntity;
@@ -98,6 +99,13 @@ class OrdersHelper
     public function add($order)
     {
         $ordersEntity = $this->entityFactory->get(OrdersEntity::class);
+
+        // Добавим источник, с которого пришел пользователь
+        if ($referer = UserReferer::getUserReferer()) {
+            $order->referer_channel = $referer['medium'];
+            $order->referer_source = $referer['source'];
+        }
+        
         $result = $ordersEntity->add($order);
         return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
     }

@@ -26,4 +26,13 @@ class AdvantagesEntity extends Entity
     protected static $langObject = 'advantage';
     protected static $langTable = 'advantages';
     protected static $tableAlias = 'a';
+
+    public function add($advantage)
+    {
+        $advantageId = parent::add($advantage);
+        $this->update($advantageId, [
+            'position' => $advantageId
+        ]);
+        return $advantageId;
+    }
 }

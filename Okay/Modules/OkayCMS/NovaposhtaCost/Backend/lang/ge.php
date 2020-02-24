@@ -21,3 +21,7 @@ $lang['order_np_redelivery'] = 'C.O.D';
 $lang['order_np_city'] = 'City';
 $lang['order_np_warehouse'] = 'Point of issue';
 $lang['settings_np_currency'] = 'შეიყვანეთ ვალუტა "hryvnia" მოდულის სწორი მუშაობისთვის';
+$lang['payment_np_cash_on_delivery'] = 'მიტანის ნებადართვა';
+$lang['payment_np_payment_method_name'] = 'გადახდის მეთოდი';
+$lang['payment_np_cash_on_delivery_type'] = 'მიწოდების ფულადი სახსრების გადახდის მეთოდების ჩამონათვალი';
+$lang['okaycms__np__import_field'] = 'ვარიანტის მოცულობა';

@@ -90,7 +90,7 @@
                     <div class="permission_block">
                         <div class="permission_boxes row">
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__yandex_xml__upload_non_exists_products_to_yandex|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__yandex_xml__upload_only_available_to_yandex" value='1' type="checkbox" {if $settings->okaycms__yandex_xml__upload_only_available_to_yandex}checked=""{/if}/>
@@ -100,7 +100,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__yandex_xml__store|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__yandex_xml__store" value='1' type="checkbox" {if $settings->okaycms__yandex_xml__store}checked=""{/if}/>
@@ -110,7 +110,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__yandex_xml__pickup|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__yandex_xml__pickup" value='1' type="checkbox" {if $settings->okaycms__yandex_xml__pickup}checked=""{/if}/>
@@ -120,7 +120,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__yandex_xml__use_full_description_to_yandex|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__yandex_xml__use_full_description_to_yandex" value='1' type="checkbox" {if $settings->okaycms__yandex_xml__use_full_description_to_yandex}checked=""{/if}/>
@@ -130,7 +130,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__yandex_xml__has_manufacturer_warranty|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__yandex_xml__has_manufacturer_warranty" value='1' type="checkbox" {if $settings->okaycms__yandex_xml__has_manufacturer_warranty}checked=""{/if}/>
@@ -140,7 +140,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__yandex_xml__no_export_without_price|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__yandex_xml__no_export_without_price" value='1' type="checkbox" {if $settings->okaycms__yandex_xml__no_export_without_price}checked=""{/if}/>
@@ -150,7 +150,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__yandex_xml__delivery_disallow|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__yandex_xml__delivery_disallow" value='1' type="checkbox" {if $settings->okaycms__yandex_xml__delivery_disallow}checked=""{/if}/>
@@ -160,7 +160,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__yandex_xml__adult|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__yandex_xml__adult" value='1' type="checkbox" {if $settings->okaycms__yandex_xml__adult}checked=""{/if}/>

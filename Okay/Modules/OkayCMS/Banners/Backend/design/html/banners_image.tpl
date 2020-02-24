@@ -72,7 +72,7 @@
                                         {include file='svg_icon.tpl' svgId='icon_tooltips'}
                                     </i>
                                 </div>
-                                <select name="banner_id" class="selectpicker mb-1">
+                                <select name="banner_id" class="selectpicker form-control mb-1">
                                     {foreach $banners as $banner}
                                     <option value="{$banner->id}" {if $banners_image->banner_id == $banner->id}selected{/if}>{$banner->name|escape}</option>
                                     {/foreach}
@@ -86,7 +86,6 @@
                                     </i>
                                 </div>
                                 <div class="input-group input-group--left">
-                                    <span class="input-group-addon">URL</span>
                                     <input name="url" class="form-control" type="text" value="{$banners_image->url|escape}" />
                                 </div>
                             </div>

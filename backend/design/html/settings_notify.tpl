@@ -73,7 +73,7 @@
                         <div class="col-md-6 fn_step-5">
                             <div class="heading_label">{$btr->settings_notify_email_lang|escape}</div>
                             <div class="mb-1">
-                                <select name="email_lang" class="selectpicker">
+                                <select name="email_lang" class="selectpicker form-control">
                                     {foreach $btr_languages as $name=>$label}
                                         <option value="{$label}" {if $settings->email_lang==$label}selected{/if}>
                                             {$name|escape}
@@ -85,7 +85,7 @@
                         <div class="col-md-6 fn_step-6">
                             <div class="heading_label">{$btr->settings_notify_auto_approved}</div>
                             <div class="mb-1">
-                                <select name="auto_approved" class="selectpicker">
+                                <select name="auto_approved" class="selectpicker form-control">
                                     <option value="0" {if $settings->auto_approved=='0'}selected{/if}>
                                         {$btr->settings_notify_auto_approved_off}
                                     </option>
@@ -124,7 +124,7 @@
                         <div class="col-md-6">
                             <div class="heading_label">{$btr->settings_notify_use_smtp}</div>
                             <div class="mb-1">
-                                <select name="use_smtp" class="selectpicker">
+                                <select name="use_smtp" class="selectpicker form-control">
                                     <option value="0" {if $settings->use_smtp=='0'}selected{/if}>
                                         {$btr->settings_notify_turn_off}
                                     </option>

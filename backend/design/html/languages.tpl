@@ -74,7 +74,7 @@
                                 <div class="okay_list_boding okay_list_close">
                                     {*delete*}
                                     <button data-hint="{$btr->general_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim"  data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                        {include file='svg_icon.tpl' svgId='delete'}
+                                        {include file='svg_icon.tpl' svgId='trash'}
                                     </button>
                                 </div>
                             </div>
@@ -91,7 +91,7 @@
                             <label class="okay_ckeckbox" for="check_all_2"></label>
                         </div>
                         <div class="okay_list_option">
-                            <select name="action" class="selectpicker">
+                            <select name="action" class="selectpicker form-control">
                                 <option value="enable">{$btr->languages_enable|escape}</option>
                                 <option value="disable">{$btr->languages_disable|escape}</option>
                                 <option value="delete">{$btr->general_delete|escape}</option>

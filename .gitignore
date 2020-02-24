@@ -12,8 +12,5 @@ files/resized/*/*.ico
 files/thumbs/*
 cache/
 
-.idea/
-tmp/
-nbproject/
-/Okay/log/
+/Okay/log/*.log
 config/config.local.php

@@ -90,7 +90,7 @@
                     <div class="permission_block">
                         <div class="permission_boxes row">
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__google_merchant__upload_non_exists_products_to_google|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__google_merchant__upload_non_exists_products_to_google" value='1' type="checkbox" {if $settings->okaycms__google_merchant__upload_non_exists_products_to_google}checked=""{/if}/>
@@ -100,7 +100,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__google_merchant__use_full_description_to_google|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__google_merchant__use_full_description_to_google" value='1' type="checkbox" {if $settings->okaycms__google_merchant__use_full_description_to_google}checked=""{/if}/>
@@ -110,7 +110,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__google_merchant__no_export_without_price|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__google_merchant__no_export_without_price" value='1' type="checkbox" {if $settings->okaycms__google_merchant__no_export_without_price}checked=""{/if}/>
@@ -120,7 +120,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__google_merchant__adult|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__google_merchant__adult" value='1' type="checkbox" {if $settings->okaycms__google_merchant__adult}checked=""{/if}/>
@@ -130,7 +130,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__google_merchant__use_variant_name_like_size|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__google_merchant__use_variant_name_like_size" value='1' type="checkbox" {if $settings->okaycms__google_merchant__use_variant_name_like_size}checked=""{/if}/>

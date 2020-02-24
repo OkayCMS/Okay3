@@ -30,3 +30,4 @@ $lang['okaycms__yandex_xml__upload_products'] = 'საქონლის შე
 $lang['okaycms__yandex_xml__add_to_yandex_feed'] = 'დაამატეთ პროდუქტი Yandex ატვირთვაში';
 $lang['okaycms__yandex_xml__products_per_page'] = 'საქონლის რაოდენობა ერთ მონაცემთა პაკეტში';
 $lang['okaycms__yandex_xml__products_per_page_title'] = 'დიდი კატალოგის საშუალებით შეიძლება არ იყოს საკმარისი მეხსიერება ყველა პროდუქტის ერთდროულად გადმოტვირთვისთვის, ამიტომ ისინი იყოფა პაკეტებად. რაც უფრო ნაკლები მეხსიერება (RAM) სერვერზე, მით ნაკლები უნდა იყოს ეს პარამეტრი. მისი ამოღება ასევე შესაძლებელია გადმოტვირთვის ფორმირების ოპტიმალური სიჩქარის მოსაძებნად';
+$lang['okaycms__yandex_xml__import_field'] = 'Yandex XML';

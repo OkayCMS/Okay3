@@ -78,7 +78,7 @@
     <div class="col-lg-12 col-md-12">
         <div class="heading_label">{$btr->seo_patterns_ajax_products_description|escape}</div>
         <div class="mb-1">
-            <textarea name="auto_description" class="okay_textarea fn_ajax_area">{$category->auto_description|escape}</textarea>
+            <textarea name="auto_description" class="form-control okay_textarea fn_ajax_area">{$category->auto_description|escape}</textarea>
         </div>
     </div>
 </div>

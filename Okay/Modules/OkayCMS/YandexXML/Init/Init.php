@@ -4,11 +4,14 @@
 namespace Okay\Modules\OkayCMS\YandexXML\Init;
 
 
+use Okay\Admin\Helpers\BackendExportHelper;
+use Okay\Admin\Helpers\BackendImportHelper;
 use Okay\Core\Modules\AbstractInit;
 use Okay\Core\Modules\EntityField;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\ProductsEntity;
+use Okay\Modules\OkayCMS\YandexXML\Extenders\BackendExtender;
 
 class Init extends AbstractInit
 {
@@ -47,6 +50,18 @@ class Init extends AbstractInit
         
         $this->registerBackendController('YandexXmlAdmin');
         $this->addBackendControllerPermission('YandexXmlAdmin', self::FEED_UPLOAD_FIELD);
+
+        $this->addBackendBlock('import_fields_association', 'import_fields_association.tpl');
+
+        $this->registerChainExtension(
+            ['class' => BackendImportHelper::class, 'method' => 'parseProductData'],
+            ['class' => BackendExtender::class, 'method' => 'parseProductData']
+        );
+
+        $this->registerChainExtension(
+            ['class' => BackendExportHelper::class, 'method' => 'getColumnsNames'],
+            ['class' => BackendExtender::class, 'method' => 'extendExportColumnsNames']
+        );
         
         $this->registerEntityFilter(
             ProductsEntity::class,

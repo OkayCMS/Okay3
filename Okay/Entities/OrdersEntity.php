@@ -26,6 +26,7 @@ class OrdersEntity extends Entity
         'name',
         'address',
         'phone',
+        'formatted_phone',
         'email',
         'comment',
         'status_id',
@@ -34,8 +35,10 @@ class OrdersEntity extends Entity
         'note',
         'ip',
         'lang_id',
+        'referer_channel',
+        'referer_source',
     ];
-    
+
     protected static $defaultOrderFields = [
         'id DESC',
     ];
@@ -46,13 +49,13 @@ class OrdersEntity extends Entity
     protected static $additionalFields = [
         'os.color as status_color',
     ];
-    
+
     public function get($id)
     {
         if (empty($id)) {
             return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
         }
-        
+
         $this->select->join('LEFT', '__orders_status AS os', 'o.status_id=os.id');
         return parent::get($id);
     }
@@ -64,14 +67,23 @@ class OrdersEntity extends Entity
         $this->select->groupBy(['id']);
         return parent::find($filter);
     }
-    
+
     public function count(array $filter = [])
     {
         $this->select->join('LEFT', '__orders_labels AS ol', 'o.id=ol.order_id');
         return parent::count($filter);
     }
 
-    public function update($id, $order) {
+    public function update($id, $order)
+    {
+        if (is_array($order)) {
+            $order = (object)$order;
+        }
+
+        if (isset($order->phone)) {
+            $order->formatted_phone = $this->formatPhone($order->phone);
+        }
+
         parent::update($id, $order);
         return $id;
     }
@@ -101,7 +113,7 @@ class OrdersEntity extends Entity
     {
         /** @var OrderStatusEntity $orderStatusEntity */
         $orderStatusEntity = $this->entity->get(OrderStatusEntity::class);
-        
+
         $order = (object)$order;
         $order->url = md5(uniqid($this->config->salt, true));
         if (empty($order->date)) {
@@ -112,9 +124,13 @@ class OrdersEntity extends Entity
         if (empty($order->status_id)) {
             $order->status_id = reset($allStatuses)->id;
         }
-        
+
+        if (isset($order->phone)) {
+            $order->formatted_phone = $this->formatPhone($order->phone);
+        }
+
         $id = parent::add($order);
-        if ($allStatuses[$order->status_id]->is_close == 1){
+        if ($allStatuses[$order->status_id]->is_close == 1) {
             $this->close(intval($id));
         } else {
             $this->open(intval($id));
@@ -128,10 +144,10 @@ class OrdersEntity extends Entity
     {
         /** @var VariantsEntity $variantsEntity */
         $variantsEntity = $this->entity->get(VariantsEntity::class);
-        
+
         /** @var PurchasesEntity $purchasesEntity */
         $purchasesEntity = $this->entity->get(PurchasesEntity::class);
-        
+
         $order = $this->get(intval($orderId));
         if (empty($order)) {
             return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
@@ -139,7 +155,7 @@ class OrdersEntity extends Entity
 
         if (!$order->closed) {
             $variantsAmounts = [];
-            $purchases = $purchasesEntity->find(['order_id'=>$order->id]);
+            $purchases = $purchasesEntity->find(['order_id' => $order->id]);
             foreach ($purchases as $purchase) {
                 if (isset($variantsAmounts[$purchase->variant_id])) {
                     $variantsAmounts[$purchase->variant_id] += $purchase->amount;
@@ -148,20 +164,20 @@ class OrdersEntity extends Entity
                 }
             }
 
-            foreach ($variantsAmounts as $id=>$amount) {
+            foreach ($variantsAmounts as $id => $amount) {
                 $variant = $variantsEntity->get($id);
-                if (empty($variant) || ($variant->stock<$amount)) {
+                if (empty($variant) || ($variant->stock < $amount)) {
                     return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
                 }
             }
             foreach ($purchases as $purchase) {
                 $variant = $variantsEntity->get($purchase->variant_id);
                 if (!$variant->infinity) {
-                    $newStock = $variant->stock-$purchase->amount;
-                    $variantsEntity->update($variant->id, ['stock'=>$newStock]);
+                    $newStock = $variant->stock - $purchase->amount;
+                    $variantsEntity->update($variant->id, ['stock' => $newStock]);
                 }
             }
-            $this->update($order->id, ['closed'=>1]);
+            $this->update($order->id, ['closed' => 1]);
         }
 
         return ExtenderFacade::execute([static::class, __FUNCTION__], $order->id, func_get_args());
@@ -175,22 +191,22 @@ class OrdersEntity extends Entity
 
         /** @var PurchasesEntity $purchasesEntity */
         $purchasesEntity = $this->entity->get(PurchasesEntity::class);
-        
+
         $order = $this->get(intval($orderId));
         if (empty($order)) {
             return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
         if ($order->closed) {
-            $purchases = $purchasesEntity->find(['order_id'=>$order->id]);
+            $purchases = $purchasesEntity->find(['order_id' => $order->id]);
             foreach ($purchases as $purchase) {
                 $variant = $variantsEntity->get($purchase->variant_id);
                 if ($variant && !$variant->infinity) {
-                    $newStock = $variant->stock+$purchase->amount;
-                    $variantsEntity->update($variant->id, ['stock'=>$newStock]);
+                    $newStock = $variant->stock + $purchase->amount;
+                    $variantsEntity->update($variant->id, ['stock' => $newStock]);
                 }
             }
-            $this->update($order->id, ['closed'=>0]);
+            $this->update($order->id, ['closed' => 0]);
         }
 
         return ExtenderFacade::execute([static::class, __FUNCTION__], $order->id, func_get_args());
@@ -242,9 +258,9 @@ class OrdersEntity extends Entity
         $id = $this->db->result('id');
         $ordersIds[$id] = 'prev';
 
-        $result = ['next'=>null, 'prev'=>null];
+        $result = ['next' => null, 'prev' => null];
         if (!empty($ordersIds)) {
-            foreach ($this->find(['id'=>array_keys($ordersIds)]) as $o) {
+            foreach ($this->find(['id' => array_keys($ordersIds)]) as $o) {
                 $result[$ordersIds[$o->id]] = $o;
             }
         }
@@ -268,7 +284,100 @@ class OrdersEntity extends Entity
         $this->db->query($update);
         return ExtenderFacade::execute([static::class, __FUNCTION__], $order->id, func_get_args());
     }
-    
+
+    public function findOtherOfClient($order, $page = 1, $perPage = 10)
+    {
+        $offset       = $this->calculateOffset($page, $perPage);
+        $orderMatches = $this->determineOrderMatchParams($order, $page, $perPage);
+
+        $filter       = [];
+        $filter['id'] = array_keys($orderMatches);
+        if ($page !== 'all') {
+            $filter['limit']  = $perPage;
+            $filter['offset'] = $offset;
+        }
+
+        $orders = $this->find($filter);
+        $orders = $this->attachFindBy($orders, $orderMatches);
+        $orders = $this->attachStatusName($orders);
+        return $orders;
+    }
+
+    private function calculateOffset($page, $perPage)
+    {
+        return $perPage * $page - $perPage;
+    }
+
+    private function determineOrderMatchParams($order, $page, $perPage)
+    {
+        if ($page === 'all') {
+            $limitOffset = '';
+        } else {
+            $limitOffset = 'LIMIT :per_page OFFSET :offset';
+        }
+
+        $sql = $this->queryFactory->newSqlQuery();
+        return $sql->setStatement("
+                SELECT 
+                    id, 
+                    IF(o.email           = :email, 1, 0)           AS `email_match`, 
+                    IF(o.formatted_phone = :formatted_phone, 1, 0) AS `phone_match` 
+                FROM ".self::getTable()." AS o 
+                WHERE id <> :order_id
+                  AND (o.email = :email OR o.formatted_phone = :formatted_phone)
+                ORDER BY id DESC
+                {$limitOffset}
+            ")
+            ->bindValues([
+                'order_id'        => $order->id,
+                'email'           => $order->email,
+                'formatted_phone' => $this->formatPhone($order->phone),
+                'per_page'        => $perPage,
+                'offset'          => $this->calculateOffset($page, $perPage)
+            ])
+            ->results(null, 'id');
+    }
+
+    private function attachFindBy($orders, $matches)
+    {
+        foreach($orders as $order) {
+            $order->match_by_email = $matches[$order->id]->email_match;
+            $order->match_by_phone = $matches[$order->id]->phone_match;
+        }
+        return $orders;
+    }
+
+    private function attachStatusName($orders)
+    {
+        /** @var OrderStatusEntity $orderStatusEntity */
+        $orderStatusEntity = $this->entity->get(OrderStatusEntity::class);
+        $orderStatuses = $orderStatusEntity->mappedBy('id')->find();
+        foreach($orders as $order) {
+            $order->status_name = $orderStatuses[$order->status_id]->name;
+        }
+
+        return $orders;
+    }
+
+    public function countOtherOfClient($order)
+    {
+        $order = (object) $order;
+
+        $sql = $this->queryFactory->newSqlQuery();
+        return $sql->setStatement("
+                SELECT 
+                    COUNT(*) AS count  
+                FROM ".self::getTable()." AS o 
+                WHERE o.email           = :email
+                   OR o.formatted_phone = :formatted_phone
+            ")
+            ->bindValues([
+                'email'           => $order->email,
+                'formatted_phone' => $this->formatPhone($order->phone),
+            ])
+            ->result('count');
+    }
+
     protected function filter__modified_since($modified)
     {
         $this->select->where('o.modified > :modified')
@@ -289,10 +398,16 @@ class OrdersEntity extends Entity
 
     protected function filter__to_date($toDate)
     {
-        $this->select->where('o.date <= :to_date')
-            ->bindValue('to_date', date('Y-m-d', strtotime($toDate)));
+        $this->select->where('o.date < :to_date')
+            ->bindValue('to_date', date('Y-m-d', strtotime($toDate) + 3600 * 24));
     }
-    
+
+    protected function filter__not_id($ids)
+    {
+        $this->select->where('o.id NOT IN(:ids)')
+            ->bindValue(':ids', (array) $ids);
+    }
+
     protected function filter__keyword($keywords)
     {
         $keywords = explode(' ', $keywords);
@@ -319,4 +434,8 @@ class OrdersEntity extends Entity
         }
     }
 
+    private function formatPhone($phone)
+    {
+        return preg_replace('/[^0-9]/ui', '', $phone);
+    }
 }

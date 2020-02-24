@@ -450,6 +450,9 @@ class FilterHelper
                     if (isset($valuesIds[$featureId][$value])) {
                         $valueId = $valuesIds[$featureId][$value];
                         $currentFeatures[$featureId][$valueId] = $value;
+                    } else {
+                        // Если не нашли id значения, значит нет такого значения, кидаем 404
+                        return ExtenderFacade::execute(__METHOD__, false, func_get_args());
                     }
                 }
                 // если нет повторяющихся значений свойства - ок, иначе 404

@@ -6,10 +6,11 @@ namespace Okay\Modules\OkayCMS\NovaposhtaCost\Backend\Controllers;
 
 use Okay\Admin\Controllers\IndexAdmin;
 use Okay\Entities\CurrenciesEntity;
+use Okay\Entities\PaymentsEntity;
 
 class NovaposhtaCostAdmin extends IndexAdmin
 {
-    public function fetch(CurrenciesEntity $currenciesEntity)
+    public function fetch(CurrenciesEntity $currenciesEntity, PaymentsEntity $paymentsEntity)
     {
 
         if ($this->request->method('POST')) {
@@ -25,7 +26,10 @@ class NovaposhtaCostAdmin extends IndexAdmin
 
         $this->design->assign('all_currencies', $currenciesEntity->find());
         $this->design->assign('newpost_cities', $this->getCities());
-        
+
+        $paymentMethods = $paymentsEntity->find();
+        $this->design->assign('payment_methods', $paymentMethods);
+
         $this->response->setContent($this->design->fetch('novaposhta_cost.tpl'));
     }
 

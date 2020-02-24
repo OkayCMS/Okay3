@@ -37,11 +37,13 @@ class Furl extends Func
         $routeParams = $this->router->getCurrentRouteRequiredParams();
         $baseUrl = $this->router->generateUrl($routeName, $routeParams, $isAbsolute);
         $chpuUrl = $this->filterHelper->filterChpuUrl($params, [], $smarty);
-        
-        $baseUrl = rtrim($baseUrl, '/');
+
         $chpuUrl = ltrim($chpuUrl, '/');
-        
-        return $baseUrl . '/' . $chpuUrl;
-        
+        if (!empty($chpuUrl)) {
+            $baseUrl = rtrim($baseUrl, '/');
+            return $baseUrl . '/' . $chpuUrl;
+        }
+
+        return $baseUrl;
     }
 }

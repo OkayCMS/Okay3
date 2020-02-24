@@ -62,3 +62,6 @@ $lang['banner_settings_dots'] = 'Точки навігації слайдів';
 $lang['banner_settings_as_slider'] = 'Група банерів як слайдер';
 $lang['banner_shortcode_exists'] = 'Даний шорткод вже використовується';
 $lang['banner_show_all_products'] = 'Відображати на всіх картках товарів';
+$lang['banner_faq_id_group'] = 'Унікальний ідентифікатор можна використовувати для стилізацій групи банерів. У коді він додається до приставки fn_banner_.';
+$lang['banner_label_id_group'] = 'Id групи банера';
+$lang['banner_label_individual_shortcode'] = 'Назва шорткода';

@@ -104,10 +104,10 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12 col-lg-6 col-md-10">
+                            <div class="col-xs-12 col-md-8 col-lg-6">
                                 <div class="fn_step-2">
-                                    <div class="input-group">
-                                       <span class="input-group-addon">URL</span>
+                                    <div class="input-group input-group--dabbl">
+                                       <span class="input-group-addon input-group-addon--left">URL</span>
                                         <input name="url" class="fn_meta_field form-control fn_url {if $category->id}fn_disabled{/if}" {if $category->id}readonly=""{/if} type="text" value="{$category->url|escape}" />
                                         <input type="checkbox" id="block_translit" class="hidden" value="1" {if $category->id}checked=""{/if}>
                                         <span class="input-group-addon fn_disable_url">
@@ -221,7 +221,7 @@
                                     {include file='svg_icon.tpl' svgId='icon_tooltips'}
                                 </i>
                             </div>
-                            <select name="parent_id" class="selectpicker mb-1" data-live-search="true" data-size="10">
+                            <select name="parent_id" class="selectpicker form-control mb-1" data-live-search="true" data-size="10">
                                 <option value='0'>{$btr->category_root|escape}</option>
                                 {function name=category_select level=0}
                                     {foreach $cats as $cat}

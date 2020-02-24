@@ -13,6 +13,7 @@ use Okay\Core\Image;
 use Okay\Core\Managers;
 use Okay\Core\QueryFactory;
 use Okay\Core\ServiceLocator;
+use Okay\Core\TemplateConfig;
 use Okay\Entities\ModulesEntity;
 use Okay\Core\ManagerMenu;
 use Okay\Core\Modules\Extender\ExtenderFacade;
@@ -86,6 +87,11 @@ abstract class AbstractInit
     private $image;
 
     /**
+     * @var TemplateConfig
+     */
+    private $templateConfig;
+
+    /**
      * @var int id модуля в базе
      */
     private $moduleId;
@@ -114,6 +120,7 @@ abstract class AbstractInit
         $this->extenderFacade  = $serviceLocator->getService(ExtenderFacade::class);
         $this->managerMenu     = $serviceLocator->getService(ManagerMenu::class);
         $this->image           = $serviceLocator->getService(Image::class);
+        $this->templateConfig  = $serviceLocator->getService(TemplateConfig::class);
         $this->moduleId        = $moduleId;
         $this->vendor          = $vendor;
         $this->moduleName      = $moduleName;
@@ -172,7 +179,13 @@ abstract class AbstractInit
     protected function addFrontBlock($blockName, $blockTplFile)
     {
         $blockTplFile = pathinfo($blockTplFile, PATHINFO_BASENAME);
-        $blockTplFile = $this->module->getModuleDirectory($this->vendor, $this->moduleName) . 'design/html/' . $blockTplFile;
+        $themeModuleHtmlDir = __DIR__.'/../../../design/'.$this->templateConfig->getTheme().'/modules/'.$this->vendor.'/'.$this->moduleName.'/html/';
+        if (file_exists($themeModuleHtmlDir.$blockTplFile)) {
+            $blockTplFile = $themeModuleHtmlDir.$blockTplFile;
+        } else {
+            $blockTplFile = $this->module->getModuleDirectory($this->vendor, $this->moduleName) . 'design/html/' . $blockTplFile;
+        }
+
         $this->addDesignBlock($blockName, $blockTplFile);
     }
     

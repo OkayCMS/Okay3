@@ -90,51 +90,52 @@ class BackendSettingsHelper
     private $allowedImageExtensions = ['png', 'gif', 'jpg', 'jpeg', 'ico'];
 
     public function __construct(
-        Settings       $settings,
-        Request        $request,
-        Config         $config,
-        EntityFactory  $entityFactory,
-        DataCleaner    $dataCleaner,
-        Managers       $managers,
+        Settings $settings,
+        Request $request,
+        Config $config,
+        EntityFactory $entityFactory,
+        DataCleaner $dataCleaner,
+        Managers $managers,
         TemplateConfig $templateConfig,
-        QueryFactory   $queryFactory,
-        Languages      $languages,
-        JsSocial       $jsSocial,
-        Image          $imageCore
-    ){
-        $this->managersEntity   = $entityFactory->get(ManagersEntity::class);
-        $this->languagesEntity  = $entityFactory->get(LanguagesEntity::class);
+        QueryFactory $queryFactory,
+        Languages $languages,
+        JsSocial $jsSocial,
+        Image $imageCore
+    )
+    {
+        $this->managersEntity = $entityFactory->get(ManagersEntity::class);
+        $this->languagesEntity = $entityFactory->get(LanguagesEntity::class);
         $this->advantagesEntity = $entityFactory->get(AdvantagesEntity::class);
-        $this->settings         = $settings;
-        $this->request          = $request;
-        $this->config           = $config;
-        $this->managers         = $managers;
-        $this->templateConfig   = $templateConfig;
-        $this->queryFactory     = $queryFactory;
-        $this->languages        = $languages;
-        $this->jsSocial         = $jsSocial;
-        $this->dataCleaner      = $dataCleaner;
-        $this->imageCore        = $imageCore;
+        $this->settings = $settings;
+        $this->request = $request;
+        $this->config = $config;
+        $this->managers = $managers;
+        $this->templateConfig = $templateConfig;
+        $this->queryFactory = $queryFactory;
+        $this->languages = $languages;
+        $this->jsSocial = $jsSocial;
+        $this->dataCleaner = $dataCleaner;
+        $this->imageCore = $imageCore;
     }
 
     public function updateSettings()
     {
-        $this->settings->set('decimals_point',      $this->request->post('decimals_point'));
+        $this->settings->set('decimals_point', $this->request->post('decimals_point'));
         $this->settings->set('thousands_separator', $this->request->post('thousands_separator'));
-        $this->settings->set('products_num',        $this->request->post('products_num'));
-        $this->settings->set('max_order_amount',    $this->request->post('max_order_amount'));
-        $this->settings->set('comparison_count',    $this->request->post('comparison_count'));
-        $this->settings->set('posts_num',           $this->request->post('posts_num'));
-        $this->settings->set('missing_products',    $this->request->post('missing_products'));
-        $this->settings->update('units',     $this->request->post('units'));
+        $this->settings->set('products_num', $this->request->post('products_num'));
+        $this->settings->set('max_order_amount', $this->request->post('max_order_amount'));
+        $this->settings->set('comparison_count', $this->request->post('comparison_count'));
+        $this->settings->set('posts_num', $this->request->post('posts_num'));
+        $this->settings->set('missing_products', $this->request->post('missing_products'));
+        $this->settings->update('units', $this->request->post('units'));
 
-        if ($this->request->post('is_preorder', 'integer')){
+        if ($this->request->post('is_preorder', 'integer')) {
             $this->settings->set('is_preorder', $this->request->post('is_preorder', 'integer'));
         } else {
             $this->settings->set('is_preorder', 0);
         }
 
-        if ($this->request->post('show_empty_categories', 'integer')){
+        if ($this->request->post('show_empty_categories', 'integer')) {
             $this->settings->set('show_empty_categories', $this->request->post('show_empty_categories', 'integer'));
         } else {
             $this->settings->set('show_empty_categories', 0);
@@ -145,7 +146,7 @@ class BackendSettingsHelper
 
     public function deleteWatermark()
     {
-        unlink($this->config->root_dir.$this->config->watermark_file);
+        unlink($this->config->root_dir . $this->config->watermark_file);
         $this->config->watermark_file = '';
         return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
@@ -165,14 +166,14 @@ class BackendSettingsHelper
         $clearImageCache = false;
         if ($this->request->post('delete_watermark')) {
             $clearImageCache = true;
-            @unlink($this->config->root_dir.$this->config->watermark_file);
+            @unlink($this->config->root_dir . $this->config->watermark_file);
             $this->config->watermark_file = '';
         }
 
         $watermark = $this->request->files('watermark_file', 'tmp_name');
         if (!empty($watermark) && in_array(pathinfo($this->request->files('watermark_file', 'name'), PATHINFO_EXTENSION), $this->allowedImageExtensions)) {
             $this->config->watermark_file = 'backend/files/watermark/watermark.png';
-            if (@move_uploaded_file($watermark, $this->config->root_dir.$this->config->watermark_file)) {
+            if (@move_uploaded_file($watermark, $this->config->root_dir . $this->config->watermark_file)) {
                 $clearImageCache = true;
             } else {
                 $error = 'watermark_is_not_writable';
@@ -210,27 +211,27 @@ class BackendSettingsHelper
 
     public function updateGeneralSettings()
     {
-        $this->settings->set('date_format',                $this->request->post('date_format'));
-        $this->settings->set('admin_email',                $this->request->post('admin_email'));
-        $this->settings->set('site_work',                  $this->request->post('site_work'));
-        $this->settings->set('captcha_comment',            $this->request->post('captcha_comment', 'boolean'));
-        $this->settings->set('captcha_cart',               $this->request->post('captcha_cart', 'boolean'));
-        $this->settings->set('captcha_register',           $this->request->post('captcha_register', 'boolean'));
-        $this->settings->set('captcha_feedback',           $this->request->post('captcha_feedback', 'boolean'));
-        $this->settings->set('captcha_callback',           $this->request->post('captcha_callback', 'boolean'));
-        $this->settings->set('public_recaptcha',           $this->request->post('public_recaptcha'));
-        $this->settings->set('secret_recaptcha',           $this->request->post('secret_recaptcha'));
+        $this->settings->set('date_format', $this->request->post('date_format'));
+        $this->settings->set('admin_email', $this->request->post('admin_email'));
+        $this->settings->set('site_work', $this->request->post('site_work'));
+        $this->settings->set('captcha_comment', $this->request->post('captcha_comment', 'boolean'));
+        $this->settings->set('captcha_cart', $this->request->post('captcha_cart', 'boolean'));
+        $this->settings->set('captcha_register', $this->request->post('captcha_register', 'boolean'));
+        $this->settings->set('captcha_feedback', $this->request->post('captcha_feedback', 'boolean'));
+        $this->settings->set('captcha_callback', $this->request->post('captcha_callback', 'boolean'));
+        $this->settings->set('public_recaptcha', $this->request->post('public_recaptcha'));
+        $this->settings->set('secret_recaptcha', $this->request->post('secret_recaptcha'));
         $this->settings->set('public_recaptcha_invisible', $this->request->post('public_recaptcha_invisible'));
         $this->settings->set('secret_recaptcha_invisible', $this->request->post('secret_recaptcha_invisible'));
-        $this->settings->set('captcha_type',               $this->request->post('captcha_type'));
-        $this->settings->set('gather_enabled',             $this->request->post('gather_enabled', 'boolean'));
-        $this->settings->set('public_recaptcha_v3',        $this->request->post('public_recaptcha_v3'));
-        $this->settings->set('secret_recaptcha_v3',        $this->request->post('secret_recaptcha_v3'));
-        $this->settings->update('site_name',        $this->request->post('site_name'));
-        $this->settings->update('site_annotation',  $this->request->post('site_annotation'));
+        $this->settings->set('captcha_type', $this->request->post('captcha_type'));
+        $this->settings->set('gather_enabled', $this->request->post('gather_enabled', 'boolean'));
+        $this->settings->set('public_recaptcha_v3', $this->request->post('public_recaptcha_v3'));
+        $this->settings->set('secret_recaptcha_v3', $this->request->post('secret_recaptcha_v3'));
+        $this->settings->update('site_name', $this->request->post('site_name'));
+        $this->settings->update('site_annotation', $this->request->post('site_annotation'));
 
         if ($recaptcha_scores = $this->request->post('recaptcha_scores')) {
-            foreach ($recaptcha_scores as $k=>$score) {
+            foreach ($recaptcha_scores as $k => $score) {
                 $score = (float)str_replace(',', '.', $score);
                 $recaptcha_scores[$k] = round($score, 1);
             }
@@ -241,54 +242,54 @@ class BackendSettingsHelper
 
     public function updateNotifySettings()
     {
-        $this->settings->set('order_email',       $this->request->post('order_email'));
-        $this->settings->set('comment_email',     $this->request->post('comment_email'));
+        $this->settings->set('order_email', $this->request->post('order_email'));
+        $this->settings->set('comment_email', $this->request->post('comment_email'));
         $this->settings->set('notify_from_email', $this->request->post('notify_from_email'));
-        $this->settings->set('email_lang',        $this->request->post('email_lang'));
-        $this->settings->set('auto_approved',     $this->request->post('auto_approved'));
-        $this->settings->set('use_smtp',          $this->request->post('use_smtp'));
-        $this->settings->set('smtp_server',       $this->request->post('smtp_server'));
-        $this->settings->set('smtp_port',         $this->request->post('smtp_port'));
-        $this->settings->set('smtp_user',         $this->request->post('smtp_user'));
-        $this->settings->set('smtp_pass',         $this->request->post('smtp_pass'));
+        $this->settings->set('email_lang', $this->request->post('email_lang'));
+        $this->settings->set('auto_approved', $this->request->post('auto_approved'));
+        $this->settings->set('use_smtp', $this->request->post('use_smtp'));
+        $this->settings->set('smtp_server', $this->request->post('smtp_server'));
+        $this->settings->set('smtp_port', $this->request->post('smtp_port'));
+        $this->settings->set('smtp_user', $this->request->post('smtp_user'));
+        $this->settings->set('smtp_pass', $this->request->post('smtp_pass'));
         $this->settings->update('notify_from_name', $this->request->post('notify_from_name'));
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     public function updateRouterSettings()
     {
-        $this->settings->set('category_routes_template',                  $this->request->post('category_routes_template'));
-        $this->settings->set('category_routes_template__default',         $this->request->post('category_routes_template__default'));
+        $this->settings->set('category_routes_template', $this->request->post('category_routes_template'));
+        $this->settings->set('category_routes_template__default', $this->request->post('category_routes_template__default'));
         $this->settings->set('category_routes_template__prefix_and_path', $this->request->post('category_routes_template__prefix_and_path'));
-        $this->settings->set('category_routes_template_slash_end',        $this->request->post('category_routes_template_slash_end'));
+        $this->settings->set('category_routes_template_slash_end', $this->request->post('category_routes_template_slash_end'));
 
-        $this->settings->set('product_routes_template',                      $this->request->post('product_routes_template'));
-        $this->settings->set('product_routes_template__prefix_and_path',     $this->request->post('product_routes_template__prefix_and_path'));
+        $this->settings->set('product_routes_template', $this->request->post('product_routes_template'));
+        $this->settings->set('product_routes_template__prefix_and_path', $this->request->post('product_routes_template__prefix_and_path'));
         $this->settings->set('product_routes_template__prefix_and_category', $this->request->post('product_routes_template__prefix_and_category'));
-        $this->settings->set('product_routes_template__default',             $this->request->post('product_routes_template__default'));
-        $this->settings->set('product_routes_template_slash_end',            $this->request->post('product_routes_template_slash_end'));
+        $this->settings->set('product_routes_template__default', $this->request->post('product_routes_template__default'));
+        $this->settings->set('product_routes_template_slash_end', $this->request->post('product_routes_template_slash_end'));
 
-        $this->settings->set('brand_routes_template',           $this->request->post('brand_routes_template'));
-        $this->settings->set('brand_routes_template__default',  $this->request->post('brand_routes_template__default'));
+        $this->settings->set('brand_routes_template', $this->request->post('brand_routes_template'));
+        $this->settings->set('brand_routes_template__default', $this->request->post('brand_routes_template__default'));
         $this->settings->set('brand_routes_template_slash_end', $this->request->post('brand_routes_template_slash_end'));
 
-        $this->settings->set('blog_item_routes_template',           $this->request->post('blog_item_routes_template'));
-        $this->settings->set('blog_item_routes_template__default',  $this->request->post('blog_item_routes_template__default'));
+        $this->settings->set('blog_item_routes_template', $this->request->post('blog_item_routes_template'));
+        $this->settings->set('blog_item_routes_template__default', $this->request->post('blog_item_routes_template__default'));
         $this->settings->set('blog_item_routes_template_slash_end', $this->request->post('blog_item_routes_template_slash_end'));
 
-        $this->settings->set('news_item_routes_template',           $this->request->post('news_item_routes_template'));
-        $this->settings->set('news_item_routes_template__default',  $this->request->post('news_item_routes_template__default'));
+        $this->settings->set('news_item_routes_template', $this->request->post('news_item_routes_template'));
+        $this->settings->set('news_item_routes_template__default', $this->request->post('news_item_routes_template__default'));
         $this->settings->set('news_item_routes_template_slash_end', $this->request->post('news_item_routes_template_slash_end'));
 
         $this->settings->set('all_brands_routes_template__default', $this->request->post('all_brands_routes_template__default'));
-        $this->settings->set('all_blog_routes_template__default',   $this->request->post('all_blog_routes_template__default'));
-        $this->settings->set('all_news_routes_template__default',   $this->request->post('all_news_routes_template__default'));
+        $this->settings->set('all_blog_routes_template__default', $this->request->post('all_blog_routes_template__default'));
+        $this->settings->set('all_news_routes_template__default', $this->request->post('all_news_routes_template__default'));
 
         $this->settings->set('all_brands_routes_template_slash_end', $this->request->post('all_brands_routes_template_slash_end'));
-        $this->settings->set('all_blog_routes_template_slash_end',   $this->request->post('all_blog_routes_template_slash_end'));
-        $this->settings->set('all_news_routes_template_slash_end',   $this->request->post('all_news_routes_template_slash_end'));
+        $this->settings->set('all_blog_routes_template_slash_end', $this->request->post('all_blog_routes_template_slash_end'));
+        $this->settings->set('all_news_routes_template_slash_end', $this->request->post('all_news_routes_template_slash_end'));
 
-        $this->settings->set('global_unique_url',              $this->request->post('global_unique_url'));
+        $this->settings->set('global_unique_url', $this->request->post('global_unique_url'));
         $this->settings->set('page_routes_template_slash_end', $this->request->post('page_routes_template_slash_end'));
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
@@ -305,30 +306,30 @@ class BackendSettingsHelper
         }
 
         $this->settings->set('social_share_theme', $this->request->post('social_share_theme'));
-        $this->settings->set('sj_shares',          $this->request->post('sj_shares'));
-        $this->settings->set('site_email',         $this->request->post('site_email'));
+        $this->settings->set('sj_shares', $this->request->post('sj_shares'));
+        $this->settings->set('site_email', $this->request->post('site_email'));
 
         $siteSocialLinks = $this->request->post('site_social_links');
         if (!empty($siteSocialLinks)) {
             $linksArray = explode(PHP_EOL, $siteSocialLinks);
-            foreach($linksArray as $key => $link) {
+            foreach ($linksArray as $key => $link) {
                 if (trim($link) == '') {
                     unset($linksArray[$key]);
                 }
             }
 
-            $this->settings->set('site_social_links',  $linksArray);
+            $this->settings->set('site_social_links', $linksArray);
         } else {
-            $this->settings->set('site_social_links',  '');
+            $this->settings->set('site_social_links', '');
         }
 
         $this->settings->update('site_working_hours', $this->request->post('site_working_hours'));
         $this->settings->update('product_deliveries', $this->request->post('product_deliveries'));
-        $this->settings->update('product_payments',   $this->request->post('product_payments'));
+        $this->settings->update('product_payments', $this->request->post('product_payments'));
 
         $phones = [];
         if ($sitePhones = $this->request->post('site_phones')) {
-            foreach (explode(',', $sitePhones) as $k=>$phone) {
+            foreach (explode(',', $sitePhones) as $k => $phone) {
                 $phones[$k] = trim($phone);
             }
         }
@@ -339,7 +340,7 @@ class BackendSettingsHelper
 
     public function getDesignImagesDir()
     {
-        $designImagesDir = $this->config->root_dir .'/'. $this->config->design_images;
+        $designImagesDir = $this->config->root_dir . '/' . $this->config->design_images;
         return ExtenderFacade::execute(__METHOD__, $designImagesDir, func_get_args());
     }
 
@@ -349,9 +350,9 @@ class BackendSettingsHelper
             return ExtenderFacade::execute(__METHOD__, null, func_get_args());
         }
 
-        $designImagesDir = $this->config->get('root_dir') .'/'. $this->config->get('design_images');
-        $tmpName         = $_FILES['site_favicon']['tmp_name'];
-        $ext             = pathinfo($_FILES['site_favicon']['name'],PATHINFO_EXTENSION);
+        $designImagesDir = $this->config->get('root_dir') . '/' . $this->config->get('design_images');
+        $tmpName = $_FILES['site_favicon']['tmp_name'];
+        $ext = pathinfo($_FILES['site_favicon']['name'], PATHINFO_EXTENSION);
         $siteFaviconName = 'favicon.' . $ext;
 
         @unlink($designImagesDir . $this->settings->get('site_favicon'));
@@ -371,8 +372,8 @@ class BackendSettingsHelper
 
     public function deleteFavicon()
     {
-        $designImagesDir = $this->config->get('root_dir') .'/'. $this->config->get('design_images');
-        $filename        = $designImagesDir . $this->settings->get('site_favicon');
+        $designImagesDir = $this->config->get('root_dir') . '/' . $this->config->get('design_images');
+        $filename = $designImagesDir . $this->settings->get('site_favicon');
 
         if (is_file($filename)) {
             @unlink($filename);
@@ -406,7 +407,7 @@ class BackendSettingsHelper
 
     public function getSiteSocialLinks()
     {
-        if (! empty($this->settings->get('site_social_links'))) {
+        if (!empty($this->settings->get('site_social_links'))) {
             $siteSocialLinks = implode(PHP_EOL, $this->settings->get('site_social_links'));
         } else {
             $siteSocialLinks = '';
@@ -424,11 +425,11 @@ class BackendSettingsHelper
     {
         $error = '';
         $siteLogoName = $this->settings->get('site_logo');
-        $logoLang     = '';
+        $logoLang = '';
 
         $this->settings->set('iframe_map_code', $this->request->post('iframe_map_code'));
-        $multiLangLogo   = $this->request->post('multilang_logo', 'integer');
-        $designImagesDir = $this->config->get('root_dir') .'/'. $this->config->get('design_images');
+        $multiLangLogo = $this->request->post('multilang_logo', 'integer');
+        $designImagesDir = $this->config->get('root_dir') . '/' . $this->config->get('design_images');
 
         // если лого мультиязычное, добавим префикс в виде лейбла языка
         if ($multiLangLogo == 1) {
@@ -437,9 +438,9 @@ class BackendSettingsHelper
         }
 
         if ($_FILES['site_logo']['error'] == UPLOAD_ERR_OK) {
-            $tmpName      = $_FILES['site_logo']['tmp_name'];
-            $ext          = pathinfo($_FILES['site_logo']['name'],PATHINFO_EXTENSION);
-            $siteLogoName = 'logo' .  $logoLang  . '.' . $ext;
+            $tmpName = $_FILES['site_logo']['tmp_name'];
+            $ext = pathinfo($_FILES['site_logo']['name'], PATHINFO_EXTENSION);
+            $siteLogoName = 'logo' . $logoLang . '.' . $ext;
 
             if (in_array($ext, $this->allowedImageExtensions)) {
                 // Удаляем старое лого
@@ -469,12 +470,12 @@ class BackendSettingsHelper
         // Если раньше лого было не мультиязычным, а теперь будет, нужно его продублировать на все языки
         if ($this->settings->get('multilang_logo') == 0 && $multiLangLogo == 1) {
             $currentLang = $this->languagesEntity->get($this->languages->getLangId());
-            $ext         = pathinfo($siteLogoName,PATHINFO_EXTENSION);
+            $ext = pathinfo($siteLogoName, PATHINFO_EXTENSION);
 
             foreach ($this->languagesEntity->find() as $language) {
                 $this->languages->setLangId($language->id);
 
-                $langLogoName = 'logo_' .  $language->label  . '.' . $ext;
+                $langLogoName = 'logo_' . $language->label . '.' . $ext;
 
                 // Дублируем лого на все языки
                 if (file_exists($designImagesDir . $siteLogoName) && $siteLogoName != $langLogoName) {
@@ -485,20 +486,18 @@ class BackendSettingsHelper
             }
 
             // Удалим старое, не мультиязычное лого
-            if (file_exists($designImagesDir . $siteLogoName) && $siteLogoName != 'logo_' .  $currentLang->label  . '.' . $ext) {
+            if (file_exists($designImagesDir . $siteLogoName) && $siteLogoName != 'logo_' . $currentLang->label . '.' . $ext) {
                 unlink($designImagesDir . $siteLogoName);
             }
 
             $this->languages->setLangId($currentLang->id);
-        }
-
-        // Если раньше лого было мультиязычным, а теперь будет не мультиязычным, нужно сохранить его из основного языка
+        } // Если раньше лого было мультиязычным, а теперь будет не мультиязычным, нужно сохранить его из основного языка
         elseif ($this->settings->get('multilang_logo') == 1 && $multiLangLogo == 0) {
             $currentLangId = $this->languages->getLangId();
-            $mainLang      = $this->languagesEntity->getMainLanguage();
-            $ext           = pathinfo($siteLogoName,PATHINFO_EXTENSION);
-            $langLogoName  = 'logo_' .  $mainLang->label  . '.' . $ext;
-            $siteLogoName  = 'logo.' . $ext;
+            $mainLang = $this->languagesEntity->getMainLanguage();
+            $ext = pathinfo($siteLogoName, PATHINFO_EXTENSION);
+            $langLogoName = 'logo_' . $mainLang->label . '.' . $ext;
+            $siteLogoName = 'logo.' . $ext;
 
             // Дублируем лого из основного языка
             if (file_exists($designImagesDir . $langLogoName)) {
@@ -512,7 +511,7 @@ class BackendSettingsHelper
                 // Удалим все мультиязычные лого
                 @unlink($designImagesDir . $this->settings->get('site_logo'));
             }
-            
+
             // Удалим упоминание о лого в мультиленгах
             $delete = $this->queryFactory->newDelete();
             $delete->from('__settings_lang')
@@ -532,8 +531,8 @@ class BackendSettingsHelper
 
     public function deleteSiteLogo()
     {
-        $designImagesDir = $this->config->get('root_dir') .'/'. $this->config->get('design_images');
-        $multiLangLogo   = $this->request->post('multilang_logo', 'integer');
+        $designImagesDir = $this->config->get('root_dir') . '/' . $this->config->get('design_images');
+        $multiLangLogo = $this->request->post('multilang_logo', 'integer');
 
         unlink($designImagesDir . $this->settings->get('site_logo'));
         if ($multiLangLogo == 1) {
@@ -551,16 +550,49 @@ class BackendSettingsHelper
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
-    public function deleteAdvantageImage($advantageId)
+    public function findAdvantages($filter = [])
     {
-        $this->imageCore->deleteImage(
-            $advantageId,
-            'filename',
-            AdvantagesEntity::class,
-            $this->config->original_advantages_dir,
-            $this->config->resized_advantages_dir
-        );
-        $this->advantagesEntity->update($advantageId, ['filename' => '']);
+        $advantages = $this->advantagesEntity->find($filter);
+        return ExtenderFacade::execute(__METHOD__, $advantages, func_get_args());
+    }
+
+    public function updateAdvantage(
+        $advantageId,
+        $updates,
+        $advantageImagesToUpload,
+        $advantageImagesToDelete
+    ){
+        if (in_array($advantageId, $advantageImagesToDelete)) {
+            $this->deleteAdvantageImage($advantageId);
+        }
+
+        if (in_array($advantageId, array_keys($advantageImagesToUpload))) {
+            $this->uploadAdvantageImage($advantageId, $advantageImagesToUpload[$advantageId]);
+        }
+
+        $this->advantagesEntity->update($advantageId, $updates);
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
+    public function deleteAdvantage($ids)
+    {
+        $result = $this->advantagesEntity->delete($ids);
+        return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
+    }
+
+    public function sortPositionAdvantage($positions)
+    {
+        $positions = (array) $positions;
+        $ids       = array_keys($positions);
+        sort($positions);
+        return ExtenderFacade::execute(__METHOD__, [$ids, $positions], func_get_args());
+    }
+
+    public function updatePositionAdvantage($ids, $positions)
+    {
+        foreach ($positions as $i => $position) {
+            $this->advantagesEntity->update($ids[$i], ['position' => (int)$position]);
+        }
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
@@ -587,11 +619,16 @@ class BackendSettingsHelper
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
-    public function updateAdvantage($advantageId, $updates)
+    private function deleteAdvantageImage($advantageId)
     {
-        $_SESSION['need_die'] = 1;
+        $this->imageCore->deleteImage(
+            $advantageId,
+            'filename',
+            AdvantagesEntity::class,
+            $this->config->original_advantages_dir,
+            $this->config->resized_advantages_dir
+        );
 
-        $this->advantagesEntity->update($advantageId, $updates);
-        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+        $this->advantagesEntity->update($advantageId, ['filename' => '']);
     }
 }

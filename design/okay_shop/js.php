@@ -17,7 +17,6 @@ return [
     (new Js('select2.min.js'))->setPosition('footer'),
     (new Js('okay.js'))->setPosition('footer'),
     (new Js('jquery-ui.min.js'))->setPosition('footer'),
-    (new Js('ui.touch-punch.min.js'))->setPosition('footer'),
     (new Js('lazyload.min.js'))->setPosition('footer'),
     (new Js('hammer.min.js'))->setPosition('footer'),
     (new Js('xzoom.min.js'))->setPosition('footer'),

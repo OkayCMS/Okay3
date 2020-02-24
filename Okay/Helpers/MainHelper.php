@@ -20,6 +20,7 @@ use Okay\Core\Router;
 use Okay\Core\ServiceLocator;
 use Okay\Core\Settings;
 use Okay\Core\TemplateConfig;
+use Okay\Core\UserReferer\UserReferer;
 use Okay\Core\WishList;
 use Okay\Entities\AdvantagesEntity;
 use Okay\Entities\CategoriesEntity;
@@ -98,6 +99,13 @@ class MainHelper
                 $this->currentUser = $user;
                 $this->currentUserGroup = $userGroupsEntity->get($this->currentUser->group_id);
             }
+        }
+
+        // Пытаемся определить откуда пришел пользователь, и запоминаем эту информацию
+        if (!$referer = UserReferer::getUserReferer()) {
+            /** @var UserReferer $userReferer */
+            $userReferer = $this->SL->getService(UserReferer::class);
+            $userReferer->parse();
         }
     }
 

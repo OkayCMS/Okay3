@@ -14,30 +14,28 @@ select.selectpicker {
 }
 .bootstrap-select > .dropdown-toggle {
     width: 100%;
-    border: 1px solid #7b7b7b;
+    background-color: RGB(252, 252, 252);
+    border: 1px solid RGB(228, 228, 228);
     -webkit-appearance: none;
     -webkit-transition: all 0.12s ease;
     transition: all 0.12s ease;
     -webkit-box-shadow: none;
     box-shadow: none;
-    border-radius: 2px;
-
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
     -webkit-transition: background 0.2s linear 0s;
     transition: background 0.2s linear 0s;
     height: 35px;
     vertical-align: middle;
-    padding: 7px 12px;
-    line-height: normal;
+    padding: 7px 10px;
     font-size: 14px;
     font-weight: normal;
     outline: 0;
     line-height: 1.42857143;
     color: #2c2c2c;
-    background-color: #ffffff;
     background-image: none;
-    padding-right: 25px;
+    padding-right: 15px;
     z-index: 1;
 }
 .bootstrap-select > .dropdown-toggle.bs-placeholder,
@@ -138,6 +136,11 @@ position: relative;
   right: 12px;
   margin-top: -2px;
   vertical-align: middle;*/
+}
+.bootstrap-select.btn-group .dropdown-toggle .bs-caret{
+    vertical-align: top;
+    position: relative;
+    right: 2px;
 }
 .bootstrap-select.btn-group[class*="col-"] .dropdown-toggle {
   width: 100%;

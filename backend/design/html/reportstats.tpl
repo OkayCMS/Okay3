@@ -79,7 +79,7 @@
                         </select>
                     </div>
                     <div class="col-md-3 col-lg-3 col-sm-12">
-                        <select class="selectpicker" data-live-search="true" data-size="10" onchange="location = this.value;">
+                        <select class="selectpicker form-control" data-live-search="true" data-size="10" onchange="location = this.value;">
                             <option {if !$smarty.get.status}selected{/if} value="{url status=null}">{$btr->reportstats_all_statuses|escape}</option>
                             {foreach $all_status as $status_item}
                                 <option {if $status_item->id == $smarty.get.status}selected{/if} value="{url status=$status_item->id}">{$status_item->name|escape}</option>
@@ -87,7 +87,7 @@
                         </select>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm 12">
-                        <select onchange="location = this.value;" class="selectpicker">
+                        <select onchange="location = this.value;" class="selectpicker form-control">
                             <option {if !$date_filter}selected{/if} value="{url date_filter=null date_to=null date_from=null filter_check=null}">{$btr->reportstats_all_orders|escape}</option>
                             <option {if $date_filter == today}selected{/if} value="{url date_filter=today date_to=null date_from=null filter_check=null}" >{$btr->reportstats_today|escape}</option>
                             <option {if $date_filter == this_week}selected{/if} value="{url date_filter=this_week date_to=null date_from=null filter_check=null}">{$btr->reportstats_this_week|escape}</option>

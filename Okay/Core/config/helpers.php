@@ -12,9 +12,12 @@ use Okay\Admin\Helpers\BackendCouponsHelper;
 use Okay\Admin\Helpers\BackendDeliveriesHelper;
 use Okay\Admin\Helpers\BackendFeaturesValuesHelper;
 use Okay\Admin\Helpers\BackendFeedbacksHelper;
+use Okay\Admin\Helpers\BackendImportHelper;
 use Okay\Admin\Helpers\BackendMainHelper;
 use Okay\Admin\Helpers\BackendManagersHelper;
+use Okay\Admin\Helpers\BackendMenuHelper;
 use Okay\Admin\Helpers\BackendNotifyHelper;
+use Okay\Admin\Helpers\BackendOrderHistoryHelper;
 use Okay\Admin\Helpers\BackendOrderSettingsHelper;
 use Okay\Admin\Helpers\BackendOrdersHelper;
 use Okay\Admin\Helpers\BackendPagesHelper;
@@ -23,6 +26,7 @@ use Okay\Admin\Helpers\BackendSettingsHelper;
 use Okay\Admin\Helpers\BackendUserGroupsHelper;
 use Okay\Admin\Helpers\BackendUsersHelper;
 use Okay\Admin\Helpers\BackendValidateHelper;
+use Okay\Admin\Requests\BackendOrdersRequest;
 use Okay\Core\Modules\Module;
 use Okay\Core\OkayContainer\Reference\ParameterReference as PR;
 use Okay\Core\OkayContainer\Reference\ServiceReference as SR;
@@ -59,13 +63,13 @@ use Okay\Helpers\UserHelper;
 use Okay\Helpers\ValidateHelper;
 use Okay\Requests\CommonRequest;
 use Psr\Log\LoggerInterface;
-use Okay\Helpers\FeaturesHelper;
 use Okay\Helpers\ProductsHelper;
 use Okay\Helpers\CatalogHelper;
 use Okay\Helpers\OrdersHelper;
 use Okay\Helpers\FilterHelper;
 use Okay\Helpers\MoneyHelper;
 use Okay\Core\Entity\UrlUniqueValidator;
+use Okay\Admin\Helpers\BackendExportHelper;
 
 $helpers = [
     BackendMainHelper::class => [
@@ -84,6 +88,13 @@ $helpers = [
             new SR(Database::class),
             new SR(Image::class),
             new SR(Config::class),
+            new SR(Request::class),
+        ]
+    ],
+    BackendExportHelper::class => [
+        'class' => BackendExportHelper::class,
+        'arguments' => [
+            new SR(EntityFactory::class),
             new SR(Request::class),
         ]
     ],
@@ -125,6 +136,15 @@ $helpers = [
             new SR(EntityFactory::class),
             new SR(MoneyHelper::class),
             new SR(Request::class),
+        ]
+    ],
+    BackendOrderHistoryHelper::class => [
+        'class' => BackendOrderHistoryHelper::class,
+        'arguments' => [
+            new SR(EntityFactory::class),
+            new SR(BackendOrdersRequest::class),
+            new SR(Request::class),
+            new SR(BackendTranslations::class),
         ]
     ],
     BackendCategoriesHelper::class => [
@@ -285,6 +305,22 @@ $helpers = [
             new SR(Request::class),
         ]
     ],
+    BackendMenuHelper::class => [
+        'class' => BackendMenuHelper::class,
+        'arguments' => [
+            new SR(EntityFactory::class),
+        ]
+    ],
+    BackendImportHelper::class => [
+        'class' => BackendImportHelper::class,
+        'arguments' => [
+            new SR(Import::class),
+            new SR(QueryFactory::class),
+            new SR(Languages::class),
+            new SR(EntityFactory::class),
+            new SR(Image::class),
+        ]
+    ],
     MainHelper::class => [
         'class' => MainHelper::class,
     ],
@@ -358,16 +394,6 @@ $helpers = [
         'arguments' => [
             new SR(EntityFactory::class),
         ],
-    ],
-    FeaturesHelper::class => [
-        'class' => FeaturesHelper::class,
-        'arguments' => [
-            new SR(Database::class),
-            new SR(Import::class),
-            new SR(Translit::class),
-            new SR(EntityFactory::class),
-            new SR(QueryFactory::class),
-        ]
     ],
     CouponHelper::class => [
         'class' => CouponHelper::class,

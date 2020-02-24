@@ -358,7 +358,7 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
             }
         }
 
-        ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
 
     public function duplicate($productId)
@@ -500,29 +500,6 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
                 }
             }
         }
-    }
-
-    public function find(array $filter = [])
-    {
-        $this->setUp();
-        $this->buildPagination($filter);
-        $this->buildFilter($filter);
-        $this->select->distinct(true);
-        $this->select->cols($this->getAllFields());
-        $this->select->cache();
-//print $this->select;
-        $this->db->query($this->select, false);
-
-        // Получаем результирующие поля сущности
-        $resultFields = $this->getAllFieldsWithoutAlias();
-        $field = null;
-        // Если запрашивали одну колонку, отдадим массив строк, а не объектов
-        if (count($resultFields) == 1) {
-            $field = reset($resultFields);
-        }
-
-        $results = $this->getResults($field, $this->mappedBy);
-        return ExtenderFacade::execute([static::class, __FUNCTION__], $results, func_get_args());
     }
     
     protected function customOrder($order = null, array $orderFields = [], array $additionalData = [])

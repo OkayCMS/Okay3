@@ -125,7 +125,7 @@
                 <div class="toggle_body_wrap fn_card on">
                     <div class="mb-1">
                         <div class="heading_label" for="block_translit">{$btr->manager_language|escape}</div>
-                        <select name="manager_lang" class="selectpicker">
+                        <select name="manager_lang" class="selectpicker form-control">
                             {foreach $btr_languages as $name=>$label}
                                 <option value="{$label}" {if $m->lang==$label}selected{/if}>
                                     {$name|escape}
@@ -151,7 +151,7 @@
                     <div class="mb-1">
                         <div class="heading_label">{$btr->manager_sidebar|escape}</div>
                         <div class="">
-                            <select name="menu_status" class="selectpicker">
+                            <select name="menu_status" class="selectpicker form-control">
                                 <option value="1" {if $m->menu_status == 1}selected=""{/if}>{$btr->manager_open|escape}</option>
                                 <option value="0" {if $m->menu_status == 0}selected=""{/if}>{$btr->manager_closed|escape}</option>
                             </select>
@@ -210,7 +210,7 @@
                             <div class="heading_box">{$btr->getTranslation({$title})}</div>
                             <div class="permission_boxes row fn_perms_wrap">
                                 {foreach $items as $key=>$item}
-                                    <div class="col-xl-3 col-lg-4 col-md-6 {if $m->id==$manager->id}text-muted{/if}">
+                                    <div class="col-xl-4 col-lg-4 col-md-6 {if $m->id==$manager->id}text-muted{/if}">
                                         <div class="permission_box">
                                             <span>{$item|escape}</span>
                                             <label class="switch switch-default">

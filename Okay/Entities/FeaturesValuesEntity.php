@@ -58,7 +58,7 @@ class FeaturesValuesEntity extends Entity
     }
 
     /*Обновление значения свойства*/
-    public function update($id, $featureValue)
+    public function update($ids, $featureValue)
     {
         $featureValue = (object)$featureValue;
 
@@ -66,15 +66,20 @@ class FeaturesValuesEntity extends Entity
             $featureValue->value = trim($featureValue->value);
         }
 
-        if (empty($featureValue->translit) && !empty($featureValue->value)) {
-            $featureValue->translit = Translit::translitAlpha($featureValue->value);
+        if (empty($featureValue->translit)) {
+            // если не передали транслит, попробуем найти его в базе
+            if ($translit = $this->cols(['translit'])->findOne(['id' => $ids])) {
+                $featureValue->translit = $translit;
+            } elseif (!empty($featureValue->value)) {
+                $featureValue->translit = Translit::translitAlpha($featureValue->value);
+            }
         }
 
         if (!empty($featureValue->translit)) {
             $featureValue->translit = Translit::translitAlpha($featureValue->translit);
         }
 
-        return parent::update($id, $featureValue);
+        return parent::update($ids, $featureValue);
     }
 
     public function find(array $filter = [])

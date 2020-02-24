@@ -2,20 +2,20 @@
 {$meta_title=$btr->callbacks_order scope=global}
 
 {*Название страницы*}
-<div class="row">
-    <div class="col-lg-7 col-md-7">
-        <div class="wrap_heading">
+<div class="main_header">
+    <div class="main_header__item">
+        <div class="main_header__inner">
             <div class="box_heading heading_page">
                {$btr->callbacks_requests|escape} - {$callbacks_count}
             </div>
         </div>
     </div>
 
-    <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
-        <div class="boxed_search">
+    <div class="main_header__item">
+        <div class="main_header__inner">
             <form class="search" method="get">
                 <input type="hidden" name="controller" value="CallbacksAdmin">
-                <div class="input-group">
+                <div class="input-group input-group--search">
                     <input name="keyword" class="form-control" placeholder="{$btr->callbacks_search|escape}" type="text" value="{$keyword|escape}" >
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn_blue"><i class="fa fa-search"></i> <span class="hidden-md-down"></span></button>
@@ -49,7 +49,7 @@
                     
                     <div class="col-lg-3 col-md-3 col-sm-12 pull-right">
                         <div class="pull-right">
-                            <select onchange="location = this.value;" class="selectpicker">
+                            <select onchange="location = this.value;" class="selectpicker form-control">
                                 <option value="{url limit=5}" {if $current_limit == 5}selected{/if}>{$btr->general_show_by|escape} 5</option>
                                 <option value="{url limit=10}" {if $current_limit == 10}selected{/if}>{$btr->general_show_by|escape} 10</option>
                                 <option value="{url limit=25}" {if $current_limit == 25}selected{/if}>{$btr->general_show_by|escape} 25</option>
@@ -98,17 +98,17 @@
                                         </div>
 
                                         <div class="okay_list_boding okay_list_comments_name">
-                                            <div class="okay_list_text_inline mb-q mr-1">
-                                                <span class="text_dark text_bold">{$btr->general_name|escape} </span> {$callback->name|escape}
+                                            <div class="okay_list_text_inline text_600 mb-h mr-1" style="display: block">
+                                                {$callback->name|escape}
                                             </div>
-                                            <div class="okay_list_text_inline mb-q">
-                                                <span class="text_dark text_bold">{$btr->general_phone|escape} </span>{$callback->phone|escape}
+                                            <div class="okay_list_text_inline mb-h">
+                                                <span class="text_grey text_bold">{$btr->general_phone|escape} </span>{$callback->phone|escape}
                                             </div>
-                                            <div class="mb-q">
-                                                <span class="text_dark text_bold">{$btr->general_message|escape} </span>
+                                            <div class="mb-h">
+                                                <span class="text_grey text_bold">{$btr->general_message|escape} </span>
                                                 {$callback->message|escape|nl2br}
                                             </div>
-                                            <div>
+                                            <div class="text_grey mb-h">
                                                 {$btr->general_request_sent|escape} <span class="tag tag-default">{$callback->date|date} | {$callback->date|time}</span>
                                                 {$btr->general_from_page|escape} <a href="{$callback->url|escape}" target="_blank">{$callback->url|escape}</a>
                                             </div>
@@ -149,7 +149,7 @@
                                         <div class="okay_list_boding okay_list_close">
                                             {*delete*}
                                             <button data-hint="{$btr->general_delete_request|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                                {include file='svg_icon.tpl' svgId='delete'}
+                                                {include file='svg_icon.tpl' svgId='trash'}
                                             </button>
                                         </div>
                                     </div>
@@ -165,7 +165,7 @@
                                     <label class="okay_ckeckbox" for="check_all_2"></label>
                                 </div>
                                 <div class="okay_list_option">
-                                    <select name="action" class="selectpicker">
+                                    <select name="action" class="selectpicker form-control">
                                         <option value="processed">{$btr->general_process|escape}</option>
                                         <option value="unprocessed">{$btr->general_unprocess|escape}</option>
                                         <option value="delete">{$btr->general_delete|escape}</option>

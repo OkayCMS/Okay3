@@ -22,9 +22,6 @@ class Request
     
     public function __construct()
     {
-        $_POST = $this->stripslashes_recursive($_POST);
-        $_GET = $this->stripslashes_recursive($_GET);
-
         $this->setBasePath($_SERVER['REQUEST_URI']);
 
         if ($this->get('lang_id', 'integer')) {
@@ -41,6 +38,7 @@ class Request
      */
     public static function getArgv()
     {
+        global $argv;
         $result = [];
         if (!empty($argv)) {
             for ($i = 1; $i < count($argv); $i++) {
@@ -134,6 +132,11 @@ class Request
     public function setPageUrl($pageUrl)
     {
         $this->pageUrl = $pageUrl;
+    }
+
+    public static function getReferer()
+    {
+        return !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
     }
     
     /**
@@ -271,7 +274,7 @@ class Request
         return $subDir;
     }
     
-    private static function getDomain()
+    public static function getDomain()
     {
         return rtrim($_SERVER['HTTP_HOST']);
     }
@@ -286,26 +289,6 @@ class Request
         elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on')
             $protocol = 'https';
         return $protocol;
-    }
-    
-    /**
-     * Рекурсивная чистка магических слешей
-     */
-    private function stripslashes_recursive($var) {
-        if(!get_magic_quotes_gpc()) {
-            return $var;
-        }
-
-        if (!is_array($var)) {
-            return stripcslashes($var);
-        }
-
-        $res = null;
-        foreach($var as $k=>$v) {
-            $res[stripcslashes($k)] = $this->stripslashes_recursive($v);
-        }
-
-        return $res;
     }
     
     /**
@@ -332,14 +315,6 @@ class Request
         $url = @parse_url($_SERVER["REQUEST_URI"]);
         if (!empty($url['query'])) {
             parse_str($url['query'], $query);
-
-            if (get_magic_quotes_gpc()) {
-                foreach ($query as &$v) {
-                    if (!is_array($v)) {
-                        $v = stripslashes(urldecode($v));
-                    }
-                }
-            }
         }
         
         foreach($params as $name=>$value) {

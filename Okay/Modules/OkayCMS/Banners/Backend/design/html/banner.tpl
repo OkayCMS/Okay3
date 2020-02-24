@@ -68,7 +68,7 @@
             <div class="boxed">
                 <div class="row d_flex">
                     {*Название элемента сайта*}
-                    <div class="col-lg-10 col-md-9 col-sm-12">
+                    <div class="col-lg-8 col-md-9 col-sm-12">
                         <div class="heading_label">
                             {$btr->general_name|escape}
                         </div>
@@ -77,8 +77,39 @@
                             <input name="id" type="hidden" value="{$banner->id|escape}"/>
                         </div>
                         <div class="row">
-                            <div class="col-lg-4 col-sm-12">
-                                <div class="mt-h">
+                            <div class="col-xl-4 col-lg-6 col-sm-12">
+                                <div class="">
+                                    <div class="heading_label">
+                                        <span class="boxes_inline heading_label">
+                                            {$btr->banner_label_id_group|escape}
+                                            <i class="fn_tooltips" title="{$btr->banner_faq_id_group|escape}">
+                                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                            </i>
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="boxes_inline bnr_id_grup">
+                                            <input type="text" class="form-control" name="group_name" value="{$banner->group_name}" />
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {if $banner->individual_shortcode}
+                            <div class="col-xl-4 col-lg-6 col-sm-12">
+                                <div class="">
+                                    <div class="heading_label">
+                                        {$btr->banner_label_individual_shortcode|escape}
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="boxes_inline bnr_id_grup">
+                                            <input type="text" class="form-control" name="individual_shortcode" value="{literal}{${/literal}{$banner->individual_shortcode}{literal}}{/literal}" />
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {/if}
+                            <div class="col-xl-4 col-lg-6 col-sm-12">
+                                <div class="heading_label__switch">
                                     <span class="boxes_inline">
                                         <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
                                         <input class="switch-input" name="use_individual_shortcode" value='1' type="checkbox" {if $banner->individual_shortcode}checked=""{/if}/>
@@ -94,22 +125,10 @@
                                     </span>
                                 </div>
                             </div>
-                            {if $banner->individual_shortcode}
-                            <div class="col-lg-4 col-sm-12">
-                                <div class="mt-h">
-                                    <div class="input-group">
-                                        {*<span class="boxes_inline heading_label">{$btr->banner_id_enter|escape}</span>*}
-                                        <span class="boxes_inline bnr_id_grup">
-                                            <input type="text" class="form-control" name="individual_shortcode" value="{literal}{${/literal}{$banner->individual_shortcode}{literal}}{/literal}" />
-                                    </span>
-                                    </div>
-                                </div>
-                            </div>
-                            {/if}
                         </div>
                     </div>
                     {*Видимость элемента*}
-                    <div class="col-lg-2 col-md-3 col-sm-12">
+                    <div class="col-lg-4 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
                             <div class="activity_of_switch_item"> {* row block *}
                                 <div class="okay_switch clearfix">
@@ -172,7 +191,7 @@
                                     <span class="font-weight-bold">{$btr->general_pages|escape}</span>
                                 </div>
                                 <div class="banner_card_block">
-                                    <select name="pages[]" class="selectpicker fn_action_select" multiple="multiple" data-selected-text-format="count">
+                                    <select name="pages[]" class="selectpicker form-control fn_action_select" multiple="multiple" data-selected-text-format="count">
                                         <option value="0" {if !$banner->page_selected || 0|in_array:$banner->page_selected}selected{/if}>{$btr->banner_hide|escape}</option>
                                         {foreach from=$pages item=page}
                                             {if $page->name != ''}
@@ -190,7 +209,7 @@
                                     <span class="font-weight-bold">{$btr->general_categories|escape}</span>
                                 </div>
                                 <div class="banner_card_block">
-                                    <select name="categories[]" class="selectpicker fn_select_all_categories" multiple="multiple" data-selected-text-format="count">
+                                    <select name="categories[]" class="selectpicker form-control fn_select_all_categories" multiple="multiple" data-selected-text-format="count">
                                         <option value='0' {if !$banner->category_selected || 0|in_array:$banner->category_selected}selected{/if}>{$btr->banner_hide|escape}</option>
                                         {function name=category_select level=0}
                                             {foreach from=$categories item=category}
@@ -201,14 +220,14 @@
                                         {category_select categories=$categories selected=$banner->category_selected}
                                     </select>
 
-                                    <div class="boxes_inline">
+                                    <div class="boxes_inline mt-1">
                                         <div class="okay_switch clearfix">
+                                            <label class="switch_label">Выбрать все категории</label>
                                             <label class="switch switch-default">
                                                 <input class="switch-input" id="select_all_categories" name="select_all_categories" value='1' type="checkbox" />
                                                 <span class="switch-label"></span>
                                                 <span class="switch-handle"></span>
                                             </label>
-                                            <span class="boxes_inline heading_label">Выбрать все категории</span>
                                         </div>
                                     </div>
                                 </div>
@@ -221,21 +240,21 @@
                                     <span class="font-weight-bold">{$btr->general_brands|escape}</span>
                                 </div>
                                 <div class="banner_card_block">
-                                    <select name="brands[]" class="selectpicker fn_select_all_brands" multiple="multiple" data-selected-text-format="count">
+                                    <select name="brands[]" class="selectpicker form-control fn_select_all_brands" multiple="multiple" data-selected-text-format="count">
                                         <option value='0' {if !$banner->brand_selected || 0|in_array:$banner->brand_selected}selected{/if}>{$btr->banner_hide|escape}</option>
                                         {foreach from=$brands item=brand}
                                             <option value='{$brand->id}' {if $banner->brand_selected && $brand->id|in_array:$banner->brand_selected}selected{/if}>{$brand->name|escape}</option>
                                         {/foreach}
                                     </select>
 
-                                    <div class="boxes_inline">
+                                    <div class="boxes_inline mt-1">
                                         <div class="okay_switch clearfix">
+                                            <label class="switch_label">Выбрать все бренды</label>
                                             <label class="switch switch-default">
                                                 <input class="switch-input" id="select_all_brands" name="select_all_categories" value='1' type="checkbox" />
                                                 <span class="switch-label"></span>
                                                 <span class="switch-handle"></span>
                                             </label>
-                                            <span class="boxes_inline heading_label">Выбрать все бренды</span>
                                         </div>
                                     </div>
                                 </div>
@@ -244,27 +263,27 @@
                         
                         <div class="col-lg-4 col-md-6 col-sm-12">
                             <div class="mt-h">
-                                    <span class="boxes_inline">
-                                        <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
+                                <div class="okay_switch">
+                                    <label class="switch_label">{$btr->banner_show_group|escape}</label>
+                                    <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
                                         <input class="switch-input" name="show_all_pages" value='1' type="checkbox" {if $banner->show_all_pages}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>
-                                    </span>
-                                <span class="boxes_inline heading_label">{$btr->banner_show_group|escape}</span>
+                                </div>
                             </div>
                         </div>
 
                         <div class="col-lg-4 col-md-6 col-sm-12">
                             <div class="mt-h">
-                                    <span class="boxes_inline">
-                                        <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
+                                <div class="okay_switch">
+                                    <label class="switch_label">{$btr->banner_show_all_products|escape}</label>
+                                    <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
                                         <input class="switch-input" name="show_all_products" value='1' type="checkbox" {if $banner->show_all_products}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>
-                                    </span>
-                                <span class="boxes_inline heading_label">{$btr->banner_show_all_products|escape}</span>
+                                </div>
                             </div>
                         </div>
                     </div>

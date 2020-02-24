@@ -128,7 +128,7 @@
                     <div class="col-lg-12 col-md-12">
                         <div class="heading_label">{$btr->seo_filter_patterns_ajax_description|escape}</div>
                         <div class="mb-1">
-                            <textarea name="seo_filter_patterns[description][]" class="okay_textarea fn_ajax_area">{$p->description|escape}</textarea>
+                            <textarea name="seo_filter_patterns[description][]" class="form-control fn_ajax_area">{$p->description|escape}</textarea>
                         </div>
                     </div>
                 </div>

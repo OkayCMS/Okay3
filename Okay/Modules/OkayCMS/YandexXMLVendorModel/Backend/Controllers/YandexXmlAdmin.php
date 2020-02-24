@@ -31,11 +31,13 @@ class YandexXmlAdmin extends IndexAdmin
             $database->query(
                 $update->table(CategoriesEntity::getTable())->set(Init::TO_FEED_FIELD, 1)
             );
+            $categoriesEntity->initCategories();
         } elseif($this->request->post('remove_all_categories')) {
             $update = $queryFactory->newUpdate();
             $database->query(
                 $update->table(CategoriesEntity::getTable())->set(Init::TO_FEED_FIELD, 0)
             );
+            $categoriesEntity->initCategories();
         } elseif ($this->request->post('add_all_brands')) {
             $update = $queryFactory->newUpdate();
             $database->query(
@@ -62,6 +64,8 @@ class YandexXmlAdmin extends IndexAdmin
             $database->query(
                 $update->table(CategoriesEntity::getTable())->set(Init::TO_FEED_FIELD, 0)
             );
+            $categoriesEntity->initCategories();
+            
             if (!empty($categoriesToXml)) {
                 $categoriesEntity->update($categoriesToXml, [Init::TO_FEED_FIELD => 1]);
             }

@@ -47,7 +47,7 @@
             <div class="filters filters_catalog">
                 <div class="fn_switch filter__name d-flex align-items-center justify-content-between">
                     <span data-language="features_catalog">{$lang->features_catalog}</span>
-                    <span class="filter__name_arrow">{include file="svg.tpl" svgId="arrow_right"}</span>
+                    <span class="d-flex align-items-center filter__name_arrow fa fa-chevron-down"></span>
                 </div>
 
                 <div class="filter__group">

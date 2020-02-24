@@ -12,8 +12,7 @@ class SettingsGeneralAdmin extends IndexAdmin
 {
     public function fetch(
         BackendSettingsRequest $settingsRequest,
-        BackendSettingsHelper  $backendSettingsHelper,
-        AdvantagesEntity       $advantagesEntity
+        BackendSettingsHelper  $backendSettingsHelper
     ){
         if ($this->request->method('post')) {
             $deleteImages = $settingsRequest->postDeleteAdvantageImages();
@@ -21,17 +20,10 @@ class SettingsGeneralAdmin extends IndexAdmin
                 $backendSettingsHelper->deleteAdvantageImage($advantageId);
             }
 
-            $advantageImages = $settingsRequest->filesAdvantageImages();
-            foreach($settingsRequest->postAdvantagesUpdates() as $advantageId => $advantageUpdate) {
-                $backendSettingsHelper->uploadAdvantageImage($advantageId, $advantageImages[$advantageId]);
-                $backendSettingsHelper->updateAdvantage($advantageId, $advantageUpdate);
-            }
-
             $backendSettingsHelper->updateGeneralSettings();
             $this->design->assign('message_success', 'saved');
         }
 
-        $this->design->assign('advantages', $advantagesEntity->find());
         $this->response->setContent($this->design->fetch('settings_general.tpl'));
     }
 }

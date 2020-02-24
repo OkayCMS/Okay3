@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "227aeca64dd717a634a9c537fb50b950",
+    "content-hash": "7f8efca681c9fe41084b132c425b630d",
     "packages": [
         {
             "name": "aura/sql",
@@ -756,16 +756,16 @@
         },
         {
             "name": "okaycms/license",
-            "version": "1.2.1",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/OkayCMS/License.git",
-                "reference": "ad8820731c8d0e395e2a1b584cce6356daafef89"
+                "reference": "268912152aa358bbf70538e66269f6fea052b023"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OkayCMS/License/zipball/ad8820731c8d0e395e2a1b584cce6356daafef89",
-                "reference": "ad8820731c8d0e395e2a1b584cce6356daafef89",
+                "url": "https://api.github.com/repos/OkayCMS/License/zipball/268912152aa358bbf70538e66269f6fea052b023",
+                "reference": "268912152aa358bbf70538e66269f6fea052b023",
                 "shasum": ""
             },
             "require": {
@@ -789,7 +789,7 @@
                 }
             ],
             "description": "License checker for OkayCMS",
-            "time": "2019-12-19T10:03:53+00:00"
+            "time": "2020-02-24T13:57:03+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -1145,6 +1145,46 @@
                 "templating"
             ],
             "time": "2019-02-28T06:42:20+00:00"
+        },
+        {
+            "name": "snowplow/referer-parser",
+            "version": "0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/snowplow/referer-parser.git",
+                "reference": "5ce872b60999c63039723959a45928ef1196f03d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/snowplow/referer-parser/zipball/5ce872b60999c63039723959a45928ef1196f03d",
+                "reference": "5ce872b60999c63039723959a45928ef1196f03d",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.*",
+                "symfony/yaml": "*"
+            },
+            "suggest": {
+                "symfony/yaml": "Support for YAML configuration file"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Snowplow\\RefererParser": "php/src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lars Strojny",
+                    "email": "lars@strojny.net"
+                }
+            ],
+            "description": "Snowplow Refer(r)er parser for PHP",
+            "time": "2016-01-29T16:43:00+00:00"
         }
     ],
     "packages-dev": [],

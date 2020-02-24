@@ -19,7 +19,7 @@
                     {include file='svg_icon.tpl' svgId='icon_tooltips'}
                 </i>
                 <div class="box_btn_heading ml-1">
-                    <button type="button" class="btn btn_mini btn-info btn_openSans fn_add_status ">
+                    <button type="button" class="btn btn_mini btn-secondary btn_openSans fn_add_status ">
                         {include file='svg_icon.tpl' svgId='plus'}
                         <span>{$btr->order_settings_add_status|escape}</span>
                     </button>
@@ -64,7 +64,7 @@
                                                 <input type="text" class="form-control" name="statuses[name][]" value="{$order_status->name|escape}">
                                                 {if $is_mobile == true}
                                                 <div class="hidden-sm-up mt-q">
-                                                    <select name="statuses[is_close][]" class="selectpicker col-xs-12 px-0">
+                                                    <select name="statuses[is_close][]" class="selectpicker form-control col-xs-12 px-0">
                                                         <option value="1" {if $order_status->is_close == 1}selected=""{/if} >{$btr->order_write_off|escape}: {$btr->order_yes|escape}</option>
                                                         <option value="0" {if $order_status->is_close == 0}selected=""{/if} >{$btr->order_write_off|escape}: {$btr->order_no|escape}</option>
                                                     </select>
@@ -73,7 +73,7 @@
                                             </div>
                                             {if $is_mobile == false || $is_tablet == true}
                                             <div class="okay_list_boding okay_list_order_stg_sts_status2">
-                                                <select name="statuses[is_close][]" class="selectpicker col-xs-12 px-0">
+                                                <select name="statuses[is_close][]" class="selectpicker form-control col-xs-12 px-0">
                                                     <option value="1" {if $order_status->is_close == 1}selected=""{/if} >{$btr->order_settings_reduse_products|escape}</option>
                                                     <option value="0" {if $order_status->is_close == 0}selected=""{/if} >{$btr->order_settings_not_reduse_products|escape}</option>
                                                 </select>
@@ -87,7 +87,7 @@
                                                 {if count($orders_statuses) > 1}
                                                     {*delete*}
                                                     <button data-hint="{$btr->order_settings_delete_status|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                                        {include file='svg_icon.tpl' svgId='delete'}
+                                                        {include file='svg_icon.tpl' svgId='trash'}
                                                     </button>
                                                 {/if}
                                             </div>
@@ -111,7 +111,7 @@
                                             <input type="text" class="form-control" name="statuses[name][]" value="">
                                             {if $is_mobile == true}
                                                 <div class="hidden-sm-up mt-q">
-                                                    <select name="statuses[is_close][]" class="selectpicker col-xs-12 px-0">
+                                                    <select name="statuses[is_close][]" class="selectpicker form-control col-xs-12 px-0">
                                                         <option value="1">{$btr->order_yes|escape}</option>
                                                         <option value="0">{$btr->order_no|escape}</option>
                                                     </select>
@@ -120,7 +120,7 @@
                                         </div>
                                         {if $is_mobile == false || $is_tablet == true}
                                             <div class="okay_list_boding okay_list_order_stg_sts_status2">
-                                                <select name="statuses[is_close][]" class="selectpicker">
+                                                <select name="statuses[is_close][]" class="selectpicker form-control">
                                                     <option value="1">{$btr->order_settings_reduse_products|escape}</option>
                                                     <option value="0">{$btr->order_settings_not_reduse_products|escape}</option>
                                                 </select>
@@ -133,7 +133,7 @@
                                         <div class="okay_list_boding okay_list_close">
                                             {*delete*}
                                             <button data-hint="{$btr->order_settings_delete_status|escape}" type="button" class="btn_close fn_light_remove hint-bottom-right-t-info-s-small-mobile  hint-anim">
-                                                {include file='svg_icon.tpl' svgId='delete'}
+                                                {include file='svg_icon.tpl' svgId='trash'}
                                             </button>
                                         </div>
                                     </div>
@@ -161,7 +161,7 @@
             <div class="heading_box">
                 {$btr->order_settings_labels|escape}
                 <div class="box_btn_heading ml-1">
-                    <button type="button" class="btn btn_mini btn-info btn_openSans fn_add_Label ">
+                    <button type="button" class="btn btn_mini btn-secondary btn_openSans fn_add_Label ">
                         {include file='svg_icon.tpl' svgId='plus'}
                         <span>{$btr->order_settings_add_label|escape}</span>
                     </button>
@@ -210,7 +210,7 @@
                                         <div class="okay_list_boding okay_list_close">
                                             {*delete*}
                                             <button data-hint="{$btr->general_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                                {include file='svg_icon.tpl' svgId='delete'}
+                                                {include file='svg_icon.tpl' svgId='trash'}
                                             </button>
                                         </div>
                                     </div>

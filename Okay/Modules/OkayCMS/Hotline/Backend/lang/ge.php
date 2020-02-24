@@ -1,0 +1,30 @@
+<?php
+
+$lang['okaycms__hotline__title'] = 'გადმოტვირთვა (Hotline)';
+$lang['okaycms__hotline__left_title'] = 'გადმოტვირთვა (Hotline)';
+$lang['okaycms__hotline__products'] = 'გადმოტვირთვისთვის საქონელი';
+$lang['okaycms__hotline__products_remove'] = 'საქონელი, რომლის გადმოტვირთვა არ ჭირდება';
+$lang['okaycms__hotline__select_all'] = 'აირჩიეთ ყველა';
+$lang['okaycms__hotline__categories'] = 'კატეგორიები';
+$lang['okaycms__hotline__select_none'] = 'გააუქმეთ ყველა';
+$lang['okaycms__hotline__brands'] = 'კონიაკი';
+$lang['okaycms__hotline__generation_url'] = 'ბმული, რომელზეც შესაძლებელია გადმოტვირთვის ფაილი';
+$lang['okaycms__hotline__upload_non_exists_products_to_hotline'] = 'მხოლოდ გადმოტვირთეთ საქონელი საწყობში';
+$lang['okaycms__hotline__use_full_description_to_hotline'] = 'გამოიყენეთ სრული აღწერა';
+$lang['okaycms__hotline__products_for_upload'] = 'გადმოტვირთვისთვის საქონელი';
+$lang['okaycms__hotline__products_not_for_upload'] = 'საქონელი არ გადმოტვირთვისთვის';
+$lang['okaycms__hotline__select_products'] = 'შეარჩიეთ პროდუქტი';
+$lang['okaycms__hotline__add_products'] = 'დაამატეთ პროდუქტი';
+$lang['okaycms__hotline__has_manufacturer_warranty'] = 'მწარმოებლის გარანტია';
+$lang['okaycms__hotline__params'] = 'პარამეტრები';
+$lang['okaycms__hotline__company'] = 'კომპანია';
+$lang['okaycms__hotline__no_export_without_price'] = 'არ გადმოტვირთოთ პროდუქტები 0 ფასით';
+$lang['okaycms__hotline__pickup'] = 'შეგიძლიათ შეარჩიოთ არჩეული ნივთი და შეარჩიოთ იგი საკუთარ თავს';
+$lang['okaycms__hotline__store'] = 'შეძენა შესაძლებელია საცალო მაღაზიაში';
+$lang['okaycms__hotline__sales_max_length'] = 'ტექსტში მაქსიმალური სიგრძეა 50 სიმბოლო';
+$lang['okaycms__hotline__delivery_disallow'] = 'მიწოდების უარყოფა';
+$lang['okaycms__hotline__adult'] = 'სექსუალური პროდუქტები';
+$lang['okaycms__hotline__country_of_origin'] = 'არმოშობის ქვეყანა';
+$lang['okaycms__hotline__country_of_origin_notify'] = 'მიუთითეთ იმ პარამეტრის დასახელება, რომელიც შეიცავს ამ პარამეტრს';
+$lang['okaycms__hotline__upload_products'] = 'საქონლის შერჩევა გადმოტვირთვისთვის';
+$lang['okaycms__hotline__guarantee'] = 'გარანტია (guarantee)';

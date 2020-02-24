@@ -4,17 +4,16 @@
 namespace Okay\Core\Modules;
 
 
+use Smarty;
 use Okay\Core\Design;
 use Okay\Core\Database;
 use Okay\Core\QueryFactory;
 use Okay\Core\Config;
 use Okay\Core\TemplateConfig;
-use Okay\Entities\ManagersEntity;
 use Okay\Entities\ModulesEntity;
 use Okay\Core\EntityFactory;
 use OkayLicense\License;
 use Okay\Core\ServiceLocator;
-use Okay\Core\OkayContainer\OkayContainer;
 
 class Modules // TODO: подумать, мож сюда переедет CRUD Entity/Modules
 {
@@ -48,6 +47,11 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
     private $config;
 
     /**
+     * @var Smarty
+     */
+    private $smarty;
+
+    /**
      * @var array список контроллеров бекенда
      */
     private $backendControllersList = [];
@@ -63,7 +67,8 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
         Module        $module,
         QueryFactory  $queryFactory,
         Database      $database,
-        Config        $config
+        Config        $config,
+        Smarty        $smarty
     ) {
         $this->entityFactory = $entityFactory;
         $this->module        = $module;
@@ -71,6 +76,7 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
         $this->queryFactory  = $queryFactory;
         $this->db            = $database;
         $this->config        = $config;
+        $this->smarty        = $smarty;
     }
     
     /**
@@ -219,6 +225,45 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
             $modules[$module->vendor . '/' . $module->module_name] = $module;
         }
         return $modules;
+    }
+
+    public function indexingNotInstalledModules()
+    {
+        /** @var ModulesEntity $modulesEntity */
+        $modulesEntity = $this->entityFactory->get(ModulesEntity::class);
+        $notInstalledModules = $modulesEntity->findNotInstalled();
+        foreach($notInstalledModules as $module) {
+            $this->mockingSmartyPlugins($module);
+        }
+    }
+
+    private function mockingSmartyPlugins($module)
+    {
+        $moduleDir     = $this->module->getModuleDirectory($module->vendor, $module->module_name);
+        $smartyRegFile = $moduleDir."Init/SmartyPlugins.php";
+
+        if (! file_exists($smartyRegFile)) {
+            return;
+        }
+
+        $smartyPlugins = include $smartyRegFile;
+        foreach($smartyPlugins as $plugin) {
+            if (! class_exists($plugin['class'])) {
+                continue;
+            }
+
+            $pluginClass       = new \ReflectionClass($plugin['class']);
+            $defaultProperties = $pluginClass->getDefaultProperties();
+            if (!empty($defaultProperties['tag'])) {
+                $pluginName = $defaultProperties['tag'];
+            } else {
+                $pluginName = strtolower(end(explode('\\', $plugin['class'])));
+            }
+
+            $this->smarty->registerPlugin('function', $pluginName, function() {
+                return null;
+            });
+        }
     }
 
     private function initModuleSettings($vendor, $moduleName, $langLabel)

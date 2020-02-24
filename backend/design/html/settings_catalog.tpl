@@ -93,7 +93,7 @@
                         <div class="fn_step-6 col-lg-4 col-md-6">
                             <div class="heading_label">{$btr->settings_catalog_cents|escape}</div>
                             <div class="mb-1">
-                               <select name="decimals_point" class="selectpicker">
+                               <select name="decimals_point" class="selectpicker form-control">
                                     <option value='.' {if $settings->decimals_point == '.'}selected{/if}>{$btr->settings_catalog_dot|escape} 12.45 {$currency->sign|escape}</option>
                                     <option value=',' {if $settings->decimals_point == ','}selected{/if}>{$btr->settings_catalog_comma|escape} 12,45 {$currency->sign|escape}</option>
                                 </select>
@@ -102,7 +102,7 @@
                         <div class="fn_step-7 col-lg-4 col-md-6">
                             <div class="heading_label">{$btr->settings_catalog_thousands|escape}</div>
                             <div class="mb-1">
-                               <select name="thousands_separator" class="selectpicker">
+                               <select name="thousands_separator" class="selectpicker form-control">
                                     <option value='' {if $settings->thousands_separator == ''}selected{/if}>{$btr->settings_catalog_without|escape} 1245678 {$currency->sign|escape}</option>
                                     <option value=' ' {if $settings->thousands_separator == ' '}selected{/if}>{$btr->settings_catalog_space|escape} 1 245 678 {$currency->sign|escape}</option>
                                     <option value=',' {if $settings->thousands_separator == ','}selected{/if}>{$btr->settings_catalog_comma|escape} 1,245,678 {$currency->sign|escape}</option>
@@ -117,7 +117,7 @@
                                 </i>
                             </div>
                             <div class="mb-1">
-                               <select name="missing_products" class="selectpicker">
+                               <select name="missing_products" class="selectpicker form-control">
                                     <option value='{$smarty.const.MISSING_PRODUCTS_DEFAULT}' {if $settings->missing_products == $smarty.const.MISSING_PRODUCTS_DEFAULT}selected{/if}>{$btr->settings_catalog_missing_products_default|escape}</option>
                                     <option value='{$smarty.const.MISSING_PRODUCTS_MOVE_END}' {if $settings->missing_products == $smarty.const.MISSING_PRODUCTS_MOVE_END}selected{/if}>{$btr->settings_catalog_missing_products_move_end|escape}</option>
                                     <option value='{$smarty.const.MISSING_PRODUCTS_HIDE}' {if $settings->missing_products == $smarty.const.MISSING_PRODUCTS_HIDE}selected{/if}>{$btr->settings_catalog_missing_products_hide|escape}</option>

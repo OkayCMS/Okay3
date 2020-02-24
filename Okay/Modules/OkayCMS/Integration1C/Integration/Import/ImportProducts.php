@@ -114,10 +114,13 @@ class ImportProducts extends AbstractImport
                 $categoryId = $this->integration1C->db->result('id');
                 $name = (string)$xmlGroup->Наименование;
                 if (empty($categoryId)) {
+                    $url = $this->integration1C->translit->translit($name);
+                    $url = str_replace('.', '', $url);
+                    
                     $categoryId = $categoriesEntity->add([
                         'parent_id' => $parentId,
                         'external_id' => (string)$xmlGroup->Ид,
-                        'url' => $this->integration1C->translit->translit($name),
+                        'url' => $url,
                         'name' => $name,
                         'meta_title' => $name,
                         'meta_keywords' => $name,
@@ -159,7 +162,7 @@ class ImportProducts extends AbstractImport
 
         foreach ($property as $xmlFeature) {
             // Если свойство содержит производителя товаров
-            if ($xmlFeature->Наименование == $this->integration1C->brandOptionName) {
+            if ((string)$xmlFeature->Наименование == $this->integration1C->brandOptionName) {
                 // Запомним в сессии Ид свойства с производителем
                 $this->integration1C->setToStorage('brand_option_id', strval($xmlFeature->Ид));
             } else {
@@ -330,9 +333,13 @@ class ImportProducts extends AbstractImport
             if (!empty($xmlProduct->Описание)) {
                 $description = (string)$xmlProduct->Описание;
             }
+
+            $url = $this->integration1C->translit->translit((string)$xmlProduct->Наименование);
+            $url = str_replace('.', '', $url);
+            
             $productId = $productsEntity->add([
                 'external_id' => $product1cId,
-                'url' => $this->integration1C->translit->translit((string)$xmlProduct->Наименование),
+                'url' => $url,
                 'name' => (string)$xmlProduct->Наименование,
                 'meta_title' => (string)$xmlProduct->Наименование,
                 'meta_keywords' => (string)$xmlProduct->Наименование,
@@ -497,7 +504,7 @@ class ImportProducts extends AbstractImport
                 $brandName = strval($xml_option->Значение);
                 
                 // Если мы не запомнили такого бренда ранее, проверим его в базе
-                if (($brandId = $this->integration1C->getFromStorage('brands' . $brandName)) !== null) {
+                if (($brandId = $this->integration1C->getFromStorage('brands' . $brandName)) === null) {
                     // Найдем его по имени
                     $select = $this->integration1C->queryFactory->newSelect();
                     $select->cols(['id'])

@@ -5,7 +5,7 @@ namespace Okay\Modules\OkayCMS\YandexXMLVendorModel\ExtendsEntities;
 
 
 use Okay\Core\Modules\AbstractModuleEntityFilter;
-use Okay\Modules\OkayCMS\YandexXML\Init\Init;
+use Okay\Modules\OkayCMS\YandexXMLVendorModel\Init\Init;
 
 class ProductsEntity extends AbstractModuleEntityFilter
 {

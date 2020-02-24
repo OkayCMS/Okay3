@@ -4,6 +4,7 @@
 namespace Okay\Admin\Controllers;
 
 
+use Okay\Admin\Helpers\BackendOrderHistoryHelper;
 use Okay\Admin\Helpers\BackendOrdersHelper;
 use Okay\Admin\Requests\BackendOrdersRequest;
 use Okay\Core\Notify;
@@ -13,12 +14,14 @@ use Okay\Entities\OrderLabelsEntity;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\OrderStatusEntity;
 use Okay\Entities\PaymentsEntity;
+use Okay\Entities\PurchasesEntity;
 
 class OrderAdmin extends IndexAdmin
 {
     
     public function fetch(
         OrdersEntity         $ordersEntity,
+        PurchasesEntity      $purchasesEntity,
         OrderLabelsEntity    $orderLabelsEntity,
         OrderStatusEntity    $orderStatusEntity,
         DeliveriesEntity     $deliveriesEntity,
@@ -26,7 +29,8 @@ class OrderAdmin extends IndexAdmin
         CurrenciesEntity     $currenciesEntity,
         Notify               $notify,
         BackendOrdersRequest $ordersRequest,
-        BackendOrdersHelper  $backendOrdersHelper
+        BackendOrdersHelper  $backendOrdersHelper,
+        BackendOrderHistoryHelper $backendOrderHistoryHelper
     ) {
         
         /*Прием информации о заказе*/
@@ -34,6 +38,13 @@ class OrderAdmin extends IndexAdmin
             
             $order = $ordersRequest->postOrder();
             $purchases = $ordersRequest->postPurchases();
+
+            $orderBeforeUpdate = null;
+            $purchasesBeforeUpdate = null;
+            if (!empty($order->id)) {
+                $orderBeforeUpdate = $ordersEntity->get((int)$order->id);
+                $purchasesBeforeUpdate = $purchasesEntity->find(['order_id' => $order->id]);
+            }
             
             if (!$orderLabels = $this->request->post('order_labels')) {
                 $orderLabels = [];
@@ -97,6 +108,8 @@ class OrderAdmin extends IndexAdmin
                     }
                 }
 
+                $backendOrderHistoryHelper->updateHistory($orderBeforeUpdate, $order, $purchasesBeforeUpdate);
+
                 // По умолчанию метод ничего не делает, но через него можно зацепиться модулем
                 $backendOrdersHelper->executeCustomPost($order);
             }
@@ -111,12 +124,7 @@ class OrderAdmin extends IndexAdmin
         // Метки заказа
         $orderLabels = [];
         if (isset($order->id)) {
-            $orderLabels = $orderLabelsEntity->find(['order_id' => $order->id]);
-            if ($orderLabels) {
-                foreach ($orderLabels as $orderLabel) {
-                    $orderLabels[] = $orderLabel->id;
-                }
-            }
+            $orderLabels = $orderLabelsEntity->mappedBy('id')->find(['order_id' => $order->id]);
 
             $purchases = $backendOrdersHelper->findOrderPurchases($order);
 
@@ -158,7 +166,7 @@ class OrderAdmin extends IndexAdmin
         }
 
         //все статусы
-        $allStatuses = $orderStatusEntity->find();
+        $allStatuses = $orderStatusEntity->mappedBy('id')->find();
         $this->design->assign('all_status', $allStatuses);
         // Все способы доставки
         $deliveries = $deliveriesEntity->find();
@@ -173,7 +181,24 @@ class OrderAdmin extends IndexAdmin
         $this->design->assign('labels', $labels);
         
         $this->design->assign('order_labels', $orderLabels);
-        
+
+        if (!empty($order->id)) {
+            $orderHistory = $backendOrderHistoryHelper->getHistory($order->id);
+            $this->design->assign('order_history', $orderHistory);
+        }
+
+        if ($this->request->get('match_orders_tab_active')) {
+            $this->design->assign('match_orders_tab_active', true);
+        }
+        $page             = $ordersRequest->getPage();
+        $currentPage      = $backendOrdersHelper->determineCurrentPage($page);
+        $perPage          = $backendOrdersHelper->getPaginationPerPage();
+        $otherOrders      = $backendOrdersHelper->findOtherOrdersOfClient($order, $currentPage, $perPage);
+        $otherOrdersCount = $backendOrdersHelper->countOtherOrdersOfClient($order);
+        $this->design->assign('match_orders', $otherOrders);
+        $this->design->assign('current_page', $currentPage);
+        $this->design->assign('pages_count',  ceil($otherOrdersCount / $perPage));
+
         if ($this->request->get('view') == 'print') {
             $this->response->setContent($this->design->fetch('order_print.tpl'));
         } else {

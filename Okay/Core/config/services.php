@@ -35,6 +35,8 @@ use Okay\Core\Modules\UpdateObject;
 use Okay\Core\Modules\Extender\ChainExtender;
 use Okay\Core\Modules\Extender\QueueExtender;
 use Okay\Core\Modules\Extender\ExtenderFacade;
+use Okay\Core\UserReferer\UserReferer;
+use Snowplow\RefererParser\Parser;
 
 $services = [
     BRouter::class => [
@@ -61,8 +63,8 @@ $services = [
             new SR(License::class),
             new SR(EntityFactory::class),
             new SR(Languages::class),
-            new SR(Settings::class),
             new SR(RouteFactory::class),
+            new SR(Modules::class),
         ],
     ],
     Config::class => [
@@ -278,7 +280,8 @@ $services = [
     BackendTranslations::class => [
         'class' => BackendTranslations::class,
         'arguments' => [
-            new SR(LoggerInterface::class)
+            new SR(LoggerInterface::class),
+            new SR(Modules::class),
         ],
     ],
     FrontTranslations::class => [
@@ -355,6 +358,8 @@ $services = [
             new SR(QueryFactory::class),
             new SR(Database::class),
             new SR(Config::class),
+            new SR(Smarty::class),
+            new SR(Smarty::class),
         ],
     ],
     Installer::class => [
@@ -421,7 +426,19 @@ $services = [
             new SR(Request::class),
             new SR(Response::class),
         ],
-    ]
+    ],
+    Parser::class => [
+        'class' => Parser::class,
+        'arguments' => [
+            UserReferer::createConfigReader(),
+        ],
+    ],
+    UserReferer::class => [
+        'class' => UserReferer::class,
+        'arguments' => [
+            new SR(Parser::class),
+        ],
+    ],
 ];
 
 $adapters = include __DIR__ . '/../Adapters/adapters.php';

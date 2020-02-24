@@ -12,6 +12,7 @@ class BannersEntity extends Entity
     protected static $fields = [
         'id',
         'name',
+        'group_name',
         'position',
         'visible',
         'show_all_pages',

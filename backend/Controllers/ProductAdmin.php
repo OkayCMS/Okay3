@@ -4,11 +4,10 @@
 namespace Okay\Admin\Controllers;
 
 
+use Okay\Admin\Helpers\BackendCategoriesHelper;
 use Okay\Admin\Helpers\BackendValidateHelper;
 use \stdClass;
 use Okay\Entities\BrandsEntity;
-use Okay\Entities\ProductsEntity;
-use Okay\Entities\CategoriesEntity;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Admin\Requests\BackendProductsRequest;
 use Okay\Admin\Helpers\BackendProductsHelper;
@@ -20,8 +19,7 @@ class ProductAdmin extends IndexAdmin
 {
 
     public function fetch(
-        ProductsEntity             $productsEntity,
-        CategoriesEntity           $categoriesEntity,
+        BackendCategoriesHelper    $backendCategoriesHelper,
         BrandsEntity               $brandsEntity,
         CurrenciesEntity           $currenciesEntity,
         BackendProductsRequest     $productRequest,
@@ -45,14 +43,14 @@ class ProductAdmin extends IndexAdmin
                 if (empty($product->id)) {
                     $preparedProduct = $backendProductsHelper->prepareAdd($product);
                     $addedProductId  = $backendProductsHelper->add($preparedProduct);
-                    $product = $productsEntity->get($addedProductId);
+                    $product = $backendProductsHelper->getProduct($addedProductId);
 
                     $this->postRedirectGet->storeMessageSuccess('added');
                     $this->postRedirectGet->storeNewEntityId($product->id);
                 } else {
                     $preparedProduct = $backendProductsHelper->prepareUpdate($product);
                     $backendProductsHelper->update($preparedProduct);
-                    $product = $productsEntity->get($product->id);
+                    $product = $backendProductsHelper->getProduct($preparedProduct->id);
 
                     $this->postRedirectGet->storeMessageSuccess('updated');
                 }
@@ -108,7 +106,7 @@ class ProductAdmin extends IndexAdmin
             $relatedProducts   = $backendProductsHelper->findRelatedProducts($product);
         }
 
-        $categoriesTree    = $categoriesEntity->getCategoriesTree();
+        $categoriesTree    = $backendCategoriesHelper->getCategoriesTree();
         $productImages     = $backendProductsHelper->findProductImages($product);
         $productCategories = $backendProductsHelper->findProductCategories($product);
         $features          = $backendFeaturesHelper->findCategoryFeatures($productCategories, $categoriesTree);

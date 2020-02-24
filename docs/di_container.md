@@ -35,7 +35,7 @@ use Okay\Core\OkayContainer\Reference\ServiceReference as SR;
 ```
 Описание классов [ParameterReference](#ParameterReference) и [ServiceReference](#ServiceReference)
 
-### Получение сервиса
+### <a name="GetService"></a>Получение сервиса
 
 Чтобы получить экземпляр сервиса нужно получить его через инъекцию в [классе контроллера](./controllers.md),
 или воспользоваться [локатором служб](./service_locator.md). Также при регистрации сервиса, можно указать ему 

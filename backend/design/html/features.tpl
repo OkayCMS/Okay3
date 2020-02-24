@@ -46,7 +46,7 @@
                         </select>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm 12">
-                        <select onchange="location = this.value;" class="selectpicker">
+                        <select onchange="location = this.value;" class="selectpicker form-control">
                             <option value="{url limit=5}" {if $current_limit == 5}selected{/if}>{$btr->general_show_by|escape} 5</option>
                             <option value="{url limit=10}" {if $current_limit == 10}selected{/if}>{$btr->general_show_by|escape} 10</option>
                             <option value="{url limit=25}" {if $current_limit == 25}selected{/if}>{$btr->general_show_by|escape} 25</option>
@@ -142,7 +142,7 @@
                             <div class="okay_list_boding okay_list_close">
                                 {*delete*}
                                 <button data-hint="{$btr->features_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                    {include file='svg_icon.tpl' svgId='delete'}
+                                    {include file='svg_icon.tpl' svgId='trash'}
                                 </button>
                             </div>
                         </div>

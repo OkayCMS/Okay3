@@ -21,7 +21,7 @@
                         </div>
                         <div class="profile__information">
                             <div class="profile__name">
-                                <span>{$name|escape}</span>
+                                <span>{$user->name|escape}</span>
                             </div>
                             {* Logout *}
                             <div class="profile__logout">

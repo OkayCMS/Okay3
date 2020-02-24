@@ -90,16 +90,17 @@ class YandexXMLController extends AbstractController
                 ->mappedBy('id')
                 ->find($filter);
             
-            $products = $productsHelper->attachVariants($products, $variantsFilter);
-            $products = $productsHelper->attachImages($products);
-            $products = $this->sliceImagesByProduct($products, 10);
-            $products = $productsHelper->attachFeatures($products);
+            if (!empty($products)) {
+                $products = $productsHelper->attachVariants($products, $variantsFilter);
+                $products = $productsHelper->attachImages($products);
+                $products = $this->sliceImagesByProduct($products, 10);
+                $products = $productsHelper->attachFeatures($products);
 
-            $countryOfOrigin = $this->settings->get('okaycms__yandex_xml_vendor_model__country_of_origin');
-            if (!empty($countryOfOrigin)) {
-                $products = $this->attachCountryOfOriginParameter($products);
+                $countryOfOrigin = $this->settings->get('okaycms__yandex_xml_vendor_model__country_of_origin');
+                if (!empty($countryOfOrigin)) {
+                    $products = $this->attachCountryOfOriginParameter($products);
+                }
             }
-
             $this->design->assign('products', $products);
             $this->response->sendStream($this->design->fetch('feed_offers.xml.tpl'));
         }
@@ -127,7 +128,7 @@ class YandexXMLController extends AbstractController
             }
 
             if (count($product->images) > 10) {
-                $product->images[$id] = array_splice($product->images, 0, $amountPhotosByProduct);
+                $products[$id]->images = array_splice($product->images, 0, $amountPhotosByProduct);
             }
         }
 

@@ -43,6 +43,7 @@ class OrdersAdmin extends IndexAdmin
         $filter      = $backendOrdersHelper->buildFilter();
         $orders      = $backendOrdersHelper->findOrders($filter);
         $orders      = $backendOrdersHelper->attachLabels($orders);
+        $orders      = $backendOrdersHelper->attachLastUpdate($orders);
         $allStatuses = $backendOrdersHelper->findStatuses();
         $ordersCount = $backendOrdersHelper->count($filter);
 

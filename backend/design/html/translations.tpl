@@ -58,12 +58,14 @@
                     <span>№</span>
                 </div>
                 <div class="okay_list_heading okay_list_translations_name">
-                    <span>{$btr->translations_translation|escape}</span>
-                    <a {if $sort=='translation' || $sort=='translation_desc'} class="selected" {/if} href="{if $sort=='translation'}{url sort=translation_desc}{else}{url sort=translation}{/if}">{include file='svg_icon.tpl' svgId='sorts'}</a>
+                    <a {if $sort=='translation' || $sort=='translation_desc'} class="selected" {/if} href="{if $sort=='translation'}{url sort=translation_desc}{else}{url sort=translation}{/if}">
+                    {$btr->translations_translation|escape} {include file='svg_icon.tpl' svgId='sorting'}
+                    </a>
                 </div>
                 <div class="okay_list_heading okay_list_translations_variable">
-                    <span>{$btr->translations_var|escape}</span>
-                    <a {if $sort=='label' || $sort=='label_desc' || !$sort} class="selected" {/if}href="{if $sort=='label' || !$sort}{url sort=label_desc}{else}{url sort=null}{/if}">{include file='svg_icon.tpl' svgId='sorts'}</a>
+                    <a {if $sort=='label' || $sort=='label_desc' || !$sort} class="selected" {/if}href="{if $sort=='label' || !$sort}{url sort=label_desc}{else}{url sort=null}{/if}">
+                    {$btr->translations_var|escape} {include file='svg_icon.tpl' svgId='sorting'}
+                    </a>
                 </div>
                 <div class="okay_list_heading okay_list_close"></div>
             </div>
@@ -87,7 +89,7 @@
                             <div class="okay_list_boding okay_list_close">
                                 {if !$locked_theme && $translations_template[$label]}
                                     <button data-hint="{$btr->general_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                        {include file='svg_icon.tpl' svgId='delete'}
+                                        {include file='svg_icon.tpl' svgId='trash'}
                                     </button>
                                 {/if}
                             </div>

@@ -9,7 +9,7 @@
     </div>
     <div class="mb-1">
         <div class="heading_label">{$btr->order_np_warehouse}</div>
-        <select name="novaposhta_warehouse" tabindex="1" class="selectpicker warehouses_novaposhta"></select>
+        <select name="novaposhta_warehouse" tabindex="1" class="selectpicker form-control warehouses_novaposhta"></select>
     </div>
     <div class="mb-1">
         <div class="heading_label">

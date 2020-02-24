@@ -20,6 +20,14 @@
 
 {*Главная форма страницы*}
 <div class="boxed fn_toggle_wrap">
+
+    {$block = {get_design_block block="menus_custom_block"}}
+    {if $block}
+        <div class="custom_block">
+            {$block}
+        </div>
+    {/if}
+    
     {if $menus}
         <div class="categories">
             <form class="fn_form_list" method="post">
@@ -35,6 +43,12 @@
                         <div class="okay_list_heading okay_list_features_name">{$btr->menus_name|escape}</div>
                         <div class="okay_list_heading okay_list_brands_tag">{$btr->menus_var|escape}</div>
                         <div class="okay_list_heading okay_list_status">{$btr->general_enable|escape}</div>
+                        {$block = {get_design_block block="menus_icon_title"}}
+                        {if $block}
+                            <div class="okay_list_setting">
+                                {$block}
+                            </div>
+                        {/if}
                         <div class="okay_list_heading okay_list_close"></div>
                     </div>
                     {*Параметры элемента*}
@@ -57,6 +71,7 @@
                                         <a class="link" href="{url controller=MenuAdmin id=$menu->id return=$smarty.server.REQUEST_URI}">
                                             {$menu->name|escape}
                                         </a>
+                                        {get_design_block block="menus_list_name" vars=['menu' => $menu]}
                                     </div>
 
                                     <div class="okay_list_boding okay_list_brands_tag">
@@ -75,10 +90,18 @@
                                             </label>
                                         </div>
                                     </div>
+
+                                    {$block = {get_design_block block="menus_icon" vars=['menu' => $menu]}}
+                                    {if $block}
+                                    <div class="okay_list_setting">
+                                        {$block}
+                                    </div>
+                                    {/if}
+                                    
                                     <div class="okay_list_boding okay_list_close">
                                         {*delete*}
                                         <button data-hint="{$btr->general_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                            {include file='svg_icon.tpl' svgId='delete'}
+                                            {include file='svg_icon.tpl' svgId='trash'}
                                         </button>
                                     </div>
                                 </div>
@@ -94,10 +117,11 @@
                                 <label class="okay_ckeckbox" for="check_all_2"></label>
                             </div>
                             <div class="okay_list_option">
-                                <select name="action" class="selectpicker col-lg-12 col-md-12">
+                                <select name="action" class="selectpicker form-control col-lg-12 col-md-12">
                                     <option value="enable">{$btr->general_do_enable|escape}</option>
                                     <option value="disable">{$btr->general_do_disable|escape}</option>
                                     <option value="delete">{$btr->general_delete|escape}</option>
+                                    {get_design_block block="menus_action_list"}
                                 </select>
                             </div>
                         </div>

@@ -8,26 +8,26 @@
 {/if}
 
 {*Название страницы*}
-<div class="row">
-    <div class="col-lg-7 col-md-7">
-        <div class="heading_page">
-            {$btr->users_users|escape} - {$users_count}
-            {if $users_count>0 && !$keyword}
-                <div class="export_block export_users hint-bottom-middle-t-info-s-small-mobile  hint-anim" data-hint="{$btr->users_export|escape}">
-                    <span class="fn_start_export fa fa-file-excel-o"></span>
-                </div>
-            {/if}
+<div class="main_header">
+    <div class="main_header__item">
+        <div class="main_header__inner">
+            <div class="box_heading heading_page">
+                {$btr->users_users|escape} - {$users_count}
+                {if $users_count>0 && !$keyword}
+                    <div class="fn_start_export export_block export_users hint-bottom-middle-t-info-s-small-mobile  hint-anim" data-hint="{$btr->users_export|escape}">
+                        {include file='svg_icon.tpl' svgId='export'}
+                    </div>
+                {/if}
+            </div>
         </div>
     </div>
 
-    <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
-        <div class="boxed_search">
+    <div class="main_header__item">
+        <div class="main_header__inner">
             <form class="search" method="get">
                 <input type="hidden" name="controller" value="UsersAdmin">
-                <div class="input-group">
-
+                <div class="input-group input-group--search">
                     <input name="keyword" class="form-control" placeholder="{$btr->users_search|escape}" type="text" value="{$keyword|escape}" >
-
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn_blue"><i class="fa fa-search"></i> <span class="hidden-md-down"></span></button>
                     </span>
@@ -51,7 +51,7 @@
                 <div class="boxed_sorting action_options toggle_body_wrap off fn_card">
                 <div class="row">
                     <div class="col-md-3 col-lg-3 col-sm-12">
-                        <select class="selectpicker" onchange="location = this.value;">
+                        <select class="selectpicker form-control" onchange="location = this.value;">
                             <option value="{url group_id=null}">{$btr->general_groups|escape}</option>
                             {foreach $groups as $g}
                                 <option value="{url group_id=$g->id}" {if $group->id == $g->id}selected{/if}>{$g->name|escape}</option>
@@ -83,24 +83,26 @@
                                 <label class="okay_ckeckbox" for="check_all_1"></label>
                             </div>
                             <div class="okay_list_heading okay_list_users_name">
-
-                                <span>{$btr->general_name|escape}</span>
-                                <a href="{url sort=name}" {if $sort == 'name'}class="selected"{/if}>{include file='svg_icon.tpl' svgId='sorts'}</a>
+                                <a href="{url sort=name}" {if $sort == 'name'}class="active"{/if}>
+                                {$btr->general_name|escape} {include file='svg_icon.tpl' svgId='sorting'}
+                                </a>
 
                             </div>
                             <div class="okay_list_heading okay_list_users_email">
-                                <span>Email</span>
-                                <a href="{url sort=email}" {if $sort == 'email'}class="selected"{/if}>{include file='svg_icon.tpl' svgId='sorts'}</a>
+                                <a href="{url sort=email}" {if $sort == 'email'}class="active"{/if}>
+                                    Email {include file='svg_icon.tpl' svgId='sorting'}
+                                </a>
                             </div>
                             <div class="okay_list_heading okay_list_users_date">
-
-                                <span>{$btr->general_registration_date|escape}</span>
-                                <a href="{url sort=date}" {if $sort == 'date'}class="selected"{/if}>{include file='svg_icon.tpl' svgId='sorts'}</a>
+                                <a href="{url sort=date}" {if $sort == 'date'}class="active"{/if}>
+                                    {$btr->general_registration_date|escape} {include file='svg_icon.tpl' svgId='sorting'}
+                                </a>
                             </div>
                             <div class="okay_list_heading okay_list_users_group">{$btr->general_group|escape}</div>
                             <div class="okay_list_heading okay_list_count">
-                                <span>{$btr->users_orders|escape}</span>
-                                <a href="{url sort=cnt_order}" {if $sort == 'cnt_order'}}class="selected"{/if}>{include file='svg_icon.tpl' svgId='sorts'}</a>
+                                <a href="{url sort=cnt_order}" {if $sort == 'cnt_order'}}class="active"{/if}>
+                                    {$btr->users_orders|escape} {include file='svg_icon.tpl' svgId='sorting'}
+                                </a>
 
                             </div>
                             <div class="okay_list_heading okay_list_close"></div>
@@ -144,7 +146,7 @@
 
                                         <div class="okay_list_boding okay_list_close">
                                             <button data-hint="{$btr->users_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                                {include file='svg_icon.tpl' svgId='delete'}
+                                                {include file='svg_icon.tpl' svgId='trash'}
                                             </button>
                                         </div>
                                     </div>
@@ -160,14 +162,14 @@
                                     <label class="okay_ckeckbox" for="check_all_2"></label>
                                 </div>
                                 <div class="okay_list_option">
-                                    <select name="action" class="selectpicker fn_user_select">
+                                    <select name="action" class="selectpicker form-control fn_user_select">
                                         <option value="0">{$btr->general_select_action|escape}</option>
                                         <option value="move_to">{$btr->users_move|escape}</option>
                                         <option value="delete">{$btr->general_delete|escape}</option>
                                     </select>
                                 </div>
                                 <div id="move_to" class="okay_list_option hidden fn_hide_block">
-                                    <select name="move_group" class="selectpicker">
+                                    <select name="move_group" class="selectpicker form-control">
                                     {if $groups}
                                         {foreach $groups as $group}
                                             <option value="{$group->id}">{$group->name|escape}</option>

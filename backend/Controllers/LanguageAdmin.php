@@ -52,11 +52,12 @@ class LanguageAdmin extends IndexAdmin
             }
 
             $this->postRedirectGet->redirect();
+        } else {
+            $updateLanguage->id = $this->request->get('id', 'integer');
         }
-
-        $updateLanguageId = $this->request->get('id', 'integer');
-        if (!empty($updateLanguageId)) {
-            $updateLanguage = $languagesEntity->getMultiLanguage((int)$updateLanguage->id);
+        
+        if (!empty($updateLanguage->id)) {
+            $updateLanguage = $languagesEntity->getMultiLanguage($updateLanguage->id);
         }
 
         $languages = $languagesEntity->mappedBy('id')->find();

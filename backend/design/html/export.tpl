@@ -46,7 +46,7 @@
                         <div class="col-md-3 col-sm-3 col-lg-3 col-sm-12 mb-h">
                             <div class="option_export_wrap">
                                 <div class="heading_label">{$btr->general_export|escape}</div>
-                                <select class="selectpicker fn_type_export">
+                                <select class="selectpicker form-control fn_type_export">
                                    <option value="all_products">{$btr->general_all_products|escape}</option>
                                    <option value="category_products">{$btr->general_from_category|escape}</option>
                                    <option value="brands_products">{$btr->general_from_brand|escape}</option>
@@ -56,7 +56,7 @@
                         {if $categories}
                         <div id="category_products"  class="col-md-3 col-sm-3 col-lg-3 col-sm-12 export_options hidden mb-h">
                             <div class="heading_label">{$btr->general_from_category|escape}</div>
-                            <select class="selectpicker" data-live-search="true" data-size="10"  name="category_id">
+                            <select class="selectpicker form-control" data-live-search="true" data-size="10"  name="category_id">
                                 {function name=categories_tree}
                                     {foreach $categories as $c}
                                         <option value="{$c->id}">{section name=sp loop=$level}&nbsp;{/section}{$c->name|escape}</option>
@@ -70,7 +70,7 @@
                         {if $brands}
                         <div id="brands_products" class="col-md-3 col-sm-3 col-lg-3 col-sm-12 export_options hidden mb-h">
                             <div class="heading_label">{$btr->general_from_brand|escape}</div>
-                            <select class="selectpicker" data-size="10" name="brand_id">
+                            <select class="selectpicker form-control" data-size="10" name="brand_id">
                                 {foreach $brands as $b}
                                     <option value="{$b->id}" {if $b@first}selected=""{/if}>{$b->name|escape}</option>
                                 {/foreach}

@@ -47,15 +47,29 @@ function init() {
     });
 }
 
-function calc_delivery_price() {
-    
+const redelivery_payment_ids = [21, 6];
+
+$('[name="delivery_id"]').on('change', function() {
+    if (Number($(this).data('module_id')) !== Number(okay.np_delivery_module_id)) {
+        return;
+    }
+    update_np_payments();
+    select_first_active_payment();
+});
+
+function calc_delivery_price(e) {
+    if (e.target.name === 'novaposhta_redelivery') {
+        update_np_payments();
+        select_first_active_payment();
+    }
+
     let active_delivery = $('input[name="delivery_id"]:checked');
     if (active_delivery.data('module_id') == okay.np_delivery_module_id) {
         $('#fn_total_delivery_price').text('');
     } else {
         return false;
     }
-    
+
     let remove_warehouse = false;
     let delivery_block = active_delivery.closest('.delivery__item');
     let price_elem = delivery_block.find('.fn_delivery_price');
@@ -71,10 +85,8 @@ function calc_delivery_price() {
     if (city_ref && !city_novaposhta) {
         city_novaposhta = city_ref;
     }
-    
-    var payment_method_id = $('input[name="payment_method_id"]:checked').val();
 
-    var redelivery = 0;
+    let redelivery = 0;
     
     if (delivery_block.find('input[name="novaposhta_redelivery"]').is(':checked')){
         redelivery = delivery_block.find('input[name="novaposhta_redelivery"]').val();
@@ -103,11 +115,7 @@ function calc_delivery_price() {
                     delivery_block.find('input[name="novaposhta_delivery_price"]').val(data.price_response.price);
                     delivery_block.find('input[name="delivery_id"]').data('total_price', data.price_response.cart_total_price)
                         .data('delivery_price', data.price_response.price );
-                    
-                    /*if (data.price_response.payments_tpl) {
-                        $('#fn_delivery_payment_'+data.price_response.delivery_id).html(data.price_response.payments_tpl).show();
-                        $('input[name="payment_method_id"]#payment_'+data.price_response.delivery_id+'_'+payment_method_id).trigger('click');
-                    }*/
+
                     okay.change_payment_method();
                 }
                 
@@ -130,9 +138,54 @@ function calc_delivery_price() {
                         .html('')
                         .attr('disabled', true);
                 }
+
+                update_np_payments();
             }
         });
     }
+}
+
+function update_np_payments() {
+    const payment_method_ids = get_np_payment_method_ids();
+    const redelivery_enabled = $('[name="novaposhta_redelivery"]').prop('checked');
+
+    if (redelivery_enabled) {
+        for (const payment_id of payment_method_ids) {
+            if (redelivery_payment_ids.includes(payment_id)) {
+                $(`.fn_payment_method__item_${payment_id}`).show();
+            } else {
+                $(`.fn_payment_method__item_${payment_id}`).hide();
+            }
+        }
+    } else {
+        for (const payment_id of payment_method_ids) {
+            if (redelivery_payment_ids.includes(payment_id)) {
+                $(`.fn_payment_method__item_${payment_id}`).hide();
+            } else {
+                $(`.fn_payment_method__item_${payment_id}`).show();
+            }
+        }
+    }
+}
+
+function select_first_active_payment() {
+    const payment_method_elements = $('[name="payment_method_id"]');
+    for (const element of payment_method_elements) {
+        const id = element.attributes.id.nodeValue;
+        if (! $(`#${id}`).closest('.fn_payment_method__item').is(':hidden')) {
+            $(`#${id}`).trigger('click');
+            break;
+        }
+    }
+}
+
+function get_np_payment_method_ids() {
+    return $('[name="novaposhta_redelivery"]')
+        .closest('.fn_delivery_item')
+        .find('[name="delivery_id"]')
+        .data('payment_method_ids')
+        .split(',')
+        .map(Number);
 }
 
 function set_warehouse() {

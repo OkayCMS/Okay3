@@ -17,8 +17,8 @@
             {/if}
 
             {if $subscribes_count>0}
-                <div class="export_block export_subscribes hint-bottom-middle-t-info-s-small-mobile  hint-anim" data-hint="{$btr->subscribe_mailing_export|escape}">
-                    <span class="fn_start_export fa fa-file-excel-o"></span>
+                <div class="fn_start_export export_block export_subscribes hint-bottom-middle-t-info-s-small-mobile  hint-anim" data-hint="{$btr->subscribe_mailing_export|escape}">
+                    {include file='svg_icon.tpl' svgId='export'}
                 </div>
             {/if}
         </div>
@@ -60,7 +60,7 @@
                                     <div class="okay_list_boding okay_list_close">
                                         {*delete*}
                                         <button data-hint="{$btr->general_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                            {include file='svg_icon.tpl' svgId='delete'}
+                                            {include file='svg_icon.tpl' svgId='trash'}
                                         </button>
                                     </div>
                                 </div>
@@ -74,7 +74,7 @@
                                     <label class="okay_ckeckbox" for="check_all_2"></label>
                                 </div>
                                 <div class="okay_list_option">
-                                    <select name="action" class="selectpicker">
+                                    <select name="action" class="selectpicker form-control">
                                         <option value="delete">{$btr->general_delete|escape}</option>
                                     </select>
                                 </div>

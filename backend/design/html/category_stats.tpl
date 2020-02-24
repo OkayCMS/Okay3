@@ -78,7 +78,7 @@
                         </select>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm 12">
-                        <select onchange="location = this.value;" class="selectpicker">
+                        <select onchange="location = this.value;" class="selectpicker form-control">
                             <option value="{url brand=null}" {if !$brand}selected{/if}>{$btr->general_all_brands|escape}</option>
                             {foreach $brands as $b}
                                 <option value="{url brand=$b->id}" {if $brand->id == $b->id}selected{/if}>{$b->name|escape}</option>

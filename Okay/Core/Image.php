@@ -313,7 +313,11 @@ class Image
             $update->table('__images')
                 ->cols(['filename' => $newName])
                 ->where('filename=:encoded_filename')
-                ->bindValue('encoded_filename', $encodedFilename);
+                ->orWhere('filename=:filename_original')
+                ->bindValues([
+                    'encoded_filename' => $encodedFilename,
+                    'filename_original' => $filename,
+                ]);
             $this->db->query($update);
             $_SESSION['resize_files'][$encodedFilename] = $newName;
             return ExtenderFacade::execute(__METHOD__, $newName, func_get_args());
@@ -332,7 +336,11 @@ class Image
             $update->table('__images')
                 ->cols(['filename' => $newName])
                 ->where('filename=:encoded_filename')
-                ->bindValue('encoded_filename', $encodedFilename);
+                ->orWhere('filename=:filename_original')
+                ->bindValues([
+                    'encoded_filename' => $encodedFilename,
+                    'filename_original' => $filename,
+                ]);
             $this->db->query($update);
             $_SESSION['resize_files'][$encodedFilename] = $newName;
             return ExtenderFacade::execute(__METHOD__, $newName, func_get_args());

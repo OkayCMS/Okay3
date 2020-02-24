@@ -11,6 +11,7 @@ use Okay\Core\Modules\Module;
 use Okay\Core\Request;
 use Okay\Entities\DeliveriesEntity;
 use Okay\Modules\OkayCMS\NovaposhtaCost\Entities\NPCostDeliveryDataEntity;
+use Okay\Modules\OkayCMS\NovaposhtaCost\Init\Init;
 
 class BackendExtender implements ExtensionInterface
 {
@@ -26,6 +27,14 @@ class BackendExtender implements ExtensionInterface
         $this->entityFactory = $entityFactory;
         $this->design = $design;
         $this->module = $module;
+    }
+
+    public function parseVariantData($variant, $itemFromCsv)
+    {
+        if (isset($itemFromCsv[Init::VOLUME_FIELD])) {
+            $variant[Init::VOLUME_FIELD] = trim($itemFromCsv[Init::VOLUME_FIELD]);
+        }
+        return $variant;
     }
     
     /**
@@ -95,5 +104,16 @@ class BackendExtender implements ExtensionInterface
             $this->design->assign('novaposhta_delivery_data', $npDeliveryData);
         }
     }
-    
+
+    public function extendExportColumnsNames($columnsNames)
+    {
+        $columnsNames[Init::VOLUME_FIELD] = Init::VOLUME_FIELD;
+        return $columnsNames;
+    }
+
+    public function extendExportPrepareVariantData($preparedVariantData, $variant)
+    {
+        $preparedVariantData[Init::VOLUME_FIELD] = $variant->{Init::VOLUME_FIELD};
+        return $preparedVariantData;
+    }
 }

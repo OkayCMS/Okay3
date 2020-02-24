@@ -6,6 +6,10 @@ ErrorDocument 404 /404
 RewriteEngine on
 #RewriteBase /
 
+# закрываем ненужные директорию от веба
+RewriteRule .*(\.git/|\.idea|\.gitignore).* - [F]
+RewriteRule ^vendor/.* - [F]
+
 # Редирект с повторяющихся слешей
 RewriteCond %{REQUEST_URI} ^(.*)/{2,}(.*)$
 RewriteRule ^(.*)$ %1/%2 [R=301,L]

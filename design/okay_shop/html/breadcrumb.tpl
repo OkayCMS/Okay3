@@ -57,8 +57,8 @@
                 itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
                 <a itemprop="item" href="{url_generator route='brands'}">
                     <span itemprop="name" data-language="breadcrumb_brands">{$lang->breadcrumb_brands}</span>
-                    <meta itemprop="position" content="{$level++}" />
                 </a>
+                <meta itemprop="position" content="{$level++}" />
             </li>
             <li itemprop="itemListElement" itemscope
                 itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">

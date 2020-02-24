@@ -87,6 +87,9 @@ class Design
         'is_file',
         'date',
         'strip_tags',
+        'trim',
+        'ltrim',
+        'rtrim',
     ];
 
 
@@ -297,15 +300,15 @@ class Design
     }
 
     /*Определение мобильного устройства*/
-    public function isMobile(){
-        $res = $this->detect->isMobile();
-        return $res;
+    public function isMobile()
+    {
+        return $this->detect->isMobile();
     }
 
     /*Определение планшетного устройства*/
-    public function isTablet(){
-        $res = $this->detect->isTablet();
-        return $res;
+    public function isTablet()
+    {
+        return $this->detect->isTablet();
     }
 
     public function setSmartyTemplatesDir($dir)

@@ -154,7 +154,7 @@
                             <div class="col-lg-6 pr-0">
                                 <div class="form-group clearfix">
                                     <div class="heading_label" >{$btr->payment_method_type|escape}</div>
-                                    <select name="module" class="selectpicker">
+                                    <select name="module" class="selectpicker form-control">
                                         <option value='null'>{$btr->payment_method_manual|escape}</option>
                                         {foreach $payment_modules as $payment_module}
                                             <option value="{$payment_module@key|escape}" {if $payment_method->module == $payment_module@key}selected{/if} >{$payment_module->vendor|escape}/{$payment_module->module_name|escape}</option>
@@ -165,7 +165,7 @@
                             <div class="col-lg-6">
                                 <div class="form-group clearfix">
                                     <div class="heading_label" >{$btr->general_currency|escape}</div>
-                                    <select name="currency_id" class="selectpicker">
+                                    <select name="currency_id" class="selectpicker form-control">
                                         {foreach $currencies as $currency}
                                             <option value="{$currency->id}" {if $currency->id==$payment_method->currency_id}selected{/if}>{$currency->name|escape}</option>
                                         {/foreach}
@@ -183,7 +183,7 @@
                                                     <div class="form-group clearfix">
                                                         <div class="heading_label" >{$setting->name|escape}</div>
                                                         <div class="">
-                                                            <select name="payment_settings[{$setting->variable}]" class="selectpicker">
+                                                            <select name="payment_settings[{$setting->variable}]" class="selectpicker form-control">
                                                                 {foreach $setting->options as $option}
                                                                     <option value="{$option->value}" {if isset($payment_method->payment_settings[$setting->variable]) && $option->value==$payment_method->payment_settings[$setting->variable]}selected{/if}>{$option->name|escape}</option>
                                                                 {/foreach}

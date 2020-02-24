@@ -2,9 +2,9 @@
 {$meta_title=$btr->blog_blog scope=global}
 
 {*Название страницы*}
-<div class="row">
-    <div class="col-lg-7 col-md-7">
-        <div class="wrap_heading">
+<div class="main_header">
+    <div class="main_header__item">
+        <div class="main_header__inner">
             <div class="box_heading heading_page">
                 {if $keyword && $posts_count}
                    {$btr->blog_blog|escape} - {$posts_count}
@@ -20,11 +20,11 @@
             </div>
         </div>
     </div>
-    <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
-        <div class="boxed_search">
+    <div class="main_header__item">
+        <div class="main_header__inner">
             <form class="search" method="get">
                 <input type="hidden" name="controller" value="BlogAdmin">
-                <div class="input-group">
+                <div class="input-group input-group--search">
                     <input name="keyword" class="form-control" placeholder="{$btr->blog_search|escape}" type="text" value="{$keyword|escape}" >
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn_blue"><i class="fa fa-search"></i> <span class="hidden-md-down"></span></button>
@@ -51,7 +51,7 @@
                 <div class="row">
                     <div class="col-md-3 col-lg-3 col-sm-12">
                         <div class="fn_step-0">
-                            <select class="selectpicker px-0"  onchange="location = this.value;">
+                            <select class="selectpicker form-control px-0"  onchange="location = this.value;">
                                 <option value="{url controller=BlogAdmin type_post=null keyword=null id=null page=null}" {if !$type_post}selected=""{/if} >{$btr->general_all|escape}</option>
                                 <option value="{url controller=BlogAdmin type_post="blog" keyword=null id=null page=null}" {if $type_post == "blog"}selected=""{/if} >{$btr->blog_articles|escape}</option>
                                 <option value="{url controller=BlogAdmin type_post="news" keyword=null id=null page=null}" {if $type_post == "news"}selected=""{/if} >{$btr->blog_news|escape}</option>
@@ -150,7 +150,7 @@
                                                 {$url = {url_generator route='news_item' url=$post->url}}
                                             {/if}
                                             <a href="../{$url}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
-                                                {include file='svg_icon.tpl' svgId='icon_desktop'}
+                                                {include file='svg_icon.tpl' svgId='eye'}
                                             </a>
 
                                             {get_design_block block="blog_icon" vars=['post'=>$post]}
@@ -159,7 +159,7 @@
                                         <div class="okay_list_boding okay_list_close">
                                             {*delete*}
                                             <button data-hint="{$btr->blog_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                                {include file='svg_icon.tpl' svgId='delete'}
+                                                {include file='svg_icon.tpl' svgId='trash'}
                                             </button>
                                         </div>
                                     </div>
@@ -175,7 +175,7 @@
                                     <label class="okay_ckeckbox" for="check_all_2"></label>
                                 </div>
                                 <div class="okay_list_option">
-                                    <select name="action" class="selectpicker">
+                                    <select name="action" class="selectpicker form-control">
                                         <option value="enable">{$btr->general_do_enable|escape}</option>
                                         <option value="disable">{$btr->general_do_disable|escape}</option>
                                         <option value="delete">{$btr->general_delete|escape}</option>

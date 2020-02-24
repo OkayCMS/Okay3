@@ -1105,8 +1105,8 @@ select{
     padding: 0;
     transition: color 0.1s ease 0s;
 }
-.menu_group__link[href^="discounted"],
-.menu_group__link[href^="discounted"]:hover{
+.menu_group--header .menu_group__link[href*="/discounted"],
+.menu_group--header .menu_group__link[href*="/discounted"]:hover{
     color: #b10707;
 }
 .header__menu{

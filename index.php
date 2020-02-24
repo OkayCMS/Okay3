@@ -54,6 +54,7 @@ try {
     $modules = $DI->get(Modules::class);
     $modules->startEnabledModules();
     
+    $license->bindModulesRoutes();
     $router->run();
 
     if ($response->getContentType() == RESPONSE_HTML) {

@@ -102,8 +102,8 @@
                         <div class="row">
                             <div class="col-xs-12 col-lg-6 col-md-10">
                                 <div class="fn_step-2">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">URL</span>
+                                    <div class="input-group input-group--dabbl">
+                                        <span class="input-group-addon input-group-addon--left">URL</span>
                                         <input name="url" class="fn_meta_field form-control fn_url {if $brand->id}fn_disabled{/if}" {if $brand->id}readonly=""{/if} type="text" value="{$brand->url|escape}" />
                                         <input type="checkbox" id="block_translit" class="hidden" value="1" {if $brand->id}checked=""{/if}>
                                         <span class="input-group-addon fn_disable_url">

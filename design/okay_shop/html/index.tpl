@@ -66,7 +66,7 @@
                             {if $settings->site_phones}
                                 {foreach $settings->site_phones as $phone}
                                     <div class="header-contact__item header-contact--phone{if $phone@first} header-contact__item--visible{/if}">
-                                        <a class="d-flex align-items-center header-contact__section" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
+                                        <a class="d-flex align-items-center header-contact__section" href="tel:{preg_replace('~[^0-9\+]~', '', $phone)}">
                                             {include file="svg.tpl" svgId="phone_icon"}
                                             <span>{$phone|escape}</span>
                                         </a>
@@ -191,7 +191,7 @@
                         {if $settings->site_phones}
                             {foreach $settings->site_phones as $phone}
                                 <div class="footer__contact_item">
-                                    <a class="d-flex align-items-start phone" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
+                                    <a class="d-flex align-items-start phone" href="tel:{preg_replace('~[^0-9\+]~', '', $phone)}">
                                         {include file="svg.tpl" svgId="phone_icon"}
                                         <span>{$phone|escape}</span>
                                     </a>

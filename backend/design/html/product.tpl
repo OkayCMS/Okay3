@@ -108,10 +108,10 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12 col-lg-6 col-md-10">
+                            <div class="col-xs-12 col-md-8 col-lg-6">
                                 <div class="fn_step-2">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">URL</span>
+                                    <div class="input-group input-group--dabbl">
+                                        <span class="input-group-addon input-group-addon--left">URL</span>
                                         <input name="url" class="fn_meta_field form-control fn_url {if $product->id}fn_disabled{/if}" {if $product->id}readonly=""{/if} type="text" value="{$product->url|escape}" />
                                         <input type="checkbox" id="block_translit" class="hidden" value="1" {if $product->id}checked=""{/if}>
                                         <span class="input-group-addon fn_disable_url">
@@ -224,7 +224,7 @@
                         </i>
                     </div>
                     <div class="">
-                        <select name="brand_id" class="selectpicker mb-1{if !$brands} hidden{/if} fn_meta_brand" data-live-search="true">
+                        <select name="brand_id" class="selectpicker form-control mb-1{if !$brands} hidden{/if} fn_meta_brand" data-live-search="true">
                             <option value="0" {if !$product->brand_id}selected=""{/if} data-brand_name="">{$btr->general_not_set|escape}</option>
                             {foreach $brands as $brand}
                             <option value="{$brand->id}" {if $product->brand_id == $brand->id}selected=""{/if} data-brand_name="{$brand->name|escape}">{$brand->name|escape}</option>
@@ -242,7 +242,7 @@
                     </div>
                     <div id="product_cats">
                         {assign var ='first_category' value=reset($product_categories)}
-                        <select class="selectpicker  mb-1 fn_product_category fn_meta_categories" data-live-search="true">
+                        <select class="selectpicker form-control  mb-1 fn_product_category fn_meta_categories" data-live-search="true">
                             <option value="0" selected="" disabled="" data-category_name="">{$btr->product_select_category}</option>
                             {function name=category_select level=0}
                                 {foreach $categories as $category}
@@ -323,7 +323,7 @@
                                         </div>
                                         <div class="okay_list_boding variants_item_currency">
                                             <div class="heading_label">{$btr->general_currency|escape}</div>
-                                            <select name="variants[currency_id][]" class="selectpicker">
+                                            <select name="variants[currency_id][]" class="selectpicker form-control">
                                                 {foreach $currencies as $c}
                                                     <option value="{$c->id}" {if $c->id == $variant->currency_id}selected=""{/if}>{$c->code|escape}</option>
                                                 {/foreach}
@@ -396,7 +396,7 @@
                                     </div>
                                     <div class="okay_list_boding variants_item_currency">
                                         <div class="heading_label">{$btr->general_currency|escape}</div>
-                                        <select name="variants[currency_id][]" class="selectpicker">
+                                        <select name="variants[currency_id][]" class="selectpicker form-control">
                                             {foreach $currencies as $c}
                                                 <option value="{$c->id}" >{$c->code|escape}</option>
                                             {/foreach}
@@ -433,7 +433,7 @@
                         </div>
                     </div>
                     <div class="box_btn_heading mt-1">
-                        <button type="button" class="btn btn_mini btn-info fn_add_variant">
+                        <button type="button" class="btn btn_mini btn-secondary fn_add_variant">
                             {include file='svg_icon.tpl' svgId='plus'}
                             <span>{$btr->product_add_option|escape}</span>
                         </button>
@@ -564,7 +564,7 @@
                                     <div class="feature_value">
                                         <input class="feature_input fn_auto_option" data-id="{$feature_id}" type="text" name="features_values_text[{$feature_id}][]" value="{$feature_value->value|escape}"{if $lang_id != $main_lang_id} readonly{/if}/>
                                         <input class="fn_value_id_input" type="hidden" name="features_values[{$feature_id}][]" value="{$feature_value->id}"/>
-                                        <button type="button" class="btn btn_mini{if $feature_value@first} btn-info fn_add{else} btn-danger fn_remove{/if} fn_feature_multi_values feature_multi_values">
+                                        <button type="button" class="btn btn_mini{if $feature_value@first} btn-secondary fn_add{else} btn-danger fn_remove{/if} fn_feature_multi_values feature_multi_values">
                                             <span class="fn_plus" {if !$feature_value@first}style="display: none;"{/if}>
                                                 {include file='svg_icon.tpl' svgId='plus'}
                                             </span>
@@ -633,7 +633,7 @@
                     </div>
                 </div>
                 <div class="box_btn_heading mt-1">
-                    <button type="button" class="btn btn_mini btn-info fn_add_feature">
+                    <button type="button" class="btn btn_mini btn-secondary fn_add_feature">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->product_feature_add|escape}</span>
                     </button>
@@ -676,7 +676,7 @@
                                         </div>
                                         <div class="okay_list_boding okay_list_close">
                                             <button data-hint="{$btr->general_delete_product|escape}" type="button" class="btn_close fn_remove_item hint-bottom-right-t-info-s-small-mobile  hint-anim">
-                                                {include file='svg_icon.tpl' svgId='delete'}
+                                                {include file='svg_icon.tpl' svgId='trash'}
                                             </button>
                                         </div>
                                     </div>
@@ -696,7 +696,7 @@
                                     </div>
                                     <div class="okay_list_boding okay_list_close">
                                         <button data-hint="{$btr->general_delete_product|escape}" type="button" class="btn_close fn_remove_item hint-bottom-right-t-info-s-small-mobile  hint-anim">
-                                            {include file='svg_icon.tpl' svgId='delete'}
+                                            {include file='svg_icon.tpl' svgId='trash'}
                                         </button>
                                     </div>
                                 </div>
@@ -775,7 +775,7 @@
                         </a>
                         <a href="#tab2" class="heading_box tab_navigation_link">
                             {$btr->general_full_description|escape}
-                            <i class="fn_tooltips" title="{$btr->tooltip_general_full_description|escape}">
+                            <i style="right: -8px" class="fn_tooltips" title="{$btr->tooltip_general_full_description|escape}">
                                 {include file='svg_icon.tpl' svgId='icon_tooltips'}
                             </i>
                         </a>
@@ -986,11 +986,11 @@
                     {
                         feature = data[i];
                         for (var iv=0; iv<feature.values.length; iv++) {
-                            var new_line = new_feature_category.clone(true);
+                            let new_line = new_feature_category.clone(true);
                             new_line.addClass('fn_feature_block_'+feature.id);
                             new_line.find(".fn_feature_name").attr('title', feature.name);
                             new_line.find(".fn_feature_name a").text(feature.name).attr('href', "index.php?controller=FeatureAdmin&id="+feature.id);
-                            var value = new_line.find(".fn_auto_option"),
+                            let value = new_line.find(".fn_auto_option"),
                                 id_input = new_line.find(".fn_value_id_input");
                             value.data('id', feature.id);
                             value.val(feature.values[iv].value);

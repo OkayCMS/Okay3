@@ -2,9 +2,9 @@
 {$meta_title=$btr->general_orders scope=global}
 
 {*Название страницы*}
-<div class="row">
-    <div class="col-lg-7 col-md-7">
-        <div class="wrap_heading">
+<div class="main_header">
+    <div class="main_header__item">
+        <div class="main_header__inner">
             <div class="box_heading heading_page">
                 {if $orders_count}
                     {$btr->general_orders|escape} - {$orders_count}
@@ -12,8 +12,8 @@
                     {$btr->orders_no|escape}
                 {/if}
                 {if $orders_count>0 && !$keyword}
-                    <div class="export_block hint-bottom-middle-t-info-s-small-mobile hint-anim" data-hint="{$btr->orders_export|escape}">
-                        <span class="fn_start_export fa fa-file-excel-o"></span>
+                    <div class="fn_start_export export_block hint-bottom-middle-t-info-s-small-mobile hint-anim" data-hint="{$btr->orders_export|escape}">
+                        {include file='svg_icon.tpl' svgId='export'}
                     </div>
                 {/if}
             </div>
@@ -25,18 +25,39 @@
             </div>
         </div>
     </div>
-    <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
-        <div class="boxed_search">
-            <form class="search" method="get">
-                <input type="hidden" name="controller" value="OrdersAdmin">
-                <div class="input-group">
-                    <input name="keyword" class="form-control" placeholder="{$btr->general_search|escape}" type="text" value="{$keyword|escape}" >
-                    <span class="input-group-btn">
-                        <button type="submit" class="btn btn_blue"><i class="fa fa-search"></i> <span class="hidden-md-down"></span></button>
-                    </span>
-                </div>
-            </form>
-        </div>
+    <div class="main_header__item main_header__item--sort_date">
+        <form class="box_date_filter fn_date_filter main_header__inner" method="get">
+            <input type="hidden" name="controller" value="OrdersAdmin">
+            <input type="hidden" name="status" value="{$status}">
+            <ul class="filter_date__list form-control">
+                <li class="filter_date__item">
+                    <button type="button" class="fn_last_week filter_date__button ">{$btr->orders_date_filter_last_week}</button>
+                </li>
+                <li class="filter_date__item">
+                    <button type="button" class="fn_30_days filter_date__button">{$btr->orders_date_filter_last_30_days}</button>
+                </li>
+                <li class="filter_date__item">
+                    <button type="button" class="fn_7_days filter_date__button">{$btr->orders_date_filter_last_7_days}</button>
+                </li>
+                <li class="filter_date__item">
+                    <button type="button" class="fn_yesterday filter_date__button">{$btr->orders_date_filter_last_yesterday}</button>
+                </li>
+                <li class="filter_date__item filter_date__item--date hidden-xs-down">
+                    <button class="fn_calendar filter_date__button" title="{$btr->orders_date_filter_calendar}" type="button">
+                        {include file='svg_icon.tpl' svgId='date'}
+                        <span class="hidden-xs-down">{$btr->orders_date_filter_calendar}</span>
+                    </button>
+                    <button class="btn btn_blue" type="submit">
+                        <span class="hidden-sm-up">{include file='svg_icon.tpl' svgId='checked'}</span>
+                        <span class="hidden-xs-down">{$btr->general_apply|escape}</span>
+                    </button>
+                    {*не убирает инпут из дома, просто делаем его невидимым*}
+                    <input type="text" class="fn_calendar_pixel" name="" autocomplete="off" >
+                </li>
+            </ul>
+            <input type="hidden" class="fn_from_date" name="from_date" value="{$from_date}" autocomplete="off" >
+            <input type="hidden" class="fn_to_date" name="to_date" value="{$to_date}" autocomplete="off" >
+        </form>
     </div>
 </div>
 
@@ -75,63 +96,43 @@
                     </div>
                 </div>
                 <div class="boxed_sorting toggle_body_wrap off fn_card">
-                <div class="row">
-                    <div class="col-md-11 col-lg-11 col-xl-7 col-sm-12 mb-1">
-                        <div class="date">
-                            {*Блок фильтров*}
-                            <form class="date_filter row" method="get">
-                                <input type="hidden" name="controller" value="OrdersAdmin">
-                                <input type="hidden" name="status" value="{$status}">
-
-                                <div class="col-md-5 col-lg-5 pr-0 pl-0">
-                                    <div class="input-group mobile_input-group input-group--date">
-                                        <span class="input-group-addon-date">{$btr->general_from|escape}</span>
-                                        {if $is_mobile || $is_tablet}
-                                            <input type="date" class="fn_from_date form-control" name="from_date" value="{$from_date}" autocomplete="off" >
-                                        {else}
-                                            <input type="text" class="fn_from_date form-control" name="from_date" value="{$from_date}" autocomplete="off" >
-                                        {/if}
-                                    </div>
-                                </div>
-                                <div class="col-md-5 col-lg-5 pr-0 pl-0">
-                                    <div class="input-group mobile_input-group input-group--date">
-                                        <span class="input-group-addon-date">{$btr->general_to|escape}</span>
-                                        {if $is_mobile || $is_tablet}
-                                            <input type="date" class="fn_to_date form-control" name="to_date" value="{$to_date}" autocomplete="off" >
-                                            {else}
-                                            <input type="text" class="fn_to_date form-control" name="to_date" value="{$to_date}" autocomplete="off" >
-                                        {/if}
-                                     </div>
-                                </div>
-                                <div class="col-md-2 col-lg-2 pr-0 mobile_text_right">
-                                    <button class="btn btn_blue" type="submit">{$btr->general_apply|escape}</button>
-                                </div>
-                            </form>
-                        </div>
+                    {if $from_date && $to_date}
+                    <div class="heading_box heading_box__flex  mb-2">
+                        <span>{$btr->orders_date_filter_list_orders_from|escape}  {$from_date|date} {$btr->orders_date_filter_list_orders_to|escape} {$to_date|date} </span>
+                        <button class="fn_reset_date_filter btn btn_small btn-secondary ml-2" type="button">Сбросить</button>
                     </div>
-                </div>
+                    {/if}
                 {*Блок фильтров*}
                 <div class="row">
                     {if $all_status}
-                        <div class="col-md-6 col-lg-4 col-sm-12">
-                            <select name="status" class="selectpicker"  onchange="location = this.value;">
+                        <div class="col-md-3 col-lg-3 col-sm-12">
+                            <select name="status" class="selectpicker form-control"  onchange="location = this.value;">
                                 {foreach $all_status as $order_status}
                                     <option value="{url controller=OrdersAdmin status=$order_status->id keyword=null id=null page=null label=null from_date=null to_date=null}" {if $status == $order_status->id}selected=""{/if} >{$order_status->name|escape}</option>
                                 {/foreach}
-                                <option value="{url controller=OrdersAdmin status=null keyword=null id=null page=null label=null from_date=null to_date=null}" {if !$status}selected{/if}>{$btr->general_all|escape}</option>
+                                <option value="{url controller=OrdersAdmin status=null keyword=null id=null page=null label=null from_date=null to_date=null}" {if !$status}selected{/if}>{$btr->general_all_status|escape}</option>
                             </select>
                         </div>
                     {/if}
                     {if $labels}
-                        <div class="col-md-6 col-lg-4 col-sm-12">
-                            <select class="selectpicker" onchange="location = this.value;">
+                        <div class="col-md-3 col-lg-3 col-sm-12">
+                            <select class="selectpicker form-control" onchange="location = this.value;">
                                 {foreach $labels as $l}
                                     <option value="{url label=$l->id}" {if $label->id == $l->id}selected{/if}>{$l->name|escape}</option>
                                 {/foreach}
-                                <option value="{url label=null}" {if !$label} selected{/if}>{$btr->general_all|escape}</option>
+                                <option value="{url label=null}" {if !$label} selected{/if}>{$btr->general_all_label|escape}</option>
                             </select>
                         </div>
                     {/if}
+                    <div class="col-md-3 col-lg-3 col-sm-12 float-md-right">
+                        <form class="search" method="get">
+                            <input type="hidden" name="controller" value="OrdersAdmin">
+                            <div class="input-group input-group--search">
+                                <input name="keyword" class="form-control" placeholder="{$btr->general_search|escape}" type="text" value="{$keyword|escape}" >
+                                <button type="submit" class="btn"><i class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
             </div>
@@ -153,18 +154,18 @@
 
                     <div class="orders_list okay_list products_list">
                         {*Шапка таблицы*}
-                        <div class="okay_list_head">
+                        <div class="okay_list_head" style="border-left: 5px solid transparent">
                             <div class="okay_list_heading okay_list_check">
                                 <input class="hidden_check fn_check_all" type="checkbox" id="check_all_1" name="" value=""/>
                                 <label class="okay_ckeckbox" for="check_all_1"></label>
                             </div>
-                            <div class="okay_list_heading okay_list_order_number">№ </div>
+                            <div class="okay_list_heading okay_list_order_number">{$btr->order_match_id}</div>
                             <div class="okay_list_heading okay_list_orders_name">{$btr->general_full_name|escape}</div>
                             <div class="okay_list_heading okay_list_order_status">{$btr->general_status|escape}</div>
                             <div class="okay_list_heading okay_list_order_product_count">{$btr->general_products|escape}</div>
                             <div class="okay_list_heading okay_list_orders_price">{$btr->general_sales_amount}</div>
                             <div class="okay_list_heading okay_list_order_marker">{$btr->orders_label|escape}</div>
-                            <div class="okay_list_heading okay_list_close"></div>
+                            <div class="okay_list_heading okay_list_close hidden-sm-down"></div>
                         </div>
                         {*Параметры элемента*}
                         <div class="okay_list_body">
@@ -177,34 +178,65 @@
                                     </div>
 
                                     <div class="okay_list_boding okay_list_order_number">
-                                        <a href="{url controller=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}">{$btr->orders_order|escape} {$order->id}</a>
+                                        <a class="text_600 mb-h" href="{url controller=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}">{$btr->orders_order|escape} #{$order->id}</a>
+                                        {if $order->last_update}
+                                            <span class="tag tag-update">{$btr->order_history_changed} {$order->last_update->date|date} {$order->last_update->date|time}</span>
+                                        {else}
+                                            <span class="tag tag-update">{$btr->order_history_created} {$order->date|date} {$order->date|time}</span>
+                                        {/if}
                                         {if $order->paid}
                                             <div class="order_paid">
                                                 <span class="tag tag-success">{$btr->general_paid|escape}</span>
                                             </div>
                                         {/if}
+                                        {if $order->referer_channel}
+                                            <div class="order_paid">
+                                            {if $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_EMAIL}
+
+                                            <span class="tag tag-chanel_email" title="{$order->referer_source}">
+                                                {include file='svg_icon.tpl' svgId='tag_email'} {$order->referer_channel}
+                                            </span>
+                                            {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_SEARCH}
+                                            <span class="tag tag-chanel_search" title="{$order->referer_source}">
+                                                {include file='svg_icon.tpl' svgId='tag_search'} {$order->referer_channel}
+                                            </span>
+                                            {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_SOCIAL}
+                                            <span class="tag tag-chanel_social" title="{$order->referer_source}">
+                                                {include file='svg_icon.tpl' svgId='tag_social'} {$order->referer_channel}
+                                            </span>
+                                            {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_REFERRAL}
+                                            <span class="tag tag-chanel_referral" title="{$order->referer_source}">
+                                                {include file='svg_icon.tpl' svgId='tag_referral'} {$order->referer_channel}
+                                            </span>
+                                            {else}
+                                            <span class="tag tag-chanel_unknown" title="{$order->referer_source}">
+                                                {include file='svg_icon.tpl' svgId='tag_unknown'} {$order->referer_channel}
+                                            </span>
+                                            {/if}
+                                            </div>
+                                        {/if}
                                     </div>
 
                                     <div class="okay_list_boding okay_list_orders_name">
-                                        <a href="{url controller=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}" class="text_dark text_bold">{$order->name|escape}</a>
+                                        <a href="{url controller=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}" class="text_400 mb-h">{$order->name|escape}</a>
                                         {if $order->note}
                                             <div class="note">{$order->note|escape}</div>
                                         {/if}
-                                        <div class="hidden-lg-up mt-q">
-                                            <span class="tag tag-warning">{$orders_status[$order->status_id]->name|escape}</span>
+                                        <div class="hidden-lg-up mb-h">
+                                            <div class="text_600 font_12" style="color: #{$order->status_color};">{$orders_status[$order->status_id]->name|escape}</div>
                                         </div>
-                                        <div class="mt-q"><span class="hidden-md-down">{$btr->orders_order_in|escape}</span>
-                                        <span class="tag tag-default">{$order->date|date} | {$order->date|time}</span></div>
+                                        <div class="font_12 text_600 text_grey mb-h"><span class="hidden-md-down">{$btr->orders_order_in|escape}</span>
+                                        <span class="font_12 text_600 text_grey mb-h">{$order->date|date} | {$order->date|time}</span></div>
 
                                         {get_design_block block="orders_list_name"}
                                     </div>
 
                                     <div class="okay_list_boding okay_list_order_status">
-                                        {$orders_status[$order->status_id]->name|escape}
+                                        <div class="text_600 font_14" style="color: #{$order->status_color};">{$orders_status[$order->status_id]->name|escape}</div>
                                     </div>
 
                                     <div class="okay_list_boding okay_list_order_product_count">
-                                        <span>{$order->purchases|count}</span>
+                                        <span>{$order->purchases|count} {$btr->orders_unit|escape}</span>
                                         {if $order->purchases|count > 0}
                                             <span  class="fn_orders_toggle">
                                                 <i class="fn_icon_arrow fa fa-angle-down fa-lg m-t-2 "></i>
@@ -218,17 +250,17 @@
                                                 {$order->total_price|escape}
                                             </span>
                                             <span class="input-group-addon">
-                                                {$currency->sign|escape}
+                                                {$currency->code|escape}
                                             </span>
                                         </div>
                                     </div>
 
                                     <div class="okay_list_boding okay_list_order_marker">
                                         <span class="fn_ajax_label_wrapper">
-                                            <span class="fn_labels_show box_labels_show">{include file='svg_icon.tpl' svgId='tag'} <span>{$btr->orders_choose|escape}</span> </span>
+                                            <span class="fn_labels_show box_labels_show">{include file='svg_icon.tpl' svgId='tag'} <span>{$btr->general_labels|escape} </span> </span>
 
                                             <div class='fn_labels_hide box_labels_hide'>
-                                                <span class="heading_label">{$btr->general_labels|escape} <i class="fn_delete_labels_hide btn_close delete_labels_hide">{include file='svg_icon.tpl' svgId='delete'}</i></span>
+                                                <span class="heading_label">{$btr->orders_choose|escape} <i class="fn_delete_labels_hide btn_close delete_labels_hide">{include file='svg_icon.tpl' svgId='delete'}</i></span>
                                                 <ul class="option_labels_box">
                                                     {foreach $labels as $l}
                                                         <li class="fn_ajax_labels" data-order_id="{$order->id}"  style="background-color: #{$l->color|escape}">
@@ -244,48 +276,48 @@
                                         </span>
                                     </div>
 
-                                    <div class="okay_list_boding okay_list_close">
+                                    <div class="okay_list_boding okay_list_close hidden-sm-down">
                                         {*delete*}
                                         <button data-hint="{$btr->orders_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));" >
-                                           {include file='svg_icon.tpl' svgId='delete'}
+                                           {include file='svg_icon.tpl' svgId='trash'}
                                         </button>
                                     </div>
                                 </div>
                                 {*Список товаров из заказа*}
-                                <div class="okay_list_row">
-                                    {if $order->purchases|count > 0}
-                                        <div class="orders_purchases_block" style="display: none">
-                                            <div class="purchases_table">
-                                                <div class="purchases_head">
-                                                    <div class="purchases_heading purchases_table_orders_num">№</div>
-                                                    <div class="purchases_heading purchases_table_orders_sku">{$btr->general_sku|escape}</div>
-                                                    <div class="purchases_heading purchases_table_orders_name">{$btr->general_name|escape}</div>
-                                                    <div class="purchases_heading purchases_table_orders_price">{$btr->general_price|escape}</div>
-                                                    <div class="purchases_heading col-lg-2 purchases_table_orders_unit">{$btr->general_qty|escape}</div>
-                                                    <div class="purchases_heading purchases_table_orders_total">{$btr->orders_total_price|escape}</div>
-                                                </div>
-                                                <div class="purchases_body">
-                                                    {foreach $order->purchases as $purchase}
-                                                        <div class="purchases_body_items">
-                                                            <div class="purchases_body_item">
-                                                                <div class="purchases_bodyng purchases_table_orders_num">{$purchase@iteration}</div>
-                                                                <div class="purchases_bodyng purchases_table_orders_sku">{$purchase->sku|default:"&mdash;"}</div>
-                                                                <div class="purchases_bodyng purchases_table_orders_name">
-                                                                    {$purchase->product_name|escape}
-                                                                    {if $purchase->variant_name}({$purchase->variant_name|escape}){/if}
-                                                                </div>
-                                                                <div class="purchases_bodyng purchases_table_orders_price">{$purchase->price|convert} {$currency->sign|escape}</div>
-                                                                <div class="purchases_bodyng purchases_table_orders_unit"> {$purchase->amount}{if $purchase->units}{$purchase->units|escape}{else}{$settings->units|escape}{/if}</div>
-                                                                <div class="purchases_bodyng purchases_table_orders_total"> {($purchase->amount*$purchase->price)|convert} {$currency->sign|escape}</div>
+                                {if $order->purchases|count > 0}
+                                <div class="okay_list_row orders_purchases_block" style="display: none">
+                                    <div class="" >
+                                        <div class="purchases_table">
+                                            <div class="purchases_head">
+                                                <div class="purchases_heading purchases_table_orders_num">№</div>
+                                                <div class="purchases_heading purchases_table_orders_sku">{$btr->general_sku|escape}</div>
+                                                <div class="purchases_heading purchases_table_orders_name">{$btr->general_name|escape}</div>
+                                                <div class="purchases_heading purchases_table_orders_price">{$btr->general_price|escape}</div>
+                                                <div class="purchases_heading col-lg-2 purchases_table_orders_unit">{$btr->general_qty|escape}</div>
+                                                <div class="purchases_heading purchases_table_orders_total">{$btr->orders_total_price|escape}</div>
+                                            </div>
+                                            <div class="purchases_body">
+                                                {foreach $order->purchases as $purchase}
+                                                    <div class="purchases_body_items">
+                                                        <div class="purchases_body_item">
+                                                            <div class="purchases_bodyng purchases_table_orders_num">{$purchase@iteration}</div>
+                                                            <div class="purchases_bodyng purchases_table_orders_sku">{$purchase->sku|default:"&mdash;"}</div>
+                                                            <div class="purchases_bodyng purchases_table_orders_name">
+                                                                {$purchase->product_name|escape}
+                                                                {if $purchase->variant_name}({$purchase->variant_name|escape}){/if}
+                                                            </div>
+                                                            <div class="purchases_bodyng purchases_table_orders_price">{$purchase->price|convert} {$currency->sign|escape}</div>
+                                                            <div class="purchases_bodyng purchases_table_orders_unit"> {$purchase->amount}{if $purchase->units}{$purchase->units|escape}{else}{$settings->units|escape}{/if}</div>
+                                                            <div class="purchases_bodyng purchases_table_orders_total"> {($purchase->amount*$purchase->price)|convert} {$currency->sign|escape}</div>
 
-                                                             </div>
-                                                        </div>
-                                                    {/foreach}
-                                                </div>
+                                                         </div>
+                                                    </div>
+                                                {/foreach}
                                             </div>
                                         </div>
-                                    {/if}
+                                    </div>
                                 </div>
+                                {/if}
                             </div>
                             {/foreach}
                         </div>
@@ -297,7 +329,7 @@
                                     <label class="okay_ckeckbox" for="check_all_2"></label>
                                 </div>
                                 <div class="okay_list_option">
-                                    <select name="action" class="selectpicker fn_change_orders">
+                                    <select name="action" class="selectpicker form-control fn_change_orders">
                                         <option value="0">{$btr->general_select_action|escape}</option>
                                         <option data-item="status" value="change_status">{$btr->orders_change_status|escape}</option>
                                         <option data-item="label" value="set_label">{$btr->orders_set_label|escape}</option>
@@ -306,7 +338,7 @@
                                     </select>
                                 </div>
                                 <div class="okay_list_option fn_show_label" style="display: none">
-                                    <select name="change_label_id" class="selectpicker px-0 fn_labels_select" >
+                                    <select name="change_label_id" class="selectpicker form-control px-0 fn_labels_select" >
                                         <option value="0">{$btr->general_select_label|escape}</option>
                                         {foreach $labels as $change_label}
                                             <option value="{$change_label->id}">{$change_label->name|escape}</option>
@@ -314,7 +346,7 @@
                                     </select>
                                 </div>
                                 <div class="okay_list_option fn_show_status" style="display: none;">
-                                    <select name="change_status_id" class="selectpicker px-0 fn_labels_select">
+                                    <select name="change_status_id" class="selectpicker form-control px-0 fn_labels_select">
                                         <option value="0">{$btr->general_select_status|escape}</option>
                                         {foreach $all_status as $change_status}
                                             <option value="{$change_status->id}">{$change_status->name|escape}</option>
@@ -356,7 +388,7 @@ $(function() {
 
     $(document).on('click','.fn_orders_toggle',function(){
         $(this).find('.fn_icon_arrow').toggleClass('rotate_180');
-        $(this).parents('.fn_row').find('.orders_purchases_block').slideToggle();
+        $(this).parents('.fn_row').find('.orders_purchases_block').toggle();
     });
 
     $(".fn_labels_show").click(function(){
@@ -372,9 +404,87 @@ $(function() {
         e.stopPropagation();
     });
 
+    function compileDateString(date) {
+        let day   = String(date.getDate());
+        if (day.length === 1) {
+            day = `0${day}`;
+        }
+        let month = String(Number(date.getMonth()) + 1);
+        if (month.length === 1) {
+            month = `0${month}`;
+        }
+        const year  = String(date.getFullYear());
+        return `${day}-${month}-${year}`;
+    }
+
     if($(window).width() >= 1199 ){
-        $(".fn_from_date, .fn_to_date ").datepicker({
-            dateFormat: 'dd-mm-yy'
+        $('.fn_last_week').on('click', function() {
+            const date   = new Date();
+            const dateTo = compileDateString(date);
+            $('.fn_to_date').val(dateTo);
+
+            date.setDate(date.getDate() - date.getDay() + 1);
+            const dateFrom = compileDateString(date);
+            $('.fn_from_date').val(dateFrom);
+
+            $('.fn_date_filter').submit();
+        });
+
+        $('.fn_30_days').on('click', function() {
+            const date   = new Date();
+            const dateTo = compileDateString(date);
+            $('.fn_to_date').val(dateTo);
+
+            date.setDate(date.getDate() - 30);
+            const dateFrom = compileDateString(date);
+            $('.fn_from_date').val(dateFrom);
+
+            $('.fn_date_filter').submit();
+        });
+
+        $('.fn_7_days').on('click', function() {
+            const date   = new Date();
+            const dateTo = compileDateString(date);
+            $('.fn_to_date').val(dateTo);
+
+            date.setDate(date.getDate() - 7);
+            const dateFrom = compileDateString(date);
+            $('.fn_from_date').val(dateFrom);
+
+            $('.fn_date_filter').submit();
+        });
+
+        $('.fn_yesterday').on('click', function() {
+            const date   = new Date();
+            date.setDate(date.getDate() - 1);
+
+            const dateTo = compileDateString(date);
+            $('.fn_to_date').val(dateTo);
+
+            const dateFrom = compileDateString(date);
+            $('.fn_from_date').val(dateFrom);
+
+            $('.fn_date_filter').submit();
+        });
+
+        $('.fn_calendar').on('click', function() {
+            $(".fn_calendar_pixel").focus();
+        });
+
+        $(".fn_calendar_pixel").datepicker({
+            dateFormat: 'dd-mm-yy',
+            range_multiple_max: 2,
+            range: 'period',
+            onSelect: function(_, __, range){
+                $('.fn_from_date').val(range.startDateText);
+                $('.fn_to_date').val(range.endDateText);
+            }
+        });
+
+        $('.fn_reset_date_filter').on('click', function() {
+            $('.fn_to_date').val('');
+            $('.fn_from_date').val('');
+            $('.fn_date_filter').submit();
         });
     }
 

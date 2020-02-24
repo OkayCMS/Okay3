@@ -42,7 +42,7 @@
                 <div class="row">
                     <div class="col-md-4 col-lg-4 col-sm-12">
                         <div>
-                            <select class="selectpicker" onchange="location = this.value;">
+                            <select class="selectpicker form-control" onchange="location = this.value;">
                                 <option value="{url brand_id=null banner_id=null keyword=null page=null filter=null}" {if !$filter}{/if}>{$btr->banners_images_all|escape}</option>
                                 <option value="{url keyword=null brand_id=null banner_id=null page=null filter='visible'}" {if $filter=='visible'}selected{/if}>{$btr->banners_images_enable|escape}</option>
                                 <option value="{url keyword=null brand_id=null banner_id=null page=null filter='hidden'}" {if $filter=='hidden'}selected{/if}>{$btr->banners_images_disable|escape}</option>
@@ -51,7 +51,7 @@
                     </div>
                     {if $banners}
                         <div class="col-md-4 col-lg-4 col-sm-12">
-                            <select class="selectpicker" onchange="location = this.value;">
+                            <select class="selectpicker form-control" onchange="location = this.value;">
                                 <option value="{url banner_id=null brand_id=null}" {if !$banner->id}selected{/if}>{$btr->general_groups|escape}</option>
                                 {foreach $banners as $b}
                                     <option value="{url keyword=null page=null banner_id=$b->id}" {if $banner->id == $b->id}selected{/if}>{$b->name|escape}</option>
@@ -123,7 +123,7 @@
 
                                 <div class="okay_list_boding okay_list_brands_group">
                                     {if $banners}
-                                    <select class="selectpicker" name=image_banners[{$banners_image->id}]">
+                                    <select class="selectpicker form-control" name=image_banners[{$banners_image->id}]">
                                         {foreach $banners as $b}
                                         <option value="{$b->id}"{if $b->id == $banners_image->banner_id} selected{/if}>{$b->name}</option>
                                         {/foreach}
@@ -142,7 +142,7 @@
                                 <div class="okay_list_boding okay_list_close">
                                     {*delete*}
                                     <button data-hint="{$btr->banners_images_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                        {include file='svg_icon.tpl' svgId='delete'}
+                                        {include file='svg_icon.tpl' svgId='trash'}
                                     </button>
                                 </div>
                             </div>
@@ -159,7 +159,7 @@
                                 <label class="okay_ckeckbox" for="check_all_2"></label>
                             </div>
                             <div class="okay_list_option">
-                                <select name="action" class="selectpicker">
+                                <select name="action" class="selectpicker form-control">
                                     {if $banners|count>1}
                                     {foreach $banners as $b}
                                     <option value="move_to_banner[{$b->id}]">{$btr->banners_images_move|escape} {$b->name|escape}</option>

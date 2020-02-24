@@ -176,7 +176,7 @@
                                             {*delete*}
                                             {if !$c@first}
                                                 <button data-hint="{$btr->currency_delete|escape}" type="button" class=" btn_close fn_remove_currency hint-bottom-right-t-info-s-small-mobile  hint-anim" data-id="{$c->id}" data-toggle="modal" data-target="#fn_currency_delete">
-                                                    {include file='svg_icon.tpl' svgId='delete'}
+                                                    {include file='svg_icon.tpl' svgId='trash'}
                                                 </button>
                                             {/if}
                                         </div>

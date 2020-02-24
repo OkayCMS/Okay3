@@ -3,9 +3,9 @@
 
 
 {*Название страницы*}
-<div class="row">
-    <div class="col-lg-7 col-md-7">
-        <div class="wrap_heading">
+<div class="main_header">
+    <div class="main_header__item">
+        <div class="main_header__inner">
             {if $logs_count}
                 <div class="box_heading heading_page">
                     {if $keyword}
@@ -15,15 +15,15 @@
                     {/if}
                 </div>
             {else}
-                <div class="heading_page">{$btr->import_log_empty|escape}</div>
+                <div class="box_heading heading_page">{$btr->import_log_empty|escape}</div>
             {/if}
         </div>
     </div>
-    <div class="col-md-12 col-lg-5 col-xs-12 float-xs-right">
-        <div class="boxed_search">
+    <div class="main_header__item">
+        <div class="main_header__inner">
             <form class="search" method="get">
             <input type="hidden" name="controller" value="ImportLogAdmin">
-            <div class="input-group">
+            <div class="input-group input-group--search">
                 <input name="keyword" class="form-control" placeholder="{$btr->general_search|escape}" type="text" value="{$keyword|escape}" >
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn_blue"><i class="fa fa-search"></i> <span class="hidden-md-down"></span></button>
@@ -41,7 +41,7 @@
             <div class="boxed_sorting">
                 <div class="row">
                     <div class="col-md-3 col-lg-3 col-sm-12">
-                        <select class="selectpicker" onchange="location = this.value;">
+                        <select class="selectpicker form-control" onchange="location = this.value;">
                             <option value="{url keyword=null page=null limit=null filter=null}" {if !$filter}selected{/if}>{$btr->general_all|escape}</option>
                             <option value="{url keyword=null page=null limit=null filter='added'}" {if $filter == 'added'}selected{/if}>{$btr->import_added|escape}</option>
                             <option value="{url keyword=null page=null limit=null filter='updated'}" {if $filter == 'updated'}selected{/if}>{$btr->import_updated|escape}</option>
@@ -49,7 +49,7 @@
                     </div>
                     <div class="col-lg-9 col-md-9 col-sm 12">
                         <div class="pull-right">
-                            <select onchange="location = this.value;" class="selectpicker">
+                            <select onchange="location = this.value;" class="selectpicker form-control">
                                 <option value="{url limit=10}" {if $current_limit == 10}selected{/if}>{$btr->general_show_by|escape} 10</option>
                                 <option value="{url limit=25}" {if $current_limit == 25}selected{/if}>{$btr->general_show_by|escape} 25</option>
                                 <option value="{url limit=50}" {if $current_limit == 50}selected{/if}>{$btr->general_show_by|escape} 50</option>

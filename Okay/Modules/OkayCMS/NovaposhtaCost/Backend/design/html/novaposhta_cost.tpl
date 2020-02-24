@@ -63,7 +63,7 @@
                         <div class="col-lg-6 col-md-6">
                             <div class="heading_label">{$btr->settings_np_city}*</div>
                             <div class="mb-1">
-                                <select name="newpost_city" class="selectpicker" data-live-search="true">
+                                <select name="newpost_city " class="selectpicker form-control" data-live-search="true">
                                     {$newpost_cities}
                                 </select>
                             </div>
@@ -71,7 +71,7 @@
                         <div class="col-lg-6 col-md-6">
                             <div class="heading_label">{$btr->settings_np_currency}*</div>
                             <div class="mb-1">
-                                <select name="currency_id" class="selectpicker" data-live-search="false">
+                                <select name="currency_id " class="selectpicker form-control" data-live-search="false">
                                     {foreach $all_currencies as $c}
                                         <option value="{$c->id}"{if $c->id == $settings->newpost_currency_id} selected{/if}>{$c->name} ({$c->code})</option>
                                     {/foreach}
@@ -113,6 +113,71 @@
                             </button>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12 col-md-12">
+            <div class="boxed fn_toggle_wrap">
+                <div class="toggle_body_wrap on fn_card">
+
+                    <div class="heading_page">{$btr->payment_np_cash_on_delivery_type}</div>
+
+                    <div class="okay_list products_list fn_sort_list">
+
+                        {*Шапка таблицы*}
+                        <div class="okay_list_head">
+                            <div class="okay_list_boding okay_list_drag"></div>
+                            <div class="okay_list_heading okay_list_check">
+                                <input class="hidden_check fn_check_all" type="checkbox" id="check_all_1" name="" value="" />
+                                <label class="okay_ckeckbox" for="check_all_1"></label>
+                            </div>
+                            <div class="okay_list_heading okay_list_photo">{$btr->general_photo|escape}</div>
+                            <div class="okay_list_heading okay_list_brands_name">{$btr->payment_np_payment_method_name|escape}</div>
+                            <div class="okay_list_heading okay_list_close"></div>
+                            <div class="okay_list_heading okay_list_setting"></div>
+                            <div class="okay_list_heading okay_list_status" style="width: 200px;">{$btr->payment_np_cash_on_delivery|escape}</div>
+                        </div>
+
+                        <div class="okay_list_body sort_extended">
+                            {foreach $payment_methods as $payment_method}
+                                <div class="fn_step-1 fn_row okay_list_body_item fn_sort_item">
+                                    <div class="okay_list_row ">
+                                        <div class="okay_list_boding okay_list_drag"></div>
+
+                                        <div class="okay_list_boding okay_list_check">
+                                            <input class="hidden_check" type="checkbox" id="id_{$brand->id}" name="check[]" value="{$brand->id}" />
+                                            <label class="okay_ckeckbox" for="id_{$brand->id}"></label>
+                                        </div>
+
+                                        <div class="okay_list_boding okay_list_photo">
+                                            {if $payment_method->image}
+                                                <img src="{$payment_method->image|resize:55:55:false:$config->resized_payments_dir}" alt="" /></a>
+                                            {else}
+                                                <img height="55" width="55" src="design/images/no_image.png"/>
+                                            {/if}
+                                        </div>
+
+                                        <div class="okay_list_boding okay_list_brands_name">
+                                            {$payment_method->name|escape}
+                                        </div>
+
+                                        <div class="okay_list_boding okay_list_close"></div>
+                                        <div class="okay_list_setting"></div>
+
+                                        <div class="okay_list_boding okay_list_status" style="width: 200px;">
+                                            <label class="switch switch-default ">
+                                                <input class="switch-input fn_ajax_action {if $payment_method->visible}fn_active_class{/if}" data-controller="payment" data-action="novaposhta_cost__cash_on_delivery" data-id="{$payment_method->id}" name="novaposhta_cost__cash_on_delivery" value="1" type="checkbox"  {if $payment_method->novaposhta_cost__cash_on_delivery}checked=""{/if}/>
+                                                <span class="switch-label"></span>
+                                                <span class="switch-handle"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            {/foreach}
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

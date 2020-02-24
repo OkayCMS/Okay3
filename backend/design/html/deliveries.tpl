@@ -117,7 +117,7 @@
                                 <div class="okay_list_boding okay_list_close">
                                     {*delete*}
                                     <button data-hint="{$btr->general_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                        {include file='svg_icon.tpl' svgId='delete'}
+                                        {include file='svg_icon.tpl' svgId='trash'}
                                     </button>
                                 </div>
                             </div>

@@ -4,32 +4,36 @@
 namespace Okay\Admin\Controllers;
 
 
+use Okay\Admin\Helpers\BackendMenuHelper;
+use Okay\Admin\Requests\BackendMenuRequest;
 use Okay\Entities\MenuEntity;
 
 class MenusAdmin extends IndexAdmin
 {
 
-    public function fetch(MenuEntity $menuEntity)
+    public function fetch(MenuEntity $menuEntity, BackendMenuHelper $menuHelper, BackendMenuRequest $menuRequest)
     {
+        $filter = $menuHelper->buildFilter();
+        
         /*Принимаем выбранные меню*/
         if ($this->request->method('post')) {
-            $ids = $this->request->post('check');
+            $ids = $menuRequest->postCheck();
             if (is_array($ids)) {
-                switch($this->request->post('action')) {
-                    case 'disable': {
-                        /*Выключаем меню*/
-                        $menuEntity->update($ids, ['visible'=>0]);
+                switch($menuRequest->postAction()) {
+                    case 'enable': {
+                        $menuHelper->enable($ids);
                         break;
                     }
-                    case 'enable': {
-                        /*Включаем меню*/
-                        $menuEntity->update($ids, ['visible'=>1]);
+                    case 'disable': {
+                        $menuHelper->disable($ids);
                         break;
                     }
                     case 'delete': {
-                        /*Удаляем меню*/
-                        $menuEntity->delete($ids);
+                        $menuHelper->delete($ids);
                         break;
+                    }
+                    default : {
+                        $menuHelper->defaultAction($menuRequest->postAction(), $ids);
                     }
                 }
             }
@@ -43,7 +47,7 @@ class MenusAdmin extends IndexAdmin
             }
         }
 
-        $menus = $menuEntity->find();
+        $menus = $menuHelper->findMenus($filter);
         $this->design->assign('menus', $menus);
         $this->response->setContent($this->design->fetch('menus.tpl'));
     }

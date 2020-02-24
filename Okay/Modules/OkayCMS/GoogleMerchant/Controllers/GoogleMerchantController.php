@@ -155,7 +155,7 @@ class GoogleMerchantController extends AbstractController
             }
 
             if (count($product->images) > 10) {
-                $product->images[$id] = array_splice($product->images, 0, $amountPhotosByProduct);
+                $products[$id]->images = array_splice($product->images, 0, $amountPhotosByProduct);
             }
         }
 

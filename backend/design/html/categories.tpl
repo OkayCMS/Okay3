@@ -103,7 +103,7 @@
                                 <div class=" okay_list_setting">
                                     {*open*}
                                     <a href="{url_generator route="category" url=$category->url absolute=1}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
-                                        {include file='svg_icon.tpl' svgId='icon_desktop'}
+                                        {include file='svg_icon.tpl' svgId='eye'}
                                     </a>
 
                                     {get_design_block block="categories_actions"}
@@ -111,7 +111,7 @@
                                 <div class="okay_list_boding okay_list_close">
                                     {*delete*}
                                     <button data-hint="{$btr->categories_delete|escape}" type="button" class="btn_close fn_remove hint-bottom-right-t-info-s-small-mobile  hint-anim" data-toggle="modal" data-target="#fn_action_modal" onclick="success_action($(this));">
-                                        {include file='svg_icon.tpl' svgId='delete'}
+                                        {include file='svg_icon.tpl' svgId='trash'}
                                     </button>
                                 </div>
                             </div>

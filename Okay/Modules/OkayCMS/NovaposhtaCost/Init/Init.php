@@ -4,10 +4,13 @@
 namespace Okay\Modules\OkayCMS\NovaposhtaCost\Init;
 
 
+use Okay\Admin\Helpers\BackendExportHelper;
+use Okay\Admin\Helpers\BackendImportHelper;
 use Okay\Admin\Helpers\BackendOrdersHelper;
 use Okay\Admin\Requests\BackendProductsRequest;
 use Okay\Core\Modules\AbstractInit;
 use Okay\Core\Modules\EntityField;
+use Okay\Entities\PaymentsEntity;
 use Okay\Entities\VariantsEntity;
 use Okay\Helpers\CartHelper;
 use Okay\Helpers\DeliveriesHelper;
@@ -20,7 +23,8 @@ class Init extends AbstractInit
 {
     
     const VOLUME_FIELD = 'volume';
-    
+    const CASH_ON_DELIVERY = 'novaposhta_cost__cash_on_delivery';
+
     public function install()
     {
         $this->setModuleType(MODULE_TYPE_DELIVERY);
@@ -35,12 +39,15 @@ class Init extends AbstractInit
         ]);
 
         $this->migrateEntityField(VariantsEntity::class, (new EntityField(self::VOLUME_FIELD))->setTypeDecimal('10,5'));
+
+        $this->migrateEntityField(PaymentsEntity::class, (new EntityField(self::CASH_ON_DELIVERY))->setTypeTinyInt(1));
     }
 
     public function init()
     {
 
         $this->registerEntityField(VariantsEntity::class, self::VOLUME_FIELD);
+        $this->registerEntityField(PaymentsEntity::class, self::CASH_ON_DELIVERY);
         
         $this->addPermission('okaycms__novaposhta_cost');
 
@@ -83,6 +90,24 @@ class Init extends AbstractInit
         $this->registerQueueExtension(
             ['class' => BackendOrdersHelper::class, 'method' => 'executeCustomPost'],
             ['class' => BackendExtender::class, 'method' => 'updateDeliveryDataProcedure']
+        );
+
+        // Добавляемся в импорт
+        $this->addBackendBlock('import_fields_association', 'import_fields_association.tpl');
+
+        $this->registerChainExtension(
+            ['class' => BackendImportHelper::class, 'method' => 'parseVariantData'],
+            ['class' => BackendExtender::class, 'method' => 'parseVariantData']
+        );
+
+        $this->registerChainExtension(
+            ['class' => BackendExportHelper::class, 'method' => 'getColumnsNames'],
+            ['class' => BackendExtender::class, 'method' => 'extendExportColumnsNames']
+        );
+
+        $this->registerChainExtension(
+            ['class' => BackendExportHelper::class, 'method' => 'prepareVariantsData'],
+            ['class' => BackendExtender::class, 'method' => 'extendExportPrepareVariantData']
         );
         
         $this->registerBackendController('NovaposhtaCostAdmin');

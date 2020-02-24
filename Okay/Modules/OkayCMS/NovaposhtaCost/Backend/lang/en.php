@@ -21,3 +21,7 @@ $lang['order_np_redelivery'] = 'C.O.D';
 $lang['order_np_city'] = 'City';
 $lang['order_np_warehouse'] = 'Point of issue';
 $lang['settings_np_currency'] = 'Enter the currency "hryvnia" for the correct operation of the module';
+$lang['payment_np_cash_on_delivery'] = 'Allow cash on delivery';
+$lang['payment_np_payment_method_name'] = 'Payment method';
+$lang['payment_np_cash_on_delivery_type'] = 'List of payment methods for cash on delivery';
+$lang['okaycms__np__import_field'] = 'Variant volume';

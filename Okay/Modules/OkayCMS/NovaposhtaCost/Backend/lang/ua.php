@@ -21,3 +21,7 @@ $lang['order_np_redelivery'] = 'Накладений платіж';
 $lang['order_np_city'] = 'Місто';
 $lang['order_np_warehouse'] = 'Пункт видачі';
 $lang['settings_np_currency'] = 'Вкажіть валюту "гривні" для корректной роботи модуля';
+$lang['payment_np_cash_on_delivery'] = 'Дозволити оплату післяплатою';
+$lang['payment_np_payment_method_name'] = 'Спосіб оплати';
+$lang['payment_np_cash_on_delivery_type'] = 'Список способів оплати для оплати післяплатою';
+$lang['okaycms__np__import_field'] = 'Об\'єм варіанту';

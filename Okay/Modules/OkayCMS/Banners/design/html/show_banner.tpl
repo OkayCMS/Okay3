@@ -1,5 +1,4 @@
-
-<div class="fn_banner_group_{$banner_data->id} banner_group banner_group--{$banner_data->id} owl-carousel {if !$banner_data->settings.as_slider}no_js{/if}">
+<div class="fn_banner_{$banner_data->group_name} banner_group banner_group--{$banner_data->id} owl-carousel {if !$banner_data->settings.as_slider}no_js{/if}">
     {foreach $banner_data->items as $bi}
         {if $bi->settings.variant_show == Okay\Modules\OkayCMS\Banners\Entities\BannersImagesEntity::SHOW_DEFAULT}
         <div class="banner_group__item block--border banner_group__variant1">
@@ -42,7 +41,7 @@
 {if $banner_data->settings.as_slider}
 <script>
     document.addEventListener('DOMContentLoaded', function(){
-        $('.fn_banner_group_{$banner_data->id}').owlCarousel({
+        $('.fn_banner_{$banner_data->group_name}').owlCarousel({
             animateOut: "fadeOut",
             loop: {if isset($banner_data->settings.loop) && !empty($banner_data->settings.loop)}true{else}false{/if},
             lazyLoad:true,

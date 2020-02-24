@@ -5,8 +5,11 @@ namespace Okay\Core;
 
 use Okay\Core\Entity\Entity;
 use Bramus\Router\Router as BRouter;
+use Okay\Core\Modules\Module;
+use Okay\Core\Modules\Modules;
 use Okay\Core\Routes\RouteFactory;
 use Okay\Entities\LanguagesEntity;
+use Okay\Entities\ModulesEntity;
 use OkayLicense\License;
 use Okay\Entities\PagesEntity;
 
@@ -38,8 +41,8 @@ class Router {
     /** @var ServiceLocator */
     private $serviceLocator;
 
-    /** @var Settings */
-    private $settings;
+    /** @var Modules */
+    private $modules;
 
     /** @var Languages */
     private static $languages;
@@ -54,8 +57,8 @@ class Router {
         License $license,
         EntityFactory $entityFactory,
         Languages $languages,
-        Settings $settings,
-        RouteFactory $routeFactory
+        RouteFactory $routeFactory,
+        Modules $modules
     ) {
         
         // SL будем использовать только для получения сервисов, которые запросили для контроллера
@@ -66,7 +69,7 @@ class Router {
         $this->response      = $response;
         $this->license       = $license;
         $this->entityFactory = $entityFactory;
-        $this->settings      = $settings;
+        $this->modules       = $modules;
         self::$routeFactory  = $routeFactory;
         self::$languages     = $languages;
     }
@@ -116,7 +119,6 @@ class Router {
         $router = $this->router;
         $routes = self::$routes;
         $request = $this->request;
-        $settings = $this->settings;
         
         /** @var LanguagesEntity $languagesEntity */
         $languagesEntity = $this->entityFactory->get(LanguagesEntity::class);
@@ -150,7 +152,7 @@ class Router {
             
             $pattern = $baseRoute . $this->getPattern($route);
             
-            $router->all($pattern, function(...$params) use ($router, $route, $request, $settings, $language, $baseRoute, $routeName) {
+            $router->all($pattern, function(...$params) use ($router, $route, $request, $language, $baseRoute, $routeName) {
 
                 $flexibleRoute = self::$routeFactory->create($routeName, $params);
                 if ($flexibleRoute) {
@@ -186,6 +188,7 @@ class Router {
 
                 $this->license->registerSmartyPlugins();
                 $this->license->check();
+                $this->modules->indexingNotInstalledModules();
 
                 // Если язык выключен, отдадим 404
                 if (!$language->enabled && empty($_SESSION['admin'])) {
@@ -253,7 +256,7 @@ class Router {
         }
         $router->run();
     }
-    
+
     private function classNameHasNoNamespace($className)
     {
         return strpos($className, '\\') === false;
@@ -280,10 +283,14 @@ class Router {
         }
 
         // Передаем контроллеру, все, что запросили
-        call_user_func_array([$controller, 'onInit'], $this->getMethodParams($controller, 'onInit', $params, $routeVars, $defaults));
+        if ($this->methodExists($controller, 'onInit')) {
+            call_user_func_array([$controller, 'onInit'], $this->getMethodParams($controller, 'onInit', $params, $routeVars, $defaults));
+        }
         // На 404 не вызываем afterController
         if (($controllerResult = call_user_func_array([$controller, $methodName], $this->getMethodParams($controller, $methodName, $params, $routeVars, $defaults))) !== false){
-            call_user_func_array([$controller, 'afterController'], $this->getMethodParams($controller, 'afterController', $params, $routeVars, $defaults));
+            if ($this->methodExists($controller, 'afterController')) {
+                call_user_func_array([$controller, 'afterController'], $this->getMethodParams($controller, 'afterController', $params, $routeVars, $defaults));
+            }
         }
         return $controllerResult;
     }

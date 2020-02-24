@@ -8,6 +8,7 @@ use Okay\Core\EntityFactory;
 use Okay\Core\Request;
 use Okay\Entities\DeliveriesEntity;
 use Okay\Entities\ImagesEntity;
+use Okay\Entities\OrderHistoryEntity;
 use Okay\Entities\OrderLabelsEntity;
 use Okay\Entities\OrdersEntity;
 use Okay\Core\Modules\Extender\ExtenderFacade;
@@ -49,6 +50,9 @@ class BackendOrdersHelper
     /** @var PaymentsEntity */
     private $paymentsEntity;
     
+    /** @var OrderHistoryEntity */
+    private $orderHistoryEntity;
+    
     /** @var UsersEntity */
     private $usersEntity;
     
@@ -71,6 +75,7 @@ class BackendOrdersHelper
         $this->purchasesEntity   = $entityFactory->get(PurchasesEntity::class);
         $this->orderStatusEntity = $entityFactory->get(OrderStatusEntity::class);
         $this->orderLabelsEntity = $entityFactory->get(OrderLabelsEntity::class);
+        $this->orderHistoryEntity = $entityFactory->get(OrderHistoryEntity::class);
         $this->productsEntity    = $entityFactory->get(ProductsEntity::class);
         $this->imagesEntity      = $entityFactory->get(ImagesEntity::class);
         $this->deliveriesEntity  = $entityFactory->get(DeliveriesEntity::class);
@@ -372,6 +377,21 @@ class BackendOrdersHelper
         return ExtenderFacade::execute(__METHOD__, $statuses, func_get_args());
     }
 
+    public function attachLastUpdate($orders)
+    {
+        // Метки заказов
+        if (!empty($orders)) {
+            $ordersHistory = $this->orderHistoryEntity->getOrdersLastChanges(array_keys($orders));
+            if ($ordersHistory) {
+                foreach ($ordersHistory as $item) {
+                    $orders[$item->order_id]->last_update = $item;
+                }
+            }
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $orders, func_get_args());
+    }
+
     public function attachLabels($orders)
     {
         // Метки заказов
@@ -419,5 +439,30 @@ class BackendOrdersHelper
     {
         $labels = $this->orderLabelsEntity->find($filter = []);
         return ExtenderFacade::execute(__METHOD__, $labels, func_get_args());
+    }
+
+    public function findOtherOrdersOfClient($order, $page = 1, $perPage = 10)
+    {
+        $orders = $this->ordersEntity->findOtherOfClient($order, $page, $perPage);
+        return ExtenderFacade::execute(__METHOD__, $orders, func_get_args());
+    }
+
+    public function countOtherOrdersOfClient($order)
+    {
+        $count = $this->ordersEntity->countOtherOfClient($order);
+        return ExtenderFacade::execute(__METHOD__, $count, func_get_args());
+    }
+
+    public function getPaginationPerPage()
+    {
+        return ExtenderFacade::execute(__METHOD__, 10, func_get_args());
+    }
+
+    public function determineCurrentPage($page)
+    {
+        if (empty($page)) {
+            $page = 1;
+        }
+        return ExtenderFacade::execute(__METHOD__, $page, func_get_args());
     }
 }

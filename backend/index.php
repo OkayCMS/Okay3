@@ -97,6 +97,8 @@ $license->check();
 // Запускаем все модули
 $modules->startAllModules();
 
+$license->bindModulesRoutes();
+
 $smartyPlugins = include_once 'Okay/Core/SmartyPlugins/SmartyPlugins.php';
 
 // SL будем использовать только для получения сервисов, которые запросили для контроллера
@@ -139,12 +141,6 @@ if (!empty($manager)) {
 
     $backendTranslations->initTranslations($manager->lang);
     $design->assign('btr', $backendTranslations);
-    
-    foreach ($modules->getRunningModules() as $runningModule) {
-        foreach ($modules->getModuleBackendTranslations($runningModule['vendor'], $runningModule['module_name'], $manager->lang) as $var => $translation) {
-            $backendTranslations->addTranslation($var, $translation);
-        }
-    }
 }
 
 if (($controllerParams = $module->getBackendControllerParams($backendControllerName)) && in_array($backendControllerName, $modulesBackendControllers)) {

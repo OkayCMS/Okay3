@@ -356,7 +356,7 @@ class CategoriesEntity extends Entity
         $this->filteredCategoryIds = array_unique($this->filteredCategoryIds);
     }
 
-    private function initCategories()
+    public function initCategories()
     {
         $categories = $this->getAllCategoriesFromDb();
 
@@ -417,19 +417,30 @@ class CategoriesEntity extends Entity
         unset($pointers[0]);
         unset($ids);
 
+        $categoriesIdsWithProducts = [];
         $select = $this->queryFactory->newSelect();
-        $categoriesIdsWithProducts = $select->cols(['category_id'])
-            ->from('__products_categories')
-            ->groupBy(['category_id'])
-            ->results('category_id');
+        $select->cols(['category_id'])->from('__products_categories')->groupBy(['category_id']);
+        
+        foreach ($select->results('category_id') as $result) {
+            $categoriesIdsWithProducts[$result] = $result;
+        }
 
+        $hasProductsCategoriesIds = [];
         foreach($pointers as &$pointer) {
-            if (array_intersect($pointer->children, $categoriesIdsWithProducts)) {
-                $pointer->has_products = true;
-            } else {
-                $pointer->has_products = false;
+
+            if (isset($categoriesIdsWithProducts[$pointer->id])) {
+                $hasProductsCategoriesIds[] = $pointer->id;
+            }
+            $pointer->has_products = false;
+        }
+        unset($pointer);
+
+        foreach ($hasProductsCategoriesIds as $id) {
+            foreach ($pointers[$id]->path as &$c) {
+                $c->has_products = true;
             }
         }
+        unset($c);
 
         $this->categoriesTree = $tree->subcategories;
         $this->allCategories  = $pointers;
@@ -466,6 +477,10 @@ class CategoriesEntity extends Entity
 
     private function determineLevelDepth($category)
     {
+        if (empty($this->categoriesTree)) {
+            $this->initCategories();
+        }
+        
         if (empty($category->parent_id)) {
             return 1;
         }

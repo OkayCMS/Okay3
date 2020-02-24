@@ -101,18 +101,19 @@
 
                 <div class="activity_of_switch_item settings_router_switch">
                     <div class="okay_switch clearfix">
+                        <label class="switch_label">
+                            {$btr->settings_router_url_slash_end}
+                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </label>
                         <label class="switch switch-default">
                             <input class="switch-input" name="category_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->category_routes_template_slash_end}checked=""{/if}/>
                             <span class="switch-label"></span>
                             <span class="switch-handle"></span>
                         </label>
-                        <span class="settings_router_switch_title">{$btr->settings_router_url_slash_end}</span>
-                        <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
-                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                        </i>
                     </div>
                 </div>
-
                 <div class="toggle_body_wrap on fn_card">
                     <div class="okay_type_radio_wrap">
                         <input id="category_routes_default" class="hidden_check" name="category_routes_template" type="radio" value="default" {if empty($settings->category_routes_template) || $settings->category_routes_template == 'default'} checked="" {/if} />
@@ -149,28 +150,27 @@
                 {get_design_block block="settings_router_category"}
             </div>
         </div>
-
         {* Группа урлов товаров *}
         <div class="col-lg-6 col-md-12">
             <div class="boxed fn_toggle_wrap min_height_270px">
                 <div class="heading_box">
                     {$btr->product_routing|escape}
                 </div>
-
                 <div class="activity_of_switch_item settings_router_switch">
                     <div class="okay_switch clearfix">
+                        <label class="switch_label">
+                            {$btr->settings_router_url_slash_end}
+                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </label>
                         <label class="switch switch-default">
                             <input class="switch-input" name="product_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->product_routes_template_slash_end}checked=""{/if}/>
                             <span class="switch-label"></span>
                             <span class="switch-handle"></span>
                         </label>
-                        <span class="settings_router_switch_title">{$btr->settings_router_url_slash_end}</span>
-                        <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
-                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                        </i>
-                    </div>
+                     </div>
                 </div>
-
                 <div class="toggle_body_wrap on fn_card">
                     <div class="okay_type_radio_wrap">
                         <input id="product_routes_default" class="hidden_check" name="product_routes_template" type="radio" value="default" {if empty($settings->product_routes_template) || $settings->product_routes_template == 'default'} checked="" {/if} />
@@ -178,14 +178,12 @@
                             <span>{$rootUrl}/<input name="product_routes_template__default" placeholder="products" class="form-control prefix-url-input" type="text" value="{if $settings->product_routes_template__default}{$settings->product_routes_template__default}{else}products{/if}" />/product-name</span>
                         </label>
                     </div>
-
                     <div class="okay_type_radio_wrap">
                         <input id="product_routes_prefix_and_all_categories" class="hidden_check" name="product_routes_template" type="radio" value="prefix_and_path" {if $settings->product_routes_template == 'prefix_and_path'} checked="" {/if} />
                         <label for="product_routes_prefix_and_all_categories" class="okay_type_radio">
                             <span>{$rootUrl}/<input name="product_routes_template__prefix_and_path" placeholder="catalog" class="form-control prefix-url-input" type="text" value="{if $settings->product_routes_template__prefix_and_path}{$settings->product_routes_template__prefix_and_path}{else}catalog{/if}" />/category-level-1/.../category/product-name</span>
                         </label>
                     </div>
-
                     <div class="okay_type_radio_wrap">
                         <input id="product_routes_no_prefix_and_path" class="hidden_check" name="product_routes_template" type="radio" value="no_prefix_and_path" {if $settings->product_routes_template == 'no_prefix_and_path'} checked="" {/if} />
                         <label for="product_routes_no_prefix_and_path" class="okay_type_radio">
@@ -220,15 +218,17 @@
 
                 <div class="activity_of_switch_item settings_router_switch">
                     <div class="okay_switch clearfix">
+                        <label class="switch_label">
+                            {$btr->settings_router_url_slash_end}
+                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </label>
                         <label class="switch switch-default">
                             <input class="switch-input" name="brand_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->brand_routes_template_slash_end}checked=""{/if}/>
                             <span class="switch-label"></span>
                             <span class="switch-handle"></span>
                         </label>
-                        <span class="settings_router_switch_title">{$btr->settings_router_url_slash_end}</span>
-                        <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
-                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                        </i>
                     </div>
                 </div>
 
@@ -260,15 +260,17 @@
 
                 <div class="activity_of_switch_item settings_router_switch">
                     <div class="okay_switch clearfix">
+                        <label class="switch_label">
+                            {$btr->settings_router_url_slash_end}
+                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </label>
                         <label class="switch switch-default">
                             <input class="switch-input" name="blog_item_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->blog_item_routes_template_slash_end}checked=""{/if}/>
                             <span class="switch-label"></span>
                             <span class="switch-handle"></span>
                         </label>
-                        <span class="settings_router_switch_title">{$btr->settings_router_url_slash_end}</span>
-                        <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
-                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                        </i>
                     </div>
                 </div>
 
@@ -300,15 +302,17 @@
 
                 <div class="activity_of_switch_item settings_router_switch">
                     <div class="okay_switch clearfix">
+                        <label class="switch_label">
+                            {$btr->settings_router_url_slash_end}
+                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </label>
                         <label class="switch switch-default">
                             <input class="switch-input" name="news_item_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->news_item_routes_template_slash_end}checked=""{/if}/>
                             <span class="switch-label"></span>
                             <span class="switch-handle"></span>
                         </label>
-                        <span class="settings_router_switch_title">{$btr->settings_router_url_slash_end}</span>
-                        <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
-                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                        </i>
                     </div>
                 </div>
 
@@ -340,56 +344,62 @@
 
                 <div class="toggle_body_wrap on fn_card">
                     <div class="okay_type_radio_wrap">
-                        <label for="" class="okay_type_radio_no_width" style="width: 80%;">
+                        <label for="" class="okay_type_radio_no_width" >
                             <span>{$btr->common_routes_brands}: {$rootUrl}/<input name="all_brands_routes_template__default" placeholder="brands" class="form-control prefix-url-input" type="text" value="{if $settings->all_brands_routes_template__default}{$settings->all_brands_routes_template__default}{else}brands{/if}" /></span>
                         </label>
 
                         <div class="okay_switch clearfix">
+                            <label class="switch_label">
+                                {$btr->settings_router_url_slash_end}
+                                <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </label>
                             <label class="switch switch-default">
                                 <input class="switch-input" name="all_brands_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->all_brands_routes_template_slash_end}checked=""{/if}/>
                                 <span class="switch-label"></span>
                                 <span class="switch-handle"></span>
                             </label>
-                            <span class="settings_router_switch_title">{$btr->settings_router_url_slash_end}</span>
-                            <i class="fn_tooltips" title="{$btr->settings_router_common_slash_end_notice}">
-                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                            </i>
                         </div>
                     </div>
 
                     <div class="okay_type_radio_wrap">
-                        <label for="" class="okay_type_radio_no_width" style="width: 80%;">
+                        <label for="" class="okay_type_radio_no_width" >
                             <span>{$btr->common_routes_posts}: {$rootUrl}/<input name="all_blog_routes_template__default" placeholder="brands" class="form-control prefix-url-input" type="text" value="{if $settings->all_blog_routes_template__default}{$settings->all_blog_routes_template__default}{else}blog{/if}" /></span>
                         </label>
 
                         <div class="okay_switch clearfix">
+                            <label class="switch_label">
+                                {$btr->settings_router_url_slash_end}
+                                <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </label>
                             <label class="switch switch-default">
                                 <input class="switch-input" name="all_blog_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->all_blog_routes_template_slash_end}checked=""{/if}/>
                                 <span class="switch-label"></span>
                                 <span class="switch-handle"></span>
                             </label>
-                            <span class="settings_router_switch_title">{$btr->settings_router_url_slash_end}</span>
-                            <i class="fn_tooltips" title="{$btr->settings_router_common_slash_end_notice}">
-                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                            </i>
                         </div>
                     </div>
 
                     <div class="okay_type_radio_wrap">
-                        <label for="" class="okay_type_radio_no_width" style="width: 80%;">
+                        <label for="" class="okay_type_radio_no_width" >
                             <span>{$btr->common_routes_news}: {$rootUrl}/<input name="all_news_routes_template__default" placeholder="brands" class="form-control prefix-url-input" type="text" value="{if $settings->all_news_routes_template__default}{$settings->all_news_routes_template__default}{else}news{/if}" /></span>
                         </label>
 
                         <div class="okay_switch clearfix">
+                            <label class="switch_label">
+                                {$btr->settings_router_url_slash_end}
+                                <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </label>
                             <label class="switch switch-default">
                                 <input class="switch-input" name="all_news_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->all_news_routes_template_slash_end}checked=""{/if}/>
                                 <span class="switch-label"></span>
                                 <span class="switch-handle"></span>
                             </label>
-                            <span class="settings_router_switch_title">{$btr->settings_router_url_slash_end}</span>
-                            <i class="fn_tooltips" title="{$btr->settings_router_common_slash_end_notice}">
-                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                            </i>
                         </div>
                     </div>
                 </div>

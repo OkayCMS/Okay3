@@ -109,7 +109,7 @@
                             <div class="mb-1">
                                 <div class="heading_label">{$btr->general_group|escape}</div>
                                 <div class="">
-                                    <select name="group_id" class="selectpicker">
+                                    <select name="group_id" class="selectpicker form-control">
                                         <option value="0">{$btr->user_not_in_group|escape}</option>
                                         {foreach $groups as $g}
                                             <option value="{$g->id}" {if $user->group_id == $g->id}selected{/if}>{$g->name|escape}</option>

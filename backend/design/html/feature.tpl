@@ -81,7 +81,7 @@
             <div class="boxed match_matchHeight_true">
                 {*Название элемента сайта*}
                 <div class="row d_flex">
-                    <div class="col-lg-10 col-md-9 col-sm-12">
+                    <div class="col-lg-8 col-md-9 col-sm-12">
                         <div class="fn_step-1">
                         <div class="heading_label heading_label--required">
                             <span>{$btr->general_name|escape}</span>
@@ -95,10 +95,10 @@
                         </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12 col-lg-6 col-md-6">
+                            <div class="col-xl-6 col-lg-6 col-sm-12">
                                 <div class="fn_step-2">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">URL</span>
+                                    <div class="input-group input-group--dabbl">
+                                        <span class="input-group-addon input-group-addon--left">URL</span>
                                         <input name="url" class="form-control fn_url {if $feature->id}fn_disabled{/if}" {if $feature->id}readonly=""{/if} type="text" value="{$feature->url|escape}" />
                                         <input type="checkbox" id="block_translit" class="hidden" value="1" {if $feature->id}checked=""{/if}>
                                         <span class="input-group-addon fn_disable_url">
@@ -111,26 +111,28 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6 col-md-6 mt-q">
+                            <div class="col-xl-6 col-lg-6 col-sm-12">
                                 <div class="fn_step-3">
-                                <div class="heading_label boxes_inline">
-                                    {$btr->feature_url_in_product|escape}
-                                </div>
-                                <div class="boxes_inline">
-                                    <div class="okay_switch clearfix">
-                                        <label class="switch switch-default">
-                                            <input class="switch-input" name="url_in_product" value='1' type="checkbox" {if $feature->url_in_product}checked=""{/if}/>
-                                            <span class="switch-label"></span>
-                                            <span class="switch-handle"></span>
-                                        </label>
+                                    <div class="heading_label__switch heading_label__switch--not_label">
+                                        <div class="heading_label boxes_inline">
+                                            {$btr->feature_url_in_product|escape}
+                                        </div>
+                                        <div class="boxes_inline">
+                                            <div class="okay_switch clearfix">
+                                                <label class="switch switch-default">
+                                                    <input class="switch-input" name="url_in_product" value='1' type="checkbox" {if $feature->url_in_product}checked=""{/if}/>
+                                                    <span class="switch-label"></span>
+                                                    <span class="switch-handle"></span>
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
                                 </div>
                             </div>
                         </div>
                         {get_design_block block="feature_general"}
                     </div>
-                    <div class="col-lg-2 col-md-3 col-sm-12">
+                    <div class="col-lg-4 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
                             <div class="activity_of_switch_item"> {* row block *}
                                 <div class="fn_step-4 okay_switch clearfix">
@@ -175,7 +177,7 @@
                         </div>
                     </div>
 
-                    <div class="activity_of_switch_item"> {* row block *}
+                    <div class="activity_of_switch_item mb-1"> {* row block *}
                         <div class="okay_switch clearfix">
                             <label class="switch_label">{$btr->feature_select_all_categories|escape}</label>
                             <label class="switch switch-default">
@@ -186,7 +188,7 @@
                         </div>
                     </div>
 
-                    <select class="selectpicker fn_select_all_categories col-xs-12 px-0" multiple name="feature_categories[]" size="10" data-selected-text-format="count" >
+                    <select class="selectpicker form-control fn_select_all_categories col-xs-12 px-0" multiple name="feature_categories[]" size="10" data-selected-text-format="count" >
                         {function name=category_select selected_id=$product_category level=0}
                             {foreach $categories as $category}
                                 <option value='{$category->id}' {if in_array($category->id, $feature_categories)}selected{/if} category_name='{$category->single_name}'>{section name=sp loop=$level}&nbsp;&nbsp;&nbsp;&nbsp;{/section}{$category->name}</option>
@@ -257,7 +259,7 @@
 
                     <div class="fn_step-7 row mb-1">
                         <div class="col-lg-8 col-md-7 col-sm 12">
-                            <button type="button" class="btn btn_small btn-info fn_add_value float-lg-left mr-1">
+                            <button type="button" class="btn btn_small btn-secondary fn_add_value float-lg-left mr-1">
                                 {include file='svg_icon.tpl' svgId='plus'}
                                 <span>{$btr->feature_add_value|escape}</span>
                             </button>
@@ -276,7 +278,7 @@
                         </div>
                         <div class="col-lg-4 col-md-5 col-sm 12">
                             <div class="float-xs-none float-md-right">
-                                <select onchange="location = this.value;" class="selectpicker">
+                                <select onchange="location = this.value;" class="selectpicker form-control">
                                     <option value="{url limit=5}" {if $current_limit == 5}selected{/if}>{$btr->general_show_by|escape} 5</option>
                                     <option value="{url limit=10}" {if $current_limit == 10}selected{/if}>{$btr->general_show_by|escape} 10</option>
                                     <option value="{url limit=25}" {if $current_limit == 25}selected{/if}>{$btr->general_show_by|escape} 25</option>
@@ -296,7 +298,7 @@
                             <div class="okay_list_heading feature_value_products_num">{$btr->feature_value_products_num}</div>
                             <div class="okay_list_heading feature_value_index">
                                 {$btr->feature_value_index}
-                                <div class="okay_switch clearfix">
+                                <div class="okay_switch clearfix mt-h">
                                     <label class="switch switch-default">
                                         <input class="switch-input fn_to_index_all_values" value="" type="checkbox" {if $feature->to_index_new_value}checked=""{/if}/>
                                         <input type="hidden" name="to_index_all_values" value="" disabled=""/>
@@ -348,7 +350,7 @@
                                         </div>
                                         <div class="okay_list_boding okay_list_close">
                                             <button data-hint="{$btr->feature_delete_value|escape}" type="button" class="btn_close fn_remove_value hint-bottom-right-t-info-s-small-mobile hint-anim">
-                                                {include file='svg_icon.tpl' svgId='delete'}
+                                                {include file='svg_icon.tpl' svgId='trash'}
                                                 <span class="visible_md">{$btr->feature_delete_value|escape}</span>
                                             </button>
                                         </div>
@@ -396,7 +398,7 @@
                                     </div>
                                     <div class="okay_list_boding okay_list_close">
                                         <button data-hint="{$btr->feature_delete_alias|escape}" type="button" class="btn_close fn_remove_item hint-bottom-right-t-info-s-small-mobile  hint-anim">
-                                            {include file='svg_icon.tpl' svgId='delete'}
+                                            {include file='svg_icon.tpl' svgId='trash'}
                                             <span class="visible_md">{$btr->feature_delete_alias|escape}</span>
                                         </button>
                                     </div>

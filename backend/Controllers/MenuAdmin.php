@@ -4,71 +4,48 @@
 namespace Okay\Admin\Controllers;
 
 
+use Okay\Admin\Helpers\BackendMenuHelper;
+use Okay\Admin\Requests\BackendMenuRequest;
 use Okay\Entities\MenuEntity;
 use Okay\Entities\MenuItemsEntity;
 
 class MenuAdmin extends IndexAdmin
 {
 
-    public function fetch(MenuEntity $menuEntity, MenuItemsEntity $menuItemsEntity)
-    {
+    public function fetch(
+        BackendMenuRequest $backendMenuRequest,
+        BackendMenuHelper $backendMenuHelper,
+        MenuEntity $menuEntity,
+        MenuItemsEntity $menuItemsEntity
+    ) {
 
         $menuItems = [];
         
         /*Принимаем данные о меню*/
         if ($this->request->method('POST')) {
-            $menu = new \stdClass();
-            $menu->id       = $this->request->post('id', 'integer');
-            $menu->group_id = trim($this->request->post('group_id', 'string'));
-            $menu->name     = $this->request->post('name');
-            $menu->visible  = $this->request->post('visible', 'integer');
-            $menu->group_id = preg_replace("/[\s]+/ui", '', $menu->group_id);
-            $menu->group_id = strtolower(preg_replace("/[^0-9a-z_]+/ui", '', $menu->group_id));
-
-            if ($this->request->post('menu_items')) {
-                foreach ($this->request->post('menu_items') as $field => $values) {
-                    foreach ($values as $i => $v) {
-                        if (empty($menuItems[$i])) {
-                            $menuItems[$i] = new \stdClass();
-                            $menuItems[$i]->i_tm = $i;
-                        }
-                        $menuItems[$i]->$field = $v;
-                    }
-                }
-                // сортируем по родителю
-                usort($menuItems, function ($item1, $item2) {
-                    if ($item1->parent_index == $item2->parent_index) {
-                        return $item1->i_tm - $item2->i_tm;
-                    }
-                    return strcmp($item1->parent_index, $item2->parent_index);
-                });
-                $tm = [];
-                
-                $local = [trim($this->request->getRootUrl(), "/"), trim(preg_replace("~^https?://~", "", $this->request->getRootUrl()), "/")];
-                foreach ($menuItems as $key => $item) {
-                    foreach ($local as $l) {
-                        $item->url = preg_replace("~^$l/?~", "", $item->url);
-                    }
-                    $tm[$item->index] = $item;
-                }
-                $menuItems = $tm;
-            }
+            $menu = $backendMenuRequest->postMenu();
+            $menuItems = $backendMenuRequest->postMenuItems();
 
             if (($m = $menuEntity->get((string)$menu->group_id)) && $m->id!=$menu->id) {
                 $this->design->assign('message_error', 'group_id_exists');
-                $menuItems = $this->buildTree($menuItems);
+                $menuItems = $backendMenuHelper->buildTree($menuItems);
             } elseif (empty($menu->group_id)) {
                 $this->design->assign('message_error', 'empty_group_id');
-                $menuItems = $this->buildTree($menuItems);
+                $menuItems = $backendMenuHelper->buildTree($menuItems);
             } else {
                 /*Добавляем/обновляем меню*/
                 if (empty($menu->id)) {
-                    $menu->id = $menuEntity->add($menu);
+                    $preparedMenu = $backendMenuHelper->prepareAdd($menu);
+                    $menu->id  = $backendMenuHelper->add($preparedMenu);
+
                     $this->design->assign('message_success', 'added');
                 } else {
-                    $menuEntity->update($menu->id, $menu);
+                    $preparedMenu = $backendMenuHelper->prepareUpdate($menu);
+                    $backendMenuHelper->update($preparedMenu);
+                    
                     $this->design->assign('message_success', 'updated');
                 }
+                
                 if ($menu->id) {
                     $menuItemsIds = [];
                     if (is_array($menuItems)) {
@@ -88,9 +65,11 @@ class MenuAdmin extends IndexAdmin
                             unset($item->parent_index);
                             unset($item->i_tm);
                             if (empty($item->id)) {
-                                $item->id = $menuItemsEntity->add($item);
+                                $preparedMenuItem = $backendMenuHelper->prepareAddMenuItem($item);
+                                $item->id  = $backendMenuHelper->addMenuItem($preparedMenuItem);
                             } else {
-                                $menuItemsEntity->update($item->id, $item);
+                                $preparedMenuItem = $backendMenuHelper->prepareUpdateMenuItem($item);
+                                $backendMenuHelper->updateMenuItem($preparedMenuItem);
                             }
                             if ($item->id) {
                                 $menuItemsIds[] = $item->id;
@@ -114,17 +93,17 @@ class MenuAdmin extends IndexAdmin
                         $i++;
                     }
 
-                    $menuItems = $menuItemsEntity->getMenuItemsTree((int)$menu->id);
+                    $menuItems = $backendMenuHelper->getMenuItemsTree((int)$menu->id);
                 }
-                $menu = $menuEntity->get($menu->id);
+                $menu = $backendMenuHelper->getMenu($menu->id);
             }
         } else {
             /*Отображение меню*/
             $id = $this->request->get('id', 'integer');
             if (!empty($id)) {
-                $menu = $menuEntity->get((int)$id);
+                $menu = $backendMenuHelper->getMenu($id);
                 if (!empty($menu->id)) {
-                    $menuItems = $menuItemsEntity->getMenuItemsTree((int)$menu->id);
+                    $menuItems = $backendMenuHelper->getMenuItemsTree((int)$menu->id);
                 }
             } else {
                 $menu = new \stdClass();
@@ -136,34 +115,4 @@ class MenuAdmin extends IndexAdmin
         $this->design->assign('menu_items', $menuItems);
         $this->response->setContent($this->design->fetch('menu.tpl'));
     }
-
-    private function buildTree($items) {
-        $tree = new \stdClass();
-        $tree->submenus = array();
-
-        // Указатели на узлы дерева
-        $pointers = array();
-        $pointers[0] = &$tree;
-
-        $finish = false;
-        // Не кончаем, пока не кончатся элементы, или пока ниодну из оставшихся некуда приткнуть
-        while (!empty($items) && !$finish) {
-            $flag = false;
-            // Проходим все выбранные элементы
-            foreach ($items as $k => $item) {
-                if (isset($pointers[$item->parent_index])) {
-                    // В дерево элементов меню (через указатель) добавляем текущий элемент
-                    $pointers[$item->index] = $pointers[$item->parent_index]->submenus[] = $item;
-
-                    // Убираем использованный элемент из массива
-                    unset($items[$k]);
-                    $flag = true;
-                }
-            }
-            if (!$flag) $finish = true;
-        }
-        unset($pointers[0]);
-        return $tree->submenus;
-    }
-
 }

@@ -162,7 +162,7 @@ trait CRUD
         }
 
         $props = get_object_vars($object);
-        if (empty($props)) {
+        if (empty($props) && empty($result->description)) {
             return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
