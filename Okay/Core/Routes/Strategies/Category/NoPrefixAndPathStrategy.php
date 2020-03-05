@@ -43,26 +43,24 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
             if ($this->compareUrlStartsNoSuccess($category->path_url, $url)) {
                 continue;
             }
+            
+            $urlPath = trim($category->path_url, '/');
 
-            if ($this->matchHasHigherPriority($matchedRoute, $category->path_url)) {
-                $urlPath = trim($category->path_url, '/');
-
-                $urlParts = explode('/', $urlPath);
-                $lastPart = array_pop($urlParts);
-                $pathPrefix = '';
-                if (!empty($urlParts)) {
-                    $pathPrefix = implode('/', $urlParts) . '/';
-                }
-                $filter = trim($this->matchFiltersUrl($urlPath, $url), '/');
-                $matchedRoute = [
-                    '{$url}{$filtersUrl}',
-                    [
-                        '{$url}' => "{$pathPrefix}({$lastPart})",
-                        '{$filtersUrl}' => "/?(" . $filter . ")",
-                    ],
-                    []
-                ];
+            $urlParts = explode('/', $urlPath);
+            $lastPart = array_pop($urlParts);
+            $pathPrefix = '';
+            if (!empty($urlParts)) {
+                $pathPrefix = implode('/', $urlParts) . '/';
             }
+            $filter = trim($this->matchFiltersUrl($urlPath, $url), '/');
+            $matchedRoute = [
+                '{$url}{$filtersUrl}',
+                [
+                    '{$url}' => "{$pathPrefix}({$lastPart})",
+                    '{$filtersUrl}' => "/?(" . $filter . ")",
+                ],
+                []
+            ];
         }
 
         if (empty($matchedRoute)) {
@@ -77,11 +75,6 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
         $categoryPathUrl = substr($categoryPathUrl, 1);
         $compareAccessUri = substr($url, 0, strlen($categoryPathUrl));
         return $categoryPathUrl !== $compareAccessUri;
-    }
-
-    private function matchHasHigherPriority($prevMatch, $currentMatch)
-    {
-        return strlen($prevMatch[1]['{$url}']) < strlen($currentMatch);
     }
 
     private function matchFiltersUrl($categoryPathUrl, $url)

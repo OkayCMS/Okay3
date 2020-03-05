@@ -32,7 +32,7 @@ class AllProductsMetadataHelper extends CommonMetadataHelper
         if ($keyword = $this->design->getVar('keyword')) {
             /** @var FrontTranslations $translations */
             $translations = $this->SL->getService(FrontTranslations::class);
-            $h1 = $translations->getTranslation('general_search') . ' ' . $keyword;
+            $h1 = $translations->getTranslation('general_search') . ' ' . htmlspecialchars(strip_tags($keyword));
         } else {
             $h1 = parent::getH1Template();
         }
@@ -48,7 +48,7 @@ class AllProductsMetadataHelper extends CommonMetadataHelper
         if ($keyword = $this->design->getVar('keyword')) {
             /** @var FrontTranslations $translations */
             $translations = $this->SL->getService(FrontTranslations::class);
-            $description = $translations->getTranslation('general_search') . ' ' . $keyword;
+            $description = $translations->getTranslation('general_search') . ' ' . htmlspecialchars(strip_tags($keyword));
         } else {
             $description = parent::getDescriptionTemplate();
         }

@@ -68,6 +68,12 @@
                     <div class="okay_list_heading okay_list_photo">{$btr->general_photo|escape}</div>
                     <div class="okay_list_heading okay_list_brands_name">{$btr->general_name|escape}</div>
                     <div class="okay_list_heading okay_list_status">{$btr->general_enable|escape}</div>
+                    {$block = {get_design_block block="brands_icon_title"}}
+                    {if $block}
+                        <div class="okay_list_setting">
+                            {$block}
+                        </div>
+                    {/if}
                     <div class="okay_list_heading okay_list_setting">{$btr->general_activities|escape}</div>
                     <div class="okay_list_heading okay_list_close"></div>
                 </div>

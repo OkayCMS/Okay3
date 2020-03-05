@@ -217,8 +217,7 @@
 
     <script>ut_tracker.start('parsing:head:scripts');</script>
     {if ($is_mobile === true || $is_tablet === true) && ($controller == "CategoryController" || $controller == "BrandController" || $controller == "ProductsController")}
-        {js file='jquery-migrate-3.0.1.min.js' defer=true}
-        {js file='ui.touch-punch.min.js' defer=true}
+        {js file='jquery.ui.touch-punch.js' defer=true}
     {/if}
     <script>ut_tracker.end('parsing:head:scripts');</script>
 

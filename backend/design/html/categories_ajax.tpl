@@ -1,14 +1,14 @@
 {*Параметры элемента*}
-{if $categories_ajax}
-    {foreach $categories_ajax as $ajax_category}
-        <div class="fn_row">
-            <div class="okay_list_row fn_sort_item">
-                <input type="hidden" name="positions[{$ajax_category->id}]" value="{$ajax_category->position}" />
+{if $categories}
+    {foreach $categories as $category}
+        <div class="{if $level == 1}fn_step-1 fn_sort_item {/if}fn_row okay_list_body_item">
+            <div class="okay_list_row">
+                <input type="hidden" name="positions[{$category->id}]" value="{$category->position}" />
 
-                {if $ajax_category->subcategories}
+                {if $category->subcategories}
                     <div class="okay_list_heading okay_list_subicon">
-                        <a href="javascript:;" class="fn_ajax_toggle" data-toggle="0" data-category_id="{$ajax_category->id}" >
-                            <i class="fa fa-plus-square"></i>
+                        <a href="javascript:;" class="fn_ajax_toggle" data-toggle="{if $isAllCategories || (!empty($smarty.get.category_id) && in_array($smarty.get.category_id, $category->children))}1{else}0{/if}" data-category_id="{$category->id}" >
+                            <i class="fa fa-plus-square{if $isAllCategories || (!empty($smarty.get.category_id) && in_array($smarty.get.category_id, $category->children))} fa-minus-square{/if}"></i>
                         </a>
                     </div>
                 {else}
@@ -20,14 +20,14 @@
                 </div>
 
                 <div class="okay_list_boding okay_list_check">
-                    <input class="hidden_check" type="checkbox" id="id_{$ajax_category->id}" name="check[]" value="{$ajax_category->id}" />
-                    <label class="okay_ckeckbox" for="id_{$ajax_category->id}"></label>
+                    <input class="hidden_check" type="checkbox" id="id_{$category->id}" name="check[]" value="{$category->id}" />
+                    <label class="okay_ckeckbox" for="id_{$category->id}"></label>
                 </div>
 
                 <div class="okay_list_boding okay_list_photo hidden-sm-down">
-                    {if $ajax_category->image}
-                        <a href="index.php?controller=CategoryAdmin&id={$ajax_category->id}">
-                            <img src="{$ajax_category->image|resize:55:55:false:$config->resized_categories_dir}" alt="" />
+                    {if $category->image}
+                        <a href="{url controller=CategoryAdmin id=$category->id return={url controller=CategoriesAdmin category_id=$category->id}}">
+                            <img src="{$category->image|resize:55:55:false:$config->resized_categories_dir}" alt="" />
                         </a>
                     {else}
                         <img height="55" width="55" src="design/images/no_image.png"/>
@@ -35,8 +35,8 @@
                 </div>
 
                 <div class="okay_list_boding okay_list_categories_name">
-                    <a href="index.php?controller=CategoryAdmin&id={$ajax_category->id}">
-                        {$ajax_category->name|escape}
+                    <a href="{url controller=CategoryAdmin id=$category->id return={url controller=CategoriesAdmin category_id=$category->id}}">
+                        {$category->name|escape}
                     </a>
                     {get_design_block block="categories_list_name"}
                 </div>
@@ -46,7 +46,7 @@
                     {*visible*}
                     <div>
                         <label class="switch switch-default">
-                            <input class="switch-input fn_ajax_action {if $ajax_category->visible}fn_active_class{/if}" data-controller="category" data-action="visible" data-id="{$ajax_category->id}" name="visible" value="1" type="checkbox"  {if $ajax_category->visible}checked=""{/if}/>
+                            <input class="switch-input fn_ajax_action {if $category->visible}fn_active_class{/if}" data-controller="category" data-action="visible" data-id="{$category->id}" name="visible" value="1" type="checkbox"  {if $category->visible}checked=""{/if}/>
                             <span class="switch-label"></span>
                             <span class="switch-handle"></span>
                         </label>
@@ -55,7 +55,7 @@
 
                 <div class="okay_list_setting">
                     {*open*}
-                    <a href="{url_generator route="category" url=$ajax_category->url absolute=1}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
+                    <a href="{url_generator route="category" url=$category->url absolute=1}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
                         {include file='svg_icon.tpl' svgId='icon_desktop'}
                     </a>
                     {get_design_block block="categories_actions"}
@@ -67,8 +67,12 @@
                     </button>
                 </div>
             </div>
-            {if $ajax_category->subcategories}
-                <div class="fn_ajax_categories categories_sub_block sortable subcategories_level_2"></div>
+            {if $category->subcategories}
+                <div class="fn_ajax_categories categories_sub_block {if $level == 1}subcategories_level_1{else}subcategories_level_2{/if}">
+                    {if $isAllCategories || (!empty($smarty.get.category_id) && in_array($smarty.get.category_id, $category->children))}
+                        {include file="categories_ajax.tpl" categories=$category->subcategories level=$level+1}
+                    {/if}
+                </div>
             {/if}
         </div>
     {/foreach}

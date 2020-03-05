@@ -27,4 +27,5 @@ $lang['okaycms__hotline__adult'] = 'Sexual Products';
 $lang['okaycms__hotline__country_of_origin'] = 'Country of origin';
 $lang['okaycms__hotline__country_of_origin_notify'] = 'Products for adults';
 $lang['okaycms__hotline__upload_products'] = 'Selection of goods for unloading';
-$lang['okaycms__hotline__guarantee'] = 'Guarantee (guarantee)';
+$lang['okaycms__hotline__guarantee_manufacturer'] = 'Guarantee manufacturer (months)';
+$lang['okaycms__hotline__guarantee_shop'] = 'Guarantee shop (days)';

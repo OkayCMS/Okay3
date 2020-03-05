@@ -113,7 +113,10 @@ $response->addHeader('Pragma: no-cache');
 
 // Берем название модуля из get-запроса
 $backendControllerName = $request->get('controller');
-$backendControllerName = preg_replace("/[^A-Za-z0-9\.]+/", "", $backendControllerName);
+$backendControllerName = preg_replace("/[^A-Za-z0-9.@]+/", "", $backendControllerName);
+$routeParams = explode('@', $backendControllerName, 2);
+$backendControllerName = $routeParams[0];
+$methodName = (!empty($routeParams[1]) ? $routeParams[1] : 'fetch');
 
 $manager = null;
 if (!empty($_SESSION['admin'])) {
@@ -167,7 +170,10 @@ $backend = new $controllerName($manager, $backendControllerName);
 
 $access = call_user_func_array([$backend, 'onInit'], getMethodParams($backend, 'onInit'));
 if ($access) {
-    call_user_func_array([$backend, 'fetch'], getMethodParams($backend, 'fetch'));
+    if (!method_exists($backend, $methodName)) {
+        throw new Exception("Method \"{$methodName}\" is not exists in \"{$controllerName}\" controller");
+    }
+    call_user_func_array([$backend, $methodName], getMethodParams($backend, $methodName));
 }
 
 function getMethodParams($controllerName, $methodName)

@@ -229,7 +229,7 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-6">
                             <div class="boxed fn_image_block">
-                                {if $config->watermark_file}
+                                {if $config->watermark_file && is_file($config->watermark_file)}
                                     <div class="fn_parent_image">
                                         <input class="fn_accept_delete" name="delete_watermark" value="" type="hidden" />
                                         <div class="banner_image fn_image_wrapper text-xs-center">
@@ -241,7 +241,7 @@
                                     <div class="fn_parent_image"></div>
                                 {/if}
 
-                                <div class="fn_upload_image dropzone_block_image text-xs-center {if $config->watermark_file} hidden{/if}">
+                                <div class="fn_upload_image dropzone_block_image text-xs-center {if $config->watermark_file && is_file($config->watermark_file)} hidden{/if}">
                                     <i class="fa fa-plus font-5xl" aria-hidden="true"></i>
                                     <input class="dropzone_image" name="watermark_file" type="file" accept="image/jpeg,image/png,image/gif" />
                                 </div>

@@ -131,7 +131,29 @@ class CategoriesEntity extends Entity
             }
         }
 
+        $this->flush();
         return ExtenderFacade::execute([static::class, __FUNCTION__], $matchedCategories, func_get_args());
+    }
+
+    public function findOne(array $filter = [])
+    {
+        if (empty($this->categoriesTree)) {
+            $this->initCategories();
+        }
+
+        if (empty($filter)) {
+            return ExtenderFacade::execute([static::class, __FUNCTION__], reset($this->allCategories), func_get_args());
+        }
+        
+        $this->buildFilter($filter);
+        foreach ($this->filteredCategoryIds as $id) {
+            if (isset($this->allCategories[$id])) {
+                $this->flush();
+                return ExtenderFacade::execute([static::class, __FUNCTION__], $this->allCategories[$id], func_get_args());
+            }
+        }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
     }
 
     public function delete($ids)

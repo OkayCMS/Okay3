@@ -73,10 +73,9 @@ class ReportStatsAdmin extends IndexAdmin
         $cat = $categoriesEntity->get($cat_filter);
         foreach ($report_stat_purchases as $id=>$r) {
             if (!empty($r->product_id)) {
-                $tmp_cat = $categoriesEntity->find(array('product_id' => $r->product_id));
-                $tmp_cat = reset($tmp_cat);
-
-                if (!empty($cat_filter) && !in_array($cat_filter,(array)$tmp_cat->path[$cat->level_depth-1]->children)) {
+                $tmp_cat = $categoriesEntity->findOne(array('product_id' => $r->product_id));
+                
+                if (!empty($cat_filter) && (!isset($tmp_cat->path[$cat->level_depth-1]) || !in_array($cat_filter,(array)$tmp_cat->path[$cat->level_depth-1]->children))) {
                     unset($report_stat_purchases[$id]);
                 } else {
                     $report_stat_purchases[$id]->category = $tmp_cat;

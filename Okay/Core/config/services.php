@@ -171,6 +171,7 @@ $services = [
             new SR(Smarty::class),
             new SR(Mobile_Detect::class),
             new SR(TemplateConfig::class),
+            new SR(Module::class),
             new PR('design.smarty_cache_lifetime'),
             new PR('design.smarty_compile_check'),
             new PR('design.smarty_html_minify'),

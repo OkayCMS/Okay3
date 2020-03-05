@@ -128,10 +128,6 @@
                         {*Шапка таблицы*}
                         <div class="okay_list_head">
                             <div class="okay_list_boding okay_list_drag"></div>
-                            <div class="okay_list_heading okay_list_check">
-                                <input class="hidden_check fn_check_all" type="checkbox" id="check_all_1" name="" value="" />
-                                <label class="okay_ckeckbox" for="check_all_1"></label>
-                            </div>
                             <div class="okay_list_heading okay_list_photo">{$btr->general_photo|escape}</div>
                             <div class="okay_list_heading okay_list_brands_name">{$btr->payment_np_payment_method_name|escape}</div>
                             <div class="okay_list_heading okay_list_close"></div>
@@ -144,11 +140,6 @@
                                 <div class="fn_step-1 fn_row okay_list_body_item fn_sort_item">
                                     <div class="okay_list_row ">
                                         <div class="okay_list_boding okay_list_drag"></div>
-
-                                        <div class="okay_list_boding okay_list_check">
-                                            <input class="hidden_check" type="checkbox" id="id_{$brand->id}" name="check[]" value="{$brand->id}" />
-                                            <label class="okay_ckeckbox" for="id_{$brand->id}"></label>
-                                        </div>
 
                                         <div class="okay_list_boding okay_list_photo">
                                             {if $payment_method->image}
@@ -167,7 +158,7 @@
 
                                         <div class="okay_list_boding okay_list_status" style="width: 200px;">
                                             <label class="switch switch-default ">
-                                                <input class="switch-input fn_ajax_action {if $payment_method->visible}fn_active_class{/if}" data-controller="payment" data-action="novaposhta_cost__cash_on_delivery" data-id="{$payment_method->id}" name="novaposhta_cost__cash_on_delivery" value="1" type="checkbox"  {if $payment_method->novaposhta_cost__cash_on_delivery}checked=""{/if}/>
+                                                <input class="switch-input fn_ajax_action {if $payment_method->novaposhta_cost__cash_on_delivery}fn_active_class{/if}" data-controller="payment" data-action="novaposhta_cost__cash_on_delivery" data-id="{$payment_method->id}" name="novaposhta_cost__cash_on_delivery" value="1" type="checkbox"  {if $payment_method->novaposhta_cost__cash_on_delivery}checked=""{/if}/>
                                                 <span class="switch-label"></span>
                                                 <span class="switch-handle"></span>
                                             </label>

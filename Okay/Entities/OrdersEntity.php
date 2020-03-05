@@ -324,7 +324,7 @@ class OrdersEntity extends Entity
                     IF(o.formatted_phone = :formatted_phone, 1, 0) AS `phone_match` 
                 FROM ".self::getTable()." AS o 
                 WHERE id <> :order_id
-                  AND (o.email = :email OR o.formatted_phone = :formatted_phone)
+                  AND ( (o.email != '' AND o.email = :email) OR (o.formatted_phone != '' AND o.formatted_phone = :formatted_phone) )
                 ORDER BY id DESC
                 {$limitOffset}
             ")

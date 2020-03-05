@@ -1,4 +1,6 @@
 User-agent: *
+Allow: *.css
+Allow: *.js
 Disallow: /404
 Disallow: /backend/
 Disallow: /lang_general/
@@ -14,7 +16,7 @@ Disallow: /*?currency_id
 Disallow: /*?keyword
 Disallow: /*?utm
 Disallow: /*&utm
-Disallow: /*?variant
+Disallow: /cart
 
 User-agent: Yandex
 Allow: *.css
@@ -34,7 +36,6 @@ Disallow: /*?currency_id
 Disallow: /*?keyword
 Disallow: /*?utm
 Disallow: /*&utm
-Disallow: /*?variant
 Disallow: /cart
 
 User-agent: Googlebot
@@ -55,4 +56,4 @@ Disallow: /*?currency_id
 Disallow: /*?keyword
 Disallow: /*?utm
 Disallow: /*&utm
-Disallow: /*?variant
+Disallow: /cart

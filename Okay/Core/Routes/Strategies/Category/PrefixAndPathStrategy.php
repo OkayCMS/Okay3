@@ -50,25 +50,22 @@ class PrefixAndPathStrategy extends AbstractRouteStrategy
             if ($this->compareUrlStartsNoSuccess($prefix.$urlPath, $url)) {
                 continue;
             }
-            
-            if ($this->matchHasHigherPriority($matchedRoute, $prefix.$urlPath)) {
 
-                $urlParts = explode('/', $urlPath);
-                $lastPart = array_pop($urlParts);
-                $pathPrefix = '';
-                if (!empty($urlParts)) {
-                    $pathPrefix = implode('/', $urlParts) . '/';
-                }
-                $filter = trim($this->matchFiltersUrl($prefix.$urlPath, $url), '/');
-                $matchedRoute = [
-                    $prefix.'{$url}{$filtersUrl}',
-                    [
-                        '{$url}' => "{$pathPrefix}({$lastPart})",
-                        '{$filtersUrl}' => "/?(" . $filter . ")",
-                    ],
-                    []
-                ];
+            $urlParts = explode('/', $urlPath);
+            $lastPart = array_pop($urlParts);
+            $pathPrefix = '';
+            if (!empty($urlParts)) {
+                $pathPrefix = implode('/', $urlParts) . '/';
             }
+            $filter = trim($this->matchFiltersUrl($prefix.$urlPath, $url), '/');
+            $matchedRoute = [
+                $prefix.'{$url}{$filtersUrl}',
+                [
+                    '{$url}' => "{$pathPrefix}({$lastPart})",
+                    '{$filtersUrl}' => "/?(" . $filter . ")",
+                ],
+                []
+            ];
         }
 
         if (empty($matchedRoute)) {
@@ -87,11 +84,6 @@ class PrefixAndPathStrategy extends AbstractRouteStrategy
     {
         $compareAccessUri = substr($url, 0, strlen($categoryPathUrl));
         return $categoryPathUrl !== $compareAccessUri;
-    }
-
-    private function matchHasHigherPriority($prevMatch, $currentMatch)
-    {
-        return strlen($prevMatch[0]) < strlen($currentMatch.'{$filtersUrl}');
     }
 
     private function matchFiltersUrl($categoryPathUrl, $url)

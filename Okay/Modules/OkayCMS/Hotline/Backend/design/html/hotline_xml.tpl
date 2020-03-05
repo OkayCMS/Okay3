@@ -91,7 +91,7 @@
                         <div class="permission_boxes row">
                             <div class="col-xl-12 col-lg-12 col-md-12">
                                 <div class="permission_box permission_box--long">
-                                    <span>{$btr->okaycms__hotline__upload_non_exists_products_to_hotline|escape}</span>
+                                    <span class="permission_box__label">{$btr->okaycms__hotline__upload_non_exists_products_to_hotline|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__hotline__upload_only_available_to_hotline" value='1' type="checkbox" {if $settings->okaycms__hotline__upload_only_available_to_hotline}checked=""{/if}/>
                                         <span class="switch-label"></span>
@@ -101,7 +101,7 @@
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
                                 <div class="permission_box permission_box--long">
-                                    <span>{$btr->okaycms__hotline__store|escape}</span>
+                                    <span class="permission_box__label">{$btr->okaycms__hotline__store|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__hotline__store" value='1' type="checkbox" {if $settings->okaycms__hotline__store}checked=""{/if}/>
                                         <span class="switch-label"></span>
@@ -110,18 +110,8 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box permission_box--long">
-                                    <span>{$btr->okaycms__hotline__pickup|escape}</span>
-                                    <label class="switch switch-default">
-                                        <input class="switch-input" name="okaycms__hotline__pickup" value='1' type="checkbox" {if $settings->okaycms__hotline__pickup}checked=""{/if}/>
-                                        <span class="switch-label"></span>
-                                        <span class="switch-handle"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box permission_box--long">
-                                    <span>{$btr->okaycms__hotline__use_full_description_to_hotline|escape}</span>
+                                <div class="permission_box">
+                                    <span class="permission_box__label">{$btr->okaycms__hotline__use_full_description_to_hotline|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__hotline__use_full_description_to_hotline" value='1' type="checkbox" {if $settings->okaycms__hotline__use_full_description_to_hotline}checked=""{/if}/>
                                         <span class="switch-label"></span>
@@ -130,40 +120,10 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box permission_box--long">
-                                    <span>{$btr->okaycms__hotline__has_manufacturer_warranty|escape}</span>
-                                    <label class="switch switch-default">
-                                        <input class="switch-input" name="okaycms__hotline__has_manufacturer_warranty" value='1' type="checkbox" {if $settings->okaycms__hotline__has_manufacturer_warranty}checked=""{/if}/>
-                                        <span class="switch-label"></span>
-                                        <span class="switch-handle"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box permission_box--long">
-                                    <span>{$btr->okaycms__hotline__no_export_without_price|escape}</span>
+                                <div class="permission_box">
+                                    <span class="permission_box__label">{$btr->okaycms__hotline__no_export_without_price|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__hotline__no_export_without_price" value='1' type="checkbox" {if $settings->okaycms__hotline__no_export_without_price}checked=""{/if}/>
-                                        <span class="switch-label"></span>
-                                        <span class="switch-handle"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box permission_box--long">
-                                    <span>{$btr->okaycms__hotline__delivery_disallow|escape}</span>
-                                    <label class="switch switch-default">
-                                        <input class="switch-input" name="okaycms__hotline__delivery_disallow" value='1' type="checkbox" {if $settings->okaycms__hotline__delivery_disallow}checked=""{/if}/>
-                                        <span class="switch-label"></span>
-                                        <span class="switch-handle"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box permission_box--long">
-                                    <span>{$btr->okaycms__hotline__adult|escape}</span>
-                                    <label class="switch switch-default">
-                                        <input class="switch-input" name="okaycms__hotline__adult" value='1' type="checkbox" {if $settings->okaycms__hotline__adult}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>
@@ -183,10 +143,23 @@
                         </div>
                         <div class="col-md-6 mb-1">
                             <div class="heading_label">
-                                <strong>sales notes</strong> * <span class="text_warning">{$btr->okaycms__hotline__sales_max_length|escape}</span>
+                                <strong>{$btr->okaycms__hotline__guarantee_manufacturer}</strong>
                             </div>
                             <div class="mb-1">
-                                <input id="okaycms__hotline_sales_notes" name="okaycms__hotline__sales_notes" class="form-control" type="text" value="{$settings->okaycms__hotline__sales_notes}" />
+                                <select name="okaycms__hotline__guarantee_manufacturer" class="selectpicker">
+                                    <option {if $settings->okaycms__hotline__guarantee_manufacturer == 0}selected=""{/if} value=""></option>
+                                    {foreach $features as $feature}
+                                        <option {if $settings->okaycms__hotline__guarantee_manufacturer == $feature->id}selected=""{/if} value="{$feature->id}">{$feature->name}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-1">
+                            <div class="heading_label">
+                                {$btr->okaycms__hotline__guarantee_shop}
+                            </div>
+                            <div class="mb-1">
+                                <input id="okaycms__hotline__guarantee_shop" name="okaycms__hotline__guarantee_shop" class="form-control" type="text" value="{$settings->okaycms__hotline__guarantee_shop}" />
                             </div>
                         </div>
                         <div class="col-md-6 mb-1">
@@ -198,19 +171,6 @@
                                     <option {if $settings->okaycms__hotline__country_of_origin == 0}selected=""{/if} value=""></option>
                                     {foreach $features as $feature}
                                         <option {if $settings->okaycms__hotline__country_of_origin == $feature->id}selected=""{/if} value="{$feature->id}">{$feature->name}</option>
-                                    {/foreach}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-1">
-                            <div class="heading_label">
-                                <strong>{$btr->okaycms__hotline__guarantee}</strong>
-                            </div>
-                            <div class="mb-1">
-                                <select name="okaycms__hotline__guarantee" class="selectpicker">
-                                    <option {if $settings->okaycms__hotline__guarantee == 0}selected=""{/if} value=""></option>
-                                    {foreach $features as $feature}
-                                        <option {if $settings->okaycms__hotline__guarantee == $feature->id}selected=""{/if} value="{$feature->id}">{$feature->name}</option>
                                     {/foreach}
                                 </select>
                             </div>
@@ -321,3 +281,11 @@
         </div>
     </div>
 </form>
+
+<style>
+
+    .permission_box__label {
+        width: auto !important;
+    }
+
+</style>

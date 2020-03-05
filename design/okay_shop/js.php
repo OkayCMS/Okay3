@@ -12,11 +12,11 @@ use Okay\Core\TemplateConfig\Js;
 
 return [
     (new Js('jquery-3.4.1.min.js')),
+    (new Js('jquery-ui.min.js')),
     (new Js('owl.carousel.min.js')),
     (new Js('jquery.scrollbar.min.js')),
     (new Js('select2.min.js'))->setPosition('footer'),
     (new Js('okay.js'))->setPosition('footer'),
-    (new Js('jquery-ui.min.js'))->setPosition('footer'),
     (new Js('lazyload.min.js'))->setPosition('footer'),
     (new Js('hammer.min.js'))->setPosition('footer'),
     (new Js('xzoom.min.js'))->setPosition('footer'),

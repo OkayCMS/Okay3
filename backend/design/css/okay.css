@@ -1249,6 +1249,10 @@ a.link_white:hover{
     font-size: 20px;
     margin: 0px;
     line-height: 24px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 .boxed_success .text_box,
 .boxed_warning .text_box,
@@ -2647,6 +2651,25 @@ label.switch_label i{
     outline: 0px;
     border-radius: 3px;
     line-height: 0;
+}
+.okay_list_head .okay_list_subicon i{
+    position: relative;
+    overflow: hidden;
+}
+.okay_list_head .okay_list_subicon i:before{
+    position: relative;
+    z-index: 1;
+}
+.okay_list_head .okay_list_subicon i:after{
+    content: "";
+    width: 80%;
+    height: 80%;
+    display: block;
+    background: #fff;
+    position: absolute;
+    top: 10%;
+    z-index: 0;
+    left: 10%;
 }
 .okay_list .okay_list_check{
     width: 40px;

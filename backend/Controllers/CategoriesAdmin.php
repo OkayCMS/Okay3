@@ -50,4 +50,36 @@ class CategoriesAdmin extends IndexAdmin
         $this->response->setContent($this->design->fetch('categories.tpl'));
     }
     
+    public function getSubCategories(
+        BackendCategoriesHelper $categoriesHelper
+    ) {
+
+        $result = [];
+        /*Выборка категории и её деток*/
+        if ($this->request->get("category_id")) {
+            $categoryId = $this->request->get("category_id", 'integer');
+            $categories = $categoriesHelper->getCategory($categoryId);
+            $this->design->assign('categories', $categories->subcategories);
+            $result['success'] = true;
+            $result['cats'] = $this->design->fetch("categories_ajax.tpl");
+        } else {
+            $result['success ']= false;
+        }
+
+        $this->response->setContent(json_encode($result), RESPONSE_JSON);
+    }
+    
+    public function getAllCategories(
+        BackendCategoriesHelper $categoriesHelper
+    ) {
+
+        $this->design->assign('categories', $categoriesHelper->getCategoriesTree());
+        $this->design->assign('isAllCategories', true);
+        $this->design->assign('level', 1);
+
+        $result['success'] = true;
+        $result['cats'] = $this->design->fetch("categories_ajax.tpl");
+        $this->response->setContent(json_encode($result), RESPONSE_JSON);
+    }
+    
 }

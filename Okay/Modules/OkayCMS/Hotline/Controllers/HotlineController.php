@@ -137,7 +137,7 @@ class HotlineController extends AbstractController
 
     private function attachGuaranteeParameter($products)
     {
-        $guaranteeId = $this->settings->get('okaycms__hotline__guarantee');
+        $guaranteeId = $this->settings->get('okaycms__hotline__guarantee_manufacturer');
 
         foreach($products as $id => $product) {
             if (empty($product->features)) {
@@ -146,7 +146,7 @@ class HotlineController extends AbstractController
 
             foreach($product->features as $feature) {
                 if ($feature->id == $guaranteeId) {
-                    $products[$id]->guarantee = reset($feature->values)->value;
+                    $products[$id]->guarantee_manufacturer = reset($feature->values)->value;
                 }
             }
         }

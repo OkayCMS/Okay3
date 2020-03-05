@@ -490,6 +490,8 @@ header{
     -ms-flex: 0 0 22px;
     flex: 0 0 22px;
     max-width: 22px;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 .categories_menu__link .categories_menu__name {
     -webkit-flex-basis: 0;

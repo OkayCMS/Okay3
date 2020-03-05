@@ -55,16 +55,7 @@ class FrontExtender implements ExtensionInterface
     {
 
         // Устанавливаем директорию HTML из модуля
-        $vendor = $this->module->getVendorName(__CLASS__);
-        $name = $this->module->getModuleName(__CLASS__);
-        
-        $moduleTemplateDir = $this->module->generateModuleTemplateDir(
-            $vendor,
-            $name
-        );
-        
-        $this->design->setModuleTemplatesDir($moduleTemplateDir);
-        $this->design->useModuleDir();
+        $this->design->setModuleDir(__CLASS__);
         
         $showOnFilter = [];
         if ($category = $this->design->getVar('category')) {
@@ -146,6 +137,6 @@ class FrontExtender implements ExtensionInterface
         }
         
         // Вернём обратно стандартную директорию шаблонов
-        $this->design->useDefaultDir();
+        $this->design->rollbackTemplatesDir();
     }
 }

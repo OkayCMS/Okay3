@@ -58,24 +58,30 @@ class Notify
     }
 
     /* SMTP отправка емейла*/
-    public function SMTP($to, $subject, $message)
+    public function SMTP($to, $subject, $message, $from = '', $replyTo = '')
     {
         $this->PHPMailer->IsSMTP(); // telling the class to use SMTP
-        $this->PHPMailer->Host       = $this->settings->smtp_server;
+        $this->PHPMailer->Host       = $this->settings->get('smtp_server');
         $this->PHPMailer->SMTPDebug  = 0;
         $this->PHPMailer->SMTPAuth   = true;
         $this->PHPMailer->CharSet    = 'utf-8';
-        $this->PHPMailer->Port       = $this->settings->smtp_port;
+        $this->PHPMailer->Port       = $this->settings->get('smtp_port');
         if ($this->PHPMailer->Port == 465) {
             $this->PHPMailer->SMTPSecure = "ssl";
             // Добавляем протокол, если не указали
             $this->PHPMailer->Host = (strpos($this->PHPMailer->Host, "ssl://") === false) ? "ssl://".$this->PHPMailer->Host : $this->PHPMailer->Host;
         }
-        $this->PHPMailer->Username   = $this->settings->smtp_user;
-        $this->PHPMailer->Password   = $this->settings->smtp_pass;
-        $this->PHPMailer->SetFrom($this->settings->smtp_user, $this->settings->notify_from_name);
-        $this->PHPMailer->AddReplyTo($this->settings->smtp_user, $this->settings->notify_from_name);
-        $this->PHPMailer->Subject    = $subject;
+        $this->PHPMailer->Username   = $this->settings->get('smtp_user');
+        $this->PHPMailer->Password   = $this->settings->get('smtp_pass');
+        $this->PHPMailer->SetFrom($this->settings->get('smtp_user'), $this->settings->get('notify_from_name'));
+        
+        if (!empty($replyTo)) {
+            $this->PHPMailer->AddReplyTo($replyTo, $replyTo);
+        } else {
+            $this->PHPMailer->AddReplyTo($this->settings->get('smtp_user'), $this->settings->get('notify_from_name'));
+        }
+        
+        $this->PHPMailer->Subject = $subject;
 
         $this->PHPMailer->MsgHTML($message);
         $this->PHPMailer->addCustomHeader("MIME-Version: 1.0\n");
@@ -105,19 +111,19 @@ class Notify
     }
 
     /*Отправка емейла*/
-    public function email($to, $subject, $message, $from = '', $reply_to = '')
+    public function email($to, $subject, $message, $from = '', $replyTo = '')
     {
         $headers = "MIME-Version: 1.0\n" ;
         $headers .= "Content-type: text/html; charset=utf-8; \r\n";
         $headers .= "From: $from\r\n";
-        if(!empty($reply_to)) {
-            $headers .= "reply-to: $reply_to\r\n";
+        if(!empty($replyTo)) {
+            $headers .= "reply-to: $replyTo\r\n";
         }
         
         $subject = "=?utf-8?B?".base64_encode($subject)."?=";
 
-        if ($this->settings->use_smtp) {
-            $this->SMTP($to, $subject, $message);
+        if ($this->settings->get('use_smtp')) {
+            $this->SMTP($to, $subject, $message, $from, $replyTo);
         } else {
             mail($to, $subject, $message, $headers);
         }
@@ -273,7 +279,8 @@ class Notify
             $this->design->assign('meta_title', $subject);
             return $emailTemplate;
         } else {
-            $this->email($this->settings->get('order_email'), $subject, $emailTemplate, $this->settings->get('notify_from_email'));
+            $replyTo = (!empty($order->email) ? $order->email : null);
+            $this->email($this->settings->get('order_email'), $subject, $emailTemplate, $this->settings->get('notify_from_email'), $replyTo);
         }
         return true;
     }
@@ -316,7 +323,8 @@ class Notify
             $this->design->assign('meta_title', $subject);
             return $emailTemplate;
         } else {
-            $this->email($this->settings->get('comment_email'), $subject, $emailTemplate, $this->settings->get('notify_from_email'));
+            $replyTo = (!empty($comment->email) ? $comment->email : null);
+            $this->email($this->settings->get('comment_email'), $subject, $emailTemplate, $this->settings->get('notify_from_email'), $replyTo);
         }
         return true;
     }
@@ -344,7 +352,7 @@ class Notify
             $this->design->assign('meta_title', $subject);
             return $emailTemplate;
         } else {
-            $this->email($this->settings->get('comment_email'), $subject, $emailTemplate, "$callback->name <$callback->phone>", "$callback->name <$callback->phone>");
+            $this->email($this->settings->get('comment_email'), $subject, $emailTemplate, $this->settings->get('notify_from_email'));
         }
         return true;
     }
@@ -402,8 +410,7 @@ class Notify
         $emailTemplate = $this->design->fetch($this->rootDir.'design/'.$this->templateConfig->getTheme().'/html/email/email_comment_answer_to_user.tpl');
         $subject = $this->design->getVar('subject');
 
-        $from = ($this->settings->get('notify_from_name') ? $this->settings->get('notify_from_name')." <".$this->settings->get('notify_from_email').">" : $this->settings->get('notify_from_email'));
-        $this->email($parentComment->email, $subject, $emailTemplate, $from, $from);
+        $this->email($parentComment->email, $subject, $emailTemplate, $this->settings->get('notify_from_email'));
 
         $this->design->setTemplatesDir($templateDir);
         $this->design->setCompiledDir($compiledDir);
@@ -479,7 +486,8 @@ class Notify
             $this->design->assign('meta_title', $subject);
             return $emailTemplate;
         } else {
-            $this->email($this->settings->get('comment_email'), $subject, $emailTemplate, "$feedback->name <$feedback->email>", "$feedback->name <$feedback->email>");
+            $replyTo = (!empty($feedback->email) ? $feedback->email : null);
+            $this->email($this->settings->get('comment_email'), $subject, $emailTemplate, $this->settings->get('notify_from_email'), $replyTo);
         }
         
         return true;
@@ -549,8 +557,7 @@ class Notify
         $this->design->assign('recovery_url', Request::getRootUrl() . '/backend/index.php?controller=AuthAdmin&code='.$code);
         $email_template = $this->design->fetch($this->rootDir.'backend/design/html/email/email_admin_recovery.tpl');
         $subject = $this->design->getVar('subject');
-        $from = ($this->settings->get('notify_from_name') ? $this->settings->get('notify_from_name')." <".$this->settings->get('notify_from_email').">" : $this->settings->get('notify_from_email'));
-        $this->email($email, $subject, $email_template, $from, $from);
+        $this->email($email, $subject, $email_template, $this->settings->get('notify_from_name'));
         
         return true;
     }

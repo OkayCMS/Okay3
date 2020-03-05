@@ -56,9 +56,8 @@ class HotlineAdmin extends IndexAdmin
 
             $this->settings->set('okaycms__hotline__company', $this->request->post('okaycms__hotline__company'));
             $this->settings->set('okaycms__hotline__country_of_origin', $this->request->post('okaycms__hotline__country_of_origin'));
-            $this->settings->set('okaycms__hotline__guarantee', $this->request->post('okaycms__hotline__guarantee'));
-            $salesNotes = $this->request->post('okaycms__hotline__sales_notes');
-            $this->settings->set('okaycms__hotline__sales_notes', substr($salesNotes, 0, 50));
+            $this->settings->set('okaycms__hotline__guarantee_manufacturer', $this->request->post('okaycms__hotline__guarantee_manufacturer'));
+            $this->settings->set('okaycms__hotline__guarantee_shop', $this->request->post('okaycms__hotline__guarantee_shop'));
 
             $update = $queryFactory->newUpdate();
             $database->query(
@@ -126,18 +125,6 @@ class HotlineAdmin extends IndexAdmin
             $this->settings->set('okaycms__hotline__use_full_description_to_hotline', 0);
         }
 
-        if ($this->request->post('okaycms__hotline__has_manufacturer_warranty', 'integer')) {
-            $this->settings->set('okaycms__hotline__has_manufacturer_warranty', 1);
-        } else {
-            $this->settings->set('okaycms__hotline__has_manufacturer_warranty', 0);
-        }
-
-        if ($this->request->post('okaycms__hotline__has_manufacturer_warranty', 'integer')) {
-            $this->settings->set('okaycms__hotline__has_manufacturer_warranty', 1);
-        } else {
-            $this->settings->set('okaycms__hotline__has_manufacturer_warranty', 0);
-        }
-
         if ($this->request->post('okaycms__hotline__no_export_without_price', 'integer')) {
             $this->settings->set('okaycms__hotline__no_export_without_price', 1);
         } else {
@@ -154,18 +141,6 @@ class HotlineAdmin extends IndexAdmin
             $this->settings->set('okaycms__hotline__store', 1);
         } else {
             $this->settings->set('okaycms__hotline__store', 0);
-        }
-
-        if ($this->request->post('okaycms__hotline__delivery_disallow', 'integer')) {
-            $this->settings->set('okaycms__hotline__delivery_disallow', 1);
-        } else {
-            $this->settings->set('okaycms__hotline__delivery_disallow', 0);
-        }
-
-        if ($this->request->post('okaycms__hotline__adult', 'integer')) {
-            $this->settings->set('okaycms__hotline__adult', 1);
-        } else {
-            $this->settings->set('okaycms__hotline__adult', 0);
         }
     }
 }

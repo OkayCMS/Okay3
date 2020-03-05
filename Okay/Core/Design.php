@@ -4,6 +4,7 @@
 namespace Okay\Core;
 
 
+use Okay\Core\Modules\Module;
 use OkayLicense\License;
 use Smarty;
 use Mobile_Detect;
@@ -29,6 +30,11 @@ class Design
      */
     private $templateConfig;
 
+    /**
+     * @var Module
+     */
+    private $module;
+
     /** @var array */
     private $smartyFunctions = [];
     
@@ -40,6 +46,14 @@ class Design
 
     /** @var string */
     private $defaultTemplateDir;
+    
+    private $moduleChangeDir = null;
+    
+    private $prevModuleDir;
+    
+    private $isUseModuleDirBeforeChange;
+    
+    private $rootDir;
 
     /** @var string */
     private $useTemplateDir = self::TEMPLATES_DEFAULT;
@@ -97,6 +111,7 @@ class Design
         Smarty $smarty,
         Mobile_Detect $mobileDetect,
         TemplateConfig $templateConfig,
+        Module $module,
         $smartyCacheLifetime,
         $smartyCompileCheck,
         $smartyHtmlMinify,
@@ -107,6 +122,8 @@ class Design
     ) {
         $this->templateConfig = $templateConfig;
         $this->detect         = $mobileDetect;
+        $this->module         = $module;
+        $this->rootDir        = $rootDir;
 
         $this->smarty = $smarty;
         $this->smarty->compile_check   = $smartyCompileCheck;
@@ -145,6 +162,51 @@ class Design
     }
 
     /**
+     * Метод нужен для модулей, если в каком-то экстендере или еще где нужно обработать tpl файл
+     * нужно предватилельно вызвать этот метод, чтобы переключить директорию tpl файлов.
+     * После вызова fetch() нужно обязательно вернуть стандартную директорию методом rollbackTemplatesDir()
+     * 
+     * @param $moduleClassName
+     * @throws \Exception
+     */
+    public function setModuleDir($moduleClassName)
+    {
+        
+        if ($this->moduleChangeDir !== null) {
+            throw new \Exception("Module \"{$this->moduleChangeDir}\" is changed dir and not rollback from Design::rollbackTemplatesDir()");
+        }
+        
+        $vendor = $this->module->getVendorName($moduleClassName);
+        $name = $this->module->getModuleName($moduleClassName);
+
+        $moduleTemplateDir = $this->module->generateModuleTemplateDir(
+            $vendor,
+            $name
+        );
+
+        $this->prevModuleDir = $this->getModuleTemplatesDir();
+        $this->isUseModuleDirBeforeChange = $this->isUseModuleDir();
+        $this->setModuleTemplatesDir($moduleTemplateDir);
+        $this->useModuleDir();
+        $this->moduleChangeDir = "{$vendor}\{$name}";
+    }
+
+    /**
+     * Метод возвращает стандартную директорию tpl файлов.
+     * Применяется если в модуле сменили директорию tpl файлов посредством метода setModuleDir()
+     */
+    public function rollbackTemplatesDir()
+    {
+        if (!empty($this->prevModuleDir)) {
+            $this->setModuleTemplatesDir($this->prevModuleDir);
+        }
+        if (!$this->isUseModuleDirBeforeChange) {
+            $this->useDefaultDir();
+        }
+        $this->moduleChangeDir = null;
+    }
+    
+    /**
      * Проверка существует ли данный файл шаблона
      * 
      * @param $tplFile
@@ -153,6 +215,28 @@ class Design
      */
     public function templateExists($tplFile)
     {
+        if ($this->isUseModuleDir() === false) {
+            $this->setSmartyTemplatesDir($this->getDefaultTemplatesDir());
+        } else {
+            
+            $namespace = str_replace($this->rootDir, '', $this->getModuleTemplatesDir());
+            $namespace = str_replace('/', '\\', $namespace);
+            
+            $vendor = $this->module->getVendorName($namespace);
+            $moduleName = $this->module->getModuleName($namespace);
+            /**
+             * Устанавливаем директории поиска файлов шаблона как:
+             * Директория модуля в дизайне (если модуль кастомизируют)
+             * Директория модуля
+             * Стандартная директория дизайна
+             */
+            $this->setSmartyTemplatesDir([
+                dirname($this->getDefaultTemplatesDir()) . "/modules/{$vendor}/{$moduleName}/html",
+                $this->getModuleTemplatesDir(),
+                $this->getDefaultTemplatesDir(),
+            ]);
+        }
+        
         return $this->smarty->templateExists(trim(preg_replace('~[\n\r]*~', '', $tplFile)));
     }
     
@@ -170,7 +254,7 @@ class Design
 
     /**
      * @param string $var
-     * @param string $value
+     * @param mixed $value
      * @param bool $dynamicJs Если установить в true, переменная будет доступна в файле scripts.tpl клиентского шаблона,
      * как обычная Smarty переменная
      * @return \Smarty_Internal_Data

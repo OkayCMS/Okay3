@@ -25,6 +25,6 @@ class FAQController extends AbstractController
             $this->design->assign('breadcrumbs', [$this->page->name]);
         }
         
-        $this->response->setContent($this->design->fetch('faq.tpl'));
+        $this->response->setContent('faq.tpl');
     }
 }
