@@ -47,8 +47,6 @@ function init() {
     });
 }
 
-const redelivery_payment_ids = [21, 6];
-
 $('[name="delivery_id"]').on('change', function() {
     if (Number($(this).data('module_id')) !== Number(okay.np_delivery_module_id)) {
         return;
@@ -151,7 +149,7 @@ function update_np_payments() {
 
     if (redelivery_enabled) {
         for (const payment_id of payment_method_ids) {
-            if (redelivery_payment_ids.includes(payment_id)) {
+            if (okay.np_redelivery_payments_ids.includes(payment_id)) {
                 $(`.fn_payment_method__item_${payment_id}`).show();
             } else {
                 $(`.fn_payment_method__item_${payment_id}`).hide();
@@ -159,7 +157,7 @@ function update_np_payments() {
         }
     } else {
         for (const payment_id of payment_method_ids) {
-            if (redelivery_payment_ids.includes(payment_id)) {
+            if (okay.np_redelivery_payments_ids.includes(payment_id)) {
                 $(`.fn_payment_method__item_${payment_id}`).hide();
             } else {
                 $(`.fn_payment_method__item_${payment_id}`).show();

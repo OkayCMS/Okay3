@@ -40,32 +40,32 @@
         {if $categories}
             <ul class="">
                 {foreach $categories as $c}
-                {if $c->visible}
-                {if $c->subcategories && $c->count_children_visible}
-                <li class="">
-                    <a class="{if $category->id == $c->id} selected{/if}" href="{url_generator route='category' url=$c->url}" data-category="{$c->id}">
-                        {if $c->image}
-                            <span class="nav-icon">
-                                <img src="{$c->image|resize:20:20:false:$config->resized_categories_dir}" alt="{$c->name|escape}" />
-                            </span>
+                    {if $c->visible && ($c->has_products || $settings->show_empty_categories)}
+                        {if $c->subcategories && $c->count_children_visible}
+                            <li class="">
+                                <a class="{if $category->id == $c->id} selected{/if}" href="{url_generator route='category' url=$c->url}" data-category="{$c->id}">
+                                    {if $c->image}
+                                        <span class="nav-icon">
+                                            <img src="{$c->image|resize:20:20:false:$config->resized_categories_dir}" alt="{$c->name|escape}" />
+                                        </span>
+                                    {/if}
+                                    <span>{$c->name|escape}</span>
+                                </a>
+                                {categories_tree4 categories=$c->subcategories level=$level + 1}
+                            </li>
+                        {else}
+                            <li class="">
+                                <a class="{if $category->id == $c->id} selected{/if}" href="{url_generator route='category' url=$c->url}" data-category="{$c->id}">
+                                    {if $c->image}
+                                    <span class="nav-icon">
+                                            <img src="{$c->image|resize:20:20:false:$config->resized_categories_dir}" alt="{$c->name|escape}" />
+                                        </span>
+                                    {/if}
+                                     <span>{$c->name|escape}</span>
+                                </a>
+                            </li>
                         {/if}
-                        <span>{$c->name|escape}</span>
-                    </a>
-                    {categories_tree4 categories=$c->subcategories level=$level + 1}
-                </li>
-                {else}
-                <li class="">
-                    <a class="{if $category->id == $c->id} selected{/if}" href="{url_generator route='category' url=$c->url}" data-category="{$c->id}">
-                        {if $c->image}
-                        <span class="nav-icon">
-                                <img src="{$c->image|resize:20:20:false:$config->resized_categories_dir}" alt="{$c->name|escape}" />
-                            </span>
-                        {/if}
-                         <span>{$c->name|escape}</span>
-                    </a>
-                </li>
-                {/if}
-                {/if}
+                    {/if}
                 {/foreach}
             </ul>
         {/if}

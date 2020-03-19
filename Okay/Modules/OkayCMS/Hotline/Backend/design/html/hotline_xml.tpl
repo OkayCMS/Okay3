@@ -159,7 +159,12 @@
                                 {$btr->okaycms__hotline__guarantee_shop}
                             </div>
                             <div class="mb-1">
-                                <input id="okaycms__hotline__guarantee_shop" name="okaycms__hotline__guarantee_shop" class="form-control" type="text" value="{$settings->okaycms__hotline__guarantee_shop}" />
+                                <select name="okaycms__hotline__guarantee_shop" class="selectpicker">
+                                    <option {if $settings->okaycms__hotline__guarantee_shop == 0}selected=""{/if} value=""></option>
+                                    {foreach $features as $feature}
+                                        <option {if $settings->okaycms__hotline__guarantee_shop == $feature->id}selected=""{/if} value="{$feature->id}">{$feature->name}</option>
+                                    {/foreach}
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6 mb-1">

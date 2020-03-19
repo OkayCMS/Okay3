@@ -4725,13 +4725,25 @@ body.menu-pin .menu_switch .menu_hamburger::after {
     content: '\f00c';
     font-family: "FontAwesome";
 }
+.order_history_block,
 .orders_purchases_block {
     width: 100%;
     padding: 0px 10px 10px;
     height: auto;
 }
-
-
+.fn_history_toggle{
+    position: relative;
+    cursor: pointer;
+}
+.fn_history_toggle .fn_icon_arrow{
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    color: #333;
+}
+.order_history_block{
+    text-align: left!important;
+}
 
 /************************************************************************* Comments.tpl  */
 

@@ -12,6 +12,7 @@ use Okay\Core\Modules\Module;
 use Okay\Core\Request;
 use Okay\Core\ServiceLocator;
 use Okay\Entities\OrdersEntity;
+use Okay\Entities\PaymentsEntity;
 use Okay\Modules\OkayCMS\NovaposhtaCost\Entities\NPCostDeliveryDataEntity;
 
 class FrontExtender implements ExtensionInterface
@@ -47,6 +48,16 @@ class FrontExtender implements ExtensionInterface
         
         /** @var Design $design */
         $design = $SL->getService(Design::class);
+        
+        /** @var PaymentsEntity $paymentsEntity */
+        $paymentsEntity = $this->entityFactory->get(PaymentsEntity::class);
+        
+        $redeliveryPaymentsIds = $paymentsEntity->cols(['id'])->find(['novaposhta_cost__cash_on_delivery' => 1]);
+        foreach ($redeliveryPaymentsIds as $k=>$id) {
+            $redeliveryPaymentsIds[$k] = (int)$id;
+        }
+        $design->assignJsVar('np_redelivery_payments_ids', $redeliveryPaymentsIds);
+        $design->assign('np_redelivery_payments_ids', $redeliveryPaymentsIds);
         
         $npModuleId = $module->getModuleIdByNamespace(__CLASS__);
         $design->assignJsVar('np_delivery_module_id', $npModuleId);

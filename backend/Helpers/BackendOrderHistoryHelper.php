@@ -512,4 +512,24 @@ class BackendOrderHistoryHelper
         return ExtenderFacade::execute(__METHOD__, $orderHistory, func_get_args());
     }
     
+    public function findOrdersHistory(array $ordersIds)
+    {
+        $ordersHistory = [];
+        if (!empty($ordersIds)) {
+            
+            /** @var ManagersEntity $managersEntity */
+            $managersEntity = $this->entityFactory->get(ManagersEntity::class);
+            $managers = $managersEntity->mappedBy('id')->find();
+            
+            foreach ($this->orderHistoryEntity->find(['order_id' => $ordersIds]) as $item) {
+                if ($item->manager_id && isset($managers[$item->manager_id])) {
+                    $item->manager_name = $managers[$item->manager_id]->login;
+                }
+                $ordersHistory[$item->order_id][] = $item;
+            }
+            
+        }
+        return ExtenderFacade::execute(__METHOD__, $ordersHistory, func_get_args());
+    }
+    
 }

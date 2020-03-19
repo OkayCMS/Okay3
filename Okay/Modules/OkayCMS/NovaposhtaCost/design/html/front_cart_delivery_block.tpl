@@ -6,10 +6,12 @@
             <label style="display: inline-block; width: 100px;"><span class="labelcity_novaposhta">{$lang->np_cart_city} </span></label>
             <select data-placeholder="{$lang->np_select_city}" name="novaposhta_city" tabindex="1" class="city_novaposhta" style="width: 100%"></select>
         </div>
+        {if $np_redelivery_payments_ids}
         <div style="padding: 5px 0;">
             <label for="redelivery">{$lang->np_cart_cod} </label>
             <input name="novaposhta_redelivery" id="redelivery" value="1" type="checkbox" {if $request_data.novaposhta_redelivery == true}checked{/if} />
         </div>
+        {/if}
         <div class="warehouses_novaposhta">
             <label class="" style="display: inline-block; width: 100px;">{$lang->np_cart_warehouse}</label>
             <select name="novaposhta_warehouses" tabindex="1" class="fn_select_warehouses_novaposhta" style="width: 100%;"></select>

@@ -78,7 +78,7 @@
                         {/if}
 
                         {if $p->guarantee_manufacturer}<guarantee type="manufacturer">{$p->guarantee_manufacturer}</guarantee>{/if}
-                        {if $settings->okaycms__hotline__guarantee_shop}<guarantee unit="days">{$settings->okaycms__hotline__guarantee_shop}</guarantee>{/if}
+                        {if $p->guarantee_shop}<guarantee type="shop">{$p->guarantee_shop}</guarantee>{/if}
 
                         {if $p->country_of_origin}
                             <param name="Країна виготовлення">{$p->country_of_origin}</param>

@@ -6051,7 +6051,7 @@ INSERT INTO `ok_modules` (`id`, `vendor`, `module_name`, `position`, `enabled`, 
 (12,	'OkayCMS',	'NovaposhtaCost',	12,	1,	'delivery',	'NovaposhtaCostAdmin',	NULL),
 (13,	'OkayCMS',	'Banners',	13,	1,	NULL,	'BannersAdmin',	NULL),
 (14,	'OkayCMS',	'FastOrder',	14,	1,	NULL,	'DescriptionAdmin',	NULL),
-(15,	'OkayCMS',	'Hotline',	15,	1,	NULL,	'Description1CAdmin',	NULL);
+(15,	'OkayCMS',	'Hotline',	15,	1,	NULL,	'HotlineAdmin',	NULL);
 
 DROP TABLE IF EXISTS `ok_okaycms__banners`;
 CREATE TABLE `ok_okaycms__banners` (

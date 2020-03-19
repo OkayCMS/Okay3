@@ -15,6 +15,9 @@
             <link>{url_generator route="product" url=$p->url absolute=1}{if !$v@first}?variant={$v->id}{/if}</link>
             <description>{if $settings->okaycms__google_merchant__use_full_description_to_google}{$p->description|strip_tags|escape}{else}{$p->annotation|strip_tags|escape}{/if}</description>
             <g:id>{$v->id}</g:id>
+            {if $v->sku}
+            <g:mpn>{$v->sku}</g:mpn>
+            {/if}
             <g:condition>new</g:condition>
 
             {if round($v->compare_price|convert:$main_currency->id:false, 2) > round($v->price|convert:$main_currency->id:false, 2)}

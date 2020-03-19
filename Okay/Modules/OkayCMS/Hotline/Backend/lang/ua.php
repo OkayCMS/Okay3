@@ -28,4 +28,4 @@ $lang['okaycms__hotline__country_of_origin'] = 'Країна виробник';
 $lang['okaycms__hotline__country_of_origin_notify'] = "Вкажіть ім'я властивості, яке буде містити даний параметр";
 $lang['okaycms__hotline__upload_products'] = 'Вибір товарів для вивантаження';
 $lang['okaycms__hotline__guarantee_manufacturer'] = 'Гарантія виробника (в месяцях)';
-$lang['okaycms__hotline__guarantee_shop'] = 'Гарантія продавця (в днях)';
+$lang['okaycms__hotline__guarantee_shop'] = 'Гарантія продавця';

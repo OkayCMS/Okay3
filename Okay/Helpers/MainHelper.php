@@ -373,7 +373,7 @@ class MainHelper
         $router = $this->SL->getService(Router::class);
         
         // Если пришли не за скриптом, очищаем все переменные для динамического JS
-        if (($routeName = $router->getCurrentRouteName()) != 'dynamic_js' && $router->getCurrentRouteName() != 'common_js') {
+        if (($routeName = $router->getCurrentRouteName()) != 'dynamic_js' && $routeName != 'common_js' && $routeName != 'resize') {
             unset($_SESSION['dynamic_js']);
             $route = $router->getRouteByName($routeName);
             $_SESSION['dynamic_js']['controller'] = $route['params']['controller'];

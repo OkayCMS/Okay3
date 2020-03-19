@@ -1,13 +1,14 @@
 <?php
 
 use Okay\Core\EntityFactory;
-use Okay\Core\Languages;
+use Okay\Core\Config;
 use Okay\Core\Response;
 use Okay\Core\Design;
 use Okay\Core\BackendTranslations;
 use Okay\Entities\LanguagesEntity;
 use Okay\Entities\ManagersEntity;
 use OkayLicense\License;
+use Okay\Core\Modules\Modules;
 
 chdir('../../../../');
 
@@ -20,9 +21,16 @@ require_once('vendor/autoload.php');
 
 $DI = include 'Okay/Core/config/container.php';
 
+/** @var Config $config */
+$config = $DI->get(Config::class);
+
 /** @var License $license */
 $license = $DI->get(License::class);
 $license->check();
+
+/** @var Modules $modules */
+$modules = $DI->get(Modules::class);
+$modules->startEnabledModules();
 
 // Кеширование нам не нужно
 /** @var Response $response */

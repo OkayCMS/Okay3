@@ -821,7 +821,7 @@ class FilterHelper
         }
         $keyword = $this->request->get('keyword');
         if (!empty($keyword)) {
-            $resultString .= '?keyword='.$keyword;
+            $resultString .= '?keyword='.htmlspecialchars(strip_tags($keyword));
         }
         if ($smarty !== null) {
             /** @var \Smarty_Internal_Template $smarty */

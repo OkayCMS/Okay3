@@ -21,12 +21,16 @@ try {
 
     $DI = include 'Okay/Core/config/container.php';
 
+    /**
+     * Конфигурируем в конструкторе сервиса параметры системы
+     *
+     * @var Config $config
+     */
+    $config = $DI->get(Config::class);
+
     /** @var Router $router */
     $router = $DI->get(Router::class);
     $router->resolveCurrentLanguage();
-    
-    /** @var Config $config */
-    $config = $DI->get(Config::class);
 
     if ($config->get('debug_mode') == true) {
         ini_set('display_errors', 'on');

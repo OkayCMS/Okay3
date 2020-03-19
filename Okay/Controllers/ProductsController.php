@@ -117,7 +117,7 @@ class ProductsController extends AbstractController
                 $keyword = $this->request->get('keyword');
                 $filter = $filterHelper->getSearchProductsFilter($filter, $keyword);
                 if (!empty($keyword)) {
-                    $this->design->assign('keyword', $keyword);
+                    $this->design->assign('keyword', htmlspecialchars(strip_tags($keyword)));
                 }
                 break;
         }

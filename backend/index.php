@@ -28,6 +28,13 @@ require_once('vendor/autoload.php');
 
 $DI = include 'Okay/Core/config/container.php';
 
+/**
+ * Конфигурируем в конструкторе сервиса параметры системы
+ *
+ * @var Config $config
+ */
+$config = $DI->get(Config::class);
+
 // Засекаем время
 $time_start = microtime(true);
 if(!empty($_SERVER['HTTP_USER_AGENT'])){
@@ -38,9 +45,6 @@ $_SESSION['id'] = session_id();
 
 @ini_set('session.gc_maxlifetime', 86400); // 86400 = 24 часа
 @ini_set('session.cookie_lifetime', 0); // 0 - пока браузер не закрыт
-
-/** @var Config $config */
-$config = $DI->get(Config::class);
 
 if ($config->get('debug_mode') == true) {
     ini_set('display_errors', 'on');

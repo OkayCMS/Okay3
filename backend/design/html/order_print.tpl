@@ -3,7 +3,6 @@
 {$wrapper='' scope=global}
 <html>
 <head>
-    <base href="{$rootUrl}/"/>
     <title>{$btr->general_order_number|escape} {$order->id}</title>
     {* Метатеги *}
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -135,7 +134,46 @@
     {
         text-align: right;
     }
-    </style>    
+    .custom_short_block {
+        
+    }
+    .design_block_parent_element {
+        position: relative;
+        border: 1px solid transparent;
+    }
+    .design_block_parent_element.focus {
+        border: 1px solid red;
+    }
+    .fn_design_block_name {
+        position: absolute;
+        top: -9px;
+        left: 15px;
+        background-color: #fff;
+        padding: 0 10px;
+        box-sizing: border-box;
+        font-size: 14px;
+        line-height: 14px;
+        font-weight: 700;
+        color: red;
+        cursor: pointer;
+        z-index: 1000;
+    }
+    .fn_design_block_name:hover {
+        z-index: 1100;
+    }
+    </style>
+    <script src="design/js/jquery/jquery.js"></script>
+    <script>
+        $(function(){
+            $('.fn_design_block_name').parent().addClass('design_block_parent_element');
+            $('.fn_design_block_name').on('mouseover', function () {
+                $(this).parent().addClass('focus');
+            });
+            $('.fn_design_block_name').on('mouseout', function () {
+                $(this).parent().removeClass('focus');
+            });
+        });
+    </script>
 </head>
 
 <body _onload="window.print();">
@@ -169,6 +207,7 @@
         <tr>
             <td><i>{$order->comment|escape|nl2br}</i></td>
         </tr>
+        {get_design_block block="order_print_user_info"}
     </table>
     
 
@@ -198,9 +237,10 @@
         {foreach $purchases as $purchase}
         <tr>
             <td>
-                <span class=view_purchase>
+                <div class="view_purchase">
                     {$purchase->product_name|escape} {$purchase->variant_name|escape} {if $purchase->sku} ({$btr->general_sku|escape} {$purchase->sku|escape}){/if}
-                </span>
+                    {get_design_block block="order_print_purchase_name" vars=['purchase'=>$purchase]}
+                </div>
             </td>
             <td class="align_right">
                 <span class=view_purchase>{$purchase->price}</span> {$currency->sign|escape}
@@ -222,10 +262,17 @@
             <td class="align_right">{$order->delivery_price|convert:$currency->id}&nbsp;{$currency->sign|escape}</td>
         </tr>
         {/if}
-        
+        {get_design_block block="order_print_purchases_list_custom"}
     </table>
 </div>
 
+{$block = {get_design_block block="order_print_custom_block"}}
+
+{if $block}
+    <div class="custom_short_block">
+        {$block}
+    </div>
+{/if}
 
 <div id="total">
     <table>
@@ -254,6 +301,7 @@
             <td class="total">{$order->total_price|convert:$payment_method->currency_id}&nbsp;{$payment_currency->sign}</td>
         </tr>
         {/if}
+        {get_design_block block="order_print_total_price_custom"}
     </table>
 </div>
 

@@ -71,11 +71,7 @@ class HotlineController extends AbstractController
                 $products = $this->attachCountryOfOriginParameter($products);
             }
 
-            $guarantee = $this->settings->get('okaycms__hotline__guarantee');
-            if (!empty($guarantee)) {
-                $products = $this->attachGuaranteeParameter($products);
-            }
-
+            $products = $this->attachGuaranteeParameter($products);
             $this->design->assign('products', $products);
             
             $allBrands = $brandsEntity->mappedBy('id')->find(['product_id' => array_keys($products)]);
@@ -138,15 +134,25 @@ class HotlineController extends AbstractController
     private function attachGuaranteeParameter($products)
     {
         $guaranteeId = $this->settings->get('okaycms__hotline__guarantee_manufacturer');
+        $guaranteeShopId = $this->settings->get('okaycms__hotline__guarantee_shop');
+
+        if (empty($guaranteeId) && empty($guaranteeShopId)) {
+            return $products;
+        }
 
         foreach($products as $id => $product) {
             if (empty($product->features)) {
                 continue;
             }
 
-            foreach($product->features as $feature) {
+            foreach ($product->features as $k=>$feature) {
                 if ($feature->id == $guaranteeId) {
                     $products[$id]->guarantee_manufacturer = reset($feature->values)->value;
+                    unset($products[$id]->features[$k]);
+                }
+                if ($feature->id == $guaranteeShopId) {
+                    $products[$id]->guarantee_shop = reset($feature->values)->value;
+                    unset($products[$id]->features[$k]);
                 }
             }
         }

@@ -704,7 +704,7 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
             ->bindValue('discounted', (int)$state);
     }
     
-    protected function filter__other_filter($filters)
+    protected function filter__other_filter($filters) // todo разбить фильтры на отдельные методы
     {
         if (empty($filters)) {
             return;

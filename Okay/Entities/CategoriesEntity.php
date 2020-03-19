@@ -105,7 +105,11 @@ class CategoriesEntity extends Entity
     public function update($ids, $category)
     {
         $category = (object) $category;
-        $category->level_depth = $this->determineLevelDepth($category);
+        
+        // При обновлении категории не обновляем уровень вложенности, если его не возможно корректно определить
+        if (($levelDepth = $this->determineLevelDepth($category)) !== false) {
+            $category->level_depth = $levelDepth;
+        }
 
         parent::update($ids, $category);
         unset($this->categoriesTree);
@@ -499,6 +503,10 @@ class CategoriesEntity extends Entity
 
     private function determineLevelDepth($category)
     {
+        if (!property_exists($category, 'parent_id')) {
+            return false;
+        }
+        
         if (empty($this->categoriesTree)) {
             $this->initCategories();
         }

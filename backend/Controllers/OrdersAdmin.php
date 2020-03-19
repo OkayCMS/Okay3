@@ -4,6 +4,7 @@
 namespace Okay\Admin\Controllers;
 
 
+use Okay\Admin\Helpers\BackendOrderHistoryHelper;
 use Okay\Admin\Helpers\BackendOrdersHelper;
 use Okay\Entities\OrderLabelsEntity;
 
@@ -12,7 +13,8 @@ class OrdersAdmin extends IndexAdmin
     
     public function fetch(
         OrderLabelsEntity   $orderLabelsEntity,
-        BackendOrdersHelper $backendOrdersHelper
+        BackendOrdersHelper $backendOrdersHelper,
+        BackendOrderHistoryHelper $backendOrderHistoryHelper
     ) {
         //> Обработка действий
         if ($this->request->method('post')) {
@@ -69,6 +71,11 @@ class OrdersAdmin extends IndexAdmin
         $this->design->assign('orders',        $orders);
         $this->design->assign('all_status',    $allStatuses);
         $this->design->assign('orders_status', $allStatuses);
+
+        if (!empty($orders)) {
+            $ordersHistory = $backendOrderHistoryHelper->findOrdersHistory(array_keys($orders));
+            $this->design->assign('orders_history', $ordersHistory);
+        }
         
         // Метки заказов
         $labels = $orderLabelsEntity->find();

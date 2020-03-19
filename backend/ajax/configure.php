@@ -23,6 +23,9 @@ use OkayLicense\License;
 require_once('vendor/autoload.php');
 $DI = include 'Okay/Core/config/container.php';
 
+/** @var Config $config */
+$config = $DI->get(Config::class);
+
 $smartyPlugins = include_once 'Okay/Core/SmartyPlugins/SmartyPlugins.php';
 
 /** @var License $license */
@@ -49,9 +52,6 @@ $response = $DI->get(Response::class);
 
 /** @var Settings $settings */
 $settings = $DI->get(Settings::class);
-
-/** @var Config $config */
-$config = $DI->get(Config::class);
 
 /** @var Managers $managers */
 $managers = $DI->get(Managers::class);

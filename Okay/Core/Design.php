@@ -104,6 +104,7 @@ class Design
         'trim',
         'ltrim',
         'rtrim',
+        'array_keys',
     ];
 
 

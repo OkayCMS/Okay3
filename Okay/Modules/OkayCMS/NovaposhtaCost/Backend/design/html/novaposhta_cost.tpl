@@ -63,7 +63,7 @@
                         <div class="col-lg-6 col-md-6">
                             <div class="heading_label">{$btr->settings_np_city}*</div>
                             <div class="mb-1">
-                                <select name="newpost_city " class="selectpicker form-control" data-live-search="true">
+                                <select name="newpost_city" class="selectpicker form-control" data-live-search="true">
                                     {$newpost_cities}
                                 </select>
                             </div>
@@ -71,7 +71,7 @@
                         <div class="col-lg-6 col-md-6">
                             <div class="heading_label">{$btr->settings_np_currency}*</div>
                             <div class="mb-1">
-                                <select name="currency_id " class="selectpicker form-control" data-live-search="false">
+                                <select name="currency_id" class="selectpicker form-control" data-live-search="false">
                                     {foreach $all_currencies as $c}
                                         <option value="{$c->id}"{if $c->id == $settings->newpost_currency_id} selected{/if}>{$c->name} ({$c->code})</option>
                                     {/foreach}

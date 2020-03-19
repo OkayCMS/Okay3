@@ -1,5 +1,5 @@
 {* Письмо восстановления пароля *}
-{$subject = `$lang->email_password_subject` scope=global}
+{$subject = "`$lang->email_password_subject`" scope=global}
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">

@@ -292,6 +292,14 @@
         font-size: 10px;
         font-weight: 600;
     }
+    .order_history__content .boxed{
+        padding: 10px;
+        margin-bottom: 10px;
+        font-size: 12px;
+    }
+    .order_history__title {
+        font-size: 13px;
+    }
     .main_header__item--sort_date {
         width: 100%;
     }

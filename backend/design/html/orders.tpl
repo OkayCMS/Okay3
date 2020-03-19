@@ -180,10 +180,11 @@
                                     <div class="okay_list_boding okay_list_order_number">
                                         <a class="text_600 mb-h" href="{url controller=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}">{$btr->orders_order|escape} #{$order->id}</a>
                                         {if $order->last_update}
-                                            <span class="tag tag-update">{$btr->order_history_changed} {$order->last_update->date|date} {$order->last_update->date|time}</span>
+                                            <span class="tag tag-update fn_history_toggle">{$btr->order_history_changed} {$order->last_update->date|date} {$order->last_update->date|time} <i class="fn_icon_arrow fa fa-angle-down fa-lg m-t-2 "></i></span>
                                         {else}
-                                            <span class="tag tag-update">{$btr->order_history_created} {$order->date|date} {$order->date|time}</span>
+                                            <span class="tag tag-update fn_history_toggle">{$btr->order_history_created} {$order->date|date} {$order->date|time} <i class="fn_icon_arrow fa fa-angle-down fa-lg m-t-2 "></i></span>
                                         {/if}
+                                        
                                         {if $order->paid}
                                             <div class="order_paid">
                                                 <span class="tag tag-success">{$btr->general_paid|escape}</span>
@@ -283,6 +284,12 @@
                                         </button>
                                     </div>
                                 </div>
+
+                                {*История заказа*}
+                                <div class="okay_list_row order_history_block" style="display: none">
+                                    {include 'order_history.tpl' order_history=$orders_history[$order->id]}
+                                </div>
+
                                 {*Список товаров из заказа*}
                                 {if $order->purchases|count > 0}
                                 <div class="okay_list_row orders_purchases_block" style="display: none">
@@ -389,6 +396,11 @@ $(function() {
     $(document).on('click','.fn_orders_toggle',function(){
         $(this).find('.fn_icon_arrow').toggleClass('rotate_180');
         $(this).parents('.fn_row').find('.orders_purchases_block').toggle();
+    });
+
+    $(document).on('click','.fn_history_toggle',function(){
+        $(this).find('.fn_icon_arrow').toggleClass('rotate_180');
+        $(this).parents('.fn_row').find('.order_history_block').toggle();
     });
 
     $(".fn_labels_show").click(function(){
