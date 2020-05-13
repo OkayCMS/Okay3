@@ -45,8 +45,9 @@
         </div>
     </div>
 </div>
-{*Блок фильтров*}
+
 <div class="boxed fn_toggle_wrap">
+    {*Блок фильтров*}
     <div class="row">
         <div class="col-lg-12 col-md-12 ">
             <div class="fn_toggle_wrap">
@@ -116,9 +117,9 @@
                     {$block}
                 </div>
             {/if}
-
         </div>
     </div>
+
     {if $products}
         <div class="row">
             {*Главная форма страницы*}
@@ -362,7 +363,7 @@
                                         <option value="disable">{$btr->general_do_disable|escape}</option>
                                         <option value="set_featured">{$btr->products_mark_bestseller|escape}</option>
                                         <option value="unset_featured">{$btr->products_unmark_bestseller|escape}</option>
-                                        <option value="duplicate">{$btr->products_create_dublicate|escape}</option>
+                                        <option value="duplicate">{$btr->general_create_dublicate|escape}</option>
                                         {if $pages_count>1}
                                             <option value="move_to_page">{$btr->products_move_to_page|escape}</option>
                                         {/if}
@@ -471,6 +472,5 @@ $(function() {
             $(this).val('∞');
     });
     });
-
 </script>
 {/literal}

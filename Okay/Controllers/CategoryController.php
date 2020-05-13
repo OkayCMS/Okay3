@@ -5,6 +5,7 @@ namespace Okay\Controllers;
 
 
 use Okay\Core\Router;
+use Okay\Core\Settings;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\CategoriesEntity;
@@ -30,6 +31,7 @@ class CategoryController extends AbstractController
         FilterHelper $filterHelper,
         ProductsEntity $productsEntity,
         CategoryMetadataHelper $categoryMetadataHelper,
+        Settings $settings,
         $url,
         $filtersUrl = ''
     ) {
@@ -175,20 +177,20 @@ class CategoryController extends AbstractController
         
         if (!empty($this->categoryFeatures)) {
             foreach ($this->categoryFeatures as $i => $feature) {
-                // Если хоть одно значение свойства выбранно, его убирать нельзя
+                // Если хоть одно значение свойства выбрано, его убирать нельзя
                 if (empty($currentFeatures[$feature->id])) {
-                    // На странице фильтра убираем свойства у корорых вообще нет значений (отфильтровались)
+                    // На странице фильтра убираем свойства у которых вообще нет значений (отфильтровались)
                     // или они изначально имели только один вариант выбора
                     if ($this->isFilterPage === true) {
                         if (!isset($baseFeaturesValues[$feature->id])
-                            || (count($baseFeaturesValues[$feature->id]) <= 1
+                            || ($settings->get('hide_single_filters') && (count($baseFeaturesValues[$feature->id]) <= 1)
                             || !isset($feature->features_values)
                             || count($feature->features_values) == 0)) {
                             
                             unset($this->categoryFeatures[$i]);
                         }
                         // Иначе убираем свойства у которых только один вариант выбора
-                    } elseif (!isset($feature->features_values) || count($feature->features_values) <= 1) {
+                    } elseif (!isset($feature->features_values) || ($settings->get('hide_single_filters') && count($feature->features_values) <= 1)) {
                         unset($this->categoryFeatures[$i]);
                     }
                 }

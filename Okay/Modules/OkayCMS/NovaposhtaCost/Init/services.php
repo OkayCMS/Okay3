@@ -6,6 +6,7 @@ namespace Okay\Modules\OkayCMS\NovaposhtaCost;
 
 use Okay\Core\Design;
 use Okay\Core\EntityFactory;
+use Okay\Core\Languages;
 use Okay\Core\Modules\Module;
 use Okay\Core\Money;
 use Okay\Core\OkayContainer\Reference\ParameterReference as PR;
@@ -38,6 +39,7 @@ return [
             new SR(Settings::class),
             new SR(EntityFactory::class),
             new SR(Money::class),
+            new SR(Languages::class),
         ],
     ],
 ];

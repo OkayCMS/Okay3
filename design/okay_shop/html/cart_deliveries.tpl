@@ -30,14 +30,14 @@
 						<svg class="checkbox__icon" viewBox="0 0 20 20">
 							<path class="checkbox__mark" fill="none" d="M4 10 l5 4 8-8.5"></path>
 						</svg>
-						<div class="delivery__name">
+						<span class="delivery__name">
 							{$delivery->name|escape}
 							<span class="delivery__name_price {if $delivery->hide_front_delivery_price}hidden{/if}">(<span class="fn_delivery_price">{$delivery->delivery_price_text}</span>)</span>
-						</div>
+						</span>
 						{if $delivery->image}
-							<div class="delivery__image">
+							<span class="delivery__image">
 								<img src="{$delivery->image|resize:80:30:false:$config->resized_deliveries_dir}" alt="{$delivery->name|escape}"/>
-							</div>
+							</span>
 						{/if}
 					</label>
 					
@@ -75,15 +75,15 @@
 								<svg class="checkbox__icon" viewBox="0 0 20 20">
 									<path class="checkbox__mark" fill="none" d="M4 10 l5 4 8-8.5"></path>
 								</svg>
-								<div class="delivery__name">
+								<span class="delivery__name">
 	
 									{$payment_method->name|escape}{$lang->cart_deliveries_to_pay}
 									<span class="delivery__name_price">(<span class="fn_payment_price">{$active_delivery->total_price_with_delivery|convert:$payment_method->currency_id}</span> {$all_currencies[$payment_method->currency_id]->sign|escape})</span>
-								</div>
+								</span>
 								{if $payment_method->image}
-									<div class="delivery__image">
+									<span class="delivery__image">
 										<img src="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" alt="{$payment_method->name|escape}"/>
-									</div>
+									</span>
 								{/if}
 							</label>
 							

@@ -210,20 +210,31 @@ class FeaturesValuesEntity extends Entity
             ->bindValue('visible', (int)$visible);
     }
     
-    protected function filter__other_filter($otherFilters)
+    protected function filter__other_filter($filters)
     {
-        $otherFilterArray = [];
-        if (isset($otherFilters['featured'])) {
-            $otherFilterArray[] = 'pf.product_id IN (SELECT id FROM __products WHERE featured=1)';
+        if (empty($filters)) {
+            return;
         }
 
-        if (isset($otherFilters['discounted'])) {
-            $otherFilterArray[] = '(SELECT 1 FROM __variants pv WHERE pv.product_id=pf.product_id AND pv.compare_price>0 LIMIT 1) = 1';
-        }
-        if (!empty($otherFilterArray)) {
-            $this->select->where(implode(' OR ', $otherFilterArray));
+        if ($otherFilter = $this->executeOtherFilter($filters)) {
+            $this->select->where("(" . implode(' OR ', $otherFilter) . ")");
         }
     }
+
+    private function executeOtherFilter($filters)
+    {
+        $otherFilter = [];
+        if (in_array("featured", $filters)) {
+            $otherFilter[] = 'pf.product_id IN (SELECT id FROM __products WHERE featured=1)';
+        }
+
+        if (in_array("discounted", $filters)) {
+            $otherFilter[] = '(SELECT 1 FROM __variants pv WHERE pv.product_id=pf.product_id AND pv.compare_price>0 LIMIT 1) = 1';
+        }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $otherFilter, func_get_args());
+    }
+    
     
     /**
      * @param array $features
@@ -306,12 +317,18 @@ class FeaturesValuesEntity extends Entity
         return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
     }
 
-    /*Метод возвращает ID всех значений свойств товаров*/
-    public function getProductValuesIds($productId)
+    /**
+     * Метод возвращает ID всех значений свойств товаров
+     * 
+     * @param array $productIds
+     * @return array
+     * @throws \Exception
+     */
+    public function getProductValuesIds(array $productIds)
     {
 
-        if (empty($productId)) {
-            return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
+        if (empty($productIds)) {
+            return ExtenderFacade::execute([static::class, __FUNCTION__], [], func_get_args());
         }
         
         $select = $this->queryFactory->newSelect();
@@ -321,14 +338,14 @@ class FeaturesValuesEntity extends Entity
                 'value_id',
             ])
             ->where('product_id IN (:product_id)')
-            ->bindValue('product_id', (array)$productId);
+            ->bindValue('product_id', $productIds);
         
         if ($this->db->query($select)) {
             $results = $this->db->results();
             return ExtenderFacade::execute([static::class, __FUNCTION__], $results, func_get_args());
         }
 
-        return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
+        return ExtenderFacade::execute([static::class, __FUNCTION__], [], func_get_args());
     }
 
     /*удаление связки значения свойства и товара*/

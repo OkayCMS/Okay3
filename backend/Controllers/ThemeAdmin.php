@@ -127,7 +127,7 @@ class ThemeAdmin extends IndexAdmin
             return;
         }
         while (false !== ($obj = readdir($dh))) {
-            if($obj == '.' || $obj == '..') {
+            if($obj == '.' || $obj == '..' || $obj == '.htaccess') {
                 continue;
             }
 

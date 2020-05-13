@@ -15,6 +15,10 @@ $content = $request->post('content');
 $template = $request->post('template');
 $theme = $request->post('theme', 'string');
 
+if ($request->post("email")) {
+    $template = "email/{$template}";
+}
+
 /*Сохранение файлов шаблона из админки*/
 $file = $config->root_dir.'design/'.$theme.'/html/'.$template;
 

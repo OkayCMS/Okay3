@@ -107,8 +107,18 @@ class LanguagesEntity extends Entity
         if (empty($this->allLanguages)) {
             $this->initLanguages();
         }
+        
+        $result = $this->allLanguages;
+        if (!empty($filter['label'])) {
+            $result = [];
+            foreach ($this->allLanguages as $l) {
+                if ($l->label == $filter['label']) {
+                    $result[$l->id] = $l;
+                }
+            }
+        }
 
-        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->allLanguages, func_get_args());
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
     
     /*Выборка первого языка сайта*/

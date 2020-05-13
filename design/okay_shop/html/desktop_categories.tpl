@@ -23,7 +23,7 @@
                                     {if $level == 3}
                                         <div class="d-flex align-items-center justify-content-center categories_menu__image">
                                             {if $c->image}
-                                                <img class="lazy" data-src="{$c->image|resize:65:65:false:$config->resized_categories_dir}" alt="{$c->name|escape}" srcset="{$c->image|resize:90:90:false:$config->resized_categories_dir:null:null:true}"/>
+                                                <img class="lazy" data-src="{$c->image|resize:65:65:false:$config->resized_categories_dir}" alt="{$c->name|escape}" src="{$c->image|resize:90:90:false:$config->resized_categories_dir:null:null:true}"/>
                                             {else}
                                                 <div class="categories__no_image d-flex align-items-center justify-content-center" title="{$c->name|escape}">
                                                     {include file="svg.tpl" svgId="no_image"}

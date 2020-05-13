@@ -5,9 +5,13 @@ namespace Okay\Modules\OkayCMS\NovaposhtaCost;
 
 
 use Okay\Core\EntityFactory;
+use Okay\Core\Languages;
 use Okay\Core\Money;
 use Okay\Core\Settings;
 use Okay\Entities\CurrenciesEntity;
+use Okay\Entities\LanguagesEntity;
+use Okay\Modules\OkayCMS\NovaposhtaCost\Entities\NPCitiesEntity;
+use Okay\Modules\OkayCMS\NovaposhtaCost\Entities\NPWarehousesEntity;
 
 class NovaposhtaCost
 {
@@ -23,12 +27,21 @@ class NovaposhtaCost
     /** @var Money */
     private $money;
     
-    public function __construct(Settings $settings, EntityFactory $entityFactory, Money $money)
+    /** @var Languages */
+    private $languages;
+    
+    private $cacheLifetime;
+    
+    public function __construct(Settings $settings, EntityFactory $entityFactory, Money $money, Languages $languages)
     {
         $this->entityFactory = $entityFactory;
         $this->npApiKey = $settings->get('newpost_key');
         $this->settings = $settings;
         $this->money = $money;
+        $this->languages = $languages;
+        
+        $cacheLifetime = $settings->get('np_cache_lifetime');
+        $this->cacheLifetime = !empty($cacheLifetime) ? $cacheLifetime : 86400;
     }
 
     /**
@@ -43,38 +56,71 @@ class NovaposhtaCost
             return false;
         }
 
-        $request = array(
-            "apiKey" => $this->settings->newpost_key,
-            "modelName" => "Address",
-            "calledMethod" => "getWarehouses",
-            "methodProperties" => array(
-                "CityRef" => $cityRef,
-                "Page" => 1
-            )
-        );
-
-        $response = $this->npRequest(json_encode($request));
-
-        if ($response->success){
-            $result['success'] = $response->success;
-            $result['warehouses_data'] = $response->data;
-            $result['warehouses'] = '<option selected disabled value="">Выберите отделение доставки</option>';
-            foreach ($response->data as $i=>$warehouse) {
-                $result['warehouses'] .= '<option value="'.htmlspecialchars($warehouse->DescriptionRu).'" data-warehouse_ref="'.$warehouse->Ref.'"'.(!empty($warehouseRef) && $warehouseRef == $warehouse->Ref ? 'selected' : '').'>'.htmlspecialchars($warehouse->DescriptionRu).'</option>';
-            }
-            return $result;
-        } else {
-            return false;
+        // Если включено автообновление пунктов выдачи и уже пора их обновить, тогда обновляем
+        if ($this->settings->get('np_auto_update_data') && (int)$this->settings->get('np_last_update_warehouses_date') + $this->cacheLifetime < time()) {
+            $this->parseWarehousesToCache();
         }
+
+        /** @var NPWarehousesEntity $warehousesEntity */
+        $warehousesEntity = $this->entityFactory->get(NPWarehousesEntity::class);
+        
+        $filter = ['city_ref' => $cityRef];
+        /*if (!empty($warehouseRef)) {
+            $filter['ref'] = $warehouseRef;
+        }*/
+        
+        // Если таблица пунктов пуста, спарсим все пункты
+        if (!$warehousesEntity->count()) {
+            $this->parseWarehousesToCache();
+        }
+        
+        $warehouses = $warehousesEntity->find($filter);
+
+        $result['success'] = true;
+        $result['warehouses'] = '<option selected disabled value="">Выберите отделение доставки</option>';
+        foreach ($warehouses as $warehouse) {
+            $result['warehouses'] .= '<option value="'.$warehouse->name.'" data-warehouse_ref="'.$warehouse->ref.'"'.(!empty($warehouseRef) && $warehouseRef == $warehouse->ref ? 'selected' : '').'>'.$warehouse->name.'</option>';
+        }
+        return $result;
+        
     }
-
-
+    
     /**
      * Выборка городов Новой Почты
      * @param string $selectedCity id города Новой Почты
      * @return bool|mixed
+     * @throws \Exception
      */
     public function getCities($selectedCity = '')
+    {
+
+        /** @var NPCitiesEntity $citiesEntity */
+        $citiesEntity = $this->entityFactory->get(NPCitiesEntity::class);
+
+        if (!$cities = $citiesEntity->find()) {
+            $cities = $this->parseCitiesToCache();
+        }
+
+        // Если включено автообновление городов и уже пора их обновить, тогда обновляем
+        if ($this->settings->get('np_auto_update_data') && (int)$this->settings->get('np_last_update_cities_date') + $this->cacheLifetime < time()) {
+            $cities = $this->parseCitiesToCache();
+        }
+
+        $result['success'] = true;
+        $result['cities'] = '<option value=""></option>';
+        foreach ($cities as $city) {
+            $result['cities'] .= '<option value="'.$city->name.'" data-city_ref="'.$city->ref.'" '.(!empty($selectedCity) && $selectedCity == $city->ref ? 'selected' : '').'>'.$city->name.'</option>';
+        }
+        return $result;
+    }
+
+    /**
+     * Метод сохраняет города в базу данных (локальный кеш)
+     * 
+     * @return array|false
+     * @throws \Exception
+     */
+    public function parseCitiesToCache()
     {
         $request = [
             "apiKey" => $this->npApiKey,
@@ -84,21 +130,161 @@ class NovaposhtaCost
                 "Page" => 1,
             ],
         ];
+        
+        $currentLangId = $this->languages->getLangId();
+        
+        /** @var LanguagesEntity $languagesEntity */
+        $languagesEntity = $this->entityFactory->get(LanguagesEntity::class);
 
+        $ruLanguage = $languagesEntity->findOne(['label' => 'ru']);
+        $uaLanguage = $languagesEntity->findOne(['label' => 'ua']);
+        
         $response = $this->npRequest(json_encode($request));
-        if ($response->success){
-            $result['success'] = $response->success;
-            $result['cities_data'] = $response->data;
-            $result['cities'] = '<option value=""></option>';
-            foreach ($response->data as $i=>$city) {
-                $result['cities'] .= '<option value="'.htmlspecialchars($city->DescriptionRu).'" data-city_ref="'.$city->Ref.'" '.(!empty($selectedCity) && $selectedCity == $city->Ref ? 'selected' : '').'>'.htmlspecialchars($city->DescriptionRu).'</option>';
+        if ($response->success) {
+
+            /** @var NPCitiesEntity $citiesEntity */
+            $citiesEntity = $this->entityFactory->get(NPCitiesEntity::class);
+            $cities = $citiesEntity->mappedBy('ref')->find();
+            $currentCitiesIds = [];
+            foreach ($cities as $c) {
+                $currentCitiesIds[$c->ref] = $c->id;
             }
-            return $result;
+            foreach ($response->data as $cityData) {
+                unset($currentCitiesIds[$cityData->Ref]);
+                if (!isset($cities[$cityData->Ref])) {
+                    $city = (object)[
+                        'name' => htmlspecialchars($cityData->Description),
+                        'ref' => $cityData->Ref,
+                    ];
+                    $city->id = $citiesEntity->add($city);
+                    $cities[$city->ref] = $city;
+                    
+                    if (!empty($ruLanguage)) {
+                        $this->languages->setLangId($ruLanguage->id);
+                        $city->name = htmlspecialchars($cityData->DescriptionRu);
+                        if (empty($city->name)) {
+                            $city->name = htmlspecialchars($cityData->Description);
+                        }
+                        $citiesEntity->update($city->id, $city);
+                    }
+                } else {
+                    if (!empty($uaLanguage)) {
+                        $this->languages->setLangId($uaLanguage->id);
+                        $city = $cities[$cityData->Ref];
+                        $city->name = htmlspecialchars($cityData->Description);
+                        $citiesEntity->update($city->id, $city);
+                    }
+                    if (!empty($ruLanguage)) {
+                        $this->languages->setLangId($ruLanguage->id);
+                        $city = $cities[$cityData->Ref];
+                        $city->name = htmlspecialchars($cityData->DescriptionRu);
+                        if (empty($city->name)) {
+                            $city->name = htmlspecialchars($cityData->Description);
+                        }
+                        $citiesEntity->update($city->id, $city);
+                    }
+                }
+            }
+
+            // Удаляет города которые не пришли
+            if (!empty($currentCitiesIds)) {
+                $citiesEntity->delete($currentCitiesIds);
+            }
+            
+            // Возвращаем язык
+            $this->languages->setLangId($currentLangId);
+
+            $this->settings->set('np_last_update_cities_date', time());
+            
+            return $cities;
         } else {
             return false;
         }
     }
 
+    public function parseWarehousesToCache()
+    {
+        $request = array(
+            "apiKey" => $this->settings->get('newpost_key'),
+            "modelName" => "Address",
+            "calledMethod" => "getWarehouses",
+            "methodProperties" => array(
+                "Page" => 1
+            )
+        );
+
+        $currentLangId = $this->languages->getLangId();
+
+        /** @var LanguagesEntity $languagesEntity */
+        $languagesEntity = $this->entityFactory->get(LanguagesEntity::class);
+
+        $ruLanguage = $languagesEntity->findOne(['label' => 'ru']);
+        $uaLanguage = $languagesEntity->findOne(['label' => 'ua']);
+
+        $response = $this->npRequest(json_encode($request));
+        if ($response->success) {
+
+            /** @var NPWarehousesEntity $warehousesEntity */
+            $warehousesEntity = $this->entityFactory->get(NPWarehousesEntity::class);
+            $warehouses = $warehousesEntity->mappedBy('ref')->find();
+            $currentWarehousesIds = [];
+            foreach ($warehouses as $c) {
+                $currentWarehousesIds[$c->ref] = $c->id;
+            }
+            foreach ($response->data as $warehouseData) {
+                unset($currentWarehousesIds[$warehouseData->Ref]);
+                if (!isset($warehouses[$warehouseData->Ref])) {
+                    $warehouse = (object)[
+                        'name' => htmlspecialchars($warehouseData->Description),
+                        'ref' => $warehouseData->Ref,
+                        'city_ref' => $warehouseData->CityRef,
+                    ];
+                    $warehouse->id = $warehousesEntity->add($warehouse);
+                    $warehouses[$warehouse->ref] = $warehouse;
+
+                    if (!empty($ruLanguage)) {
+                        $this->languages->setLangId($ruLanguage->id);
+                        $warehouse->name = htmlspecialchars($warehouseData->DescriptionRu);
+                        if (empty($warehouse->name)) {
+                            $warehouse->name = htmlspecialchars($warehouseData->Description);
+                        }
+                        $warehousesEntity->update($warehouse->id, $warehouse);
+                    }
+                } else {
+                    if (!empty($uaLanguage)) {
+                        $this->languages->setLangId($uaLanguage->id);
+                        $warehouse = $warehouses[$warehouseData->Ref];
+                        $warehouse->name = htmlspecialchars($warehouseData->Description);
+                        $warehousesEntity->update($warehouse->id, $warehouse);
+                    }
+                    if (!empty($ruLanguage)) {
+                        $this->languages->setLangId($ruLanguage->id);
+                        $warehouse = $warehouses[$warehouseData->Ref];
+                        $warehouse->name = htmlspecialchars($warehouseData->DescriptionRu);
+                        if (empty($warehouse->name)) {
+                            $warehouse->name = htmlspecialchars($warehouseData->Description);
+                        }
+                        $warehousesEntity->update($warehouse->id, $warehouse);
+                    }
+                }
+            }
+
+            // Удаляет пункты которые не пришли
+            if (!empty($currentWarehousesIds)) {
+                $warehousesEntity->delete($currentWarehousesIds);
+            }
+
+            // Возвращаем язык
+            $this->languages->setLangId($currentLangId);
+
+            $this->settings->set('np_last_update_warehouses_date', time());
+
+            return $warehouses;
+        } else {
+            return false;
+        }
+    }
+    
     /**
      * Калькулятор стоимости доставки Новой Почты
      * @param string $cityRef id города Новой Почты
@@ -117,9 +303,7 @@ class NovaposhtaCost
         /** @var CurrenciesEntity $currenciesEntity */
         $currenciesEntity = $this->entityFactory->get(CurrenciesEntity::class);
 
-        if ($this->settings->get('newpost_currency_id')) {
-            $npCurrency = $currenciesEntity->get((int)$this->settings->get('newpost_currency_id'));
-        } else {
+        if (!$npCurrency = $currenciesEntity->findOne(['code' => 'UAH'])) {
             $npCurrency = $currenciesEntity->getMainCurrency();
         }
 

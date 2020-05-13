@@ -8,6 +8,7 @@ use Aura\SqlQuery\Exception;
 use Okay\Core\Entity\Entity;
 use Okay\Core\Image;
 use Okay\Core\Modules\Extender\ExtenderFacade;
+use Okay\Core\Translit;
 
 class CategoriesEntity extends Entity
 {
@@ -43,6 +44,10 @@ class CategoriesEntity extends Entity
         'auto_description'
     ];
 
+    protected static $additionalFields = [
+        'r.slug_url',
+    ];
+    
     protected static $searchFields = [];
 
     protected static $defaultOrderFields = [
@@ -96,6 +101,23 @@ class CategoriesEntity extends Entity
         $category = (object) $category;
         $category->level_depth = $this->determineLevelDepth($category);
 
+        /** @var Translit $translit */
+        $translit = $this->serviceLocator->getService(Translit::class);
+        if (empty($category->url)) {
+            $category->url = $translit->translit($category->name);
+            $category->url = str_replace('.', '', $category->url);
+        }
+
+        $category->url = preg_replace("/[\s]+/ui", '', $category->url);
+
+        while ($this->get((string)$category->url)) {
+            if(preg_match('/(.+)([0-9]+)$/', $category->url, $parts)) {
+                $category->url = $parts[1].''.($parts[2]+1);
+            } else {
+                $category->url = $category->url.'2';
+            }
+        }
+
         $id = parent::add($category);
         unset($this->categoriesTree);
         unset($this->allCategories);
@@ -114,6 +136,11 @@ class CategoriesEntity extends Entity
         parent::update($ids, $category);
         unset($this->categoriesTree);
         unset($this->allCategories);
+
+        /** @var RouterCacheEntity $routerCacheEntity */
+        $routerCacheEntity = $this->entity->get(RouterCacheEntity::class);
+        $routerCacheEntity->deleteWrongCache();
+        
         return true;
     }
 
@@ -211,6 +238,11 @@ class CategoriesEntity extends Entity
         
         unset($this->categoriesTree);
         unset($this->allCategories);
+
+        /** @var RouterCacheEntity $routerCacheEntity */
+        $routerCacheEntity = $this->entity->get(RouterCacheEntity::class);
+        $routerCacheEntity->deleteWrongCache();
+        
         return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
 
@@ -486,6 +518,8 @@ class CategoriesEntity extends Entity
             $this->select->join('LEFT', $langQuery['join'], $langQuery['cond']);
         }
 
+        $this->select->leftJoin(RouterCacheEntity::getTable() . ' AS r', 'r.url=c.url AND r.type="category"');
+
         $this->select->cols($this->getAllFields());
         $this->db->query($this->select);
 
@@ -517,5 +551,86 @@ class CategoriesEntity extends Entity
 
         $parentCategory = $this->allCategories[$category->parent_id];
         return $parentCategory->level + 1;
+    }
+
+    public function duplicate($categoryId, $parentId)
+    {
+        $categoryId = (int)$categoryId;
+        $category = $this->get((int)$categoryId);
+
+        //Запоминаем текущую позицию, на нее станет новая запись
+        $position = $category->position;
+
+        $newCategory = new \stdClass();
+
+        $fields = array_merge($this->getFields(), $this->getLangFields());
+
+        foreach ($fields as $field) {
+            if (property_exists($category, $field)) {
+                $newCategory->$field = $category->$field;
+            }
+        }
+        unset($newCategory->id);
+        unset($newCategory->url);
+
+        $newCategory->parent_id = $parentId;
+        $newCategoryId = $this->add($newCategory);
+
+        // Сдвигаем категории вперед и вставляем копию на соседнюю позицию
+        $update = $this->queryFactory->newUpdate();
+        $update->table('__categories')
+            ->set('position', 'position+1')
+            ->where('position>=:position')
+            ->bindValue('position', $category->position);
+        $this->db->query($update);
+
+        $update = $this->queryFactory->newUpdate();
+        $update->table('__categories')
+            ->set('position', ':position')
+            ->where('id=:id')
+            ->bindValues([
+                'position' => $position,
+                'id' => $newCategoryId,
+            ]);
+        $this->db->query($update);
+
+        if (!empty($category->subcategories)) {
+            foreach ($category->subcategories as $subcategory) {
+                $this->duplicate($subcategory->id, $newCategoryId);
+            }
+        }
+
+        $this->multiDuplicateCategory($categoryId, $newCategoryId);
+        return $newCategoryId;
+    }
+
+    private function multiDuplicateCategory($categoryId, $newCategoryId)
+    {
+        $langId = $this->lang->getLangId();
+        if (!empty($langId)) {
+
+            /** @var LanguagesEntity $langEntity */
+            $langEntity = $this->entity->get(LanguagesEntity::class);
+
+            $languages = $langEntity->find();
+            $categoryLangFields = $this->getLangFields();
+
+            foreach ($languages as $language) {
+                if ($language->id != $langId) {
+                    $this->lang->setLangId($language->id);
+
+                    if (!empty($categoryLangFields)) {
+                        $sourceCategory = $this->get((int)$categoryId);
+                        $destinationCategory = new \stdClass();
+                        foreach($categoryLangFields as $field) {
+                            $destinationCategory->{$field} = $sourceCategory->{$field};
+                        }
+                        $this->update($newCategoryId, $destinationCategory);
+                    }
+
+                    $this->lang->setLangId($langId);
+                }
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@
             <div class="box_btn_heading">
                 <a class="btn btn_small btn-info" target="_blank" href="http://okay-cms.com/check?domain={$smarty.server.HTTP_HOST|escape}">
                 <i class="fa fa-link"></i>
-                <span>{$btr->license_check|escape}</span>
+                <span class="ml-h">{$btr->license_check|escape}</span>
             </a>
             </div>
         </div>
@@ -26,13 +26,17 @@
             <div class="boxed fn_toggle_wrap">
                 <div class="heading_box">
                     {if $is_valid_license}
-                        <div class="text_success">
-                            {$btr->index_valid|escape} {if $license_expiration != '*'}{$btr->license_to|escape} {$license_expiration|date}{/if} {$btr->license_on|escape} {foreach $license_domains as $d}{$d}{if !$d@last}, {/if}{/foreach}
+                    <div class="alert alert--icon alert--success">
+                        <div class="alert__content">
+                            <div class="alert__title">{$btr->index_valid|escape} {if $license_expiration != '*'}{$btr->license_to|escape} {$license_expiration|date}{/if} {$btr->license_on|escape} {foreach $license_domains as $d}{$d}{if !$d@last}, {/if}{/foreach}</div>
                         </div>
+                    </div>
                     {else}
-                        <div class="text_warning">
-                            {$btr->index_not_valid|escape}
+                    <div class="alert alert--icon alert--error">
+                        <div class="alert__content">
+                            <div class="alert__title">{$btr->index_not_valid|escape}</div>
                         </div>
+                    </div>
                     {/if}
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="icon-arrow-down"></i></a>
@@ -41,7 +45,7 @@
                 <div class="toggle_body_wrap on fn_card">
                     <div class="row">
                         <div class="col-md-12 mb-h">
-                            <textarea name="license" class="form-control okay_textarea mb-h" rows="5">{$config->license|escape}</textarea>
+                            <textarea name="license" class="form-control okay_textarea long_textarea mb-h" rows="8">{$config->license|escape}</textarea>
                         </div>
                     </div>
                     <div class="row">

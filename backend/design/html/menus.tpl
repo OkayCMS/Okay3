@@ -2,7 +2,7 @@
 {$meta_title=$btr->menus_menu scope=global}
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->menus_menu|escape}
@@ -15,7 +15,6 @@
             </div>
         </div>
     </div>
-    <div class="col-md-5 col-lg-5 col-sm-12 float-xs-right"></div>
 </div>
 
 {*Главная форма страницы*}

@@ -106,7 +106,7 @@
                                                         </tr>
                                                         <tr valign="top">
                                                             <td class="es-p5t es-p5b" width="180"><span>{$btr->email_order_phone|escape}:</span></td>
-                                                            <td class="es-p5t es-p5b"><span>{$callback->phone|escape}</span></td>
+                                                            <td class="es-p5t es-p5b"><span>{$callback->phone|phone}</span></td>
                                                         </tr>
                                                         <tr valign="top">
                                                             <td class="es-p5t es-p5b" width="180"><span>{$btr->email_request_page|escape}:</span></td>

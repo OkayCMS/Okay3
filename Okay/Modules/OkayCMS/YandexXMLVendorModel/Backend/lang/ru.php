@@ -27,6 +27,4 @@ $lang['okaycms__yandex_xml_vendor_model__adult'] = 'Товары для взро
 $lang['okaycms__yandex_xml_vendor_model__country_of_origin'] = 'Страна производитель (country_of_origin)';
 $lang['okaycms__yandex_xml_vendor_model__country_of_origin_notify'] = 'Укажите имя свойства, которое будет содержать данный параметр';
 $lang['okaycms__yandex_xml_vendor_model__upload_products'] = 'Выбор товаров для выгрузки';
-$lang['okaycms__yandex_xml_vendor_model__products_per_page'] = 'Количество товаров в одном пакете данных';
-$lang['okaycms__yandex_xml_vendor_model__products_per_page_title'] = 'При большом каталоге может не хватать памяти выгрузить все товары единоразово, поэтому они делятся на пакеты. Чем меньше памяти (ОЗУ) на сервере, тем меньше должен быть этот параметр. Также его можно поднимать, для поиска оптимальной скорости формирования выгрузки';
 $lang['okaycms__yandex_xml_vendor_model__import_field'] = 'Yandex XML Vendor Model';

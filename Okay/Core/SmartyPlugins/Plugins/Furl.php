@@ -41,9 +41,10 @@ class Furl extends Func
         $chpuUrl = ltrim($chpuUrl, '/');
         if (!empty($chpuUrl)) {
             $baseUrl = rtrim($baseUrl, '/');
-            return $baseUrl . '/' . $chpuUrl;
+
+            return trim(strip_tags(htmlspecialchars($baseUrl . '/' . $chpuUrl)));
         }
 
-        return $baseUrl;
+        return trim(strip_tags(htmlspecialchars($baseUrl)));
     }
 }

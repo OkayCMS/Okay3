@@ -18,7 +18,7 @@
 								<a class="d-flex align-items-center justify-content-center brand__link" data-brand="{$b->id}" href="{url_generator route='brand' url=$b->url}">
 									{if $b->image}
 										<div class="brand__image">
-											<img class="brand_img lazy" data-src="{$b->image|resize:120:100:false:$config->resized_brands_dir}" alt="{$b->name|escape}" title="{$b->name|escape}">
+											<img class="brand_img lazy" data-src="{$b->image|resize:120:100:false:$config->resized_brands_dir}" src="{$b->image|resize:120:100:false:$config->resized_brands_dir}" alt="{$b->name|escape}" title="{$b->name|escape}">
 										</div>
 									{else}
 										<div class="brand__name"><span>{$b->name|escape}</span></div>

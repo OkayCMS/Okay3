@@ -80,7 +80,7 @@
         <div class="block block--boxed block--border">
             <div class="f_row">
                 {if $description}
-                    <div class="d-lg-flex align-items-lg-stretch f_col-lg-7 f_col-xl-8">
+                    <div class="d-lg-flex align-items-lg-stretch {if $all_brands}f_col-lg-7 f_col-xl-8{else}f_col-lg-12{/if}">
                         <div class="block__abouts_us">
                             <div class="block__header">
                                 <h1 class="block__title"><span>{$h1|escape}</span></h1>
@@ -95,7 +95,7 @@
                 {/if}
                 {* Brand list *}
                 {if $all_brands}
-                    <div class="d-lg-flex align-items-lg-stretch f_col-lg-5 f_col-xl-4">
+                    <div class="d-lg-flex align-items-lg-stretch {if $description}f_col-lg-5 f_col-xl-4{else}f_col-lg-12 {/if}">
                         <div class="block__main_brands">
                             <div class="block__header block__header--promo">
                                 <div class="block__title"><span data-language="main_brands">{$lang->main_brands}</span></div>
@@ -112,7 +112,7 @@
                                         <a class="d-flex align-items-center justify-content-center main_brands__link" aria-label="{$b->name|escape}" href="{url_generator route='brand' url=$b->url}" data-brand="{$b->id}">
                                             {if $b->image}
                                                 <div class="d-flex align-items-center justify-content-center main_brands__image">
-                                                    <img class="main_brands_img lazy" data-src="{$b->image|resize:100:50:false:$config->resized_brands_dir}" alt="{$b->name|escape}" title="{$b->name|escape}">
+                                                    <img class="main_brands_img lazy" data-src="{$b->image|resize:100:50:false:$config->resized_brands_dir}" src="{$b->image|resize:100:50:false:$config->resized_brands_dir}" alt="{$b->name|escape}" title="{$b->name|escape}">
                                                 </div>
                                             {else}
                                                 <div class="d-flex align-items-center justify-content-center main_brands__name">

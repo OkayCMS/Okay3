@@ -20,14 +20,12 @@
 
 {*Главная форма страницы*}
 <div class="boxed fn_toggle_wrap">
-
     {$block = {get_design_block block="categories_custom_block"}}
     {if !empty($block)}
         <div class="fn_toggle_wrap custom_block">
             {$block}
         </div>
     {/if}
-
     {if $categories}
         <form method="post" class="fn_form_list fn_fast_button">
             <input type="hidden" name="session_id" value="{$smarty.session.id}" />
@@ -66,10 +64,11 @@
                             <label class="okay_ckeckbox" for="check_all_2"></label>
                         </div>
                         <div class="okay_list_option">
-                            <select name="action" class="selectpicker">
+                            <select name="action" class="selectpicker form-control">
                                 <option value="enable">{$btr->general_do_enable|escape}</option>
                                 <option value="disable">{$btr->general_do_disable|escape}</option>
                                 <option value="delete">{$btr->general_delete|escape}</option>
+                                <option value="duplicate">{$btr->general_create_dublicate|escape}</option>
                             </select>
                         </div>
                     </div>
@@ -191,4 +190,13 @@
             elem.find("i").toggleClass("fa-minus-square");
         }
     });
+
+    // Дублировать товар
+    $(document).on("click", ".fn_copy", function () {
+        $('.fn_form_list input[type="checkbox"][name*="check"]').attr('checked', false);
+        $(this).closest(".fn_form_list").find('select[name="action"] option[value=duplicate]').attr('selected', true);
+        $(this).closest(".okay_list_row").find('input[type="checkbox"][name*="check"]').attr('checked', true).click();
+        $(this).closest(".fn_form_list").submit();
+    });
+
 </script>

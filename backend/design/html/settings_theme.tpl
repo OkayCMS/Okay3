@@ -2,34 +2,34 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="heading_page">
             {$btr->settings_general_design|escape}
-
             {*<div class="tooltip_box hint-bottom-middle-t-info-s-small-mobile hint-anim hidden-sm-down" data-hint="Описание tooltips">
                 {include file='svg_icon.tpl' svgId='info_icon'}
             </div>*}
         </div>
     </div>
-    <div class="col-lg-5 col-md-5 text-xs-right float-xs-right"></div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    {if $message_success == 'saved'}
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_success == 'saved'}
                         {$btr->general_settings_saved|escape}
-                    {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                <a class="alert__button" href="{$smarty.get.return}">
+                    {include file='svg_icon.tpl' svgId='return'}
+                    <span>{$btr->general_back|escape}</span>
+                </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -147,7 +147,6 @@
                 </div>
                 <div class="toggle_body_wrap on fn_card">
                     <div class="row">
-
                         <div class="col-lg-12 col-md-12">
                             <div class="boxed fn_image_block site_logo_wrap">
                                 {if $settings->site_favicon}

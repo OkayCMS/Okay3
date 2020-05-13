@@ -23,7 +23,14 @@ trait CRUD
         $result = reset($results);
         return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
-    
+
+    /**
+     * Данный метод лучше не использовать, он в будущем будет определен как DEPRECATED
+     * Вместо него используйте метод findOne()
+     * 
+     * @param $id
+     * @return mixed|void|null
+     */
     public function get($id)
     {
         if (empty($id)) {

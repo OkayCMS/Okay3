@@ -5,77 +5,50 @@ namespace Okay\Modules\OkayCMS\Banners\Backend\Controllers;
 
 
 use Okay\Admin\Controllers\IndexAdmin;
-use Okay\Core\Image;
 use Okay\Modules\OkayCMS\Banners\Entities\BannersEntity;
-use Okay\Modules\OkayCMS\Banners\Entities\BannersImagesEntity;
-use Okay\Entities\ImagesEntity;
+use Okay\Modules\OkayCMS\Banners\Helpers\BannersImagesHelper;
+use Okay\Modules\OkayCMS\Banners\Requests\BannersImagesRequest;
 
 class BannersImageAdmin extends IndexAdmin
 {
     
     public function fetch(
-        BannersImagesEntity $bannersImagesEntity,
         BannersEntity $bannersEntity,
-        ImagesEntity $imagesEntity,
-        Image $imageCore
+        BannersImagesRequest $bannersImagesRequest,
+        BannersImagesHelper $bannersImagesHelper
     ) {
-        $bannersImage = new \stdClass;
         /*Принимаем данные о слайде*/
         if ($this->request->method('post')) {
-            $bannersImage->id = $this->request->post('id', 'integer');
-            $bannersImage->name = $this->request->post('name');
-            $bannersImage->visible = $this->request->post('visible', 'boolean');
-            $bannersImage->banner_id = $this->request->post('banner_id', 'integer');
-            
-            $bannersImage->url = $this->request->post('url');
-            $bannersImage->title = $this->request->post('title');
-            $bannersImage->alt = $this->request->post('alt');
-            $bannersImage->description = $this->request->post('description');
-            $bannersImage->settings = serialize($this->request->post('settings'));
+            $bannersImage = $bannersImagesRequest->postBannerImage();
             
             /*Добавляем/удаляем слайд*/
             if (empty($bannersImage->id)) {
-                $bannersImage->id = $bannersImagesEntity->add($bannersImage);
+                $preparedBannersImage = $bannersImagesHelper->prepareAdd($bannersImage);
+                $bannersImage->id     = $bannersImagesHelper->add($preparedBannersImage);
                 $this->design->assign('message_success', 'added');
             } else {
-                $bannersImagesEntity->update($bannersImage->id, $bannersImage);
+                $preparedBannersImage = $bannersImagesHelper->prepareUpdate($bannersImage);
+                $bannersImagesHelper->update($preparedBannersImage->id, $preparedBannersImage);
                 $this->design->assign('message_success', 'updated');
             }
-            
-            // Удаление изображения
-            if ($this->request->post('delete_image')) {
-                $imageCore->deleteImage(
-                    $bannersImage->id,
-                    'image',
-                    BannersImagesEntity::class,
-                    $this->config->banners_images_dir,
-                    $this->config->resized_banners_images_dir
-                );
+
+            // Картинка
+            if ($bannersImagesRequest->postDeleteImage()) {
+                $bannersImagesHelper->deleteImage($bannersImage);
             }
 
-            // Загрузка изображения
-            $image = $this->request->files('image');
-            if (!empty($image['name']) && ($filename = $imageCore->uploadImage($image['tmp_name'], $image['name'], $this->config->banners_images_dir))) {
-                $imageCore->deleteImage(
-                    $bannersImage->id,
-                    'image',
-                    BannersImagesEntity::class,
-                    $this->config->banners_images_dir,
-                    $this->config->resized_banners_images_dir
-                );
-                $bannersImagesEntity->update($bannersImage->id, ['image'=>$filename]);
+            if ($image = $bannersImagesRequest->fileImage()) {
+                $bannersImagesHelper->uploadImage($image, $bannersImage);
             }
-            $bannersImage = $bannersImagesEntity->get((int)$bannersImage->id);
+
+            $bannersImage = $bannersImagesHelper->getBannerImage((int)$bannersImage->id);
         } else {
-            $bannersImage->id = $this->request->get('id', 'integer');
-            $bannersImage = $bannersImagesEntity->get($bannersImage->id);
+            $bannersImageId = $this->request->get('id', 'integer');
+            $bannersImage   = $bannersImagesHelper->getBannerImage($bannersImageId);
         }
         
-        $banners = $bannersEntity->find();
+        $banners = $bannersEntity->find();//todo
 
-        if (!empty($bannersImage->settings)) {
-            $bannersImage->settings = unserialize($bannersImage->settings);
-        }
         $this->design->assign('banners_image', $bannersImage);
         $this->design->assign('banners', $banners);
 

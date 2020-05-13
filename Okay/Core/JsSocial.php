@@ -22,6 +22,7 @@ class JsSocial
         "telegram",
         "line",
         "odnoklassniki",
+        "vkontakte",
     ];
     private $customJsSocials = [
         "odnoklassniki" => [

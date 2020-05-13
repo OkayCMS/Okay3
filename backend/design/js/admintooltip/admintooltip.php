@@ -32,6 +32,8 @@ $license->check();
 $modules = $DI->get(Modules::class);
 $modules->startEnabledModules();
 
+$license->registerSmartyPlugins();
+
 // Кеширование нам не нужно
 /** @var Response $response */
 $response = $DI->get(Response::class);

@@ -38,7 +38,7 @@ class Validator
             return false;
         }
         if (empty($email)) {
-            return !$is_required ? true : false;
+            return !$is_required;
         }
         // for email
         if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/ui", $email)) {
@@ -60,13 +60,10 @@ class Validator
             return false;
         }
         if (empty($phone)) {
-            return !$is_required ? true : false;
+            return !$is_required;
         }
         // for phone
-        if (preg_match("~([^0-9 _\+\-\(\)]+)~", $phone)) {
-            return false;
-        }
-        return true;
+        return Phone::isValid($phone);
     }
 
     /**
@@ -82,7 +79,7 @@ class Validator
             return false;
         }
         if (empty($name)) {
-            return !$is_required ? true : false;
+            return !$is_required;
         }
         // for name
         // ...

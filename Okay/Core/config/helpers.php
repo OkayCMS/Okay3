@@ -61,6 +61,7 @@ use Okay\Helpers\ResizeHelper;
 use Okay\Helpers\SiteMapHelper;
 use Okay\Helpers\UserHelper;
 use Okay\Helpers\ValidateHelper;
+use Okay\Helpers\XmlFeedHelper;
 use Okay\Requests\CommonRequest;
 use Psr\Log\LoggerInterface;
 use Okay\Helpers\ProductsHelper;
@@ -71,7 +72,7 @@ use Okay\Helpers\MoneyHelper;
 use Okay\Core\Entity\UrlUniqueValidator;
 use Okay\Admin\Helpers\BackendExportHelper;
 
-$helpers = [
+return [
     BackendMainHelper::class => [
         'class' => BackendMainHelper::class,
         'arguments' => [
@@ -136,6 +137,7 @@ $helpers = [
             new SR(EntityFactory::class),
             new SR(MoneyHelper::class),
             new SR(Request::class),
+            new SR(Settings::class),
         ]
     ],
     BackendOrderHistoryHelper::class => [
@@ -352,6 +354,10 @@ $helpers = [
         'class' => CartHelper::class,
         'arguments' => [
             new SR(EntityFactory::class),
+            new SR(Money::class),
+            new SR(TemplateConfig::class),
+            new SR(LoggerInterface::class),
+            new SR(Design::class),
         ]
     ],
     ProductsHelper::class => [
@@ -368,6 +374,7 @@ $helpers = [
             new SR(EntityFactory::class),
             new SR(Money::class),
             new SR(Settings::class),
+            new SR(Request::class),
         ],
     ],
     OrdersHelper::class => [
@@ -492,6 +499,11 @@ $helpers = [
     AllProductsMetadataHelper::class => [
         'class' => AllProductsMetadataHelper::class,
     ],
+    XmlFeedHelper::class => [
+        'class' => XmlFeedHelper::class,
+        'arguments' => [
+            new SR(Languages::class),
+        ]
+    ],
 ];
 
-return $helpers;

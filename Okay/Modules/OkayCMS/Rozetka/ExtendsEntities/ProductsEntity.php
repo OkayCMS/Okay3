@@ -5,6 +5,7 @@ namespace Okay\Modules\OkayCMS\Rozetka\ExtendsEntities;
 
 
 use Okay\Core\Modules\AbstractModuleEntityFilter;
+use Okay\Modules\OkayCMS\Rozetka\Init\Init;
 
 class ProductsEntity extends AbstractModuleEntityFilter
 {
@@ -16,10 +17,10 @@ class ProductsEntity extends AbstractModuleEntityFilter
             $this->select->bindValue('category_id', (array)$categoriesIds);
         }
 
-        $this->select->where('not_to_rozetka != 1');
+        $this->select->where("(p.".Init::NOT_TO_FEED_FIELD." != 1 OR p.".Init::NOT_TO_FEED_FIELD." IS NULL)");
         $this->select->where("(
-            p.to_rozetka=1 
-            OR p.brand_id IN (SELECT id FROM __brands WHERE to_rozetka = 1)
+            p.".Init::TO_FEED_FIELD."=1 
+            OR p.brand_id IN (SELECT id FROM __brands WHERE ".Init::TO_FEED_FIELD." = 1)
             {$categoryFilter}
         )");
     }

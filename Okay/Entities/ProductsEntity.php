@@ -38,6 +38,10 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
         'special',
     ];
     
+    protected static $additionalFields = [
+        'r.slug_url',
+    ];
+    
     protected static $defaultOrderFields = [
         'p.position DESC',
     ];
@@ -47,6 +51,34 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
     protected static $langTable = 'products';
     protected static $tableAlias = 'p';
     protected static $alternativeIdField = 'url';
+
+    public function get($id)
+    {
+        if (empty($id)) {
+            $this->flush();
+            return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
+        }
+        
+        $this->select->leftJoin(RouterCacheEntity::getTable() . ' AS r', 'r.url=p.url AND r.type="product"');
+        return parent::get($id);
+    }
+    
+    public function find(array $filter = [])
+    {
+        $this->select->leftJoin(RouterCacheEntity::getTable() . ' AS r', 'r.url=p.url AND r.type="product"');
+        
+        return parent::find($filter);
+    }
+
+    public function update($ids, $object)
+    {
+        $res = parent::update($ids, $object);
+        
+        /** @var RouterCacheEntity $routerCacheEntity */
+        $routerCacheEntity = $this->entity->get(RouterCacheEntity::class);
+        $routerCacheEntity->deleteWrongCache();
+        return $res;
+    }
 
     public function add($product)
     {
@@ -115,6 +147,10 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
 
         $this->updateLastModify($ids);
 
+        /** @var RouterCacheEntity $routerCacheEntity */
+        $routerCacheEntity = $this->entity->get(RouterCacheEntity::class);
+        $routerCacheEntity->deleteWrongCache();
+        
         return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
 
@@ -130,15 +166,18 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
         $this->db->query($select);
         $candidatesToDelete = $this->getResults('filename');
 
-        $select = $this->queryFactory->newSelect();
-        $select->cols(['filename'])
-            ->from('__images')
-            ->where('id IN(:images_ids)')
-            ->where('product_id NOT IN(:products_ids)')
-            ->bindValue('images_ids', $imagesIds)
-            ->bindValue('products_ids', $productsIds);
-        $this->db->query($select);
-        $filesUsesInOtherProducts = $this->getResults('filename');
+        $filesUsesInOtherProducts = [];
+        if (!empty($candidatesToDelete)) {
+            $select = $this->queryFactory->newSelect();
+            $select->cols(['filename'])
+                ->from('__images')
+                ->where('filename IN(:images_filenames)')
+                ->where('product_id NOT IN(:products_ids)')
+                ->bindValue('images_filenames', $candidatesToDelete)
+                ->bindValue('products_ids', $productsIds);
+            $this->db->query($select);
+            $filesUsesInOtherProducts = $this->getResults('filename');
+        }
 
         $toDeleteFiles = array_diff($candidatesToDelete, $filesUsesInOtherProducts);
         foreach($toDeleteFiles as $file) {
@@ -380,19 +419,48 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
         $featuresValuesEntity = $this->entity->get(FeaturesValuesEntity::class);
 
         $productId = (int)$productId;
-        $product = $this->get($productId);
-        $product->id = null;
-        $product->url = '';
-        $product->external_id = '';
-        unset($product->created);
+        $product = $this->findOne(['id' => $productId]);
+        //$product = $this->get((int)$productId);
+
+        //Запоминаем текущую позицию, на нее станет новая запись
+        $position = $product->position;
+
+
+
+        $newProduct = new \stdClass();
+
+        $fields = array_merge($this->getFields(), $this->getLangFields());
+
+        foreach ($fields as $field) {
+            if (property_exists($product, $field)) {
+                $newProduct->$field = $product->$field;
+            }
+        }
+
+        $newProduct->id = null;
+        $newProduct->url = '';
+        $newProduct->external_id = '';
+        unset($newProduct->created);
+
+        $newProductId = $this->add($newProduct);
 
         // Сдвигаем товары вперед и вставляем копию на соседнюю позицию
         $update = $this->queryFactory->newUpdate();
         $update->table('__products')
-            ->set('position', 'position+1')
-            ->where('position>:position')
+            ->set('position', 'position-1')
+            ->where('position<=:position')
             ->bindValue('position', $product->position);
-        $newProductId = $this->add($product);
+        $this->db->query($update);
+
+        $update = $this->queryFactory->newUpdate();
+        $update->table('__products')
+            ->set('position', ':position')
+            ->where('id=:id')
+            ->bindValues([
+                'position' => $position,
+                'id' => $newProductId,
+            ]);
+        $this->db->query($update);
 
         //lastModify
         if (!empty($product->brand_id)) {
@@ -442,7 +510,7 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
         }
 
         // Дублируем значения свойств
-        $values = $featuresValuesEntity->getProductValuesIds($productId);
+        $values = $featuresValuesEntity->getProductValuesIds([$productId]);
         foreach($values as $value) {
             $featuresValuesEntity->addProductValue($newProductId, $value->value_id);
         }
@@ -704,24 +772,29 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
             ->bindValue('discounted', (int)$state);
     }
     
-    protected function filter__other_filter($filters) // todo разбить фильтры на отдельные методы
+    protected function filter__other_filter($filters)
     {
         if (empty($filters)) {
             return;
         }
 
-        $other_filter = "(";
+        if ($otherFilter = $this->executeOtherFilter($filters)) {
+            $this->select->where("(" . implode(' OR ', $otherFilter) . ")");
+        }
+    }
 
+    private function executeOtherFilter($filters)
+    {
+        $otherFilter = [];
         if (in_array("featured", $filters)) {
-            $other_filter .= "p.featured=1 OR ";
+            $otherFilter[] = "p.featured=1";
         }
 
         if (in_array("discounted", $filters)) {
-            $other_filter .= "(SELECT 1 FROM __variants pv WHERE pv.product_id=p.id AND pv.compare_price>0 LIMIT 1) = 1 OR ";
+            $otherFilter[] = "(SELECT 1 FROM __variants pv WHERE pv.product_id=p.id AND pv.compare_price>0 LIMIT 1) = 1";
         }
 
-        $where = substr($other_filter, 0, -4).")";
-        $this->select->where($where);
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $otherFilter, func_get_args());
     }
 
     /**

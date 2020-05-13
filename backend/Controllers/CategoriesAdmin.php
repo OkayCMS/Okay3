@@ -32,6 +32,11 @@ class CategoriesAdmin extends IndexAdmin
                         $backendCategoriesHelper->delete($ids);
                         break;
                     }
+                    case 'duplicate': {
+                        $backendCategoriesHelper->duplicateCategories($ids);
+                        $this->postRedirectGet->redirect();
+                        break;
+                    }
                 }
             }
             

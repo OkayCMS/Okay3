@@ -7,7 +7,7 @@
         <company>{$settings->okaycms__yandex_xml__company|escape}</company>
     {/if}
     <agency>OkayCMS</agency>
-    <email>nfo@okay-cms.com</email>
+    <email>info@okay-cms.com</email>
     <url>{$rootUrl}</url>
     <platform>OkayCMS</platform>
     <version>{$config->version} {$config->version_type}</version>

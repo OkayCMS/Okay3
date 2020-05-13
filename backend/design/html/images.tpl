@@ -2,31 +2,32 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-10 col-md-10">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->images_theme|escape} {$theme|escape}
             </div>
         </div>
     </div>
-    <div class="col-md-2 col-lg-2 col-sm-12 float-xs-right"></div>
 </div>
 
 {*Вывод ошибок*}
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="">
-                    {if $message_error == 'permissions'}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_error == 'permissions'}
                         {$btr->general_permissions|escape} {$images_dir|escape}
-                    {elseif $message_error == 'name_exists'}
+                        {elseif $message_error == 'name_exists'}
                         {$btr->images_exists|escape}
-                    {elseif $message_error == 'theme_locked'}
+                        {elseif $message_error == 'theme_locked'}
                         {$btr->general_protected|escape}
-                    {else}
+                        {else}
                         {$message_error|escape}
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>

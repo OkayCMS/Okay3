@@ -28,6 +28,14 @@ abstract class AbstractRoute
      */
     protected $strategy;
 
+    protected $isUsesSqlToGenerate;
+
+    // Разрешено ли выполнять SQL запросы для формирования поля slug
+    protected static $useSqlToGenerate = true;
+    
+    // Сочетания урла сущности и поля slug роута
+    protected static $routeAliases;
+    
     /**
      * Параметры которые были пойманы роутером при помощи регулярных выражения
      */
@@ -40,8 +48,61 @@ abstract class AbstractRoute
         $serviceLocator = ServiceLocator::getInstance();
         $this->settings = $serviceLocator->getService(Settings::class);
         $this->strategy = $this->getStrategy();
+        $this->isUsesSqlToGenerate = $this->strategy->getIsUsesSqlToGenerate();
     }
 
+    /**
+     * Метод сообщает могут ли вообще использоваться SQL запросы для построения конкретного урла сущности 
+     * (допустим доставаться категории или )
+     * 
+     * @return bool
+     */
+    public function getIsUsesSqlToGenerate()
+    {
+        return $this->isUsesSqlToGenerate;
+    }
+
+    /**
+     * Метод возвращает разрешено ли выполнять SQL запросы для формирования поля slug (например доставать доп категории
+     * или искать их в RouterCacheEntity)
+     * 
+     * @return bool
+     */
+    public static function getUseSqlToGenerate()
+    {
+        return self::$useSqlToGenerate;
+    }
+
+    /**
+     * Метод сообщает генератору урлов что запрещено выполнять дополнительные запросы для формирования урла.
+     * Может понадобиться во время работы с небуферизированными запросами
+     */
+    public static function setNotUseSqlToGenerate()
+    {
+        self::$useSqlToGenerate = false;
+    }
+    
+    /**
+     * Метод устанавливает связь между урлом сущности и его slug. Может быть необходимо когда весь slug генерируется
+     * динамически (например все родительские категории) и нельзя выполнять запросы в базу (например работаем с 
+     * небуферизированными запросами) можно установить связь урла и полностью поля slug (которое есть у RouterCacheEntity)
+     * 
+     * @param $url
+     * @param $routeAlias
+     */
+    public static function setUrlSlugAlias($url, $routeAlias)
+    {
+        self::$routeAliases[$url] = $routeAlias;
+    }
+
+    public static function getUrlSlugAlias($url)
+    {
+        if (!empty(self::$routeAliases[$url])) {
+            return self::$routeAliases[$url];
+        }
+        return false;
+    }
+    
     public function generateRouteParams()
     {
         $url = $this->prepareUrl(Request::getRequestUri());

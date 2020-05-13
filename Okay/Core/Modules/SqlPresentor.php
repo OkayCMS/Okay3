@@ -11,8 +11,22 @@ class SqlPresentor
         $sql = "ALTER TABLE `{$tableName}` ADD COLUMN {$this->fieldSql($field)};";
 
         if ($indexes = $field->getIndexes()) {
-            foreach ($indexes as $indexName => $length) {
-                $sql .= "ALTER TABLE `{$tableName}` ADD {$indexName} `{$field->getName()}` (`{$field->getName()}`" . ($length !== null ? "({$length})" : "") . ");";
+            $indexFields = [];
+            foreach ($indexes as $indexType => $index) {
+                $length = $index['length'];
+                $indexName = $field->getName();
+                $indexFields[] = "`{$field->getName()}`" . ($length !== null ? "({$length})" : "");
+                // Если указали дополнительные поля для составного индекса, добавим их
+                if (!empty($index['fields'])) {
+                    foreach ($index['fields'] as $compositeIndexField) {
+                        /** @var EntityField $compositeIndexField*/
+                        $indexName .= '_' . $compositeIndexField->getName();
+                        $indexFields[] = "`{$compositeIndexField->getName()}`";
+                    }
+                }
+
+                $fullIndexFields = implode(', ', $indexFields);
+                $sql .= "ALTER TABLE `{$tableName}` ADD {$indexType} `{$indexName}` ({$fullIndexFields});";
             }
         }
         
@@ -35,8 +49,24 @@ class SqlPresentor
             $sql .= $this->fieldSql($entityField) . ",";
             
             if ($indexes = $entityField->getIndexes()) {
-                foreach ($indexes as $indexName => $length) {
-                    $sql .= ($indexName !== EntityField::INDEX ? $indexName : "") . " KEY `{$entityField->getName()}` (`{$entityField->getName()}`" . ($length !== null ? "({$length})" : "") . "),";
+                $indexFields = [];
+                foreach ($indexes as $indexType => $index) {
+                    $length = $index['length'];
+                    $indexName = $entityField->getName();
+                    //var_dump($length);
+                    $indexFields[] = "`{$entityField->getName()}`" 
+                        . ($length !== null ? "({$length})" : "");
+                    // Если указали дополнительные поля для составного индекса, добавим их
+                    if (!empty($index['fields'])) {
+                        foreach ($index['fields'] as $compositeIndexField) {
+                            /** @var EntityField $compositeIndexField*/
+                            $indexName .= '_' . $compositeIndexField->getName();
+                            $indexFields[] = "`{$compositeIndexField->getName()}`";
+                        }
+                    }
+                    
+                    $fullIndexFields = implode(', ', $indexFields);
+                    $sql .= ($indexType !== EntityField::INDEX ? $indexType : "") . " KEY `{$indexName}` ({$fullIndexFields}),";
                 }
             }
 
@@ -60,7 +90,7 @@ class SqlPresentor
 
     private function fieldSql(EntityField $field)
     {
-        $nullSql    = $field->isNullable() ? ' NULL' : ' NOT NULL';
+        $nullSql    = $field->isNullable() && !$field->isPrimaryKey() ? ' NULL' : ' NOT NULL';
         $defaultSql = "";
         if ($field->getDefault() !== null) {
             // если как значение по умолчанию указали функцию, её не берём в кавычки

@@ -39,27 +39,29 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
-                    {if $message_error == 'domain_not_found'}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_error == 'domain_not_found'}
                         {$btr->support_no_domain|escape}
-                    {elseif $message_error == 'domain_disabled'}
+                        {elseif $message_error == 'domain_disabled'}
                         {$btr->support_domain_blocked|escape}
-                    {elseif $message_error == 'wrong_key'}
+                        {elseif $message_error == 'wrong_key'}
                         {$btr->support_wrong_keys|escape}
-                    {elseif $message_error == 'topic_not_found'}
+                        {elseif $message_error == 'topic_not_found'}
                         {$btr->topic_no_theme|escape}
-                    {elseif $message_error == 'topic_closed'}
+                        {elseif $message_error == 'topic_closed'}
                         {$btr->topic_closed|escape}
-                    {elseif $message_error == 'localhost'}
+                        {elseif $message_error == 'localhost'}
                         {$btr->support_local|escape}
-                    {elseif $message_error == 'empty_comment'}
+                        {elseif $message_error == 'empty_comment'}
                         {$btr->support_empty_comment|escape}
-                    {elseif $message_error == 'empty_name'}
+                        {elseif $message_error == 'empty_name'}
                         {$btr->support_empty_name|escape}
-                    {else}
+                        {else}
                         {$message_error|escape}
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>

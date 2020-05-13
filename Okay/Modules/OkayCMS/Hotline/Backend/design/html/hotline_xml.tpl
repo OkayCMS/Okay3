@@ -9,73 +9,64 @@
             </div>
         </div>
     </div>
-    <div class="col-md-12 col-lg-12 col-sm-12 float-xs-right"></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+        <div class="alert alert--icon alert--info">
+            <div class="alert__content">
+                <div class="alert__title">{$btr->alert_info|escape}</div>
+                <p>{$btr->okaycms__hotline__generation_url|escape} <a href="{url_generator route='OkayCMS.Hotline.Feed' absolute=1}" target="_blank">{url_generator route='OkayCMS.Hotline.Feed' absolute=1}</a></p>
+            </div>
+        </div>
+    </div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    {if $message_success=='added'}
-                        {$btr->discount_added|escape}
-                    {elseif $message_success=='updated'}
-                        {$btr->discount_updated|escape}
-                    {else}
-                        {$message_success|escape}
-                    {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {*{include file='svg_icon.tpl' svgId='return'}*}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_success == 'saved'}
+                        {$btr->general_settings_saved|escape}
+                        {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                <a class="alert__button" href="{$smarty.get.return}">
+                    {include file='svg_icon.tpl' svgId='return'}
+                    <span>{$btr->general_back|escape}</span>
+                </a>
+                {/if}
             </div>
         </div>
     </div>
 {/if}
 
-{*Вывод ошибок*}
 {if $message_error}
-    <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="alert alert--center alert--icon alert--error">
+            <div class="alert__content">
+                <div class="alert__title">
                     {if $message_error=='empty_name'}
-                        {$btr->general_enter_title|escape}
+                    {$btr->general_enter_title|escape}
                     {else}
-                        {$message_error|escape}
+                    {$message_error|escape}
                     {/if}
                 </div>
             </div>
         </div>
     </div>
+</div>
 {/if}
 
 {*Главная форма страницы*}
 <form method="post" enctype="multipart/form-data" class="fn_fast_button fn_is_translit_alpha">
     <input type=hidden name="session_id" value="{$smarty.session.id}">
     <input type="hidden" name="lang_id" value="{$lang_id}" />
-
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="boxed">
-                {*Название элемента сайта*}
-                <div class="row d_flex">
-                    <div class="col-lg-12 col-md-12">
-                        <div class="heading_label">
-                            {$btr->okaycms__hotline__generation_url|escape}
-                        </div>
-                        <div class="form-group">
-                            <a href="{url_generator route='OkayCMS.Hotline.Feed' absolute=1}" target="_blank">{url_generator route='OkayCMS.Hotline.Feed' absolute=1}</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="row">
         <div class="col-lg-12 col-md-12">

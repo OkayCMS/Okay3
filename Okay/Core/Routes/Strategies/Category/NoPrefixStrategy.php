@@ -34,7 +34,7 @@ class NoPrefixStrategy extends AbstractRouteStrategy
             return $this->mockRouteParams;
         }
 
-        $matchedRoute = [
+        return [
             '{$url}{$filtersUrl}',
             [
                 '{$url}' => $categoryUrl,
@@ -45,8 +45,6 @@ class NoPrefixStrategy extends AbstractRouteStrategy
                 '{$filtersUrl}' => $this->matchFiltersUrl($categoryUrl, $url)
             ]
         ];
-
-        return $matchedRoute;
     }
 
     private function matchCategoryUrl($url)

@@ -241,7 +241,7 @@ class ImportProducts extends AbstractImport
         }
         
         // Не будем парсить все, что не товар (чтобы исключить услуги типа "Доставка" и подобные...)
-        if ($this->integration1C->importProductsOnly === true && isset($properties['ВидНоменклатуры']) && $properties['ВидНоменклатуры'] != 'Товар') {
+        if ($this->integration1C->importProductsOnly === true && isset($properties['ТипНоменклатуры']) && $properties['ТипНоменклатуры'] != 'Товар') {
             return;
         }
         

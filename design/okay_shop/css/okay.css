@@ -209,6 +209,10 @@ blockquote cite:before {content: "\2014 \2009";}
     border: 1px solid #dbdbdb;
     border-radius: 3px;
 }
+.block__main_brands{
+    width: 100%;
+    max-width: 100%;
+}
 .block__title{
     color: var(--okay-boxed-text);
     font-size: 24px;

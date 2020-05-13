@@ -24,6 +24,7 @@ class FilterHelper
     private $request;
     private $router;
     private $design;
+    private $settings;
     
     private $categoryFeatures = null;
     private $categoryFeaturesByUrl;
@@ -59,6 +60,7 @@ class FilterHelper
         $this->request = $request;
         $this->router = $router;
         $this->design = $design;
+        $this->settings = $settings;
 
         /** @var LanguagesEntity $languagesEntity */
         $languagesEntity = $entityFactory->get(LanguagesEntity::class);
@@ -175,7 +177,11 @@ class FilterHelper
         $brandsEntity = $this->entityFactory->get(BrandsEntity::class);
         $brands = $brandsEntity->mappedBy('id')->find($brandsFilter);
         // Если в фильтре только один бренд и он не выбран, тогда вообще не выводим фильтр по бренду
-        if (($firstBrand = reset($brands)) && count($brands) <= 1 && !in_array($firstBrand->id, $currentBrandsIds)) {
+        if (($firstBrand = reset($brands)) 
+            && $this->settings->get('hide_single_filters') 
+            && count($brands) <= 1 
+            && !in_array($firstBrand->id, $currentBrandsIds)
+        ) {
             $brands = [];
         }
         return ExtenderFacade::execute(__METHOD__, $brands, func_get_args());
@@ -411,7 +417,7 @@ class FilterHelper
         return ExtenderFacade::execute(__METHOD__, $currentBrands, func_get_args());
     }
 
-    public function getCurrentCategoryFeatures($filtersUrl)
+    public function getCurrentCategoryFeatures($filtersUrl) // todo возвращать только в конце
     {
         if ($this->categoryFeatures === null) {
             $this->getCategoryFeatures();
@@ -475,7 +481,7 @@ class FilterHelper
     {
         /** @var TranslationsEntity $translationsEntity */
         $translationsEntity = $this->entityFactory->get(TranslationsEntity::class);
-        $translations = $translationsEntity->find(['lang' => $this->language->label]);
+        $translations = $translationsEntity->find(['lang' => $this->language->label]); // todo здесь должен быть FrontTranslations
         
         if ($this->categoryFeatures === null) {
             $this->getCategoryFeatures();

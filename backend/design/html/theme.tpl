@@ -4,7 +4,7 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-10 col-md-10">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page ">
                 {$btr->theme_current|escape} {$theme->name}
@@ -17,15 +17,16 @@
             </div>
         </div>
     </div>
-    <div class="col-md-2 col-lg-2 col-sm-12 float-xs-right"></div>
 </div>
 
 {if $theme->locked}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="">
-                    {$btr->theme_close|escape}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {$btr->theme_close|escape}
+                    </div>
                 </div>
             </div>
         </div>
@@ -36,8 +37,9 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_error == 'permissions'}
                         {$btr->general_permissionse|escape} {$themes_dir}
                     {elseif $message_error == 'name_exists'}
@@ -45,6 +47,7 @@
                     {else}
                         {$message_error|escape}
                     {/if}
+                    </div>
                 </div>
             </div>
         </div>

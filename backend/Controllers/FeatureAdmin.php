@@ -62,6 +62,10 @@ class FeatureAdmin extends IndexAdmin
 
             $backendFeaturesValuesHelper->sortFeatureValuePositions($feature, $featuresValues);
 
+            if ($this->request->post('alphabet_sort_values')) {
+                $backendFeaturesValuesHelper->sortFeatureValuePositionsAlphabet($feature);
+            }
+
             $unionMainValueId   = $featuresRequest->postUnionMainValueId();
             $unionSecondValueId = $featuresRequest->postUnionSecondValueId();
             if (!empty($unionMainValueId) && !empty($unionSecondValueId)) {

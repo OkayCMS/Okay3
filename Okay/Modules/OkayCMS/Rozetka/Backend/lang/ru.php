@@ -16,6 +16,4 @@ $lang['products_not_for_upload'] = 'Товары не для выгрузки';
 $lang['select_products'] = 'Выбрать товар';
 $lang['add_products'] = 'Добавить товар';
 $lang['okaycms__rozetka_xml__params'] = 'Настройки выгрузки';
-$lang['okaycms__rozetka_xml__products_per_page'] = 'Количество товаров в одном пакете данных';
-$lang['okaycms__rozetka_xml__products_per_page_title'] = 'При большом каталоге может не хватать памяти выгрузить все товары единоразово, поэтому они делятся на пакеты. Чем меньше памяти (ОЗУ) на сервере, тем меньше должен быть этот параметр. Также его можно поднимать, для поиска оптимальной скорости формирования выгрузки';
 $lang['okaycms__rozetka_xml__import_field'] = 'Rozetka';

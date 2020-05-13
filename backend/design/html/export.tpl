@@ -2,24 +2,24 @@
 
 {*Название страницы*}
 <div class="row">
-    <progress id="progressbar" class="progress progress-info mt-0" style="display: none" value="0" max="100"></progress>
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="heading_page">{$btr->export_products|escape}</div>
     </div>
-    <div class="col-lg-5 col-md-5 float-xs-right"></div>
 </div>
 
 {*Вывод ошибок*}
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
-                    {if $message_error == 'no_permission'}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_error == 'no_permission'}
                         {$btr->general_permissions|escape} {$export_files_dir}
-                    {else}
+                        {else}
                         {$message_error|escape}
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -29,10 +29,19 @@
 {if $message_error != 'no_permission'}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_attention">
-                <div class="">
-                    {$btr->export_message|escape}
+            <div class="alert alert--icon">
+                <div class="alert__content">
+                    <div class="alert__title">{$btr->alert_description|escape}</div>
+                    <p>{$btr->export_message}</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="success_export" class="" style="display: none">
+        <div class="alert alert--icon alert--success">
+            <div class="alert__content">
+                <div class="alert__title">{$btr->general_export_successful|escape}</div>
             </div>
         </div>
     </div>
@@ -40,6 +49,7 @@
     {*Параметры элемента*}
     <div class="boxed fn_toggle_wrap">
         <div class="row">
+            <progress id="progressbar" class="progress progress-info mt-0" style="display: none" value="0" max="100"></progress>
             <div class="col-lg-12 col-md-12 ">
                 <div id="fn_start" class="">
                     <div class="row">
@@ -84,10 +94,6 @@
                             </button>
                         </div>
                     </div>
-                </div>
-
-                <div id="success_export" class="" style="display: none">
-                    <div class="text_success font_20 text_600">{$btr->general_export_successful|escape}</div>
                 </div>
             </div>
         </div>

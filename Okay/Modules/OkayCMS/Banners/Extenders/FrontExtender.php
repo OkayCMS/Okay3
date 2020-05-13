@@ -10,6 +10,7 @@ use Okay\Core\Modules\Extender\ExtensionInterface;
 use Okay\Core\Modules\Module;
 use Okay\Modules\OkayCMS\Banners\Entities\BannersEntity;
 use Okay\Modules\OkayCMS\Banners\Entities\BannersImagesEntity;
+use Okay\Modules\OkayCMS\Banners\Helpers\BannersHelper;
 
 class FrontExtender implements ExtensionInterface
 {
@@ -19,13 +20,15 @@ class FrontExtender implements ExtensionInterface
     private $module;
     private $totalBannersHtml = '';
     private $shortCodesParts = [];
-    
-    public function __construct(EntityFactory $entityFactory, Design $design, Module $module)
+    private $bannersHelper;
+
+    public function __construct(EntityFactory $entityFactory, Design $design, Module $module, BannersHelper $bannersHelper)
     {
         $this->entityFactory = $entityFactory;
         $this->design = $design;
         $this->module = $module;
-        
+        $this->bannersHelper = $bannersHelper;
+
         $this->init();
     }
 
@@ -53,24 +56,10 @@ class FrontExtender implements ExtensionInterface
     
     public function init()
     {
-
         // Устанавливаем директорию HTML из модуля
         $this->design->setModuleDir(__CLASS__);
-        
-        $showOnFilter = [];
-        if ($category = $this->design->getVar('category')) {
-            $showOnFilter['categories'] = $category->id;
-        }
-        
-        if ($brand = $this->design->getVar('brand')) {
-            $showOnFilter['brands'] = $brand->id;
-        }
-        
-        if ($page = $this->design->getVar('page')) {
-            $showOnFilter['pages'] = $page->id;
-        }
-        
-        $this->design->assign('page', $page);
+
+        $showOnFilter = $this->bannersHelper->getShowOnFilter();
         
         if ($this->design->getVar('product')) {
             $bannersFilter = [
@@ -83,48 +72,14 @@ class FrontExtender implements ExtensionInterface
                 'show_on' => $showOnFilter,
             ];
         }
-        
-        /** @var BannersEntity $bannersEntity */
-        $bannersEntity = $this->entityFactory->get(BannersEntity::class);
-        /** @var BannersImagesEntity $bannersImagesEntity */
-        $bannersImagesEntity = $this->entityFactory->get(BannersImagesEntity::class);
-        if ($banners = $bannersEntity->mappedBy('id')->find($bannersFilter)) {
-            
-            if ($bannersImages = $bannersImagesEntity->find(['banner_id' => array_keys($banners), 'visible' => true])) {
-                foreach ($bannersImages as $bannersImage) {
-                    if (isset($banners[$bannersImage->banner_id])) {
-                        
-                        if (!empty($bannersImage->settings)) {
-                            $bannersImage->settings = unserialize($bannersImage->settings);
-                        }
-                        
-                        if (empty($bannersImage->settings['desktop']['w'])) {
-                            $bannersImage->settings['desktop']['w'] = BannersImagesEntity::DEFAULT_DESKTOP_W;
-                        }
-                        if (empty($bannersImage->settings['desktop']['h'])) {
-                            $bannersImage->settings['desktop']['h'] = BannersImagesEntity::DEFAULT_DESKTOP_H;
-                        }
-                        if (empty($bannersImage->settings['mobile']['w'])) {
-                            $bannersImage->settings['mobile']['w'] = BannersImagesEntity::DEFAULT_MOBILE_W;
-                        }
-                        if (empty($bannersImage->settings['mobile']['h'])) {
-                            $bannersImage->settings['mobile']['h'] = BannersImagesEntity::DEFAULT_MOBILE_H;
-                        }
-                        if (empty($bannersImage->settings['variant_show'])) {
-                            $bannersImage->settings['variant_show'] = BannersImagesEntity::SHOW_DEFAULT;
-                        }
-                        
-                        $banners[$bannersImage->banner_id]->items[] = $bannersImage;
-                    }
-                }
-            }
-            
-            foreach ($banners as $banner) {
 
+        $banners = $this->bannersHelper->getBanners($bannersFilter);
+
+        if(!empty($banners)) {
+            foreach ($banners as $banner) {
                 if (!empty($banner->settings)) {
                     $banner->settings = unserialize($banner->settings);
                 }
-                
                 $this->design->assign('banner_data', $banner);
                 // Если баннер отмечен как шорткод, передадим такую переменную в дизайн
                 if (!empty($banner->individual_shortcode)) {

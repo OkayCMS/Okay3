@@ -4,7 +4,7 @@
         
         <div style="margin-bottom: 10px;">
             <label style="display: inline-block; width: 100px;"><span class="labelcity_novaposhta">{$lang->np_cart_city} </span></label>
-            <select data-placeholder="{$lang->np_select_city}" name="novaposhta_city" tabindex="1" class="city_novaposhta" style="width: 100%"></select>
+            <input class="city_novaposhta form__input form__placeholder--focus" name="novaposhta_city" autocomplete="off" type="text" value="{$request_data.novaposhta_city|escape}" >
         </div>
         {if $np_redelivery_payments_ids}
         <div style="padding: 5px 0;">

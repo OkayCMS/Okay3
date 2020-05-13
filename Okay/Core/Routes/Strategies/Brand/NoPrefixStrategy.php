@@ -28,26 +28,24 @@ class NoPrefixStrategy extends AbstractRouteStrategy
 
     public function generateRouteParams($url)
     {
-        $categoryUrl = $this->matchCategoryUrl($url);
-        $category    = $this->brandsEntity->get((string) $categoryUrl);
+        $brandUrl = $this->matchCategoryUrl($url);
+        $brand    = $this->brandsEntity->get((string) $brandUrl);
 
-        if (empty($category)) {
+        if (empty($brand)) {
             return $this->mockRouteParams;
         }
 
-        $matchedRoute = [
+        return [
             '{$url}{$filtersUrl}',
             [
-                '{$url}' => $categoryUrl,
-                '{$filtersUrl}' => '/'.$this->matchFiltersUrl($categoryUrl, $url)
+                '{$url}' => $brandUrl,
+                '{$filtersUrl}' => '/'.$this->matchFiltersUrl($brandUrl, $url)
             ],
             [
-                '{$url}' => $categoryUrl,
-                '{$filtersUrl}' => $this->matchFiltersUrl($categoryUrl, $url)
+                '{$url}' => $brandUrl,
+                '{$filtersUrl}' => $this->matchFiltersUrl($brandUrl, $url)
             ]
         ];
-
-        return $matchedRoute;
     }
 
     private function matchCategoryUrl($url)
@@ -61,8 +59,8 @@ class NoPrefixStrategy extends AbstractRouteStrategy
         return '';
     }
 
-    private function matchFiltersUrl($categoryUrl, $url)
+    private function matchFiltersUrl($brandUrl, $url)
     {
-        return substr($url, strlen($categoryUrl) + 1);
+        return substr($url, strlen($brandUrl) + 1);
     }
 }

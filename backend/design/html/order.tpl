@@ -4,6 +4,9 @@
     {$meta_title = $btr->order_new scope=global}
 {/if}
 
+{* Подключаем Tiny MCE *}
+{include file='tinymce_init.tpl'}
+
 <form method="post" enctype="multipart/form-data" class="fn_fast_button">
     <input type="hidden" name="session_id" value="{$smarty.session.id}">
     <input name="id" type="hidden" value="{$order->id|escape}"/>
@@ -99,8 +102,9 @@
     {if $message_error}
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
-                <div class="boxed boxed_warning">
-                    <div class="heading_box">
+                <div class="alert alert--center alert--icon alert--error">
+                    <div class="alert__content">
+                        <div class="alert__title">
                         {if $message_error=='error_closing'}
                             {$btr->order_shortage|escape}
                         {elseif $message_error == 'empty_purchase'}
@@ -108,6 +112,7 @@
                         {else}
                             {$message_error|escape}
                         {/if}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -116,22 +121,24 @@
     {elseif $message_success}
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
-                <div class="boxed boxed_success">
-                    <div class="heading_box">
-                        {if $message_success=='updated'}
-                            {$btr->order_updated|escape}
-                        {elseif $message_success=='added'}
-                            {$btr->order_added|escape}
-                        {else}
-                            {$message_success|escape}
-                        {/if}
-                        {if $smarty.get.return}
-                            <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                                {include file='svg_icon.tpl' svgId='return'}
-                                <span>{$btr->general_back|escape}</span>
-                            </a>
-                        {/if}
+                <div class="alert alert--center alert--icon alert--success">
+                    <div class="alert__content">
+                        <div class="alert__title">
+                            {if $message_success=='updated'}
+                                {$btr->order_updated|escape}
+                            {elseif $message_success=='added'}
+                                {$btr->order_added|escape}
+                            {else}
+                                {$message_success|escape}
+                            {/if}
+                        </div>
                     </div>
+                    {if $smarty.get.return}
+                        <a class="alert__button" href="{$smarty.get.return}">
+                            {include file='svg_icon.tpl' svgId='return'}
+                            <span>{$btr->general_back|escape}</span>
+                        </a>
+                    {/if}
                 </div>
             </div>
         </div>
@@ -221,7 +228,7 @@
                                                         <div class="boxes_inline">
                                                             <select name="purchases[variant_id][{$purchase->id}]" class="selectpicker form-control {if $purchase->product->variants|count == 1}hidden{/if} fn_purchase_variant">
                                                                 {foreach $purchase->product->variants as $v}
-                                                                    <option data-price="{$v->price}" data-units="{$v->units|escape}" data-amount="{$v->stock}" value="{$v->id}" {if $v->id == $purchase->variant_id}selected{/if} >
+                                                                    <option data-price="{$v->price}" data-units="{if $v->units}{$v->units|escape}{else}{$settings->units|escape}{/if}" data-amount="{$v->stock}" value="{$v->id}" {if $v->id == $purchase->variant_id}selected{/if} >
                                                                         {if $v->name}
                                                                             {$v->name|escape}
                                                                         {else}
@@ -276,6 +283,7 @@
                                             <div class="boxes_inline">
                                                 <a class="fn_new_product" href=""></a>
                                                 <div class="fn_new_variant_name"></div>
+                                                {get_design_block block="order_new_purchase_name"}
                                             </div>
                                             <div class="boxes_inline">
                                                 <select name="purchases[variant_id][]" class="fn_new_variant"></select>
@@ -304,7 +312,7 @@
                                         <div class="okay_list_boding okay_list_close">
                                             {*delete*}
                                             <button data-hint="{$btr->general_delete_product|escape}" type="button" class="btn_close fn_remove_item hint-bottom-right-t-info-s-small-mobile  hint-anim">
-                                                {include file='svg_icon.tpl' svgId='delete'}
+                                                {include file='svg_icon.tpl' svgId='trash'}
                                             </button>
                                         </div>
                                     </div>
@@ -334,6 +342,17 @@
                         {if $order->id}
                             <div id="tab2" class="tab">
                                 {include 'order_history.tpl'}
+                                <div class="mt-2">
+                                    <textarea name="history_comment" class="editor_small"></textarea>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 mt-1">
+                                            <button type="submit" class="btn btn_small btn_blue float-sm-right">
+                                                {include file='svg_icon.tpl' svgId='checked'}
+                                                <span>{$btr->general_apply|escape}</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             {if $match_orders}
                             <div id="tab3" class="tab fn_match_order_container">
@@ -500,12 +519,12 @@
                             <div class="boxes_inline text_dark text_600">{$order->date|date} {$order->date|time}</div>
                         </div>
                         <div class="mb-1">
-                            <div class="heading_label">{$btr->general_name|escape}</div>
+                            <div class="heading_label">{$btr->index_name|escape}</div>
                             <input name="name" class="form-control" type="text" value="{$order->name|escape}" />
                         </div>
                         <div class="mb-1">
                             <div class="heading_label">{$btr->general_phone|escape}</div>
-                            <input name="phone" class="form-control" type="text" value="{$order->phone|escape}" />
+                            <input name="phone" class="form-control" type="text" value="{$order->phone|phone}" />
                         </div>
                         <div class="mb-1">
                             <div class="heading_label">E-mail</div>
@@ -528,25 +547,25 @@
                                 <div class="heading_label boxes_inline">{$btr->order_referer_channel|escape}:</div>
                                 <div class="boxes_inline text_dark">
                                     {if $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_EMAIL}
-                                    <span class="tag tag-chanel_email" title="{$order->referer_source}">
-                                        {include file='svg_icon.tpl' svgId='tag_email'} {$order->referer_channel}
-                                    </span>
+                                        <span class="tag tag-chanel_email" title="{$order->referer_source|escape}">
+                                            {include file='svg_icon.tpl' svgId='tag_email'} {$order->referer_channel}
+                                        </span>
                                     {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_SEARCH}
-                                    <span class="tag tag-chanel_search" title="{$order->referer_source}">
-                                        {include file='svg_icon.tpl' svgId='tag_search'} {$order->referer_channel}
-                                    </span>
+                                        <span class="tag tag-chanel_search" title="{$order->referer_source|escape}">
+                                            {include file='svg_icon.tpl' svgId='tag_search'} {$order->referer_channel}
+                                        </span>
                                     {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_SOCIAL}
-                                    <span class="tag tag-chanel_social" title="{$order->referer_source}">
-                                        {include file='svg_icon.tpl' svgId='tag_social'} {$order->referer_channel}
-                                    </span>
+                                        <a href="{$order->referer_source|escape}" target="_blank" class="tag tag-chanel_social" title="{$order->referer_source|escape}">
+                                            {include file='svg_icon.tpl' svgId='tag_social'} {$order->referer_channel}
+                                        </a>
                                     {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_REFERRAL}
-                                    <span class="tag tag-chanel_referral" title="{$order->referer_source}">
-                                        {include file='svg_icon.tpl' svgId='tag_referral'} {$order->referer_channel}
-                                    </span>
+                                        <a href="{$order->referer_source|escape}" target="_blank" class="tag tag-chanel_referral" title="{$order->referer_source|escape}">
+                                            {include file='svg_icon.tpl' svgId='tag_referral'} {$order->referer_channel}
+                                        </a>
                                     {else}
-                                    <span class="tag tag-chanel_unknown" title="{$order->referer_source}">
-                                        {include file='svg_icon.tpl' svgId='tag_unknown'} {$order->referer_channel}
-                                    </span>
+                                        <span class="tag tag-chanel_unknown" title="{$order->referer_source|escape}">
+                                            {include file='svg_icon.tpl' svgId='tag_unknown'} {$order->referer_channel}
+                                        </span>
                                     {/if}
                                 </div>
                             </div>
@@ -682,14 +701,13 @@ $(function() {
             }
         });
     });
-
-
+    
     // Добавление товара
     var new_purchase = $('#fn_purchase .fn_new_purchase').clone(true);
     $('#fn_purchase .fn_new_purchase').remove().removeAttr('class');
 
     $("#fn_add_purchase").devbridgeAutocomplete({
-    serviceUrl:'ajax/add_order_product.php',
+    serviceUrl:'{/literal}{url controller='OrderAdmin@addOrderProduct'}{literal}',
     minChars:0,
     orientation:'auto',
     noCache: false,
@@ -704,7 +722,13 @@ $(function() {
             var variants_select = new_item.find("select.fn_new_variant");
 
             for(var i in suggestion.data.variants) {
-                variants_select.append("<option value='"+suggestion.data.variants[i].id+"' data-price='"+suggestion.data.variants[i].price+"' data-amount='"+suggestion.data.variants[i].stock+"' data-units='"+suggestion.data.variants[i].units+"'>"+suggestion.data.variants[i].name+"</option>");
+                variants_select.append("<option {/literal}{get_design_block block="order_new_purchase_variants_option_block"}{literal} " +
+                    "value='"+suggestion.data.variants[i].id+"' " +
+                    "data-price='"+suggestion.data.variants[i].price+"' " +
+                    "data-amount='"+suggestion.data.variants[i].stock+"' " +
+                    "data-units='"+suggestion.data.variants[i].units+"'>" +
+                    suggestion.data.variants[i].name +
+                    "</option>");
             }
 
             if(suggestion.data.variants.length> 1 || suggestion.data.variants[0].name != '') {
@@ -719,12 +743,16 @@ $(function() {
                 change_variant(variants_select);
             });
             change_variant(variants_select);
+            variants_select.trigger('change');
 
             if(suggestion.data.image) {
                 new_item.find('.fn_new_image').attr("src", suggestion.data.image);
             } else {
                 new_item.find('.fn_new_image').remove();
             }
+
+            {/literal}{get_design_block block="order_new_purchase_js_block"}{literal}
+            
             $("input#fn_add_purchase").val('').focus().blur();
             new_item.show();
         },
@@ -748,6 +776,7 @@ $(function() {
         var amount_input = element.closest('.fn_row').find('input.fn_purchase_amount');
         amount_input.val('1');
         amount_input.data('max',amount);
+        {/literal}{get_design_block block="order_change_variant_js_block"}{literal}
         return false;
   }
 

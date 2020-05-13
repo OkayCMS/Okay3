@@ -82,4 +82,12 @@ class BackendPagesHelper
         $pages = $this->pagesEntity->find($filter);
         return ExtenderFacade::execute(__METHOD__, $pages, func_get_args());
     }
+
+    public function duplicate($ids)
+    {
+        foreach($ids as $id) {
+            $this->pagesEntity->duplicate((int)$id);
+        }
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
 }

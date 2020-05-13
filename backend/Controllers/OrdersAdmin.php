@@ -7,6 +7,7 @@ namespace Okay\Admin\Controllers;
 use Okay\Admin\Helpers\BackendOrderHistoryHelper;
 use Okay\Admin\Helpers\BackendOrdersHelper;
 use Okay\Entities\OrderLabelsEntity;
+use Okay\Entities\OrdersEntity;
 
 class OrdersAdmin extends IndexAdmin
 {
@@ -14,7 +15,8 @@ class OrdersAdmin extends IndexAdmin
     public function fetch(
         OrderLabelsEntity   $orderLabelsEntity,
         BackendOrdersHelper $backendOrdersHelper,
-        BackendOrderHistoryHelper $backendOrderHistoryHelper
+        BackendOrderHistoryHelper $backendOrderHistoryHelper,
+        OrdersEntity $ordersEntity
     ) {
         //> Обработка действий
         if ($this->request->method('post')) {
@@ -49,12 +51,42 @@ class OrdersAdmin extends IndexAdmin
         $allStatuses = $backendOrdersHelper->findStatuses();
         $ordersCount = $backendOrdersHelper->count($filter);
 
+        $countStatusesFilter = $backendOrdersHelper->buildCountStatusesFilter($filter);
+        
+        // Считаем количество заказов по всем фильтрам, кроме статуса
+        $countOrdersForStatuses = $ordersEntity->count($countStatusesFilter);
+        if ($countOrdersForStatuses > 0) {
+            if (empty($filter['from_date']) || empty($filter['to_date'])) {
+                $dates = $ordersEntity->cols([
+                    'MIN(o.date) AS min',
+                    'MAX(o.date) AS max'
+                ])->findOrdersDates($countStatusesFilter);
+
+                if (empty($filter['from_date'])) {
+                    $this->design->assign('orders_from_date', $dates->min);
+                }
+                
+                if (empty($filter['to_date'])) {
+                    $this->design->assign('orders_to_date', $dates->max);
+                }
+            }
+            
+            $countOrdersByStatuses = $ordersEntity->countOrdersByStatuses($countStatusesFilter);
+            $this->design->assign('count_orders_by_statuses', $countOrdersByStatuses);
+        }
+        
+        $this->design->assign('count_orders_for_statuses', $countOrdersForStatuses);
+        
         if (isset($filter['keyword'])) {
             $this->design->assign('keyword', $filter['keyword']);
         }
 
-        if (isset($filter['status'])) {
-            $this->design->assign('status', $filter['status']);
+        if (isset($filter['status_id'])) {
+            $this->design->assign('status_id', $filter['status_id']);
+        }
+
+        if (isset($filter['label'])) {
+            $this->design->assign('label_id', $filter['label']);
         }
 
         if (isset($filter['from_date'])) {

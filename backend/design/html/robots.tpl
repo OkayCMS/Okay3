@@ -2,21 +2,33 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="heading_page">{$btr->robots_file|escape}</div>
     </div>
-    <div class="col-lg-5 col-md-5 float-xs-right"></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="alert alert--icon">
+            <div class="alert__content">
+                <div class="alert__title">{$btr->alert_description|escape}</div>
+                <p>{$btr->robots_message|escape}</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 {*Вывод ошибок*}
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_error == 'write_error'}
                         {$btr->robots_permissions|escape}
                     {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -27,32 +39,25 @@
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_success == 'updated'}
                         {$btr->robots_updated|escape}
                     {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                    <a class="alert__button" href="{$smarty.get.return}">
+                        {include file='svg_icon.tpl' svgId='return'}
+                        <span>{$btr->general_back|escape}</span>
+                    </a>
+                {/if}
             </div>
         </div>
     </div>
 {/if}
 
-<div class="row">
-    <div class="col-lg-12 col-md-12 col-sm-12">
-        <div class="boxed boxed_attention">
-            <div class="">
-              {$btr->robots_message|escape}
-            </div>
-        </div>
-    </div>
-</div>
 {*Главная форма страницы*}
 <div class="row">
     <div class="col-lg-12 col-md-12">

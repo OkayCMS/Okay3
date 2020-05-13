@@ -3,10 +3,9 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-6 col-md-6">
+    <div class="col-lg-12 col-md-12">
         <div class="heading_page">{$btr->order_settings_orders|escape}</div>
     </div>
-    <div class="col-lg-4 col-md-3 text-xs-right float-xs-right"></div>
 </div>
 
 <div class="row">

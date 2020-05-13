@@ -23,29 +23,33 @@ $(document).on('change', 'input[name="novaposhta_redelivery"]', calc_delivery_pr
 function init() {
 
     let delivery_block = $('.fn_delivery_novaposhta').closest('.delivery__item');
-    let city = $(".city_novaposhta");
     let city_ref = delivery_block.find('input[name="novaposhta_delivery_city_id"]').val();
     
     $('select.city_novaposhta').closest('.delivery_wrap').find('span.deliver_price').text('');
-    $.ajax({
-        url: okay.router['OkayCMS_NovaposhtaCost_get_cities'],
-        data: {method: 'get_cities', selected_city: city_ref},
-        dataType: 'json',
-        success: function(data) {
-            if(data.cities_response.success == 1){
-                city.html(data.cities_response.cities);
-                $(document).on('change', 'input[name="delivery_id"]', calc_delivery_price);
-                $(document).on('change', 'select.city_novaposhta', calc_delivery_price);
-            }
-            $('select.city_novaposhta option:first').attr('notselected', 'notselected');
-            $('select.city_novaposhta option:first').text('Выберите город...');
-            if (city_ref) {
-                calc_delivery_price();
-            }
-            $('.np_preloader').remove();
-        }
-    });
+
+    $(document).on('change', 'input[name="delivery_id"]', calc_delivery_price);
+    $(document).on('change', 'input[name="novaposhta_delivery_city_id"]', calc_delivery_price);
+
+    if (city_ref) {
+        calc_delivery_price();
+    }
+    $('.np_preloader').remove();
 }
+
+$( "input.city_novaposhta" ).devbridgeAutocomplete( {
+    serviceUrl: okay.router['OkayCMS_NovaposhtaCost_find_city'],
+    minChars: 1,
+    maxHeight: 320,
+    noCache: true,
+    onSelect: function(suggestion) {
+        $('input[name="novaposhta_delivery_city_id"]').val(suggestion.data.ref).trigger('change');
+    },
+    formatResult: function(suggestion, currentValue) {
+        var reEscape = new RegExp( '(\\' + ['/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\'].join( '|\\' ) + ')', 'g' );
+        var pattern = '(' + currentValue.replace( reEscape, '\\$1' ) + ')';
+        return "<div style='text-align: left'>" + suggestion.value.replace( new RegExp( pattern, 'gi' ), '<strong>$1<\/strong>' ) + "<\/div>";
+    }
+} );
 
 $('[name="delivery_id"]').on('change', function() {
     if (Number($(this).data('module_id')) !== Number(okay.np_delivery_module_id)) {
@@ -56,7 +60,7 @@ $('[name="delivery_id"]').on('change', function() {
 });
 
 function calc_delivery_price(e) {
-    if (e.target.name === 'novaposhta_redelivery') {
+    if (e !== undefined && e.target.name === 'novaposhta_redelivery') {
         update_np_payments();
         select_first_active_payment();
     }
@@ -178,12 +182,17 @@ function select_first_active_payment() {
 }
 
 function get_np_payment_method_ids() {
-    return $('[name="novaposhta_redelivery"]')
+    let deliveryInput = $('[name="novaposhta_redelivery"]')
         .closest('.fn_delivery_item')
-        .find('[name="delivery_id"]')
-        .data('payment_method_ids')
-        .split(',')
-        .map(Number);
+        .find('[name="delivery_id"]');
+    
+    if (deliveryInput.data('payment_method_ids') !== undefined) {
+        return deliveryInput.data('payment_method_ids')
+            .split(',')
+            .map(Number);
+    } else {
+        return [];
+    }
 }
 
 function set_warehouse() {

@@ -7,6 +7,7 @@ namespace Okay\Admin\Controllers;
 use Okay\Admin\Helpers\BackendOrderHistoryHelper;
 use Okay\Admin\Helpers\BackendOrdersHelper;
 use Okay\Admin\Requests\BackendOrdersRequest;
+use Okay\Core\Image;
 use Okay\Core\Notify;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\DeliveriesEntity;
@@ -204,6 +205,32 @@ class OrderAdmin extends IndexAdmin
         } else {
             $this->response->setContent($this->design->fetch('order.tpl'));
         }
+    }
+    
+    public function addOrderProduct(BackendOrdersHelper  $backendOrdersHelper, Image $imagesCore)
+    {
+        $keyword = $this->request->get('query', 'string');
+
+        $products = $backendOrdersHelper->findOrderProducts($keyword);
+
+        $suggestions = [];
+        foreach($products as $product) {
+            if(!empty($product->variants)) {
+                $suggestion = new \stdClass;
+                if(!empty($product->image)) {
+                    $product->image = $imagesCore->getResizeModifier($product->image, 35, 35);
+                }
+                $suggestion->value = $product->name;
+                $suggestion->data = $product;
+                $suggestions[] = $suggestion;
+            }
+        }
+
+        $result = new \stdClass;
+        $result->query = $keyword;
+        $result->suggestions = $suggestions;
+        $this->response->setContent(json_encode($result), RESPONSE_JSON);
+
     }
     
 }

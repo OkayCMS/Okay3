@@ -28,6 +28,4 @@ $lang['okaycms__yandex_xml__country_of_origin'] = 'Країна виробник
 $lang['okaycms__yandex_xml__country_of_origin_notify'] = "Вкажіть ім'я властивості, яке буде містити даний параметр";
 $lang['okaycms__yandex_xml__upload_products'] = 'Вибір товарів для вивантаження';
 $lang['okaycms__yandex_xml__add_to_yandex_feed'] = 'Додати товар до вивантяження Yandex';
-$lang['okaycms__yandex_xml__products_per_page'] = 'Кількість товарів в одному пакеті даних';
-$lang['okaycms__yandex_xml__products_per_page_title'] = 'При великому каталозі може не вистачати пам\'яті вивантажити усі товари одноразово, тому вони діляться на пакети. Чим менше пам\'яті (ОЗУ) на сервері, тим менше повинен бути цей параметр. Також його можна піднімати, для пошуку оптимальної швидкості формування вивантаження';
 $lang['okaycms__yandex_xml__import_field'] = 'Yandex XML';

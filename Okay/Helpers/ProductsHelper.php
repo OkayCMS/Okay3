@@ -5,6 +5,7 @@ namespace Okay\Helpers;
 
 
 use Okay\Core\EntityFactory;
+use Okay\Core\Routes\ProductRoute;
 use Okay\Core\Settings;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\VariantsEntity;
@@ -81,6 +82,11 @@ class ProductsHelper implements GetListInterface
         $products = $this->attachVariants($products);
         $products = $this->attachMainImages($products);
 
+        // Укажем связки урла товара и его slug, чтобы уже были в оперативке
+        foreach ($products as $p) {
+            ProductRoute::setUrlSlugAlias($p->url, $p->slug_url);
+        }
+        
         return ExtenderFacade::execute(__METHOD__, $products, func_get_args());
     }
     
@@ -149,8 +155,17 @@ class ProductsHelper implements GetListInterface
 
         return ExtenderFacade::execute(__METHOD__, $copyProducts, func_get_args());
     }
-    
-    public function attachFeatures(array $products, array $featuresFilter = [])
+
+    /**
+     * Метод добавляет к списку товаров свойства и их значения
+     * 
+     * @param array $products список товаров, к которому нужно добавить свойства
+     * @param array $featuresFilter дополнительные параметры фильтрации по свойствам
+     * @param array $featuresValuesFilter дополнительные параметры фильтрации по значениям свойств
+     * @return array список товаров, к каждому товару добавлены его свойства в свойство объекта features (простите за тавтологию)
+     * @throws \Exception
+     */
+    public function attachFeatures(array $products, array $featuresFilter = [], array $featuresValuesFilter = [])
     {
         /** @var FeaturesValuesEntity $featuresValuesEntity */
         $featuresValuesEntity = $this->entityFactory->get(FeaturesValuesEntity::class);
@@ -160,11 +175,23 @@ class ProductsHelper implements GetListInterface
         
         $productsIds = array_keys($products);
 
-        $featuresFilter['product_id'] = $productsIds;
+        $featuresValuesFilter['product_id'] = $productsIds;
         $featuresValues = [];
         $features = [];
-        foreach ($featuresValuesEntity->find($featuresFilter) as $fv) {
+        
+        if (isset($featuresFilter['id'])) {
+            $featuresValuesFilter['feature_id'] = $featuresFilter['id'];
+        }
+        
+        foreach ($featuresValuesEntity->find($featuresValuesFilter) as $fv) {
             $featuresValues[$fv->feature_id][$fv->id] = $fv;
+        }
+
+        $featuresIds = array_keys($featuresValues);
+        if (!empty($featuresFilter['id'])) {
+            $featuresFilter['id'] = array_intersect($featuresIds, $featuresFilter['id']);
+        } else {
+            $featuresFilter['id'] = $featuresIds;
         }
         
         foreach ($featuresEntity->find($featuresFilter) as $f) {

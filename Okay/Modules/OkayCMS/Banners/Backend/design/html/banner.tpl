@@ -3,6 +3,15 @@
 {else}
     {$meta_title = $btr->banner_new_group scope=global}
 {/if}
+
+<style>
+    @media (min-width: 1200px) and (max-width: 1400px) {
+        .col-xxl-6{
+            width: 100%;
+        }
+    }
+</style>
+
 {*Название страницы*}
 <div class="row">
     <div class="col-lg-12 col-md-12">
@@ -16,27 +25,28 @@
             </div>
         </div>
     </div>
-    <div class="col-md-12 col-lg-12 col-sm-12 float-xs-right"></div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    {if $message_success == 'added'}
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_success == 'added'}
                         {$btr->general_group_added|escape}
-                    {elseif $message_success == 'updated'}
+                        {elseif $message_success == 'updated'}
                         {$btr->banner_updated|escape}
-                    {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                <a class="alert__button" href="{$smarty.get.return}">
+                    {include file='svg_icon.tpl' svgId='return'}
+                    <span>{$btr->general_back|escape}</span>
+                </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -46,13 +56,15 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
-                    {if $message_error=='shortcode_exists'}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_error=='shortcode_exists'}
                         {$btr->banner_shortcode_exists|escape}
-                    {else}
+                        {else}
                         {$message_error|escape}
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -68,7 +80,7 @@
             <div class="boxed">
                 <div class="row d_flex">
                     {*Название элемента сайта*}
-                    <div class="col-lg-8 col-md-9 col-sm-12">
+                    <div class="col-lg-10 col-md-9 col-sm-12">
                         <div class="heading_label">
                             {$btr->general_name|escape}
                         </div>
@@ -76,62 +88,12 @@
                             <input class="form-control mb-h" name="name" type="text" value="{$banner->name|escape}"/>
                             <input name="id" type="hidden" value="{$banner->id|escape}"/>
                         </div>
-                        <div class="row">
-                            <div class="col-xl-4 col-lg-6 col-sm-12">
-                                <div class="">
-                                    <div class="heading_label">
-                                        <span class="boxes_inline heading_label">
-                                            {$btr->banner_label_id_group|escape}
-                                            <i class="fn_tooltips" title="{$btr->banner_faq_id_group|escape}">
-                                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                                            </i>
-                                        </span>
-                                    </div>
-                                    <div class="form-group">
-                                        <span class="boxes_inline bnr_id_grup">
-                                            <input type="text" class="form-control" name="group_name" value="{$banner->group_name}" />
-                                    </span>
-                                    </div>
-                                </div>
-                            </div>
-                            {if $banner->individual_shortcode}
-                            <div class="col-xl-4 col-lg-6 col-sm-12">
-                                <div class="">
-                                    <div class="heading_label">
-                                        {$btr->banner_label_individual_shortcode|escape}
-                                    </div>
-                                    <div class="form-group">
-                                        <span class="boxes_inline bnr_id_grup">
-                                            <input type="text" class="form-control" name="individual_shortcode" value="{literal}{${/literal}{$banner->individual_shortcode}{literal}}{/literal}" />
-                                    </span>
-                                    </div>
-                                </div>
-                            </div>
-                            {/if}
-                            <div class="col-xl-4 col-lg-6 col-sm-12">
-                                <div class="heading_label__switch">
-                                    <span class="boxes_inline">
-                                        <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
-                                        <input class="switch-input" name="use_individual_shortcode" value='1' type="checkbox" {if $banner->individual_shortcode}checked=""{/if}/>
-                                        <span class="switch-label"></span>
-                                        <span class="switch-handle"></span>
-                                    </label>
-                                    </span>
-                                    <span class="boxes_inline heading_label">
-                                        {$btr->banner_individual_shortcode|escape}
-                                        <i class="fn_tooltips" title="{$btr->banner_individual_shortcode_description|escape}">
-                                            {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                                        </i>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     {*Видимость элемента*}
-                    <div class="col-lg-4 col-md-3 col-sm-12">
-                        <div class="activity_of_switch">
+                    <div class="col-lg-2 col-md-3 col-sm-12">
+                        <div class="activity_of_switch activity_of_switch--left mt-q mb-1">
                             <div class="activity_of_switch_item"> {* row block *}
-                                <div class="okay_switch clearfix">
+                                <div class="okay_switch okay_switch--nowrap clearfix">
                                     <label class="switch_label">{$btr->general_enable|escape}</label>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="visible" value='1' type="checkbox" id="visible_checkbox" {if $banner->visible}checked=""{/if}/>
@@ -143,35 +105,87 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-xl-4 col-lg-6 col-sm-12 pr-0">
+                        <div class="">
+                            <div class="heading_label">
+                                <span class="boxes_inline heading_label">
+                                    {$btr->banner_label_id_group|escape}
+                                    <i class="fn_tooltips" title="{$btr->banner_faq_id_group|escape}">
+                                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                    </i>
+                                </span>
+                            </div>
+                            <div class="form-group">
+                                <span class="boxes_inline bnr_id_grup">
+                                    <input type="text" class="form-control" name="group_name" value="{$banner->group_name}" />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {if $banner->individual_shortcode}
+                    <div class="col-xl-4 col-lg-6 col-sm-12 pr-0">
+                        <div class="">
+                            <div class="heading_label">
+                                {$btr->banner_label_individual_shortcode|escape}
+                            </div>
+                            <div class="form-group">
+                                <span class="boxes_inline bnr_id_grup">
+                                    <input type="text" class="form-control" name="individual_shortcode" value="{literal}{${/literal}{$banner->individual_shortcode}{literal}}{/literal}" />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {/if}
+                    <div class="col-xl-4 col-lg-6 col-sm-12 pr-0">
+                        <div class="activity_of_switch activity_of_switch--left mt-2">
+                            <div class="activity_of_switch_item">
+                                <span class="okay_switch okay_switch--nowrap clearfix">
+                                    <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline mr-h">
+                                        <input class="switch-input" name="use_individual_shortcode" value='1' type="checkbox" {if $banner->individual_shortcode}checked=""{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                    <label class="boxes_inline heading_label">
+                                    {$btr->banner_individual_shortcode|escape}
+                                    <i class="fn_tooltips" title="{$btr->banner_individual_shortcode_description|escape}">
+                                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                    </i>
+                                </label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12 ">
-            <div class="alert alert-info">
-                <div class="alert-content">
-                    <div class="alert-title">
-                        {$btr->banner_instruction_head|escape}
-                    </div>
-                    <div class="alert-body">
+            <div class="alert alert--icon alert--info">
+                <div class="alert__content">
+                    <div class="alert__title mb-q">{$btr->banner_instruction_head|escape}</div>
+                    <div class="text_box">
                         <p>
-                            {$btr->banner_instruction_global_shortcode_part_1|escape}
-                            <a href="" style="background:rgb(43, 48, 59);padding: 1px 8px 2px;color:rgb(216, 216, 216);" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{literal}{$global_banners}{/literal}</a>
-                            {$btr->banner_instruction_global_shortcode_part_2|escape}
+                            {$btr->banner_instruction_global_shortcode_part_1}
+                            <a href=""  class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{literal}{$global_banners}{/literal}</a>
+                            <br>{$btr->banner_instruction_global_shortcode_part_2|escape}
                         </p>
                         {if $banner->individual_shortcode}
                         <p>
                             {$btr->banner_instruction_shortcode_part_1|escape}
-                            <a href="" style="background:rgb(43, 48, 59);padding: 1px 8px 2px;color:rgb(216, 216, 216);" class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{literal}{${/literal}{$banner->individual_shortcode}{literal}}{/literal}</a>
+                            <a href=""  class="fn_clipboard hint-bottom-middle-t-info-s-small-mobile" data-hint="Click to copy" data-hint-copied="✔ Copied to clipboard">{literal}{${/literal}{$banner->individual_shortcode}{literal}}{/literal}</a>
                             {$btr->banner_instruction_shortcode_part_2|escape}
                         </p>
-                        <p>{$btr->banner_instruction_shortcode_part_3|escape}</p>
+                        <p>{$btr->banner_instruction_shortcode_part_3}</p>
                         {/if}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     {*Параметры элемента*}
     <div class="row">
         <div class="col-md-12">
@@ -185,7 +199,7 @@
 
                 <div class="toggle_body_wrap fn_card on">
                     <div class="row">
-                        <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="col-lg-4 col-md-6 col-sm-12 pr-0">
                             <div class="banner_card">
                                 <div class="banner_card_header">
                                     <span class="font-weight-bold">{$btr->general_pages|escape}</span>
@@ -203,7 +217,7 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="col-lg-4 col-md-6 col-sm-12 pr-0">
                             <div class="banner_card">
                                 <div class="banner_card_header">
                                     <span class="font-weight-bold">{$btr->general_categories|escape}</span>
@@ -220,9 +234,9 @@
                                         {category_select categories=$categories selected=$banner->category_selected}
                                     </select>
 
-                                    <div class="boxes_inline mt-1">
-                                        <div class="okay_switch clearfix">
-                                            <label class="switch_label">Выбрать все категории</label>
+                                    <div class="activity_of_switch_item mt-1">
+                                        <div class="okay_switch okay_switch--nowrap clearfix">
+                                            <label class="boxes_inline heading_label">Выбрать все категории</label>
                                             <label class="switch switch-default">
                                                 <input class="switch-input" id="select_all_categories" name="select_all_categories" value='1' type="checkbox" />
                                                 <span class="switch-label"></span>
@@ -247,9 +261,9 @@
                                         {/foreach}
                                     </select>
 
-                                    <div class="boxes_inline mt-1">
-                                        <div class="okay_switch clearfix">
-                                            <label class="switch_label">Выбрать все бренды</label>
+                                    <div class="activity_of_switch_item mt-1">
+                                        <div class="okay_switch okay_switch--nowrap clearfix">
+                                            <label class="boxes_inline heading_label">Выбрать все бренды</label>
                                             <label class="switch switch-default">
                                                 <input class="switch-input" id="select_all_brands" name="select_all_categories" value='1' type="checkbox" />
                                                 <span class="switch-label"></span>
@@ -260,11 +274,16 @@
                                 </div>
                             </div>
                         </div>
+
+                        {$block = {get_design_block block="banner_custom_block"}}
+                        {if !empty($block)}
+                            {$block}
+                        {/if}
                         
                         <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="mt-h">
-                                <div class="okay_switch">
-                                    <label class="switch_label">{$btr->banner_show_group|escape}</label>
+                            <div class="activity_of_switch_item mt-h">
+                                <div class="okay_switch okay_switch--nowrap">
+                                    <label class="boxes_inline heading_label">{$btr->banner_show_group|escape}</label>
                                     <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
                                         <input class="switch-input" name="show_all_pages" value='1' type="checkbox" {if $banner->show_all_pages}checked=""{/if}/>
                                         <span class="switch-label"></span>
@@ -275,9 +294,9 @@
                         </div>
 
                         <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="mt-h">
-                                <div class="okay_switch">
-                                    <label class="switch_label">{$btr->banner_show_all_products|escape}</label>
+                            <div class="activity_of_switch_item mt-h">
+                                <div class="okay_switch okay_switch--nowrap">
+                                    <label class="boxes_inline heading_label">{$btr->banner_show_all_products|escape}</label>
                                     <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline">
                                         <input class="switch-input" name="show_all_products" value='1' type="checkbox" {if $banner->show_all_products}checked=""{/if}/>
                                         <span class="switch-label"></span>
@@ -301,9 +320,9 @@
                 <div class="toggle_body_wrap on fn_card">
                     <div class="permission_block">
                         <div class="permission_boxes row">
-                            <div class="col-xl-3 col-lg-4 col-md-6 text-muted">
+                            <div class="col-xl-4 col-lg-4 col-md-6 text-muted">
                                 <div class="permission_box">
-                                    <span class="switch_label">{$btr->banner_settings_as_slider|escape}</span>
+                                    <span class="switch_label" title="{$btr->banner_settings_as_slider|escape}">{$btr->banner_settings_as_slider|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="settings[as_slider]" value='1' type="checkbox" {if (isset($banner->settings.as_slider) && !empty($banner->settings.as_slider)) || !$banner->id}checked=""{/if}/>
                                         <span class="switch-label"></span>
@@ -311,9 +330,9 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-lg-4 col-md-6 text-muted">
+                            <div class="col-xl-4 col-lg-4 col-md-6 text-muted">
                                 <div class="permission_box">
-                                    <span class="switch_label">{$btr->banner_settings_autoplay|escape}</span>
+                                    <span class="switch_label" title="{$btr->banner_settings_autoplay|escape}">{$btr->banner_settings_autoplay|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="settings[autoplay]" value='1' type="checkbox" {if (isset($banner->settings.autoplay) && !empty($banner->settings.autoplay)) || !$banner->id}checked=""{/if}/>
                                         <span class="switch-label"></span>
@@ -321,9 +340,9 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-lg-4 col-md-6 text-muted">
+                            <div class="col-xl-4 col-lg-4 col-md-6 text-muted">
                                 <div class="permission_box">
-                                    <span class="switch_label">{$btr->banner_settings_loop|escape}</span>
+                                    <span class="switch_label" title="{$btr->banner_settings_loop|escape}">{$btr->banner_settings_loop|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="settings[loop]" value='1' type="checkbox" {if isset($banner->settings.loop) && !empty($banner->settings.loop)}checked=""{/if}/>
                                         <span class="switch-label"></span>
@@ -331,9 +350,9 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-lg-4 col-md-6 text-muted">
+                            <div class="col-xl-4 col-lg-4 col-md-6 text-muted">
                                 <div class="permission_box">
-                                    <span class="switch_label">{$btr->banner_settings_nav|escape}</span>
+                                    <span class="switch_label" title="{$btr->banner_settings_nav|escape}">{$btr->banner_settings_nav|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="settings[nav]" value='1' type="checkbox" {if isset($banner->settings.nav) && !empty($banner->settings.nav)}checked=""{/if}/>
                                         <span class="switch-label"></span>
@@ -341,9 +360,9 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-lg-4 col-md-6 text-muted">
+                            <div class="col-xl-4 col-lg-4 col-md-6 text-muted">
                                 <div class="permission_box">
-                                    <span class="switch_label">{$btr->banner_settings_dots|escape}</span>
+                                    <span class="switch_label" title="{$btr->banner_settings_dots|escape}">{$btr->banner_settings_dots|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="settings[dots]" value='1' type="checkbox" {if isset($banner->settings.dots) && !empty($banner->settings.dots)}checked=""{/if}/>
                                         <span class="switch-label"></span>
@@ -351,9 +370,9 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-lg-4 col-md-6 text-muted">
+                            <div class="col-xl-4 col-lg-4 col-md-6 text-muted">
                                 <div class="permission_box">
-                                    <span class="switch_label">{$btr->banner_settings_rotation_speed}</span>
+                                    <span class="switch_label" title="{$btr->banner_settings_rotation_speed}">{$btr->banner_settings_rotation_speed}</span>
                                     <i class="fn_tooltips" title="{$btr->banner_settings_rotation_speed_title|escape}">
                                         {include file='svg_icon.tpl' svgId='icon_tooltips'}
                                     </i>

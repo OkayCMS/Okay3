@@ -12,7 +12,7 @@
                 <div class="browsed__item f_col-4">
                     <a class="d-flex align-items-center justify-content-center browsed__link" href="{url_generator route='product' url=$browsed_product->url}">
                         {if $browsed_product->image->filename}
-                            <img class="lazy" data-src="{$browsed_product->image->filename|resize:70:70}" alt="{$browsed_product->name|escape}" title="{$browsed_product->name|escape}">
+                            <img class="lazy" data-src="{$browsed_product->image->filename|resize:70:70}" src="{$browsed_product->image->filename|resize:70:70}" alt="{$browsed_product->name|escape}" title="{$browsed_product->name|escape}">
                         {else}
                             <div class="browsed__no_image d-flex align-items-center justify-content-center" title="{$browsed_product->name|escape}">
                                 {include file="svg.tpl" svgId="no_image"}

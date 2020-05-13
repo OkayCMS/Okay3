@@ -127,6 +127,7 @@ class BackendSettingsHelper
         $this->settings->set('comparison_count', $this->request->post('comparison_count'));
         $this->settings->set('posts_num', $this->request->post('posts_num'));
         $this->settings->set('missing_products', $this->request->post('missing_products'));
+        $this->settings->set('hide_single_filters', $this->request->post('hide_single_filters'));
         $this->settings->update('units', $this->request->post('units'));
 
         if ($this->request->post('is_preorder', 'integer')) {
@@ -211,6 +212,8 @@ class BackendSettingsHelper
 
     public function updateGeneralSettings()
     {
+        $this->settings->set('phone_default_region', $this->request->post('phone_default_region'));
+        $this->settings->set('phone_default_format', $this->request->post('phone_default_format'));
         $this->settings->set('date_format', $this->request->post('date_format'));
         $this->settings->set('admin_email', $this->request->post('admin_email'));
         $this->settings->set('site_work', $this->request->post('site_work'));

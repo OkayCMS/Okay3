@@ -52,7 +52,7 @@
                     <div class="header__logo logo">
                         {if !empty({$settings->site_logo})}
                         <a class="logo__link " href="{if $controller=='MainController'}javascript:;{else}{url_generator route='main'}{/if}">
-                            <img src="{$rootUrl}/{$config->design_images}{$settings->site_logo}?v={$settings->site_logo_version}" alt="{$settings->site_name|escape}"/>
+                            <img src="{$rootUrl}/{$config->design_images|escape}{$settings->site_logo|escape}?v={$settings->site_logo_version|escape}" alt="{$settings->site_name|escape}"/>
                         </a>
                         {/if}
                     </div>
@@ -62,7 +62,7 @@
                     </div>
                     {* header contacts *}
                     <div class="header-contact">
-                        <div class="header-contact__inner">
+                        <div class="header-contact__inner {if !$settings->site_phones && !$settings->site_email} header-contact__inner--adress{/if}">
                             {if $settings->site_phones}
                                 {foreach $settings->site_phones as $phone}
                                     <div class="header-contact__item header-contact--phone{if $phone@first} header-contact__item--visible{/if}">
@@ -74,14 +74,14 @@
                                 {/foreach}
                             {/if}
                             {if $settings->site_email}
-                                <div class="header-contact__item header-contact--email">
+                                <div class="header-contact__item header-contact--email {if !$settings->site_phones} header-contact__item--visible{/if}">
                                     <a class="d-flex align-items-center header-contact__section" href="mailto:{$settings->site_email|escape}" >
                                         <span>{$settings->site_email|escape}</span>
                                     </a>
                                 </div>
                             {/if}
                             {if $settings->site_working_hours}
-                                <div class="header-contact__item header-contact--time">
+                                <div class="header-contact__item header-contact--time {if !$settings->site_phones && !$settings->site_email} header-contact__item--visible{/if}">
                                     <div class="d-flex align-items-center header-contact__section">
                                         <div class="header-contact__title-s">{$settings->site_working_hours}</div>
                                     </div>
@@ -130,7 +130,7 @@
                             <div id="cart_informer" class="header_informers__item d-flex align-items-center justify-content-center">{include file='cart_informer.tpl'}</div>
                         </div>
                         {* Categories menu *}
-                        {if $is_mobile == false && $is_tablet == false}
+                        {if $is_mobile == false || $is_tablet == true}
                             <nav class="fn_catalog_menu categories_nav hidden-md-down {if $controller == 'MainController' && !empty($global_banners)}categories_nav--show{/if}">
                                 {include file="desktop_categories.tpl"}
                             </nav>
@@ -208,10 +208,10 @@
                         {/if}
                         {if $settings->site_working_hours}
                             <div class="footer__contact_item">
-                                <span class="d-flex align-items-start open_hours">
+                                <div class="d-flex align-items-start open_hours">
                                     {include file="svg.tpl" svgId="time_icon"}
                                     {$settings->site_working_hours}
-                                </span>
+                                </div>
                             </div>
                         {/if}
                         <div class="footer__contact_item">
@@ -277,9 +277,10 @@
                                         {include file="svg.tpl" svgId="success_icon"}
                                         {if $subscribe_error == 'email_exist'}
                                             <span data-language="subscribe_already">{$lang->index_subscribe_already}</span>
-                                        {/if}
-                                        {if $subscribe_error == 'empty_email'}
+                                        {elseif $subscribe_error == 'empty_email'}
                                             <span data-language="form_enter_email">{$lang->form_enter_email}</span>
+                                        {else}
+                                            <span>{$subscribe_error|escape}</span>
                                         {/if}
                                     </div>
                                 </div>
@@ -327,8 +328,8 @@
                         <ul class="payments__list d-flex justify-content-md-end align-items-center">
                             {foreach $payment_methods as $payment_method}
                                 {if !$payment_method->image}{continue}{/if}
-                                <li class="d-flex justify-content-center align-items-center payments__item" title="{$payment_method->name}">
-                                    <img src="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" />
+                                <li class="d-flex justify-content-center align-items-center payments__item" title="{$payment_method->name|escape}">
+                                    <img src="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" alt="{$payment_method->name|escape}" />
                                 </li>
                             {/foreach}
                         </ul>

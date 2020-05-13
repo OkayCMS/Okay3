@@ -84,6 +84,7 @@ class CartController extends AbstractController
                     $deliveriesHelper->updateDeliveryPriceInfo($deliveryPriceInfo, $order);
                 }
 
+                $ordersEntity->updateTotalPrice($order->id);
                 $ordersHelper->finalCreateOrderProcedure($order);
                 
                 // Отправляем письмо пользователю
@@ -148,11 +149,9 @@ class CartController extends AbstractController
         CurrenciesEntity $currenciesEntity,
         Request          $request,
         Cart             $cartCore,
-        Money            $moneyCore,
         DeliveriesHelper $deliveriesHelper,
         PaymentsHelper   $paymentsHelper,
-        TemplateConfig   $templateConfig,
-        LoggerInterface  $logger
+        CartHelper       $cartHelper
     ) {
         $action     = $request->get('action');
         $variantId  = $request->get('variant_id', 'integer');
@@ -202,42 +201,12 @@ class CartController extends AbstractController
             }
 
             $cart = $cartCore->get();
-            $this->design->assign('cart', $cart);
-            
-            $result = ['result' => 1];
-
-            $paymentMethods = $paymentsHelper->getCartPaymentsList($cart);
-            $deliveries = $deliveriesHelper->getCartDeliveriesList($cart, $paymentMethods);
-
-            $result['deliveries_data'] = $deliveries;
-            $result['payment_methods_data'] = $paymentMethods;
-            
-            if (is_file('design/' . $templateConfig->getTheme() . '/html/cart_coupon.tpl')) {
-                $result['cart_coupon'] = $this->design->fetch('cart_coupon.tpl');
-            } else {
-                $logger->error('File "design/' . $templateConfig->getTheme() . '/html/cart_coupon.tpl" not found');
-            }
-            
-            if (is_file('design/' . $templateConfig->getTheme() . '/html/cart_purchases.tpl')) {
-                $result['cart_purchases'] = $this->design->fetch('cart_purchases.tpl');
-            } else {
-                $logger->error('File "design/' . $templateConfig->getTheme() . '/html/cart_purchases.tpl" not found');
-            }
-            
-            $result['cart_deliveries'] = 'DEPRECATED DATA';
-            $result['currency_sign']   = $this->currency->sign;
-            $result['total_price']     = $moneyCore->convert($cart->total_price, $this->currency->id);
-            $result['total_products']  = $cart->total_products;
-        } else {
-            $result = ['result' => 0];
-            $result['content']       = $this->design->fetch('cart.tpl');
         }
 
-        if (is_file('design/' . $templateConfig->getTheme() . '/html/cart_informer.tpl')) {
-            $result['cart_informer'] = $this->design->fetch('cart_informer.tpl');
-        } else {
-            $logger->error('File "design/' . $templateConfig->getTheme() . '/html/cart_informer.tpl" not found');
-        }
+        $paymentMethods = $paymentsHelper->getCartPaymentsList($cart);
+        $deliveries = $deliveriesHelper->getCartDeliveriesList($cart, $paymentMethods);
+        
+        $result = $cartHelper->getAjaxCartResult($cart, $this->currency, $paymentMethods, $deliveries, $action, $variantId, $amount);
         
         $this->response->setContent(json_encode($result), RESPONSE_JSON);
     }

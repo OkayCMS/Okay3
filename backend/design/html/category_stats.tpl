@@ -3,7 +3,7 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->category_stats_sales|escape} {$category->name|escape} {$brand->name|escape}
@@ -104,7 +104,6 @@
             {$block}
         </div>
     {/if}
-
 
     <form method="post" class="fn_form_list">
         <input type="hidden" name="session_id" value="{$smarty.session.id}" />

@@ -9,29 +9,37 @@
             </div>
         </div>
     </div>
-    <div class="col-md-12 col-lg-12 col-sm-12 float-xs-right"></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+        <div class="alert alert--icon alert--info">
+            <div class="alert__content">
+                <div class="alert__title">{$btr->alert_info|escape}</div>
+                <p>{$btr->okaycms__google_merchant__generation_url|escape} <a href="{url_generator route='OkayCMS_GoogleMerchant_feed' absolute=1}" target="_blank">{url_generator route='OkayCMS_GoogleMerchant_feed' absolute=1}</a></p>
+            </div>
+        </div>
+    </div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    {if $message_success=='added'}
-                        {$btr->discount_added|escape}
-                    {elseif $message_success=='updated'}
-                        {$btr->discount_updated|escape}
-                    {else}
-                        {$message_success|escape}
-                    {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {*{include file='svg_icon.tpl' svgId='return'}*}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_success == 'saved'}
+                        {$btr->general_settings_saved|escape}
+                        {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                <a class="alert__button" href="{$smarty.get.return}">
+                    {include file='svg_icon.tpl' svgId='return'}
+                    <span>{$btr->general_back|escape}</span>
+                </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -41,13 +49,15 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
-                    {if $message_error=='empty_name'}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_error=='empty_name'}
                         {$btr->general_enter_title|escape}
-                    {else}
+                        {else}
                         {$message_error|escape}
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -59,23 +69,6 @@
     <input type=hidden name="session_id" value="{$smarty.session.id}">
     <input type="hidden" name="lang_id" value="{$lang_id}" />
 
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="boxed">
-                {*Название элемента сайта*}
-                <div class="row d_flex">
-                    <div class="col-lg-12 col-md-12">
-                        <div class="heading_label">
-                            {$btr->okaycms__google_merchant__generation_url|escape}
-                        </div>
-                        <div class="form-group">
-                            <a href="{url_generator route='OkayCMS_GoogleMerchant_feed' absolute=1}" target="_blank">{url_generator route='OkayCMS_GoogleMerchant_feed' absolute=1}</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="row">
         <div class="col-lg-12 col-md-12">
@@ -167,7 +160,7 @@
                                 <strong>{$btr->okaycms__google_merchant__color}</strong> <span>({$btr->okaycms__google_merchant__color_notify})</span>
                             </div>
                             <div class="mb-1">
-                                <select name="okaycms__google_merchant__color" class="selectpicker">
+                                <select name="okaycms__google_merchant__color" class="selectpicker form-control">
                                     <option {if $settings->okaycms__google_merchant__color == 0}selected=""{/if} value=""></option>
                                     {foreach $features as $feature}
                                         <option {if $settings->okaycms__google_merchant__color == $feature->id}selected=""{/if} value="{$feature->id}">{$feature->name}</option>
@@ -209,7 +202,7 @@
                                 <button class="btn btn_small" name="remove_all_categories" value="1">{$btr->okaycms__google_merchant__select_none}</button>
                             </div>
                             <div class="toggle_body_wrap on fn_card">
-                                <select style="opacity: 0;" class="selectpicker_categories col-xs-12 px-0" multiple name="categories[]" size="10" data-selected-text-format="count" >
+                                <select style="opacity: 0;" class="selectpicker_categories form-control col-xs-12 px-0" multiple name="categories[]" size="10" data-selected-text-format="count" >
                                     {function name=category_select selected_id=$product_category level=0}
                                         {foreach $categories as $category}
                                             <option value='{$category->id}' class="category_to_xml" {if $category->to__okaycms__google_merchant}selected=""{/if}>{section name=sp loop=$level}&nbsp;&nbsp;&nbsp;&nbsp;{/section}{$category->name}</option>
@@ -230,7 +223,7 @@
                                 <button class="btn btn_small" name="remove_all_brands" value="1">{$btr->okaycms__google_merchant__select_none}</button>
                             </div>
                             <div class="toggle_body_wrap on fn_card">
-                                <select style="opacity: 0;" class="selectpicker_brands col-xs-12 px-0" multiple name="brands[]" size="10" data-selected-text-format="count" >
+                                <select style="opacity: 0;" class="selectpicker_brands form-control col-xs-12 px-0" multiple name="brands[]" size="10" data-selected-text-format="count" >
                                     {foreach $brands as $brand}
                                         <option value='{$brand->id}' class="brand_to_xml" {if $brand->to__okaycms__google_merchant}selected{/if}>{$brand->name|escape}</option>
                                     {/foreach}

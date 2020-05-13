@@ -2,13 +2,14 @@
 <div class="heading_box">{$category->name|escape}</div>
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
-        <div class="boxed boxed_attention">
-            <div class="heading_box">
-                {$btr->general_caution|escape}
+        <div class="alert alert--icon alert--info">
+            <div class="alert__content">
+            <div class="alert__title mb-h">
+                {$btr->alert_info|escape}
             </div>
             <div class="text_box">
                 <div class="mb-1">
-                    {$btr->seo_patterns_ajax_message1|escape}
+                    {$btr->seo_patterns_ajax_message1|escape}<br>
                     {$btr->seo_patterns_ajax_message2|escape} <b style="display: inline;">{ldelim}$brand{rdelim}</b> {$btr->seo_patterns_ajax_message3|escape}
                 </div>
                 <div class="mb-h"><b>{$btr->seo_patterns_ajax_message4|escape}</b> </div>
@@ -36,6 +37,7 @@
                         {/foreach}
                     </ul>
                 </div>
+            </div>
             </div>
         </div>
     </div>

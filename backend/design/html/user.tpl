@@ -18,20 +18,22 @@
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_success=='updated'}
                         {$btr->user_updated|escape}
                     {else}
                         {$message_success|escape}
                     {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                    <a class="alert__button" href="{$smarty.get.return}">
+                        {include file='svg_icon.tpl' svgId='return'}
+                        <span>{$btr->general_back|escape}</span>
+                    </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -41,8 +43,9 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_error=='login_exists'}
                         {$btr->user_already_registered|escape}
                     {elseif $message_error=='empty_name'}
@@ -52,6 +55,7 @@
                     {else}
                         {$message_error|escape}
                     {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -86,7 +90,7 @@
                             <div class="mb-1">
                                 <div class="heading_label">{$btr->general_phone|escape}</div>
                                 <div class="">
-                                    <input class="form-control mb-h" name="phone" type="text" value="{$user->phone|escape}"/>
+                                    <input class="form-control mb-h" name="phone" type="text" value="{$user->phone|phone}"/>
                                     <input name="id" type="hidden" value="{$user->id|escape}"/>
                                 </div>
                             </div>

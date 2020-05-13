@@ -173,10 +173,6 @@ class BackendFeaturesHelper
         $features = [];
 
         $category = reset($productCategories);
-        if (!is_object($category)) {
-            $category = reset($categoriesTree);
-        }
-
         if (is_object($category)) {
             $features = $this->featuresEntity->find(['category_id' => $category->id]);
         }
@@ -252,7 +248,6 @@ class BackendFeaturesHelper
     {
         $ids = array_keys($positions);
         sort($positions);
-        $positions = array_reverse($positions);
         foreach ($positions as $i=>$position) {
             $this->featuresEntity->update($ids[$i], ['position'=>$position]);
         }
@@ -359,7 +354,7 @@ class BackendFeaturesHelper
         if ($sort !== null) {
             $this->featuresEntity->order($sort);
         }
-        $features = $this->featuresEntity->find($filter);
+        $features = $this->featuresEntity->order('position')->find($filter);
         foreach ($features as $f) {
             $f->features_categories = $this->featuresEntity->getFeatureCategories($f->id);
         }

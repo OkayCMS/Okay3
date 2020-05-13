@@ -5,7 +5,7 @@
     
     <div class="mb-1">
         <div class="heading_label">{$btr->order_np_city}</div>
-        <select name="novaposhta_city" tabindex="1" class="selectpicker city_novaposhta" data-live-search="true"></select>
+        <input type="text" class="fn_newpost_city_name form-control" autocomplete="off" value="{$novaposhta_delivery_data->city_id|newpost_city}">
     </div>
     <div class="mb-1">
         <div class="heading_label">{$btr->order_np_warehouse}</div>
@@ -27,6 +27,8 @@
 </div>
 
 {literal}
+<script src="design/js/autocomplete/jquery.autocomplete-min.js"></script>
+
 <script>
 
     toastr.options = {
@@ -79,47 +81,46 @@
             $('.fn_delivery_novaposhta').hide();
         }
     });
+
+    $( ".fn_newpost_city_name" ).devbridgeAutocomplete( {
+        serviceUrl: okay.router['OkayCMS_NovaposhtaCost_find_city'],
+        minChars: 1,
+        maxHeight: 320,
+        noCache: true,
+        onSelect: function(suggestion) {
+            $('input[name="novaposhta_city_id"]').val(suggestion.data.ref);
+            showWarehouses(suggestion.data.ref);
+        },
+        formatResult: function(suggestion, currentValue) {
+            var reEscape = new RegExp( '(\\' + ['/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\'].join( '|\\' ) + ')', 'g' );
+            var pattern = '(' + currentValue.replace( reEscape, '\\$1' ) + ')';
+            return "<span>" + suggestion.value.replace( new RegExp( pattern, 'gi' ), '<strong>$1<\/strong>' ) + "<\/span>";
+        }
+    } );
     
-    $('select.warehouses_novaposhta').html('').hide();
-    let city = $("select.city_novaposhta");
-    let selected_city = $('input[name="novaposhta_city_id"]').val();
-    let selected_warehouse = $('input[name="novaposhta_warehouse_id"]').val();
-    $.ajax({
-        url: okay.router['OkayCMS_NovaposhtaCost_get_cities'],
-        data: {selected_city: selected_city},
-        dataType: 'json',
-        success: function(data) {
-            if(data.cities_response.success == 1){
-                city.html(data.cities_response.cities);
-                city.selectpicker('refresh');
-                if (selected_warehouse) {
-                    $('select.city_novaposhta').trigger('change');
+    {/literal}
+    {if !empty($novaposhta_delivery_data->city_id)}
+    showWarehouses('{$novaposhta_delivery_data->city_id}');
+    {/if}
+    {literal}
+    
+    function showWarehouses(cityRef) {
+        let selected_warehouse = $('input[name="novaposhta_warehouse_id"]').val();
+        $.ajax({
+            url: okay.router['OkayCMS_NovaposhtaCost_get_warehouses'],
+            data: {city: cityRef, warehouse: selected_warehouse},
+            dataType: 'json',
+            success: function(data) {
+                if (data.warehouses_response.success) {
+                    $('select.warehouses_novaposhta').html(data.warehouses_response.warehouses).show();
+                    $('select.warehouses_novaposhta').selectpicker('refresh');
+                } else {
+                    $('select.warehouses_novaposhta').html('').hide();
                 }
             }
-        }
-    });
-
-    $('select.city_novaposhta').on('change', function() {
-        let city_novaposhta = $(this).children(':selected').data('city_ref');
-        let selected_warehouse = $('input[name="novaposhta_warehouse_id"]').val();
-        if(city_novaposhta != '') {
-            $('input[name="novaposhta_city_id"]').val(city_novaposhta);
-            $.ajax({
-                url: okay.router['OkayCMS_NovaposhtaCost_get_warehouses'],
-                data: {city: city_novaposhta, warehouse: selected_warehouse},
-                dataType: 'json',
-                success: function(data) {
-                    if (data.warehouses_response.success) {
-                        $('select.warehouses_novaposhta').html(data.warehouses_response.warehouses).show();
-                        $('select.warehouses_novaposhta').selectpicker('refresh');
-                    } else {
-                        $('select.warehouses_novaposhta').html('').hide();
-                    }
-                }
-            });
-        }
-    });
-
+        });
+    }
+    
     $('select.warehouses_novaposhta').on('change', function() {
         if($(this).val() != ''){
             let city_name = $('select.city_novaposhta').children(':selected').val(),

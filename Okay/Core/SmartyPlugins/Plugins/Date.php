@@ -32,7 +32,9 @@ class Date extends Modifier
     
     public function run($date, $format = null) 
     {
-        $time = strtotime($date);
+        if (!$time = strtotime($date)) {
+            $time = $date;
+        }
         if ($format !== null) {
             $language = $this->langEntity->get($this->languages->getLangId());
             

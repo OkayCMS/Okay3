@@ -14,6 +14,7 @@ use Okay\Core\JsSocial;
 use Okay\Core\Languages;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Core\Modules\Module;
+use Okay\Core\Phone;
 use Okay\Core\Request;
 use Okay\Core\Response;
 use Okay\Core\Router;
@@ -168,6 +169,8 @@ class MainHelper
         $settings = $this->SL->getService(Settings::class);
         /** @var Router $router */
         $router = $this->SL->getService(Router::class);
+        /** @var Phone $phone */
+        $phone = $this->SL->getService(Phone::class);
         /** @var EntityFactory $entityFactory */
         $entityFactory = $this->SL->getService(EntityFactory::class);
         /** @var CategoriesEntity $categoriesEntity */
@@ -215,6 +218,7 @@ class MainHelper
         $design->assign('group',      $this->getCurrentUserGroup());
 
         $design->assign('payment_methods', $this->getPaymentMethods());
+        $design->assign('phone_example', $phone->getPhoneExample());
         
         // Категории товаров
         $allCategories = $categoriesEntity->find();

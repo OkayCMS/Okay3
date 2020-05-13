@@ -17,7 +17,7 @@ class ProductsEntity extends AbstractModuleEntityFilter
             $this->select->bindValue('category_id', (array)$categoriesIds);
         }
 
-        $this->select->where('not_to__okaycms__yandex_xml != 1');
+        $this->select->where("(p.".Init::NOT_TO_FEED_FIELD." != 1 OR p.".Init::NOT_TO_FEED_FIELD." IS NULL)");
         $this->select->where("(
             p.".Init::TO_FEED_FIELD."=1 
             OR p.brand_id IN (SELECT id FROM __brands WHERE ".Init::TO_FEED_FIELD." = 1)

@@ -5,35 +5,13 @@
         <div class="heading_box">{$category->name|escape}</div>
     </div>
 </div>
-<div class="boxed">
-    <div class="row">
-        <div class="col-md-3 col-lg-3 col-sm-12">
-            <div class="mb_mobile_seofilter">
-            <select class="selectpicker fn_pattern_type form-control" data-size="2" data-live-search="false">
-                <option value="brand">+ {$btr->seo_filter_patterns_brand}</option>
-                <option value="feature">+ {$btr->seo_filter_patterns_feature}</option>
-            </select>
-            </div>
-        </div>
 
-        <div class="col-md-4 col-sm-4 col-lg-4 col-sm-12 ">
-            <div class="mb_mobile_seofilter">
-            <select class="selectpicker fn_features hidden form-control" disabled=""></select>
-            </div>
-        </div>
-        <div class="col-md-5 col-lg-5 col-sm-12 float-sm-right ">
-            <button type="button" class="btn btn_small btn_blue float-md-right fn_add_seo_template " >
-                {include file='svg_icon.tpl' svgId='plus'}
-                <span>{$btr->seo_filter_patterns_add_template|escape}</span>
-            </button>
-        </div>
-    </div>
-</div>
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
-        <div class="boxed boxed_attention">
-            <div class="heading_box">
-                {$btr->general_caution|escape}
+        <div class="alert alert--icon alert--info">
+            <div class="alert__content">
+            <div class="alert__title mb-h">
+                {$btr->alert_info|escape}
             </div>
             <div class="text_box">
                 <div class="mb-1">
@@ -66,6 +44,32 @@
                     </ul>
                 </div>
             </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="boxed">
+    <div class="row">
+        <div class="col-md-3 col-lg-3 col-sm-12">
+            <div class="mb_mobile_seofilter">
+                <select class="selectpicker fn_pattern_type form-control" data-size="2" data-live-search="false">
+                    <option value="brand">+ {$btr->seo_filter_patterns_brand}</option>
+                    <option value="feature">+ {$btr->seo_filter_patterns_feature}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-4 col-lg-4 col-sm-12 ">
+            <div class="mb_mobile_seofilter">
+                <select class="selectpicker fn_features hidden form-control" disabled=""></select>
+            </div>
+        </div>
+        <div class="col-md-5 col-lg-5 col-sm-12 float-sm-right ">
+            <button type="button" class="btn btn_small btn_blue float-md-right fn_add_seo_template " >
+                {include file='svg_icon.tpl' svgId='plus'}
+                <span>{$btr->seo_filter_patterns_add_template|escape}</span>
+            </button>
         </div>
     </div>
 </div>

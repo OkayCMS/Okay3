@@ -5,11 +5,10 @@ namespace Okay\Core;
 
 use Okay\Core\Entity\Entity;
 use Bramus\Router\Router as BRouter;
-use Okay\Core\Modules\Module;
 use Okay\Core\Modules\Modules;
 use Okay\Core\Routes\RouteFactory;
 use Okay\Entities\LanguagesEntity;
-use Okay\Entities\ModulesEntity;
+use Okay\Entities\RouterCacheEntity;
 use OkayLicense\License;
 use Okay\Entities\PagesEntity;
 
@@ -36,7 +35,7 @@ class Router {
     private $license;
 
     /** @var EntityFactory */
-    private $entityFactory;
+    private static $entityFactory;
 
     /** @var ServiceLocator */
     private $serviceLocator;
@@ -68,7 +67,7 @@ class Router {
         $this->request       = $request;
         $this->response      = $response;
         $this->license       = $license;
-        $this->entityFactory = $entityFactory;
+        self::$entityFactory = $entityFactory;
         $this->modules       = $modules;
         self::$routeFactory  = $routeFactory;
         self::$languages     = $languages;
@@ -121,7 +120,7 @@ class Router {
         $request = $this->request;
         
         /** @var LanguagesEntity $languagesEntity */
-        $languagesEntity = $this->entityFactory->get(LanguagesEntity::class);
+        $languagesEntity = self::$entityFactory->get(LanguagesEntity::class);
         
         $language = $languagesEntity->get(self::$languages->getLangId());
         
@@ -197,7 +196,7 @@ class Router {
                 }
 
                 /** @var PagesEntity $pagesEntity */
-                $pagesEntity = $this->entityFactory->get(PagesEntity::class);
+                $pagesEntity = self::$entityFactory->get(PagesEntity::class);
                 $page = $pagesEntity->get((string) $this->request->getPageUrl());
                 if (!empty($page) && empty($page->visible)) {
                     $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController';
@@ -210,7 +209,7 @@ class Router {
                 $routeVars = array_merge($routeVars, $matches[1]);
 
                 $settings = $this->serviceLocator->getService(Settings::class);
-                $siteDisabled = $settings->get('site_work') === 'off' && empty($_SESSION['admin']) ? true : false;
+                $siteDisabled = $settings->get('site_work') === 'off' && empty($_SESSION['admin']);
                 if ($siteDisabled) {
                     $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController';
                     $method = 'siteDisabled';
@@ -314,6 +313,36 @@ class Router {
     {
         return $this->routeRequiredParams;
     }
+
+    /**
+     * Метод добавляет в кеш роутов те, которых еще там нет. В кеш попадают урлы, для формирования 
+     * которых нужно выполнить дополнительные действия (для товаров достають категоии и т.д.)
+     * 
+     * @throws \Exception
+     */
+    public static function generateRouterCache()
+    {
+        /** @var RouterCacheEntity $routerCacheEntity */
+        $routerCacheEntity = self::$entityFactory->get(RouterCacheEntity::class);
+
+        // Если в генерации могут использоваться sql запросы, сгенерируем кеш для таких страниц
+        
+        $categoryRoute = self::$routeFactory->create('category');
+        if ($categoryRoute->getIsUsesSqlToGenerate()) {
+            $urls = $routerCacheEntity->getCategoriesUrlsWithoutCache();
+            foreach ($urls as $url) {
+                $categoryRoute->generateSlugUrl($url);
+            }
+        }
+
+        $productRoute = self::$routeFactory->create('product');
+        if ($productRoute->getIsUsesSqlToGenerate()) {
+            $urls = $routerCacheEntity->getProductsUrlsWithoutCache();
+            foreach ($urls as $url) {
+                $productRoute->generateSlugUrl($url);
+            }
+        }
+    }
     
     public static function generateUrl($routeName, $params = [], $isAbsolute = false, $langId = null)
     {
@@ -359,6 +388,8 @@ class Router {
             $result = Request::getSubDir() . '/' . $result;
         }
 
+        $result = trim(strip_tags(htmlspecialchars($result)));
+        
         // TODO здесь есть скрытая связь с FilterHelper. Это может привести к багам, подумать над тем, чтобы решить это
         if (is_object($route) && method_exists($route, 'hasSlashAtEnd') && $route->hasSlashAtEnd()) {
             return rtrim($result, '/').'/';
@@ -427,6 +458,8 @@ class Router {
         if (!empty($routeVars)) {
             foreach ($routeVars as $key => $routeVar) {
                 $param = isset($routeParams[$key]) ? $routeParams[$key] : null;
+                $param = trim(strip_tags(htmlspecialchars($param)));
+                
                 $allParams[$routeVar] = (empty($param) && !empty($defaults['{$' . $routeVar . '}']) ? $defaults['{$' . $routeVar . '}'] : $param);
             }
         }
@@ -440,7 +473,7 @@ class Router {
                 if ($stringOnly === false) {
                     // Определяем это Entity или сервис из DI
                     if (is_subclass_of($parameter->getClass()->name, Entity::class)) {
-                        $methodParams[$parameter->getClass()->name] = $this->entityFactory->get($parameter->getClass()->name);
+                        $methodParams[$parameter->getClass()->name] = self::$entityFactory->get($parameter->getClass()->name);
                     } else {
                         $methodParams[$parameter->getClass()->name] = $this->serviceLocator->getService($parameter->getClass()->name);
                     }

@@ -48,7 +48,7 @@ class BackendPaymentsHelper
     public function disable(array $ids)
     {
         if (is_array($ids)) {
-            $this->paymentMethodsEntity->update($ids, ['visible'=>0]);
+            $this->paymentMethodsEntity->update($ids, ['enabled'=>0]);
         }
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
@@ -57,7 +57,7 @@ class BackendPaymentsHelper
     public function enable(array $ids)
     {
         if (is_array($ids)) {
-            $this->paymentMethodsEntity->update($ids, ['visible' => 1]);
+            $this->paymentMethodsEntity->update($ids, ['enabled' => 1]);
         }
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());

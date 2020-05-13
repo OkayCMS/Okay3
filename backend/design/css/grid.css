@@ -1057,6 +1057,34 @@
     .pull-xl-12 {
         right: 100%;
     }
+
+    .push-xl-0 {
+        left: auto;
+    }
+    .push-xl-1 {
+        left: 8.33333%;
+    }
+    .push-xl-2 {
+        left: 16.66667%;
+    }
+    .push-xl-3 {
+        left: 25%;
+    }
+    .push-xl-4 {
+        left: 33.33333%;
+    }
+    .push-xl-6 {
+        left: 50%;
+    }
+    .push-xl-8 {
+        left: 66.66667%;
+    }
+    .push-xl-9 {
+        left: 75%;
+    }
+    .push-xl-12 {
+        left: 100%;
+    }
 }
 
 .clearfix::after {

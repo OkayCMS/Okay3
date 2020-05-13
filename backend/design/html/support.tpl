@@ -101,43 +101,45 @@
     {if $message_error}
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
-                <div class="boxed boxed_warning">
-                    <div class="heading_box">
-                        {if $message_error == 'empty_key'}
+                <div class="alert alert--center alert--icon alert--error">
+                    <div class="alert__content">
+                        <div class="alert__title">
+                            {if $message_error == 'empty_key'}
                             {$btr->support_no_keys|escape}
-                        {elseif $message_error == 'domain_not_found'}
+                            {elseif $message_error == 'domain_not_found'}
                             {$btr->support_no_domain|escape}
-                        {elseif $message_error == 'domain_disabled'}
+                            {elseif $message_error == 'domain_disabled'}
                             {$btr->support_domain_blocked|escape}
-                        {elseif $message_error == 'wrong_key'}
+                            {elseif $message_error == 'wrong_key'}
                             {$btr->support_wrong_keys|escape}
-                        {elseif $message_error == 'domain_has_already_gotten_keys'}
+                            {elseif $message_error == 'domain_has_already_gotten_keys'}
                             {$btr->support_already_receive_keys|escape}
-                        {elseif $message_error == 'request_has_already_sent'}
+                            {elseif $message_error == 'request_has_already_sent'}
                             {$btr->support_already_sent|escape}
-                        {elseif $message_error == 'localhost'}
+                            {elseif $message_error == 'localhost'}
                             {$btr->support_local|escape}
-                        {else}
+                            {else}
                             {$message_error|escape}
-                        {/if}
-                    </div>
-                    {if in_array($message_error, array('empty_key', 'domain_not_found'))}
-                        <div class="text_box">
+                            {/if}
+                        </div>
+                        {if in_array($message_error, array('empty_key', 'domain_not_found'))}
+                        <div class="text_box mt-1">
                             <form class="fn_form_list" method="post">
                                 <input type="hidden" name="session_id" value="{$smarty.session.id}">
-                                <input class="btn btn-sm btn-primary" type="submit" name="get_new_keys" value="{$btr->support_get_keys|escape}"/>
+                                <input class="btn btn_small btn-warning" type="submit" name="get_new_keys" value="{$btr->support_get_keys|escape}"/>
                             </form>
                         </div>
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>
     {else}
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
-                <div class="boxed boxed_warning">
-                    <div class="heading_box">
-                        {$btr->support_no|escape}
+                <div class="alert">
+                    <div class="alert__content">
+                        <div class="alert__title">{$btr->support_no|escape}</div>
                     </div>
                 </div>
             </div>

@@ -13,7 +13,7 @@
     
     {if $front_routes}
         {foreach $front_routes as $name=>$route}
-            okay.router['{$name}'] = '{url_generator route=$name absolute=1}';
+            okay.router['{$name|escape}'] = '{url_generator route=$name absolute=1}';
         {/foreach}
     {/if}
 
@@ -28,7 +28,11 @@
         }
 
         $( ".fn_payment_method__item" ).hide().find('input[name="payment_method_id"]').prop('disabled', true);
-        $( ".fn_payment_method__item" ).find('input[name="payment_method_id"]').prop('checked', false);
+        $( ".fn_payment_method__item" )
+            .find('input[name="payment_method_id"]')
+            .not('[value="' + current_payment_id + '"]')
+            .prop('checked', false);
+        
         if (payments_ids.length > 0) {
             payments_ids.forEach(function (payment_id, i, arr) {
                 let payment_block =  $( ".fn_payment_method__item_" + payment_id );
@@ -90,10 +94,10 @@
 
         {foreach $currencies as $c}
         currencies[{$c->id}] = {
-            'rate_from': '{$c->rate_from}',
-            'rate_to': '{$c->rate_to}',
-            'cents': '{$c->cents}',
-            'sign': '{$c->sign}',
+            'rate_from': '{$c->rate_from|escape}',
+            'rate_to': '{$c->rate_to|escape}',
+            'cents': '{$c->cents|escape}',
+            'sign': '{$c->sign|escape}',
         };
         {/foreach}
 
@@ -105,8 +109,8 @@
         }
         
         let decimal = currency.cents;
-        let dec_point = '{$settings->decimals_point}';
-        let separator = '{$settings->thousands_separator}';
+        let dec_point = '{$settings->decimals_point|escape}';
+        let separator = '{$settings->thousands_separator|escape}';
         let res = parseFloat(price*currency.rate_from/currency.rate_to);
 
         if (format === true) {

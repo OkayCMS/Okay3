@@ -6,36 +6,37 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         {if !$m->id}
             <div class="heading_page">{$btr->manager_add|escape}</div>
         {else}
             <div class="heading_page">{$m->name|escape}</div>
         {/if}
     </div>
-    <div class="col-lg-4 col-md-3 text-xs-right float-xs-right"></div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    {if $message_success=='added'}
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_success=='added'}
                         {$btr->manager_added|escape}
-                    {elseif $message_success=='updated'}
+                        {elseif $message_success=='updated'}
                         {$btr->manager_updated|escape}
-                    {else}
+                        {else}
                         {$message_success|escape}
-                    {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                <a class="alert__button" href="{$smarty.get.return}">
+                    {include file='svg_icon.tpl' svgId='return'}
+                    <span>{$btr->general_back|escape}</span>
+                </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -45,17 +46,19 @@
 {if $message_error}
    <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
-                     {if $message_error=='login_exists'}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_error=='login_exists'}
                         {$btr->manager_exists|escape}
-                    {elseif $message_error=='empty_login'}
+                        {elseif $message_error=='empty_login'}
                         {$btr->manager_enter_login|escape}
-                    {elseif $message_error == "password_wrong"}
+                        {elseif $message_error == "password_wrong"}
                         {$btr->manager_pass_not_match|escape}
-                    {else}
+                        {else}
                         {$message_error|escape}
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -235,7 +238,7 @@
                         {if $m->cnt_try >= 10}
                             <button type="submit" name="unlock_manager" class="btn btn_small btn_blue">
                                 <i class="fa fa-magic"></i>
-                                &nbsp; {$btr->manager_unlock|escape}
+                            &nbsp;   {$btr->manager_unlock|escape}
                             </button>
                         {/if}
                     </div>

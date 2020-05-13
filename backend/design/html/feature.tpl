@@ -17,15 +17,15 @@
             </div>
         </div>
     </div>
-    <div class="col-md-12 col-lg-12 col-sm-12 float-xs-right"></div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_success=='added'}
                         {$btr->feature_added|escape}
                     {elseif $message_success=='updated'}
@@ -33,13 +33,14 @@
                     {else}
                         {$message_success|escape}
                     {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                    <a class="alert__button" href="{$smarty.get.return}">
+                        {include file='svg_icon.tpl' svgId='return'}
+                        <span>{$btr->general_back|escape}</span>
+                    </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -49,8 +50,9 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_error=='empty_name'}
                         {$btr->general_enter_title|escape}
                     {elseif $message_error == "duplicate_url"}
@@ -65,6 +67,7 @@
                     {else}
                         {$message_error|escape}
                     {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -160,7 +163,7 @@
     {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-6 col-md-12 pr-0">
-            <div class="fn_step-5 boxed fn_toggle_wrap min_height_210px">
+            <div class="fn_step-5 boxed fn_toggle_wrap min_height_335px">
                 <div class="heading_box">
                     {$btr->feature_in_categories|escape}
                     <i class="fn_tooltips" title="{$btr->tooltip_feature_in_categories|escape}">
@@ -171,13 +174,13 @@
                     </div>
                 </div>
                 <div class="toggle_body_wrap on fn_card">
-                    <div class="boxed boxed_warning">
-                        <div class="">
-                           {$btr->feature_message|escape}
+                    <div class="alert alert--icon alert--error">
+                        <div class="alert__content">
+                            <div class="alert__title">{$btr->alert_error|escape}</div>
+                            <p>{$btr->feature_message|escape}</p>
                         </div>
                     </div>
-
-                    <div class="activity_of_switch_item mb-1"> {* row block *}
+                    <div class="activity_of_switch_item mb-2"> {* row block *}
                         <div class="okay_switch clearfix">
                             <label class="switch_label">{$btr->feature_select_all_categories|escape}</label>
                             <label class="switch switch-default">
@@ -246,23 +249,30 @@
         {*Значения свойства*}
         <div class="col-lg-12 col-md-12">
             <div class="boxed fn_toggle_wrap min_height_210px">
-                <div class="heading_box">
-                    {$btr->feature_feature_values|escape} ({$feature_values_count})
-                    <i class="fn_tooltips" title="{$btr->tooltip_feature_feature_values|escape}">
-                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                    </i>
-                    <div class="toggle_arrow_wrap fn_toggle_card text-primary">
-                        <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
+                <div class="heading_box__flex--feature">
+                    <div class="heading_box heading_box__flex mb-0">
+                        <span class="mb-1 mr-1">
+                            {$btr->feature_feature_values|escape} ({$feature_values_count})
+                            <i class="fn_tooltips" title="{$btr->tooltip_feature_feature_values|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </span>
+                        <button type="button" class="btn btn_small btn-secondary fn_add_value mb-1">
+                            {include file='svg_icon.tpl' svgId='plus'}
+                            <span>{$btr->feature_add_value|escape}</span>
+                        </button>
                     </div>
+                    <button data-hint="{$btr->general_sort_feature_values_alphabet_hint|escape}" class="btn btn_mini btn_border_light text_400 mb-1 hint-bottom-right-t-info-s-small-mobile hint-anim" type="submit" name="alphabet_sort_values" value="{$btr->general_sort_feature_values_alphabet|escape}">
+                        {$btr->general_sort_feature_values_alphabet|escape}
+                    </button>
                 </div>
                 <div class="toggle_body_wrap on fn_card fn_sort_list">
 
                     <div class="fn_step-7 row mb-1">
-                        <div class="col-lg-8 col-md-7 col-sm 12">
-                            <button type="button" class="btn btn_small btn-secondary fn_add_value float-lg-left mr-1">
-                                {include file='svg_icon.tpl' svgId='plus'}
-                                <span>{$btr->feature_add_value|escape}</span>
-                            </button>
+                        <div class="col-lg-9 col-md-9 col-sm 12">
+                            <div class="float-lg-left">
+                                {*<input type="submit" name="alphabet_sort_values" value="{$btr->general_sort_feature_values_alphabet|escape}">*}
+                            </div>
                             <div class="float-lg-left mt-q feature_to_index_new_value">
                                 <div class="heading_label boxes_inline">{$btr->feature_to_index_new_value|escape}</div>
                                 <div class="boxes_inline">
@@ -276,8 +286,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-5 col-sm 12">
-                            <div class="float-xs-none float-md-right">
+
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="pull-right">
                                 <select onchange="location = this.value;" class="selectpicker form-control">
                                     <option value="{url limit=5}" {if $current_limit == 5}selected{/if}>{$btr->general_show_by|escape} 5</option>
                                     <option value="{url limit=10}" {if $current_limit == 10}selected{/if}>{$btr->general_show_by|escape} 10</option>
@@ -289,11 +300,12 @@
                         </div>
                     </div>
 
-
                     <div class="okay_list ok_related_list">
                         <div class="okay_list_head">
                             <div class="okay_list_heading okay_list_drag"></div>
-                            <div class="okay_list_heading feature_value_name">{$btr->feature_value_name}</div>
+                            <div class="okay_list_heading feature_value_name">
+                                {$btr->feature_value_name}
+                            </div>
                             <div class="okay_list_heading feature_value_translit">{$btr->feature_value_translit}</div>
                             <div class="okay_list_heading feature_value_products_num">{$btr->feature_value_products_num}</div>
                             <div class="okay_list_heading feature_value_index">
@@ -409,13 +421,13 @@
 
                     <div class="hidden">
                         {*Здесь сделано на селектах, для общей савместимости скрипта Drag-and-drop*}
-                        <select name="action" class="selectpicker values_action">
+                        <select name="action" class="selectpicker form-control values_action">
                             <option value="" selected></option>
                             {if $pages_count>1}
                                 <option value="move_to_page"></option>
                             {/if}
                         </select>
-                        <select name="target_page" class="selectpicker">
+                        <select name="target_page" class="selectpicker form-control">
                             {section target_page $pages_count}
                                 <option value="{$smarty.section.target_page.index+1}">{$smarty.section.target_page.index+1}</option>
                             {/section}

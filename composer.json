@@ -22,6 +22,7 @@
     ],
     "require": {
         "ext-SimpleXML": "*",
+        "ext-pdo": "*",
         "ext-json": "*",
         "ext-curl": "*",
         "ext-mbstring": "*",
@@ -40,7 +41,8 @@
         "haydenpierce/class-finder": "^0.3.3",
         "okaycms/license": "~1.3.0",
         "axy/sourcemap": "^0.1.4",
-        "snowplow/referer-parser": "^0.2.0"
+        "snowplow/referer-parser": "^0.2.0",
+        "giggsey/libphonenumber-for-php": "^8.12"
     },
     "autoload": {
         "psr-4": {

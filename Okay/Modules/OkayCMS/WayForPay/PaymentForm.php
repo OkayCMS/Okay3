@@ -134,10 +134,10 @@ class PaymentForm extends AbstractModule implements PaymentFormInterface
 
     private function getPurchaseCount($purchases)
     {
-        $purchasesCount = 0;
+        $purchasesCount = [];
 
         foreach($purchases as $purchase) {
-            $purchasesCount += $purchase->amount;
+            $purchasesCount[] = $purchase->amount;
         }
 
         return $purchasesCount;

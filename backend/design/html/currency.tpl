@@ -19,9 +19,10 @@
 
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
-        <div class="boxed boxed_attention">
-            <div class="">
-                Основной валютой сайта считается та, которая стоит первой в списке. Для того чтобы сменить основную валюту, просто перетяните нужную вам валюту на первое место
+        <div class="alert alert--icon alert--error">
+            <div class="alert__content">
+                <div class="alert__title">{$btr->alert_error|escape}</div>
+                <p>{$btr->coupon_alert_text|escape}</p>
             </div>
         </div>
     </div>
@@ -31,16 +32,18 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
-                    {if $message_error == 'wrong_iso'}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_error == 'wrong_iso'}
                         Недопустимый код ISO в
                         {foreach $wrong_iso as $w_iso}
-                            <div>{$w_iso|escape}</div>
+                        <div>{$w_iso|escape}</div>
                         {/foreach}
-                    {else}
+                        {else}
                         {$message_error|escape}
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -248,9 +251,10 @@
 
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
-        <div class="boxed boxed_attention">
-            <div class="">
-               {$btr->currency_message|escape}
+        <div class="alert alert--icon alert--warning">
+            <div class="alert__content">
+                <div class="alert__title">{$btr->alert_warning|escape}</div>
+                <p>{$btr->currency_message|escape}</p>
             </div>
         </div>
     </div>

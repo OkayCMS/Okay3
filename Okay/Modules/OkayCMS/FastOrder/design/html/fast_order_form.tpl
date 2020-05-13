@@ -12,7 +12,7 @@
             <input value="" name="amount" type="hidden"/>
             <input type="hidden" name="IsFastOrder" value="true">
 
-            <h6 id="fast_order_product_name"></h6>
+            <div id="fast_order_product_name" class="h6"></div>
 
             <div class="form__group">
                 <input class="fn_validate_fast_name form__input form__placeholder--focus" type="text" name="name" value="" />

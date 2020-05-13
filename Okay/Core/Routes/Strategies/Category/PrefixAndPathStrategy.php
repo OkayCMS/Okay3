@@ -5,38 +5,69 @@ namespace Okay\Core\Routes\Strategies\Category;
 
 
 use Okay\Core\EntityFactory;
+use Okay\Core\Routes\CategoryRoute;
+use Okay\Core\Routes\ProductRoute;
 use Okay\Core\Routes\Strategies\AbstractRouteStrategy;
 use Okay\Core\ServiceLocator;
 use Okay\Core\Settings;
 use Okay\Entities\CategoriesEntity;
+use Okay\Entities\RouterCacheEntity;
+use Psr\Log\LoggerInterface;
 
 class PrefixAndPathStrategy extends AbstractRouteStrategy
 {
-    /**
-     * @var Settings
-     */
+    /** @var Settings */
     private $settings;
 
-    /**
-     * @var CategoriesEntity
-     */
+    /** @var CategoriesEntity */
     private $categoriesEntity;
+
+    /** @var RouterCacheEntity */
+    private $cacheEntity;
+
+    /** @var LoggerInterface */
+    private $logger;
+
+    // Сообщаем что данная стратегия может использовать sql для формирования урла
+    protected $isUsesSqlToGenerate = true;
 
     public function __construct()
     {
         $serviceLocator         = ServiceLocator::getInstance();
         $this->settings         = $serviceLocator->getService(Settings::class);
+        $this->logger           = $serviceLocator->getService(LoggerInterface::class);
         $entityFactory          = $serviceLocator->getService(EntityFactory::class);
         $this->categoriesEntity = $entityFactory->get(CategoriesEntity::class);
+        $this->cacheEntity      = $entityFactory->get(RouterCacheEntity::class);
     }
 
     public function generateSlugUrl($url)
     {
         if (empty($url)) {
             return '';
+        } elseif ($route = CategoryRoute::getUrlSlugAlias($url)) {// Может уже указали для этого урла его slug
+            return $route;
+        } elseif (CategoryRoute::getUseSqlToGenerate() === false) {// Если запретили выполнять запросы для генерации урла
+            $this->logger->notice('For generate route to category "'.$url.'" need execute SQL query. Or set url through "Okay\Core\Routes\CategoryRoute::setUrlSlugAlias()"');
+            return '';
+        }
+
+        if ($slug = $this->cacheEntity->cols(['slug_url'])->findOne(['type' => 'category', 'url' => $url])) {
+            return $slug;
         }
         $category = $this->categoriesEntity->get((string) $url);
-        return trim($category->path_url, '/');
+        $slug = trim($category->path_url, '/');
+
+        // Запоминаем в оперативке slug для этого урла
+        ProductRoute::setUrlSlugAlias($url, $slug);
+
+        $this->cacheEntity->add([
+            'url' => $url,
+            'slug_url' => $slug,
+            'type' => 'category',
+        ]);
+
+        return $slug;
     }
 
     public function generateRouteParams($url)

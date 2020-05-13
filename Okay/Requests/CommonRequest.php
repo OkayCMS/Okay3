@@ -5,6 +5,7 @@ namespace Okay\Requests;
 
 
 use Okay\Core\Modules\Extender\ExtenderFacade;
+use Okay\Core\Phone;
 use Okay\Core\Request;
 
 class CommonRequest
@@ -50,10 +51,10 @@ class CommonRequest
         $callback = null;
         if ($this->request->post('callback')) {
             $callback = new \stdClass;
-            $callback->phone    = $this->request->post('phone');
-            $callback->name     = $this->request->post('name');
-            $callback->url      = $this->request->getCurrentUrl();//'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-            $callback->message  = $this->request->post('message');
+            $callback->phone    = Phone::toSave($this->request->post('callback_phone'));
+            $callback->name     = $this->request->post('callback_name');
+            $callback->url      = $this->request->getCurrentUrl();
+            $callback->message  = $this->request->post('callback_message');
         }
 
         return ExtenderFacade::execute(__METHOD__, $callback, func_get_args());

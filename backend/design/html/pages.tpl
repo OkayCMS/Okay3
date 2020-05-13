@@ -3,7 +3,7 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->pages_site|escape}
@@ -22,13 +22,15 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_error == 'url_system'}
                         {$btr->pages_delete_error_url|escape}
                     {else}
                         {$message_error|escape}
                     {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,6 +109,11 @@
                                                 {include file='svg_icon.tpl' svgId='eye'}
                                             </a>
 
+                                            {*copy*}
+                                            <button data-hint="{$btr->pages_dublicate|escape}" type="button" class="setting_icon setting_icon_copy fn_copy hint-bottom-middle-t-info-s-small-mobile  hint-anim">
+                                                {include file='svg_icon.tpl' svgId='icon_copy'}
+                                            </button>
+
                                             {get_design_block block="pages_icon"}
                                         </div>
 
@@ -134,6 +141,7 @@
                                         <option value="enable">{$btr->general_do_enable|escape}</option>
                                         <option value="disable">{$btr->general_do_disable|escape}</option>
                                         <option value="delete">{$btr->general_delete|escape}</option>
+                                        <option value="duplicate">{$btr->general_create_dublicate|escape}</option>
                                     </select>
                                 </div>
                             </div>
@@ -152,3 +160,19 @@
         </div>
     {/if}
 </div>
+
+{literal}
+    <script>
+        $(function() {
+            // Дублировать страницу
+            $(document).on("click", ".fn_copy", function () {
+                $('.fn_form_list input[type="checkbox"][name*="check"]').attr('checked', false);
+                $(this).closest(".fn_form_list").find('select[name="action"] option[value=duplicate]').attr('selected', true);
+                $(this).closest(".fn_row").find('input[type="checkbox"][name*="check"]').attr('checked', true);
+                $(this).closest(".fn_row").find('input[type="checkbox"][name*="check"]').click();
+                $(this).closest(".fn_form_list").submit();
+            });
+        });
+    </script>
+{/literal}
+

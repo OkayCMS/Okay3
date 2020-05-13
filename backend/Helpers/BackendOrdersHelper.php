@@ -6,6 +6,8 @@ namespace Okay\Admin\Helpers;
 
 use Okay\Core\EntityFactory;
 use Okay\Core\Request;
+use Okay\Core\Settings;
+use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\DeliveriesEntity;
 use Okay\Entities\ImagesEntity;
 use Okay\Entities\OrderHistoryEntity;
@@ -64,12 +66,19 @@ class BackendOrdersHelper
 
     /** @var Request */
     private $request;
+
+    /** @var Settings */
+    private $settings;
+
+    /** @var EntityFactory */
+    private $entityFactory;
     
     public function __construct(
         EntityFactory $entityFactory,
         MoneyHelper   $moneyHelper,
-        Request       $request
-    ){
+        Request       $request,
+        Settings      $settings
+    ) {
         $this->ordersEntity      = $entityFactory->get(OrdersEntity::class);
         $this->variantsEntity    = $entityFactory->get(VariantsEntity::class);
         $this->purchasesEntity   = $entityFactory->get(PurchasesEntity::class);
@@ -82,10 +91,68 @@ class BackendOrdersHelper
         $this->paymentsEntity    = $entityFactory->get(PaymentsEntity::class);
         $this->usersEntity       = $entityFactory->get(UsersEntity::class);
         $this->userGroupsEntity  = $entityFactory->get(UserGroupsEntity::class);
+        $this->entityFactory     = $entityFactory;
         $this->moneyHelper       = $moneyHelper;
         $this->request           = $request;
+        $this->settings          = $settings;
     }
 
+    /**
+     * Метод используется для поиска нового товара в заказ
+     * 
+     * @param $keyword
+     * @return mixed|void|null
+     * @throws \Exception
+     */
+    public function findOrderProducts($keyword)
+    {
+        
+        /** @var CurrenciesEntity $currenciesEntity */
+        $currenciesEntity = $this->entityFactory->get(CurrenciesEntity::class);
+
+        $productsFilter = [
+            'keyword' => $keyword,
+            'limit' => 10,
+            'in_stock' => !$this->settings->get('is_preorder'),
+        ];
+
+        $imagesIds = [];
+        $products = [];
+        foreach ($this->productsEntity->find($productsFilter) as $product) {
+            $products[$product->id] = $product;
+            $imagesIds[] = $product->main_image_id;
+        }
+
+        if (!empty($products)) {
+            foreach ($this->imagesEntity->find(['id' => $imagesIds]) as $image) {
+                if (isset($products[$image->product_id])) {
+                    $products[$image->product_id]->image = $image->filename;
+                }
+            }
+
+            $variants = $this->variantsEntity->find([
+                'product_id' => array_keys($products),
+                'in_stock' => !$this->settings->get('is_preorder'),
+                'has_price' => true,
+            ]);
+
+            foreach ($variants as $variant) {
+                if (isset($products[$variant->product_id])) {
+                    $variant->units = $variant->units ? $variant->units : $this->settings->get('units');
+                    $products[$variant->product_id]->variants[] = $variant;
+                    if ($variant->currency_id && ($currency = $currenciesEntity->findOne(['id' => $variant->currency_id]))) {
+                        if ($currency->rate_from != $currency->rate_to) {
+                            $variant->price = round($variant->price*$currency->rate_to/$currency->rate_from,2);
+                            $variant->compare_price = round($variant->compare_price*$currency->rate_to/$currency->rate_from,2);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return ExtenderFacade::execute(__METHOD__, $products, func_get_args());;
+    }
+    
     /**
      * @var $order
      * Метод заглушка, чтобы модули могли зацепиться
@@ -276,6 +343,29 @@ class BackendOrdersHelper
         return ExtenderFacade::execute(__METHOD__, $purchases, func_get_args());
     }
 
+    public function buildCountStatusesFilter($filter)
+    {
+        $countStatusesFilter = [];
+        
+        if (isset($filter['label'])) {
+            $countStatusesFilter['label'] = $filter['label'];
+        }
+        
+        if (isset($filter['keyword'])) {
+            $countStatusesFilter['keyword'] = $filter['keyword'];
+        }
+        
+        if (isset($filter['from_date'])) {
+            $countStatusesFilter['from_date'] = $filter['from_date'];
+        }
+        
+        if (isset($filter['to_date'])) {
+            $countStatusesFilter['to_date'] = $filter['to_date'];
+        }
+        
+        return ExtenderFacade::execute(__METHOD__, $countStatusesFilter, func_get_args());
+    }
+    
     public function buildFilter()
     {
         $filter = [];
@@ -289,15 +379,14 @@ class BackendOrdersHelper
         }
 
         // Фильтр по метке
-        $label = $this->orderLabelsEntity->get($this->request->get('label'));
+        $label = $this->orderLabelsEntity->get($this->request->get('label', 'int'));
+        
         if (!empty($label)) {
             $filter['label'] = $label->id;
         }
 
-        if (empty($keyword)) {
-            if ($this->request->get('status')) {
-                $filter['status_id'] = $statusId = $this->request->get('status', 'integer');
-            }
+        if ($this->request->get('status')) {
+            $filter['status_id'] = $statusId = $this->request->get('status', 'integer');
         }
 
         //Поиск до дате заказа

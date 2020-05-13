@@ -17,7 +17,7 @@
                                         <div class="filter__catalog_item has_child">
                                             <{if $c->id == $category->id}b{else}a{/if} class="filter__catalog_link{if $c->subcategories} sub_cat{/if}{if $category->id == $c->id} selected{/if}" href="{url_generator route="category" url=$c->url}" data-category="{$c->id}">
                                                 {if $c->image}
-                                                    <img class="lazy" src="{$c->image|resize:20:20:false:$config->resized_categories_dir}" alt="{$c->name|escape}" srcset="{$c->image|resize:20:20:false:$config->resized_categories_dir:null:null:true}"/>
+                                                    <img class="lazy" src="{$c->image|resize:20:20:false:$config->resized_categories_dir}" alt="{$c->name|escape}"/>
                                                 {else}
                                                     <div class="filter_catalog__no_image d-flex align-items-center justify-content-center" title="{$browsed_product->name|escape}">
                                                         {include file="svg.tpl" svgId="no_image"}
@@ -130,7 +130,7 @@
                                                 <path class="checkmark-path" fill="none" d="M4 10 l5 4 8-8.5"></path>
                                             </svg>
                                         </span>
-                                        <span class="filter__label" data-language="{$f->translation}">{$f->name}</span>
+                                        <span class="filter__label" data-language="{$f->translation}">{$f->name|escape}</span>
                                     </button>
                                 </form>
                             {else}
@@ -140,7 +140,7 @@
                                             <path class="checkmark-path" fill="none" d="M4 10 l5 4 8-8.5"></path>
                                         </svg>
                                     </span>
-                                    <span class="filter__label" data-language="{$f->translation}">{$f->name}</span>
+                                    <span class="filter__label" data-language="{$f->translation}">{$f->name|escape}</span>
                                 </a>
                             {/if}
                         </div>

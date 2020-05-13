@@ -278,4 +278,27 @@ class BackendFeaturesValuesHelper
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
+
+    public function sortFeatureValuePositionsAlphabet($feature)
+    {
+        $featuresValues = $this->findFeaturesValues(['feature_id' => $feature->id]);
+        $index = [];
+        foreach($featuresValues as $fv) {
+                $index[] = $fv->value;
+        }
+        array_multisort($index, $featuresValues);
+
+        foreach($featuresValues as $fv) {
+            $featureValuesIds[] = $fv->id;
+        }
+
+        asort($featureValuesIds, SORT_NATURAL);
+        $i = 0;
+        foreach($featureValuesIds as $featureValueId) {
+            $this->featuresValuesEntity->update($featureValuesIds[$i], ['position'=>$featureValueId]);
+            $i++;
+        }
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
 }

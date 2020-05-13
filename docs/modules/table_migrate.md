@@ -73,6 +73,25 @@ $this->migrateEntityTable(NPCostDeliveryDataEntity::class, [
 ]);
 ```
 
+<a name="compositeIndex"></a>
+
+Чтобы создать составной индекс, нужно в метод setIndex() или setIndexUnique() передать в виде второго и последующих 
+аргументов поля (объекты класса EntityField), по которым в паре с текущим полем должен быть составной индекс.
+
+Пример:
+
+```php
+$cityIdField = (new EntityField('city_id'))->setTypeVarchar(255, true);
+
+$this->migrateEntityTable(NPCostDeliveryDataEntity::class, [
+    (new EntityField('id'))->setIndexPrimaryKey()->setTypeInt(11, false)->setAutoIncrement(),
+    (new EntityField('order_id'))->setTypeInt(11)->setIndex(null, $cityIdField),
+    $cityIdField,
+]);
+```
+
+Таким образом будет создан индекс order_id, city_id (`order_id_city_id`).
+
 #### Создание новой таблицы связи <a name="migrateCustomTable"></a>
 Чтобы создать таблицу связи, нужно в методе [install() класса Init](./README.md#configuratinFiles)
 вызвать метод migrateCustomTable(), который принимает два параметра:

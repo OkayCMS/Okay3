@@ -7,112 +7,74 @@ namespace Okay\Modules\OkayCMS\Banners\Backend\Controllers;
 use Okay\Admin\Controllers\IndexAdmin;
 use Okay\Modules\OkayCMS\Banners\Entities\BannersEntity;
 use Okay\Modules\OkayCMS\Banners\Entities\BannersImagesEntity;
+use Okay\Modules\OkayCMS\Banners\Helpers\BannersImagesHelper;
+use Okay\Modules\OkayCMS\Banners\Requests\BannersImagesRequest;
 
 class BannersImagesAdmin extends IndexAdmin
 {
     
-    public function fetch(BannersImagesEntity $bannersImagesEntity, BannersEntity $bannersEntity)
-    {
-        $filter = [];
-        $filter['page'] = max(1, $this->request->get('page', 'integer'));
+    public function fetch(
+        BannersImagesEntity $bannersImagesEntity,
+        BannersEntity $bannersEntity,
+        BannersImagesRequest $bannersImagesRequest,
+        BannersImagesHelper $bannersImagesHelper
+    ) {
+
+        $filter = $bannersImagesHelper->buildFilter();
         
-        $filter['limit'] = 20;
-        
+        $this->design->assign('filter',         $filter['filter']);
         // Баннера
-        $banners = $bannersEntity->find();
+        $banners = $bannersEntity->find(); // todo
         $this->design->assign('banners', $banners);
-        
-        // Текущий баннер
-        $bannerId = $this->request->get('banner_id', 'integer');
-        if ($bannerId && ($banner = $bannersEntity->get($bannerId))) {
-            $filter['banner_id'] = $banner->id;
-        }
-        
-        // Текущий фильтр
-        if ($f = $this->request->get('filter', 'string'))
-        {
-            if ($f == 'visible') {
-                $filter['visible'] = 1;
-            } elseif ($f == 'hidden') {
-                $filter['visible'] = 0;
-            }
-            $this->design->assign('filter', $f);
-        }
-        
+
         // Обработка действий
         if ($this->request->method('post')) {
             // Сортировка
-            $positions = $this->request->post('positions');
-            $ids = array_keys($positions);
-            sort($positions);
-            $positions = array_reverse($positions);
-            foreach($positions as $i=>$position) {
-                $bannersImagesEntity->update($ids[$i], array('position'=>$position));
-            }
+            $positions = $bannersImagesRequest->postPositions();
+            $bannersImagesHelper->sortPositions($positions);
             
             // Смена группы
             $imageBanners = $this->request->post('image_banners');
             foreach($imageBanners as $i=>$imageBanner) {
                 $bannersImagesEntity->update($i, array('banner_id'=>$imageBanner));
             }
-            
+
             // Действия с выбранными
-            $ids = $this->request->post('check');
-            if (!empty($ids)) {
-                switch($this->request->post('action')) {
-                    case 'disable': {
-                        $bannersImagesEntity->update($ids, ['visible'=>0]);
-                        break;
-                    }
-                    case 'enable': {
-                        $bannersImagesEntity->update($ids, ['visible'=>1]);
-                        break;
-                    }
-                    case 'delete': {
-                        $bannersImagesEntity->delete($ids);
-                        break;
-                    }
-                    case 'move_to_banner': {
-                        $bannerId = $this->request->post('target_banner', 'integer');
-                        $filter['page'] = 1;
-                        $banner = $bannersEntity->get($bannerId);
-                        $filter['banner_id'] = $banner->id;
-                        
-                        $bannersImagesEntity->update($ids, ['banner_id'=>$banner->id]);
-                        break;
-                    }
+            $ids = $bannersImagesRequest->postCheck();
+            switch ($bannersImagesRequest->postAction()) {
+                case 'enable': {
+                    $bannersImagesHelper->enable($ids);
+                    break;
+                }
+                case 'disable': {
+                    $bannersImagesHelper->disable($ids);
+                    break;
+                }
+                case 'delete': {
+                    $bannersImagesHelper->delete($ids);
+                    break;
+                }
+                case 'move_to_page': {
+                    $targetPage = $this->request->post('target_page', 'integer');
+                    $bannersImagesHelper->moveToPage($ids, $targetPage, $filter);
+                    break;
                 }
             }
         }
         
         // Отображение
-        if (isset($banner)) {
+        if (!empty($filter['banner_id'])) {
+            $banner = $bannersEntity->get((int)$filter['banner_id']);
             $this->design->assign('banner', $banner);
         }
         
-        $bannersImagesCount = $bannersImagesEntity->count($filter);
-        
-        // Показать все страницы сразу
-        if($this->request->get('page') == 'all') {
-            $filter['limit'] = $bannersImagesCount;
-        }
-        
-        if ($filter['limit']>0) {
-            $pagesCount = ceil($bannersImagesCount/$filter['limit']);
-        } else {
-            $pagesCount = 0;
-        }
-        
-        $filter['page'] = min($filter['page'], $pagesCount);
+        $bannersImagesCount        = $bannersImagesHelper->countBannersImages($filter);
+        list($filter, $pagesCount) = $bannersImagesHelper->makePagination($bannersImagesCount, $filter);
+        $bannersImages             = $bannersImagesHelper->findBannersImages($filter);
+
         $this->design->assign('banners_images_count', $bannersImagesCount);
         $this->design->assign('pages_count', $pagesCount);
         $this->design->assign('current_page', $filter['page']);
-        
-        $bannersImages = [];
-        foreach($bannersImagesEntity->find($filter) as $p) {
-            $bannersImages[$p->id] = $p;
-        }
-        
         $this->design->assign('banners_images', $bannersImages);
         
         $this->response->setContent($this->design->fetch('banners_images.tpl'));

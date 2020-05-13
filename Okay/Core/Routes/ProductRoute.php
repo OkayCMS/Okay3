@@ -19,6 +19,9 @@ class ProductRoute extends AbstractRoute
     const TYPE_NO_PREFIX_AND_CATEGORY = 'no_prefix_and_category';
     const SLASH_END                   = 'product_routes_template_slash_end';
 
+    protected static $useSqlToGenerate;
+    protected static $routeAliases;
+    
     public function hasSlashAtEnd()
     {
         return intval($this->settings->get(static::SLASH_END)) === 1;

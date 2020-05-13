@@ -3,7 +3,7 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->brands_brands|escape} - {$brands_count}
@@ -125,6 +125,11 @@
                                         {include file='svg_icon.tpl' svgId='eye'}
                                     </a>
 
+                                    {*copy*}
+                                    <button data-hint="{$btr->brands_dublicate|escape}" type="button" class="setting_icon setting_icon_copy fn_copy hint-bottom-middle-t-info-s-small-mobile  hint-anim">
+                                        {include file='svg_icon.tpl' svgId='icon_copy'}
+                                    </button>
+
                                     {get_design_block block="brands_icon" vars=['brand' => $brand]}
                                 </div>
 
@@ -148,10 +153,11 @@
                             <label class="okay_ckeckbox" for="check_all_2"></label>
                         </div>
                         <div class="okay_list_option">
-                            <select name="action" class="selectpicker dropup brands_action" data-size="5">
+                            <select name="action" class="selectpicker form-control dropup brands_action" data-size="5">
                                 <option value="delete">{$btr->general_delete|escape}</option>
                                 <option value="enable">{$btr->general_do_enable|escape}</option>
                                 <option value="disable">{$btr->general_do_disable|escape}</option>
+                                <option value="duplicate">{$btr->general_create_dublicate|escape}</option>
                                 {if $pages_count>1}
                                     <option value="move_to_page">{$btr->products_move_to_page|escape}</option>
                                 {/if}
@@ -159,7 +165,7 @@
                         </div>
                         <div class="fn_additional_params">
                             <div class="fn_move_to_page col-lg-12 col-md-12 col-sm-12 hidden fn_hide_block">
-                                <select name="target_page" class="selectpicker dropup" data-size="5">
+                                <select name="target_page" class="selectpicker form-control dropup" data-size="5">
                                     {section target_page $pages_count}
                                         <option value="{$smarty.section.target_page.index+1}">{$smarty.section.target_page.index+1}</option>
                                     {/section}
@@ -198,6 +204,15 @@
                 if ($('.fn_' + elem).size() > 0) {
                     $('.fn_' + elem).removeClass('hidden');
                 }
+            });
+
+            // Дублировать бренд
+            $(document).on("click", ".fn_copy", function () {
+                $('.fn_form_list input[type="checkbox"][name*="check"]').attr('checked', false);
+                $(this).closest(".fn_form_list").find('select[name="action"] option[value=duplicate]').attr('selected', true);
+                $(this).closest(".fn_row").find('input[type="checkbox"][name*="check"]').attr('checked', true);
+                $(this).closest(".fn_row").find('input[type="checkbox"][name*="check"]').click();
+                $(this).closest(".fn_form_list").submit();
             });
         });
     </script>

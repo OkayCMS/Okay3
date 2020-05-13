@@ -4,6 +4,7 @@
 namespace Okay\Admin\Requests;
 
 
+use Okay\Core\Phone;
 use Okay\Core\Request;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
@@ -22,9 +23,10 @@ class BackendOrdersRequest
         $order->id = $this->request->post('id', 'integer');
         $order->name = $this->request->post('name');
         $order->email = $this->request->post('email');
-        $order->phone = $this->request->post('phone');
+        $order->phone = Phone::toSave($this->request->post('phone'));
         $order->address = $this->request->post('address');
         $order->comment = $this->request->post('comment');
+        $order->note = $this->request->post('note');
         $order->discount = $this->request->post('discount', 'float');
         $order->coupon_discount = $this->request->post('coupon_discount', 'float');
         $order->delivery_id = $this->request->post('delivery_id', 'integer');

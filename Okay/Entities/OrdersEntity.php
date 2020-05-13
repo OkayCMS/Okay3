@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Phone;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class OrdersEntity extends Entity
@@ -26,7 +27,6 @@ class OrdersEntity extends Entity
         'name',
         'address',
         'phone',
-        'formatted_phone',
         'email',
         'comment',
         'status_id',
@@ -80,10 +80,6 @@ class OrdersEntity extends Entity
             $order = (object)$order;
         }
 
-        if (isset($order->phone)) {
-            $order->formatted_phone = $this->formatPhone($order->phone);
-        }
-
         parent::update($id, $order);
         return $id;
     }
@@ -93,6 +89,11 @@ class OrdersEntity extends Entity
         $ids = (array)$ids;
         if (!empty($ids)) {
 
+            // Возвращаем товары на склад
+            foreach ($ids as $id) {
+                $this->open($id);
+            }
+            
             $delete = $this->queryFactory->newDelete();
             $delete->from(PurchasesEntity::getTable())
                 ->where('order_id IN (:order_ids)')
@@ -109,6 +110,26 @@ class OrdersEntity extends Entity
         return parent::delete($ids);
     }
 
+    public function findOrdersDates(array $filter = [])
+    {
+        $this->select->join('LEFT', '__orders_labels AS ol', 'o.id=ol.order_id');
+        $this->select->join('LEFT', '__orders_status AS os', 'o.status_id=os.id');
+        if ($result = parent::find($filter)) {
+            $result = reset($result);
+        }
+        return $result;
+    }
+    
+    public function countOrdersByStatuses(array $filter = [])
+    {
+        $this->select->join('LEFT', '__orders_labels AS ol', 'o.id=ol.order_id');
+        $this->select->join('LEFT', '__orders_status AS os', 'o.status_id=os.id');
+        $this->cols(['count( DISTINCT o.id) AS count', 'status_id']);
+        $this->select->groupBy(['status_id']);
+        $this->mappedBy('status_id');
+        return parent::find($filter);
+    }
+    
     public function add($order)
     {
         /** @var OrderStatusEntity $orderStatusEntity */
@@ -123,10 +144,6 @@ class OrdersEntity extends Entity
         $allStatuses = $orderStatusEntity->mappedBy('id')->find();
         if (empty($order->status_id)) {
             $order->status_id = reset($allStatuses)->id;
-        }
-
-        if (isset($order->phone)) {
-            $order->formatted_phone = $this->formatPhone($order->phone);
         }
 
         $id = parent::add($order);
@@ -285,6 +302,14 @@ class OrdersEntity extends Entity
         return ExtenderFacade::execute([static::class, __FUNCTION__], $order->id, func_get_args());
     }
 
+    /**
+     * Метод ищет другие заказы клиента сравнивая по почте или телефону
+     * 
+     * @param $order
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
     public function findOtherOfClient($order, $page = 1, $perPage = 10)
     {
         $offset       = $this->calculateOffset($page, $perPage);
@@ -320,20 +345,20 @@ class OrdersEntity extends Entity
         return $sql->setStatement("
                 SELECT 
                     id, 
-                    IF(o.email           = :email, 1, 0)           AS `email_match`, 
-                    IF(o.formatted_phone = :formatted_phone, 1, 0) AS `phone_match` 
+                    IF(o.email IS NOT NULL AND o.email != '' AND o.email = :email, 1, 0) AS `email_match`, 
+                    IF(o.phone IS NOT NULL AND o.phone != '' AND o.phone = :phone, 1, 0) AS `phone_match` 
                 FROM ".self::getTable()." AS o 
                 WHERE id <> :order_id
-                  AND ( (o.email != '' AND o.email = :email) OR (o.formatted_phone != '' AND o.formatted_phone = :formatted_phone) )
+                  AND ( (o.email != '' AND o.email = :email) OR (o.phone != '' AND o.phone = :phone) )
                 ORDER BY id DESC
                 {$limitOffset}
             ")
             ->bindValues([
-                'order_id'        => $order->id,
-                'email'           => $order->email,
-                'formatted_phone' => $this->formatPhone($order->phone),
-                'per_page'        => $perPage,
-                'offset'          => $this->calculateOffset($page, $perPage)
+                'order_id'  => $order->id,
+                'email'     => $order->email,
+                'phone'     => Phone::clear($order->phone),
+                'per_page'  => $perPage,
+                'offset'    => $this->calculateOffset($page, $perPage)
             ])
             ->results(null, 'id');
     }
@@ -368,12 +393,13 @@ class OrdersEntity extends Entity
                 SELECT 
                     COUNT(*) AS count  
                 FROM ".self::getTable()." AS o 
-                WHERE o.email           = :email
-                   OR o.formatted_phone = :formatted_phone
+                WHERE id <> :order_id
+                  AND ( (o.email != '' AND o.email = :email) OR (o.phone != '' AND o.phone = :phone) )
             ")
             ->bindValues([
-                'email'           => $order->email,
-                'formatted_phone' => $this->formatPhone($order->phone),
+                'order_id'  => $order->id,
+                'email' => $order->email,
+                'phone' => Phone::clear($order->phone),
             ])
             ->result('count');
     }
@@ -392,14 +418,18 @@ class OrdersEntity extends Entity
 
     protected function filter__from_date($fromDate)
     {
-        $this->select->where('o.date >= :from_date')
-            ->bindValue('from_date', date('Y-m-d', strtotime($fromDate)));
+        if (!empty($fromDate)) {
+            $this->select->where('o.date >= :from_date')
+                ->bindValue('from_date', date('Y-m-d', strtotime($fromDate)));
+        }
     }
 
     protected function filter__to_date($toDate)
     {
-        $this->select->where('o.date < :to_date')
-            ->bindValue('to_date', date('Y-m-d', strtotime($toDate) + 3600 * 24));
+        if (!empty($toDate)) {
+            $this->select->where('o.date < :to_date')
+                ->bindValue('to_date', date('Y-m-d', strtotime($toDate) + 3600 * 24));
+        }
     }
 
     protected function filter__not_id($ids)
@@ -432,10 +462,5 @@ class OrdersEntity extends Entity
                 "keyword_product_name_{$keyNum}" => '%' . $keyword . '%',
             ]);
         }
-    }
-
-    private function formatPhone($phone)
-    {
-        return preg_replace('/[^0-9]/ui', '', $phone);
     }
 }

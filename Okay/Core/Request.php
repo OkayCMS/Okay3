@@ -165,10 +165,10 @@ class Request
      * @var string $name
      * @var string $type
      * @var string $default
+     * @var bool $stripTags
      * @return mixed
      */
-    /*Прием параметров с массива $_GET*/
-    public function get($name, $type = null, $default = '')
+    public function get($name, $type = null, $default = null, $stripTags = true)
     {
         $val = null;
         if (isset($_GET[$name])) {
@@ -179,12 +179,17 @@ class Request
             $val = reset($val);
         }
 
-        if (empty($val) && (!empty($default) || $default === null)) {
+        if (empty($val) && $default !== null) {
             $val = $default;
         }
 
+        // На входе удаляем html теги
+        if ($stripTags === true && !empty($val)) {
+            $val = $this->recursiveStripTags($val);
+        }
+        
         if ($type == 'string') {
-            return strval(preg_replace('/[^\p{L}\p{Nd}\d\s_\-\.\%\s]/ui', '', $val));
+            return strval(preg_replace('/[^\p{L}\p{Nd}\d\s_\-.%]/ui', '', $val));
         }
         
         if ($type == 'integer' || $type == 'int') {
@@ -200,6 +205,18 @@ class Request
         }
         
         return $val;
+    }
+    
+    private function recursiveStripTags($val)
+    {
+        if (is_array($val) || is_object($val)) {
+            foreach ($val as $k => $v) {
+                $val[$k] = $this->recursiveStripTags($v);
+            }
+            return $val;
+        }
+        
+        return htmlspecialchars(strip_tags($val));
     }
     
     /**
@@ -224,7 +241,7 @@ class Request
         }
 
         if ($type == 'string') {
-            return strval(preg_replace('/[^\p{L}\p{Nd}\d\s_\-\.\%\s]/ui', '', $val));
+            return strval(preg_replace('/[^\p{L}\p{Nd}\d\s_\-.%]/ui', '', $val));
         }
         
         if ($type == 'integer' || $type == 'int') {
@@ -311,7 +328,10 @@ class Request
      * @var array $params
      * @return string
      */
-    public function url($params = []) {
+    public function url($params = [])
+    {
+
+        $query = [];
         $url = @parse_url($_SERVER["REQUEST_URI"]);
         if (!empty($url['query'])) {
             parse_str($url['query'], $query);
@@ -320,22 +340,22 @@ class Request
         foreach($params as $name=>$value) {
             $query[$name] = $value;
         }
+
         
-        $query_is_empty = true;
-        foreach($query as $name=>$value) {
-            if($value!=='' && $value!==null) {
-                $query_is_empty = false;
+        $queryIsEmpty = true;
+        foreach ($query as $name=>$value) {
+            if ($value!=='' && $value!==null) {
+                $queryIsEmpty = false;
             }
         }
         
-        if(!$query_is_empty) {
+        if (!$queryIsEmpty) {
             $url['query'] = http_build_query($query);
         } else {
             $url['query'] = null;
         }
-        
-        $result = http_build_url(null, $url);
-        return $result;
+
+        return http_build_url(null, $url);
     }
     
 }

@@ -65,7 +65,6 @@ class DeliveriesHelper
                 $deliveryPriceInfo = [
                     'delivery_price'    => $delivery->price,
                     'separate_delivery' => $delivery->separate_payment,
-                    'total_price'       => $order->total_price + $delivery->price,
                 ];
             } else {
                 $deliveryPriceInfo = [

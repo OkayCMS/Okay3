@@ -346,10 +346,21 @@ class TemplateConfig
      */
     public function getTheme()
     {
+        // Если тема уже удалена, выключим её для админа
+        if (!empty($this->adminTheme) && !is_dir('design/' . $this->adminTheme . '/html')) {
+            $SL = ServiceLocator::getInstance();
+
+            /** @var Settings $settings */
+            $settings = $SL->getService(Settings::class);
+
+            $settings->set('admin_theme', '');
+            $this->adminTheme = '';
+        }
+        
         $adminTheme = $this->adminTheme;
         $adminThemeManagers = $this->adminThemeManagers;
-        if (!empty($_SESSION['admin']) && !empty($adminTheme) && $this->theme != $this->adminTheme) {
-            if (empty($adminThemeManagers) || in_array($_SESSION['admin'], $this->adminThemeManagers)) {
+        if (!empty($_COOKIE['admin_login']) && !empty($adminTheme) && $this->theme != $this->adminTheme) {
+            if (empty($adminThemeManagers) || in_array($_COOKIE['admin_login'], $this->adminThemeManagers)) {
                 return $this->adminTheme;
             }
         }
@@ -571,7 +582,7 @@ class TemplateConfig
     /**
      * @param string $position head|footer указание куда файл генерится
      * Метод компилирует все зарегистрированные, через метод registerCss(), CSS файлы
-     * Собитаются они в одном общем выходном файле, в кеше
+     * Собираются они в одном общем выходном файле, в кеше
      * Также здесь подставляются значения переменных CSS.
      * @return string|null
      */

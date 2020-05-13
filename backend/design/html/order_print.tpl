@@ -196,7 +196,7 @@
             <td>{$order->name|escape}</td>
         </tr>    
         <tr>
-            <td>{$order->phone|escape}</td>
+            <td>{$order->phone|phone}</td>
         </tr>    
         <tr>
             <td>{$order->email|escape}</td>

@@ -2,32 +2,33 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="heading_page">{$btr->counters_title|escape}
             <i class="fn_tooltips" title="{$btr->tooltip_counters_title|escape}">
                 {include file='svg_icon.tpl' svgId='icon_tooltips'}
             </i>
         </div>
     </div>
-    <div class="col-lg-5 col-md-5 float-xs-right"></div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    {if $message_success == 'saved'}
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_success == 'saved'}
                         {$btr->general_settings_saved|escape}
-                    {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                <a class="alert__button" href="{$smarty.get.return}">
+                    {include file='svg_icon.tpl' svgId='return'}
+                    <span>{$btr->general_back|escape}</span>
+                </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -50,12 +51,16 @@
 
                 <div class="toggle_body_wrap on fn_card">
 
-                    <div class="boxed boxed_attention">
-                        <div class="text_box mt-0">
-                            {$btr->counters_info|escape}
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="alert alert--icon">
+                                <div class="alert__content">
+                                    <div class="alert__title">{$btr->alert_description|escape}</div>
+                                    <p>{$btr->counters_info|escape}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
                     <div class="fn_counters_list">
                         {if $counters}
                             {foreach $counters as $c}
@@ -120,7 +125,7 @@
                                     <div class="col-md-12">
                                         <div class="heading_label">{$btr->counters_counter_position|escape}</div>
                                         <div class="mb-1">
-                                            <select name="counters[position][]" class="selectpicker">
+                                            <select name="counters[position][]" class="selectpicker form-control">
                                                 <option value="head"{if $c->position == 'head'} selected{/if}>{$btr->counters_position_head|escape}</option>
                                                 <option value="body_top"{if $c->position == 'body_top'} selected{/if}>{$btr->counters_position_body_top|escape}</option>
                                                 <option value="body_bottom"{if $c->position == 'body_bottom'} selected{/if}>{$btr->counters_position_body_bottom|escape}</option>

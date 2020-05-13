@@ -9,32 +9,40 @@
             </div>
         </div>
     </div>
-    <div class="col-md-12 col-lg-12 col-sm-12 float-xs-right"></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+        <div class="alert alert--icon alert--info">
+            <div class="alert__content">
+                <div class="alert__title">{$btr->alert_info|escape}</div>
+                <p>{$btr->rozetka_xml_generation_url|escape} <a href="{url_generator route='OkayCMS_Rozetka_feed' absolute=1}" target="_blank">{url_generator route='OkayCMS_Rozetka_feed' absolute=1}</a></p>
+            </div>
+        </div>
+    </div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success}
-    <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    {if $message_success=='added'}
-                        {$btr->discount_added|escape}
-                    {elseif $message_success=='updated'}
-                        {$btr->discount_updated|escape}
-                    {else}
-                        {$message_success|escape}
-                    {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {*{include file='svg_icon.tpl' svgId='return'}*}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="alert alert--center alert--icon alert--success">
+            <div class="alert__content">
+                <div class="alert__title">
+                    {if $message_success == 'saved'}
+                    {$btr->general_settings_saved|escape}
                     {/if}
                 </div>
             </div>
+            {if $smarty.get.return}
+            <a class="alert__button" href="{$smarty.get.return}">
+                {include file='svg_icon.tpl' svgId='return'}
+                <span>{$btr->general_back|escape}</span>
+            </a>
+            {/if}
         </div>
     </div>
+</div>
 {/if}
 
 {*Вывод ошибок*}
@@ -59,47 +67,6 @@
     <input type=hidden name="session_id" value="{$smarty.session.id}">
     <input type="hidden" name="lang_id" value="{$lang_id}" />
 
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="boxed">
-                {*Название элемента сайта*}
-                <div class="row d_flex">
-                    <div class="col-lg-12 col-md-12">
-                        <div class="heading_label">
-                            {$btr->rozetka_xml_generation_url|escape}
-                        </div>
-                        <div class="form-group">
-                            <a href="{url_generator route='OkayCMS_Rozetka_feed' absolute=1}" target="_blank">{url_generator route='OkayCMS_Rozetka_feed' absolute=1}</a>
-                        </div>
-                    </div>
-
-                    <div class="activity_of_switch" style="width: 600px !important;">
-                        <div class="activity_of_switch_item"> {* row block *}
-                            <div class="okay_switch clearfix">
-                                <label class="switch_label">{$btr->upload_non_exists_products_to_rozetka|escape}</label>
-                                <label class="switch switch-default">
-                                    <input class="switch-input" name="upload_non_available" value='1' type="checkbox" id="visible_checkbox" {if $settings->upload_only_available_to_rozetka}checked=""{/if}/>
-                                    <span class="switch-label"></span>
-                                    <span class="switch-handle"></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="activity_of_switch_item"> {* row block *}
-                            <div class="okay_switch clearfix">
-                                <label class="switch_label">{$btr->use_full_description_to_rozetka|escape}</label>
-                                <label class="switch switch-default">
-                                    <input class="switch-input" name="full_description" value="1" type="checkbox" id="featured_checkbox" {if $settings->use_full_description_in_upload_rozetka}checked=""{/if}/>
-                                    <span class="switch-label"></span>
-                                    <span class="switch-handle"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="row">
         <div class="col-lg-12 col-md-12">
@@ -111,20 +78,32 @@
                     </div>
                 </div>
                 <div class="toggle_body_wrap on fn_card">
-                    <div class="row">
-                        <div class="col-md-6 mb-1">
-                            <div class="heading_label">
-                                <strong>{$btr->okaycms__rozetka_xml__products_per_page|escape}</strong>
-                                <i class="fn_tooltips" title="{$btr->okaycms__rozetka_xml__products_per_page_title|escape}">
-                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                                </i>
+                    <div class="permission_block">
+                        <div class="permission_boxes row">
+                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                <div class="permission_box permission_box--long">
+                                    <span class="permission_box__label">{$btr->upload_non_exists_products_to_rozetka|escape}</span>
+                                    <label class="switch switch-default">
+                                        <input class="switch-input" name="upload_non_available" value='1' type="checkbox" id="visible_checkbox" {if $settings->upload_only_available_to_rozetka}checked=""{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                </div>
                             </div>
-                            <div class="mb-1">
-                                <input name="okaycms__rozetka_xml__products_per_page" class="form-control" placeholder="1000" type="text" value="{$settings->okaycms__rozetka_xml__products_per_page}" />
+
+                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                <div class="permission_box permission_box--long">
+                                    <span class="permission_box__label">{$btr->use_full_description_to_rozetka|escape}</span>
+                                    <label class="switch switch-default">
+                                        <input class="switch-input" name="full_description" value="1" type="checkbox" id="featured_checkbox" {if $settings->use_full_description_in_upload_rozetka}checked=""{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
-
+                    
                     <div class="row">
                         <div class="col-lg-12 col-md-12 ">
                             <button type="submit" class="btn btn_small btn_blue float-md-right">

@@ -1,11 +1,6 @@
 {* Title *}
 {$meta_title=$btr->subscribe_mailing_subscribes scope=global}
 
-{if $subscribes_count>0}
-    <div class="row">
-        <progress id="progressbar" class="progress progress-xs progress-info mt-0" style="display: none" value="0" max="100"></progress>
-    </div>
-{/if}
 {*Название страницы*}
 <div class="row">
     <div class="col-lg-12 col-md-12">

@@ -2,7 +2,7 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="heading_page">
             {$btr->import_products|escape}
             <a class="export_block export_users hint-bottom-middle-t-info-s-small-mobile  hint-anim" data-hint="{$btr->general_example|escape}" href="files/import/example.csv" target="_blank">
@@ -18,8 +18,9 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="">
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_error == 'no_permission'}
                         {$btr->general_permissions|escape} {$import_files_dir|escape}
                     {elseif $message_error == 'convert_error'}
@@ -41,6 +42,7 @@
                     {else}
                         {$message_error|escape}
                     {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -49,7 +51,7 @@
 
 {*Главная форма страницы*}
 {if $message_error != 'no_permission'}
-    <form class="form-horizontal mt-1 hidden-xs-down" method="post" enctype="multipart/form-data">
+    <form class="form-horizontal hidden-xs-down" method="post" enctype="multipart/form-data">
         <input type=hidden name="session_id" value="{$smarty.session.id}">
         {if $filename || $import}
             <div class="row">
@@ -189,7 +191,7 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-5 col-md-6 col-sm-12 my-h">
-                                <input name="file" class="import_file" style="padding:0px;" type="file" value="" />
+                                <input name="file" class=" file_upload" style="padding:0px;" type="file" value="" />
                             </div>
                             <div class="col-lg-7 col-md-6 my-h">
                                 <button type="submit" class="btn btn_small btn_blue float-md-right"><i class="fa fa-upload"></i>&nbsp;{$btr->import_to_download|escape}</button>

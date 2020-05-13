@@ -15,6 +15,7 @@ class BackendCategoriesHelper
 
     private $config;
     private $imageCore;
+    /** @var CategoriesEntity */
     private $categoriesEntity;
 
     public function __construct(
@@ -142,5 +143,15 @@ class BackendCategoriesHelper
     {
         $categories = $this->categoriesEntity->find($filter);
         return ExtenderFacade::execute(__METHOD__, $categories, func_get_args());
+    }
+
+    public function duplicateCategories($ids)
+    {
+        foreach($ids as $id) {
+            $category = $this->categoriesEntity->get((int)$id);
+            $this->categoriesEntity->duplicate((int)$id, $category->parent_id);
+        }
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 }

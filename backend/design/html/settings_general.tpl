@@ -2,28 +2,29 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="heading_page">{$btr->settings_general_sites|escape}</div>
     </div>
-    <div class="col-lg-5 col-md-5 text-xs-right float-xs-right"></div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    {if $message_success == 'saved'}
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_success == 'saved'}
                         {$btr->general_settings_saved|escape}
-                    {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                <a class="alert__button" href="{$smarty.get.return}">
+                    {include file='svg_icon.tpl' svgId='return'}
+                    <span>{$btr->general_back|escape}</span>
+                </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -59,6 +60,35 @@
                             <div class="heading_label">{$btr->settings_general_date|escape}</div>
                             <div class="mb-1">
                                 <input name="date_format" class="form-control" type="text" value="{$settings->date_format|escape}" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="heading_label">{$btr->settings_phone_default_region|escape}
+                                <i class="fn_tooltips" title="{$btr->tooltip_settings_phone_default_region|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </div>
+                            <div class="mb-1">
+                                <select name="phone_default_region" class="selectpicker form-control" data-live-search="true">
+                                    {foreach $phone_regions as $phone_region}
+                                        <option value="{$phone_region|escape}" {if $settings->phone_default_region == $phone_region}selected{/if}>{if isset($phone_regions_names[$phone_region])}{$phone_regions_names[$phone_region]|escape} {/if}({$phone_region|escape})</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="heading_label">{$btr->settings_phone_default_format|escape}
+                                <i class="fn_tooltips" title="{$btr->tooltip_settings_phone_default_format|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </div>
+                            <div class="mb-1">
+                                <select name="phone_default_format" class="selectpicker form-control" data-live-search="false">
+                                    <option value="{libphonenumber\PhoneNumberFormat::E164}" {if $settings->phone_default_format == libphonenumber\PhoneNumberFormat::E164}selected{/if}>{$phone_example|phone:libphonenumber\PhoneNumberFormat::E164}</option>
+                                    <option value="{libphonenumber\PhoneNumberFormat::INTERNATIONAL}" {if $settings->phone_default_format == libphonenumber\PhoneNumberFormat::INTERNATIONAL}selected{/if}>{$phone_example|phone:libphonenumber\PhoneNumberFormat::INTERNATIONAL}</option>
+                                    <option value="{libphonenumber\PhoneNumberFormat::NATIONAL}" {if $settings->phone_default_format == libphonenumber\PhoneNumberFormat::NATIONAL}selected{/if}>{$phone_example|phone:libphonenumber\PhoneNumberFormat::NATIONAL}</option>
+                                    <option value="{libphonenumber\PhoneNumberFormat::RFC3966}" {if $settings->phone_default_format == libphonenumber\PhoneNumberFormat::RFC3966}selected{/if}>{$phone_example|phone:libphonenumber\PhoneNumberFormat::RFC3966}</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -104,11 +134,14 @@
                     </div>
                 </div>
                 <div class="toggle_body_wrap on fn_card">
-                    <div class="boxed boxed_attention">
-                        <div class="">
-                            {$btr->settings_capcha_help1|escape} <a class="link_white" target="_blank" rel="nofollow" href="https://www.google.com/recaptcha/admin#list">{$btr->settings_capcha_help2|escape}</a>
+                    <div class="alert alert--icon alert--info">
+                        <div class="alert__content">
+                            <p>
+                            {$btr->settings_capcha_help1|escape} <a class="" target="_blank" rel="nofollow" href="https://www.google.com/recaptcha/admin#list">{$btr->settings_capcha_help2|escape}</a>
+                            </p>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-xl-3 col-lg-4 col-md-6">
                             <div class="heading_label">{$btr->settings_type_capcha|escape}</div>
@@ -310,8 +343,8 @@
                     <div class="permission_block">
                         <div class="permission_boxes row">
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
-                                    <span>{$btr->settings_general_gather_enabled}</span>
+                                <div class="permission_box ">
+                                    <span title="{$btr->settings_general_gather_enabled}">{$btr->settings_general_gather_enabled}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="gather_enabled" value='1' type="checkbox" {if $settings->gather_enabled}checked=""{/if}/>
                                         <span class="switch-label"></span>

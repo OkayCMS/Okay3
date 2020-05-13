@@ -5,6 +5,7 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Core\Money;
 use Okay\Core\Translit;
 use Okay\Core\Image;
@@ -82,19 +83,29 @@ class BrandsEntity extends Entity
             ->bindValue('selected_brands', (array)$brandsIds);
     }
 
-    protected function filter__other_filter($otherFilters)
+    protected function filter__other_filter($filters)
     {
-        $otherFilterArray = [];
-        if (isset($otherFilters['featured'])) {
-            $otherFilterArray[] = 'p.featured=1';
+        if (empty($filters)) {
+            return;
         }
-        
-        if (isset($otherFilters['discounted'])) {
-            $otherFilterArray[] = '(SELECT 1 FROM __variants pv WHERE pv.product_id=p.id AND pv.compare_price>0 LIMIT 1) = 1';
+
+        if ($otherFilter = $this->executeOtherFilter($filters)) {
+            $this->select->where("(" . implode(' OR ', $otherFilter) . ")");
         }
-        if (!empty($otherFilterArray)) {
-            $this->select->where(implode(' OR ', $otherFilterArray));
+    }
+
+    private function executeOtherFilter($filters)
+    {
+        $otherFilter = [];
+        if (in_array("featured", $filters)) {
+            $otherFilter[] = 'p.featured=1';
         }
+
+        if (in_array("discounted", $filters)) {
+            $otherFilter[] = '(SELECT 1 FROM __variants pv WHERE pv.product_id=p.id AND pv.compare_price>0 LIMIT 1) = 1';
+        }
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $otherFilter, func_get_args());
     }
     
     protected function filter__price(array $priceRange)
@@ -206,6 +217,80 @@ class BrandsEntity extends Entity
         $this->db->query($update);
 
         parent::delete($ids);
+    }
+
+    public function duplicate($brandId)
+    {
+        $brand = $this->findOne(['id' => $brandId]);
+
+        //Запоминаем текущую позицию, на нее станет новая запись
+        $position = $brand->position;
+
+        $newBrand = new \stdClass();
+
+        $fields = array_merge($this->getFields(), $this->getLangFields());
+
+        foreach ($fields as $field) {
+            if (property_exists($brand, $field)) {
+                $newBrand->$field = $brand->$field;
+            }
+        }
+
+        $newBrand->id = null;
+        $newBrand->url = '';
+
+        //Добавляем новую запись в бд
+        $newBrandId = $this->add($newBrand);
+
+        // Сдвигаем страницы вперед и вставляем копию на соседнюю позицию
+        $update = $this->queryFactory->newUpdate();
+        $update->table('__brands')
+            ->set('position', 'position+1')
+            ->where('position>=:position')
+            ->bindValue('position', $brand->position);
+        $this->db->query($update);
+
+        $update = $this->queryFactory->newUpdate();
+        $update->table('__brands')
+            ->set('position', ':position')
+            ->where('id=:id')
+            ->bindValues([
+                'position' => $position,
+                'id' => $newBrandId,
+            ]);
+        $this->db->query($update);
+
+        $this->multiDuplicateBrand($brandId, $newBrandId);
+        return $newBrandId;
+    }
+
+    private function multiDuplicateBrand($brandId, $newBrandId) {
+        $langId = $this->lang->getLangId();
+        if (!empty($langId)) {
+
+            /** @var LanguagesEntity $langEntity */
+            $langEntity = $this->entity->get(LanguagesEntity::class);
+
+            $languages = $langEntity->find();
+            $brandLangFields = $this->getLangFields();
+
+            foreach ($languages as $language) {
+                if ($language->id != $langId) {
+                    $this->lang->setLangId($language->id);
+
+                    if (!empty($brandLangFields)) {
+                        $sourceBrand = $this->findOne(['id' => $brandId]);
+                        $destinationBrand = new \stdClass();
+                        foreach($brandLangFields as $field) {
+                            $destinationBrand->{$field} = $sourceBrand->{$field};
+                        }
+                        $this->update($newBrandId, $destinationBrand);
+                    }
+
+                    $this->lang->setLangId($langId);
+                }
+            }
+        }
     }
 
 }

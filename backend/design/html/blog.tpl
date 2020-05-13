@@ -35,7 +35,6 @@
     </div>
 </div>
 
-
 <div class="boxed fn_toggle_wrap">
     <div class="row">
         {*Блок фильтров*}

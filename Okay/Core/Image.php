@@ -169,6 +169,19 @@ class Image
         return ExtenderFacade::execute(__METHOD__, $previewDir . $resizedFile, func_get_args());
     }
 
+    /**
+     * Метод формирует строку, по которой можно будет нарезать изображение
+     * 
+     * @param $filename
+     * @param int $width
+     * @param int $height
+     * @param bool $setWatermark
+     * @param null $resizedDir
+     * @param null $cropPositionX
+     * @param null $cropPositionY
+     * @return mixed|void|null
+     * @throws \Exception
+     */
     public function getResizeModifier(
         $filename,
         $width = 0,

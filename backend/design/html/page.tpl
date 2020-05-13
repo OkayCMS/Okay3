@@ -31,20 +31,22 @@
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_success == 'added'}
                         {$btr->page_added|escape}
                     {elseif $message_success == 'updated'}
                         {$btr->page_updated|escape}
                     {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                    <a class="alert__button" href="{$smarty.get.return}">
+                        {include file='svg_icon.tpl' svgId='return'}
+                        <span>{$btr->general_back|escape}</span>
+                    </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -54,8 +56,9 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_error == 'url_exists'}
                         {$btr->general_exists|escape}
                     {elseif $message_error=='empty_name'}
@@ -67,6 +70,7 @@
                     {else}
                         {$message_error|escape}
                     {/if}
+                    </div>
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@
 namespace Okay\Admin\Requests;
 
 
+use Okay\Core\Phone;
 use Okay\Core\Request;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
@@ -26,7 +27,7 @@ class BackendUsersRequest
         $user->id = $this->request->post('id', 'integer');
         $user->name = $this->request->post('name');
         $user->email = $this->request->post('email');
-        $user->phone = $this->request->post('phone');
+        $user->phone = Phone::toSave($this->request->post('phone'));
         $user->address = $this->request->post('address');
         $user->group_id = $this->request->post('group_id');
 

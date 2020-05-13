@@ -36,6 +36,8 @@ $license->check();
 $modules = $DI->get(Modules::class);
 $modules->startEnabledModules();
 
+$license->registerSmartyPlugins();
+
 $license->bindModulesRoutes();
 
 /** @var BackendTranslations $backendTranslations */

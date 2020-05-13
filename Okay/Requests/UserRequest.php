@@ -5,6 +5,7 @@ namespace Okay\Requests;
 
 
 use Okay\Core\Modules\Extender\ExtenderFacade;
+use Okay\Core\Phone;
 use Okay\Core\Request;
 
 class UserRequest
@@ -18,6 +19,7 @@ class UserRequest
 
     /**
      * @return null|object
+     * @throws \Exception
      */
     public function postRegisterUser()
     {
@@ -26,7 +28,7 @@ class UserRequest
             $user = new \stdClass;
             $user->name     = $this->request->post('name');
             $user->email    = $this->request->post('email');
-            $user->phone    = $this->request->post('phone');
+            $user->phone    = Phone::toSave($this->request->post('phone'));
             $user->address  = $this->request->post('address');
             $user->password = $this->request->post('password');
         }
@@ -36,6 +38,7 @@ class UserRequest
 
     /**
      * @return null|object
+     * @throws \Exception
      */
     public function postProfileUser()
     {
@@ -44,7 +47,7 @@ class UserRequest
             $user = new \stdClass;
             $user->name     = $this->request->post('name');
             $user->email    = $this->request->post('email');
-            $user->phone    = $this->request->post('phone');
+            $user->phone    = Phone::toSave($this->request->post('phone'));
             $user->address  = $this->request->post('address');
         }
 

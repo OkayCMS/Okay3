@@ -152,10 +152,12 @@
                                                             <td class="es-p5t es-p5b" width="180"><span>{$btr->email_order_name|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$comment->name|escape}</span></td>
                                                         </tr>
+                                                        {if $comment->email}
                                                         <tr valign="top">
-                                                            <td class="es-p5t es-p5b" width="180"><span>{$btr->email_order_phone|escape}:</span></td>
+                                                            <td class="es-p5t es-p5b" width="180"><span>{$btr->email_order_email|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$comment->email|escape}</span></td>
                                                         </tr>
+                                                        {/if}
                                                         <tr valign="top">
                                                             <td class="es-p5t es-p5b" width="180"><span>{$btr->email_time|escape}:</span></td>
                                                             <td class="es-p5t es-p5b"><span>{$comment->date|date} {$comment->date|time}</span></td>

@@ -8,6 +8,7 @@ use Okay\Core\FrontTranslations;
 use Okay\Core\Money as MoneyCore;
 use Okay\Core\Design;
 use Okay\Core\EntityFactory;
+use Okay\Core\Request;
 use Okay\Core\ServiceLocator;
 use Okay\Core\Settings;
 use Okay\Entities\TranslationsEntity;
@@ -20,16 +21,18 @@ class CatalogHelper
     private $money;
     private $entityFactory;
     private $settings;
+    private $request;
     private $otherFilters = [
         'discounted',
         'featured',
     ];
 
-    public function __construct(EntityFactory $entityFactory, MoneyCore $money, Settings $settings)
+    public function __construct(EntityFactory $entityFactory, MoneyCore $money, Settings $settings, Request $request)
     {
         $this->entityFactory = $entityFactory;
         $this->money = $money;
         $this->settings = $settings;
+        $this->request = $request;
     }
     
     public function getPriceFilter($catalogType, $objectId = null)
@@ -38,8 +41,8 @@ class CatalogHelper
         $priceFilter = $this->getPriceFromStorage($catalogType, $objectId);
         
         $currentPrices = [];
-        if (isset($_GET['p'])) {
-            $currentPrices = $_GET['p']; //todo принимать через Request
+        if ($this->request->get('p')) {
+            $currentPrices = $this->request->get('p');
             if (isset($currentPrices['min'])) {
                 $currentPrices['min'] = $this->money->convert($currentPrices['min'], null, false, true);
             }
@@ -68,8 +71,8 @@ class CatalogHelper
         $priceFilter = $this->getPriceFromStorage($catalogType, $objectId);
 
         $prices = [];
-        if (isset($_GET['p'])) {
-            $prices['current'] = $_GET['p']; //todo принимать через Request
+        if ($this->request->get('p')) {
+            $prices['current'] = $this->request->get('p');
 
             if (isset($prices['current']['min'])) {
                 $prices['current']['min'] = $this->money->convert($prices['current']['min'], null, false, true);

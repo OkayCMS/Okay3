@@ -142,15 +142,17 @@ class ExportOrders extends AbstractExport
                             $name .= " $purchase->variant_name $id";
                         }
                         $t1_2 = $t1_1->addChild("Наименование", $name);
-                        $t1_2 = $t1_1->addChild("ЦенаЗаЕдиницу", $purchase->price * (100 - $order->discount) / 100);
+                        $t1_2 = $t1_1->addChild("ЦенаЗаЕдиницу", round($purchase->price * (100 - $order->discount) / 100, 2));
                         $t1_2 = $t1_1->addChild("Количество", $purchase->amount);
-                        $t1_2 = $t1_1->addChild("Сумма", $purchase->amount * $purchase->price * (100 - $order->discount) / 100);
+                        $t1_2 = $t1_1->addChild("Сумма", round($purchase->amount * $purchase->price * (100 - $order->discount) / 100, 2));
 
 
-                        $t1_2 = $t1_1->addChild("Скидки");
-                        $t1_3 = $t1_2->addChild("Скидка");
-                        $t1_4 = $t1_3->addChild("Сумма", $purchase->amount * $purchase->price * (100 - $order->discount) / 100);
-                        $t1_4 = $t1_3->addChild("УчтеноВСумме", "false");
+                        if ($order->discount > 0) {
+                            $t1_2 = $t1_1->addChild("Скидки");
+                            $t1_3 = $t1_2->addChild("Скидка");
+                            $t1_4 = $t1_3->addChild("Сумма", round(($purchase->amount * $purchase->price) - ($purchase->amount * $purchase->price * (100 - $order->discount) / 100), 2));
+                            $t1_4 = $t1_3->addChild("УчтеноВСумме", "true");
+                        }
 
 
                         $t1_2 = $t1_1->addChild("ЗначенияРеквизитов");

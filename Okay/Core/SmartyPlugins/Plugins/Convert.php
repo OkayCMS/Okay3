@@ -20,8 +20,8 @@ class Convert extends Modifier
         $this->money = $money;
     }
 
-    public function run($price, $currency_id = null, $format = true)
+    public function run($price, $currency_id = null, $format = true, $revers = false)
     {
-        return $this->money->convert($price, $currency_id, $format);
+        return $this->money->convert($price, $currency_id, $format, $revers);
     }
 }

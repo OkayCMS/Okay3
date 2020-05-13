@@ -132,21 +132,21 @@
 
     {* The canonical address of the page *}
     {if isset($canonical)}
-        <link rel="canonical" href="{$canonical}">
+        <link rel="canonical" href="{$canonical|escape}">
     {elseif $sort}
-        <link rel="canonical" href="{$sort_canonical}">
+        <link rel="canonical" href="{$sort_canonical|escape}">
     {/if}
 
     {* Language attribute *}
     {foreach $languages as $l}
         {if $l->enabled}
-            <link rel="alternate" hreflang="{$l->href_lang}" href="{$l->url}">
+            <link rel="alternate" hreflang="{$l->href_lang}" href="{$l->url|escape}">
         {/if}
     {/foreach}
 
     {if $settings->captcha_type == "v3"}
         <script>ut_tracker.start('render:recaptcha');</script>
-        <script src="https://www.google.com/recaptcha/api.js?render={$settings->public_recaptcha_v3}"></script>
+        <script src="https://www.google.com/recaptcha/api.js?render={$settings->public_recaptcha_v3|escape}"></script>
         <script>
             grecaptcha.ready(function () {
                 {if $controller == 'ProductController' || $controller == 'BlogController'}
@@ -158,7 +158,7 @@
                 {/if}
 
                 var all_captchеs = document.getElementsByClassName('fn_recaptchav3');
-                grecaptcha.execute('{$settings->public_recaptcha_v3}', { action: recaptcha_action })
+                grecaptcha.execute('{$settings->public_recaptcha_v3|escape}', { action: recaptcha_action })
                     .then(function (token) {
                         for (capture of all_captchеs) {
                             capture.value = token;
@@ -171,7 +171,7 @@
         <script>ut_tracker.start('render:recaptcha');</script>
         <script type="text/javascript">
             var onloadCallback = function() {
-                mysitekey = "{$settings->public_recaptcha}";
+                mysitekey = "{$settings->public_recaptcha|escape}";
                 if($('#recaptcha1').length>0){
                     grecaptcha.render('recaptcha1', {
                         'sitekey' : mysitekey
@@ -206,8 +206,8 @@
     <link rel="search" type="application/opensearchdescription+xml" title="{$rootUrl} Search" href="{url_generator route="opensearch" absolute=1}" />
 
     {* Favicon *}
-    <link href="{$rootUrl}/{$config->design_images}{$settings->site_favicon}?v={$settings->site_favicon_version}" type="image/x-icon" rel="icon">
-    <link href="{$rootUrl}/{$config->design_images}{$settings->site_favicon}?v={$settings->site_favicon_version}" type="image/x-icon" rel="shortcut icon">
+    <link href="{$rootUrl}/{$config->design_images|escape}{$settings->site_favicon|escape}?v={$settings->site_favicon_version|escape}" type="image/x-icon" rel="icon">
+    <link href="{$rootUrl}/{$config->design_images|escape}{$settings->site_favicon|escape}?v={$settings->site_favicon_version|escape}" type="image/x-icon" rel="shortcut icon">
 
     {*<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap&subset=cyrillic" rel="stylesheet">
     <link href="https://cdn.materialdesignicons.com/3.8.95/css/materialdesignicons.min.css" rel="stylesheet">*}

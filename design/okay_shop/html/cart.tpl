@@ -46,7 +46,7 @@
                                                 <div class="purchase_detail__name" data-language="cart_discount">{$lang->cart_discount}:</div>
                                             </div>
                                             <div class="purchase_detail__column_value">
-                                                <div class="purchase_detail__price">{$user->discount}%</div>
+                                                <div class="purchase_detail__price">{$user->discount|escape}%</div>
                                             </div>
                                         </div>
                                     {/if}
@@ -114,15 +114,14 @@
                                             <div class="message_error">
                                                 {if $error == 'empty_name'}
                                                     <span data-language="form_enter_name">{$lang->form_enter_name}</span>
-                                                {/if}
-                                                {if $error == 'empty_email'}
+                                                {elseif $error == 'empty_email'}
                                                     <span data-language="form_enter_email">{$lang->form_enter_email}</span>
-                                                {/if}
-                                                {if $error == 'captcha'}
+                                                {elseif $error == 'captcha'}
                                                     <span data-language="form_error_captcha">{$lang->form_error_captcha}</span>
-                                                {/if}
-                                                {if $error == 'empty_phone'}
-                                                    <span data-language="form_error_phone">{$lang->form_error_phone}</span>
+                                                {elseif $error == 'empty_phone'}
+                                                    <span data-language="form_error_phone">{$lang->form_error_phone} {$lang->form_error_phone_example} {$phone_example}</span>
+                                                {else}
+                                                    <span>{$error|escape}</span>
                                                 {/if}
                                             </div>
                                         {/if}

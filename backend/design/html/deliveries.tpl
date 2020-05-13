@@ -134,7 +134,7 @@
                             <label class="okay_ckeckbox" for="check_all_2"></label>
                         </div>
                         <div class="okay_list_option">
-                            <select name="action" class="selectpicker">
+                            <select name="action" class="selectpicker form-control">
                                 <option value="enable">{$btr->general_do_enable|escape}</option>
                                 <option value="disable">{$btr->general_do_disable|escape}</option>
                                 <option value="delete">{$btr->general_delete|escape}</option>

@@ -211,6 +211,13 @@ header{
     border-radius: 4px;
     height: 45px;
 }
+.header-contact__inner--adress{
+    padding: 10px 15px 0;
+    height: 45px;
+}
+.header-contact__inner--adress .header-contact__item--visible::after {
+    content: none!important;
+}
 .header-contact__item{
     position: relative;
     opacity: 0;
@@ -1386,8 +1393,11 @@ b.filter__catalog_link.selected{
     font-size: 26px;
     line-height: 1;
 }
+.product_preview__center .wishlist_button::before{
+    content: "\f08a"!important;
+}
 .product_preview__center .wishlist_button.selected::before{
-    content: "\f004";
+    content: "\f004"!important;
 }
 .product_preview__center .wishlist_button__remove::before{
     color: #b10707 !important;
@@ -2850,6 +2860,7 @@ footer {
 }
 .delivery__image img{display: block;margin: 0 auto;}
 .delivery__name{
+    display: block;
 	-webkit-box-flex: 0;
 	-webkit-flex: 0 0 calc(100% - 80px);
 	-ms-flex: 0 0 calc(100% - 80px);

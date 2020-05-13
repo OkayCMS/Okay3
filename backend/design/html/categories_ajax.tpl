@@ -58,6 +58,11 @@
                     <a href="{url_generator route="category" url=$category->url absolute=1}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
                         {include file='svg_icon.tpl' svgId='icon_desktop'}
                     </a>
+                    {*copy*}
+                    <button data-hint="{$btr->categories_dublicate|escape}" type="button" class="setting_icon setting_icon_copy fn_copy hint-bottom-middle-t-info-s-small-mobile  hint-anim">
+                        {include file='svg_icon.tpl' svgId='icon_copy'}
+                    </button>
+
                     {get_design_block block="categories_actions"}
                 </div>
                 <div class="okay_list_boding okay_list_close">
@@ -68,7 +73,7 @@
                 </div>
             </div>
             {if $category->subcategories}
-                <div class="fn_ajax_categories categories_sub_block {if $level == 1}subcategories_level_1{else}subcategories_level_2{/if}">
+                <div class="fn_ajax_categories categories_sub_block sortable {if $level == 1}subcategories_level_1{else}subcategories_level_2{/if}">
                     {if $isAllCategories || (!empty($smarty.get.category_id) && in_array($smarty.get.category_id, $category->children))}
                         {include file="categories_ajax.tpl" categories=$category->subcategories level=$level+1}
                     {/if}

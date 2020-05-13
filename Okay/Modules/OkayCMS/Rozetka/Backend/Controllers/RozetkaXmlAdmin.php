@@ -46,8 +46,6 @@ class RozetkaXmlAdmin extends IndexAdmin
                 $update->table(BrandsEntity::getTable())->set('to_rozetka', 0)
             );
         } elseif ($this->request->method('post')) {
-
-            $this->settings->set('okaycms__rozetka_xml__products_per_page', $this->request->post('okaycms__rozetka_xml__products_per_page'));
             
             $categoriesToXml   = $this->request->post('categories');
             $brandsToXml       = $this->request->post('brands');

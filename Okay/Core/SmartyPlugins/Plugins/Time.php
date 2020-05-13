@@ -10,6 +10,10 @@ class Time extends Modifier
 {
     public function run($date, $format = null)
     {
-        return date(empty($format)?'H:i':$format, strtotime($date));
+        if (!$time = strtotime($date)) {
+            $time = $date;
+        }
+        
+        return date(empty($format)?'H:i':$format, $time);
     }
 }

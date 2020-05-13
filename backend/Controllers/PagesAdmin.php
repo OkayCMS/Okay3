@@ -38,6 +38,10 @@ class PagesAdmin extends IndexAdmin
                         }
                         break;
                     }
+                    case 'duplicate': {
+                        $backendPagesHelper->duplicate($ids);
+                        break;
+                    }
                 }
             }
         }

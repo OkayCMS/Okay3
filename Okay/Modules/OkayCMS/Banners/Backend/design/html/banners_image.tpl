@@ -16,29 +16,30 @@
             </div>
         </div>
     </div>
-    <div class="col-md-12 col-lg-12 col-sm-12 float-xs-right"></div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    {if $message_success=='added'}
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_success=='added'}
                         {$btr->banners_image_added|escape}
-                    {elseif $message_success=='updated'}
+                        {elseif $message_success=='updated'}
                         {$btr->banners_image_updated|escape}
-                    {else}
+                        {else}
                         {$message_success|escape}
-                    {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                <a class="alert__button" href="{$smarty.get.return}">
+                    {include file='svg_icon.tpl' svgId='return'}
+                    <span>{$btr->general_back|escape}</span>
+                </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -85,11 +86,12 @@
                                         {include file='svg_icon.tpl' svgId='icon_tooltips'}
                                     </i>
                                 </div>
-                                <div class="input-group input-group--left">
+                                <div class="form-group">
                                     <input name="url" class="form-control" type="text" value="{$banners_image->url|escape}" />
                                 </div>
                             </div>
                         </div>
+                        {get_design_block block="banner_image_brand_general"}
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
@@ -103,6 +105,7 @@
                                     </label>
                                 </div>
                             </div>
+                            {get_design_block block="banner_image_switch_checkboxes"}
                         </div>
                     </div>
                 </div>
@@ -125,12 +128,14 @@
                             <a href="javascript:;" class="fn_delete_banner remove_image"></a>
                             <img class="admin_banner_images" src="{$banners_image->image|resize:465:265:false:$config->resized_banners_images_dir}" alt="" />
                         {/if}
+                        {get_design_block block="banner_image_image"}
                     </div>
                     <div class="fn_upload_image dropzone_block_image text-xs-center {if $banners_image->image} hidden{/if}">
                         <i class="fa fa-plus font-5xl" aria-hidden="true"></i>
                         <input class="dropzone_banner" name="image" type="file" />
                     </div>
                 </div>
+                {get_design_block block="banner_image_image_block"}
             </div>
         </div>
         <div class="col-md-12 col-lg-4 pr-0">
@@ -141,7 +146,7 @@
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>
                 </div>
-                <div class="">
+                <div class="banner_type">
                     <div class="banner_type__item">
                         <input id="banner-type_1" class="hidden_check" name="settings[variant_show]" type="radio" {if isset($banners_image->settings.variant_show) && $banners_image->settings.variant_show == Okay\Modules\OkayCMS\Banners\Entities\BannersImagesEntity::SHOW_DEFAULT || empty($banners_image->settings.variant_show)}checked{/if} value="{Okay\Modules\OkayCMS\Banners\Entities\BannersImagesEntity::SHOW_DEFAULT}" />
                         <label for="banner-type_1" class="okay_ckeckbox">
@@ -253,9 +258,18 @@
                         </div>
                     </div>
                 </div>
+                {get_design_block block="banner_image_meta"}
             </div>
         </div>
     </div>
+
+    {$block = {get_design_block block="banner_image_custom_block"}}
+    {if !empty($block)}
+        <div class="row custom_block">
+            {$block}
+        </div>
+    {/if}
+
     <div class="row">
        <div class="col-lg-12 col-md-12 ">
             <button type="submit" class="btn btn_small btn_blue float-md-right">

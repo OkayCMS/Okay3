@@ -18,34 +18,34 @@
             {if $call_error}
             <div class="message_error">
                 {if $call_error=='captcha'}
-                <span data-language="form_error_captcha">{$lang->form_error_captcha}</span>
+                    <span data-language="form_error_captcha">{$lang->form_error_captcha}</span>
                 {elseif $call_error=='empty_name'}
-                <span data-language="form_enter_name">{$lang->form_enter_name}</span>
+                    <span data-language="form_enter_name">{$lang->form_enter_name}</span>
                 {elseif $call_error=='empty_phone'}
-                <span data-language="form_enter_phone">{$lang->form_enter_phone}</span>
+                    <span data-language="form_enter_phone">{$lang->form_enter_phone}</span>
                 {elseif $call_error=='empty_comment'}
-                <span data-language="form_enter_comment">{$lang->form_enter_comment}</span>
+                    <span data-language="form_enter_comment">{$lang->form_enter_comment}</span>
                 {else}
-                <span>{$call_error}</span>
+                    <span>{$call_error|escape}</span>
                 {/if}
             </div>
             {/if}
 
             {* User's name *}
             <div class="form__group">
-                <input class="form__input form__placeholder--focus" type="text" name="name" value="{if $callback_name}{$callback_name|escape}{elseif $user->name}{$user->name|escape}{/if}" data-language="form_name">
+                <input class="form__input form__placeholder--focus" type="text" name="callback_name" value="{if $request_data.callback_name}{$request_data.callback_name|escape}{elseif $user->name}{$user->name|escape}{/if}" data-language="form_name">
                 <span class="form__placeholder">{$lang->form_name}*</span>
             </div>
 
             {* User's phone *}
             <div class="form__group">
-                <input class="form__input form__placeholder--focus" type="text" name="phone" value="{if $callback_phone}{$callback_phone|escape}{elseif $user->phone}{$user->phone|escape}{/if}" data-language="form_phone">
+                <input class="form__input form__placeholder--focus" type="text" name="callback_phone" value="{if $request_data.callback_phone}{$request_data.callback_phone|escape}{elseif $user->phone}{$user->phone|phone}{/if}" data-language="form_phone">
                 <span class="form__placeholder">{$lang->form_phone}*</span>
             </div>
 
             {* User's message *}
             <div class="form__group">
-                <textarea class="form__textarea form__placeholder--focus" rows="3" name="message" data-language="form_enter_message">{if $callback_message}{$callback_message|escape}{/if}</textarea>
+                <textarea class="form__textarea form__placeholder--focus" rows="3" name="callback_message" data-language="form_enter_message">{$request_data.callback_message|escape}</textarea>
                 <span class="form__placeholder">{$lang->form_enter_message}</span>
             </div>
         </div>

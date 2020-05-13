@@ -3,7 +3,7 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->languages_site|escape}
@@ -15,6 +15,14 @@
                 </a>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="alert alert--icon alert--warning">
+    <div class="alert__content">
+        <div class="alert__title">{$btr->alert_warning|escape}</div>
+        <p>{$btr->languages_alert_text1}</p>
+        <p>{$btr->languages_alert_text2}</p>
     </div>
 </div>
 

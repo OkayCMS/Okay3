@@ -23,6 +23,7 @@ use Okay\Helpers\BlogHelper;
 use Okay\Helpers\BrandsHelper;
 use Okay\Helpers\FilterHelper;
 use Okay\Helpers\ProductsHelper;
+use Okay\Core\Phone as PhoneCore;
 
 $DI = include 'Okay/Core/config/container.php';
 
@@ -76,6 +77,12 @@ $plugins = [
         'class' => Plugins\Convert::class,
         'arguments' => [
             new SR(Money::class),
+        ],
+    ],
+    Plugins\Phone::class => [
+        'class' => Plugins\Phone::class,
+        'arguments' => [
+            new SR(PhoneCore::class),
         ],
     ],
     Plugins\Resize::class => [

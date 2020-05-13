@@ -47,6 +47,8 @@ try {
 
     if (isset($_GET['logout'])) {
         unset($_SESSION['admin']);
+        setcookie('admin_login', '', time()-100, '/');
+        
         $response->redirectTo($request->getRootUrl());
     }
 

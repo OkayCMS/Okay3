@@ -102,7 +102,7 @@
                                                 {$callback->name|escape}
                                             </div>
                                             <div class="okay_list_text_inline mb-h">
-                                                <span class="text_grey text_bold">{$btr->general_phone|escape} </span>{$callback->phone|escape}
+                                                <span class="text_grey text_bold">{$btr->general_phone|escape} </span>{$callback->phone|phone}
                                             </div>
                                             <div class="mb-h">
                                                 <span class="text_grey text_bold">{$btr->general_message|escape} </span>
@@ -127,7 +127,7 @@
                                                     <a href="javascript:;" class="fn_an_edit">{$btr->callbacks_edit|escape}</a>
                                                 </div>
                                                 <div class="fn_an_edit_block hidden">
-                                                    <textarea class="fn_ajax_element" name="admin_notes">{$callback->admin_notes|escape|nl2br}</textarea>
+                                                    <textarea class="fn_ajax_element form-control okay_textarea okay_textarea--small mt-h mb-h" name="admin_notes">{$callback->admin_notes|escape|nl2br}</textarea>
                                                     <p><a href="javascript:;" class="fn_an_save">{$btr->general_apply|escape}</a></p>
                                                 </div>
                                             </div>
@@ -192,20 +192,23 @@
         </div>
     {/if}
 </div>
-<script>
-    $(function() {
-        $(document).on('click', '.fn_an_edit', function() {
-            var block = $(this).closest('.fn_ajax_block');
-            block.find('.fn_an_edit_block').removeClass("hidden");
-            $(this).addClass("hidden");
-        });
-        $(document).on('click', '.fn_an_save', function() {
-            var block = $(this).closest('.fn_ajax_block');
-            block.find('.fn_an_text').text(block.find('[name="admin_notes"]').val());
-            ajax_action(block);
 
-            block.find('.fn_an_edit_block').addClass("hidden");
-            block.find('.fn_an_edit').removeClass("hidden");
+{literal}
+    <script>
+        $(function() {
+            $(document).on('click', '.fn_an_edit', function() {
+                var block = $(this).closest('.fn_ajax_block');
+                block.find('.fn_an_edit_block').removeClass("hidden");
+                $(this).addClass("hidden");
+            });
+            $(document).on('click', '.fn_an_save', function() {
+                var block = $(this).closest('.fn_ajax_block');
+                block.find('.fn_an_text').text(block.find('[name="admin_notes"]').val());
+                ajax_action(block);
+
+                block.find('.fn_an_edit_block').addClass("hidden");
+                block.find('.fn_an_edit').removeClass("hidden");
+            });
         });
-    });
-</script>
+    </script>
+{/literal}

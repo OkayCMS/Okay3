@@ -1,10 +1,11 @@
 <?php
 $version = "9.14.0";
-if(!empty($_SERVER['HTTP_USER_AGENT'])){
-    session_name(md5($_SERVER['HTTP_USER_AGENT']));
+if (session_status() === PHP_SESSION_NONE) {
+    if (!empty($_SERVER['HTTP_USER_AGENT'])) {
+        session_name(md5($_SERVER['HTTP_USER_AGENT']));
+    }
+    session_start();
 }
-session_start();
-
 mb_internal_encoding('UTF-8');
 mb_http_output('UTF-8');
 mb_http_input('UTF-8');
@@ -119,7 +120,7 @@ $config = array(
     | If you want to be forced to assign the extension starting from the mime type
     |
     */
-    'mime_extension_rename'	=> true,
+    'mime_extension_rename'	=> false,
 
 
     /*

@@ -15,7 +15,9 @@ use Okay\Entities\VariantsEntity;
 use Okay\Helpers\CartHelper;
 use Okay\Helpers\DeliveriesHelper;
 use Okay\Helpers\OrdersHelper;
+use Okay\Modules\OkayCMS\NovaposhtaCost\Entities\NPCitiesEntity;
 use Okay\Modules\OkayCMS\NovaposhtaCost\Entities\NPCostDeliveryDataEntity;
+use Okay\Modules\OkayCMS\NovaposhtaCost\Entities\NPWarehousesEntity;
 use Okay\Modules\OkayCMS\NovaposhtaCost\Extenders\BackendExtender;
 use Okay\Modules\OkayCMS\NovaposhtaCost\Extenders\FrontExtender;
 
@@ -37,9 +39,21 @@ class Init extends AbstractInit
             (new EntityField('delivery_term'))->setTypeVarchar(8, true),
             (new EntityField('redelivery'))->setTypeTinyInt(1, true),
         ]);
+        
+        $this->migrateEntityTable(NPCitiesEntity::class, [
+            (new EntityField('id'))->setIndexPrimaryKey()->setTypeInt(11, false)->setAutoIncrement(),
+            (new EntityField('ref'))->setTypeVarchar(255)->setIndex(),
+            (new EntityField('name'))->setTypeVarchar(255, true)->setIsLang()->setIndex(100),
+        ]);
+        
+        $this->migrateEntityTable(NPWarehousesEntity::class, [
+            (new EntityField('id'))->setIndexPrimaryKey()->setTypeInt(11, false)->setAutoIncrement(),
+            (new EntityField('ref'))->setTypeVarchar(255),
+            (new EntityField('city_ref'))->setTypeVarchar(255)->setIndex(),
+            (new EntityField('name'))->setTypeVarchar(255, true)->setIsLang()->setIndex(100),
+        ]);
 
         $this->migrateEntityField(VariantsEntity::class, (new EntityField(self::VOLUME_FIELD))->setTypeDecimal('10,5'));
-
         $this->migrateEntityField(PaymentsEntity::class, (new EntityField(self::CASH_ON_DELIVERY))->setTypeTinyInt(1));
     }
 

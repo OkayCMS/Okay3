@@ -144,7 +144,7 @@ class CategoryMetadataHelper extends CommonMetadataHelper
         /** @var FilterHelper $filterHelper */
         $filterHelper = $this->SL->getService(FilterHelper::class);
         if ($filterHelper->isSetCanonical() === true) {
-            return null;
+            return ExtenderFacade::execute(__METHOD__, null, func_get_args());
         }
         
         if (empty($this->autoMeta)) {
@@ -184,7 +184,7 @@ class CategoryMetadataHelper extends CommonMetadataHelper
             $this->autoMeta = (object)$autoMeta;
         }
 
-        return $this->autoMeta;
+        return ExtenderFacade::execute(__METHOD__, $this->autoMeta, func_get_args());
     }
     
     /**

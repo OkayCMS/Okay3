@@ -140,7 +140,7 @@
                                                         {if $order->phone}
                                                         <tr valign="top">
                                                             <td class="es-p5t es-p5b" width="180px"><span>{$lang->email_order_phone|escape}:</span></td>
-                                                            <td class="es-p5t es-p5b"><span>{$order->phone|escape}</span></td>
+                                                            <td class="es-p5t es-p5b"><span>{$order->phone|phone}</span></td>
                                                         </tr>
                                                         {/if}
                                                         {if $order->address}

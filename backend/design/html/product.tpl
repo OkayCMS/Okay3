@@ -25,15 +25,15 @@
             {/if}
         </div>
     </div>
-    <div class="col-md-12 col-lg-12 col-sm-12 float-xs-right"></div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_success=='added'}
                         {$btr->product_added|escape}
                     {elseif $message_success=='updated'}
@@ -41,13 +41,14 @@
                     {else}
                         {$message_success|escape}
                     {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                    <a class="alert__button" href="{$smarty.get.return}">
+                        {include file='svg_icon.tpl' svgId='return'}
+                        <span>{$btr->general_back|escape}</span>
+                    </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -57,8 +58,9 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_error=='url_exists'}
                         {$btr->product_exists|escape}
                     {elseif $message_error=='global_url_exists'}
@@ -78,6 +80,7 @@
                     {else}
                         {$message_error|escape}
                     {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -88,7 +91,6 @@
 <form method="post" id="product" enctype="multipart/form-data" class="clearfix fn_fast_button">
     <input type=hidden name="session_id" value="{$smarty.session.id}">
     <input type="hidden" name="lang_id" value="{$lang_id}" />
-
     <div class="row">
         <div class="col-xs-12">
             <div class="boxed">
@@ -420,7 +422,6 @@
                                         </button>
                                     </div>
                                 </div>
-
 
                                 {$block = {get_design_block block="product_variant"}}
                                 {if !empty($block)}
@@ -758,7 +759,7 @@
 
     {$block = {get_design_block block="product_custom_block"}}
     {if !empty($block)}
-        <div class="custom_block">
+        <div class="row custom_block">
             {$block}
         </div>
     {/if}

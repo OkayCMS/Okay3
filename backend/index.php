@@ -101,6 +101,8 @@ $license->check();
 // Запускаем все модули
 $modules->startAllModules();
 
+$license->registerSmartyPlugins();
+
 $license->bindModulesRoutes();
 
 $smartyPlugins = include_once 'Okay/Core/SmartyPlugins/SmartyPlugins.php';

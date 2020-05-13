@@ -7,6 +7,7 @@ namespace Okay\Controllers;
 use Okay\Core\Image;
 use Okay\Core\Money;
 use Okay\Core\Request;
+use Okay\Core\Response;
 use Okay\Core\Router;
 use Okay\Entities\ProductsEntity;
 use Okay\Helpers\CatalogHelper;
@@ -117,7 +118,7 @@ class ProductsController extends AbstractController
                 $keyword = $this->request->get('keyword');
                 $filter = $filterHelper->getSearchProductsFilter($filter, $keyword);
                 if (!empty($keyword)) {
-                    $this->design->assign('keyword', htmlspecialchars(strip_tags($keyword)));
+                    $this->design->assign('keyword', $keyword);
                 }
                 break;
         }
@@ -135,6 +136,15 @@ class ProductsController extends AbstractController
 
         // Товары
         $products = $productsHelper->getList($filter, $sortProducts);
+        
+        // Если нашелся только один товар, перенаправим сразу на него
+        if (!empty($filter['keyword']) && count($products) == 1) {
+            $product = reset($products);
+            Response::redirectTo(Router::generateUrl('product', [
+                'url' => $product->url,
+            ], true));
+        }
+        
         $this->design->assign('products', $products);
 
         if ($this->request->get('ajax','boolean')) {

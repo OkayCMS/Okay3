@@ -3,7 +3,7 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->payment_methods_methods|escape}
@@ -27,7 +27,7 @@
         </div>
     {/if}
     {if $payment_methods}
-        <form class="fn_form_list" method="post">
+        <form class="fn_form_list" method="post" enctype="multipart/form-data">
             <div class="okay_list products_list fn_sort_list">
                 <input type="hidden" name="session_id" value="{$smarty.session.id}">
                 {*Шапка таблицы*}

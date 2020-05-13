@@ -62,8 +62,15 @@ class FeaturesAdmin extends IndexAdmin
 
         $featuresCount  = $backendFeaturesHelper->count($filter);
         $pagesCount     = $backendFeaturesHelper->countPages($filter);
+
+        if ($this->request->get('page') == 'all') {
+            $filter['limit'] = $featuresCount;
+            $filter['page'] = $this->request->get('page');
+        } else {
+            $filter['page'] = min($filter['page'], $pagesCount);
+        }
+        
         $features       = $backendFeaturesHelper->findFeatures($filter, 'position_desc');
-        $filter['page'] = min($filter['page'], $pagesCount);
 
         $this->design->assign('features_count',  $featuresCount);
         $this->design->assign('pages_count',     $pagesCount);

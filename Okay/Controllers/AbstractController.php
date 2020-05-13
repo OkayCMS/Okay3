@@ -47,9 +47,6 @@ class AbstractController
     /** @var Config */
     protected $config;
 
-    /** @var Languages */
-    protected $languages;
-
     /** @var TemplateConfig */
     protected $templateConfig;
 
@@ -73,6 +70,8 @@ class AbstractController
     
     private $metadataHelper;
 
+    protected $languages;
+
     protected function setMetadataHelper(MetadataInterface $metadataHelper)
     {
         $this->metadataHelper = $metadataHelper;
@@ -89,7 +88,6 @@ class AbstractController
         Response $response,
         Settings $settings,
         Config $config,
-        Languages $languages,
         EntityFactory $entityFactory,
         Router $router,
         Cart $cart,
@@ -103,7 +101,6 @@ class AbstractController
         $this->response     = $response;
         $this->settings     = $settings;
         $this->config       = $config;
-        $this->languages    = $languages;
         $this->router       = $router;
         $this->entityFactory  = $entityFactory;
         $this->cart           = $cart;

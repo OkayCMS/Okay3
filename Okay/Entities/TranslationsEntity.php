@@ -216,7 +216,7 @@ class TranslationsEntity extends Entity
         foreach ($this->languages->find() as $l) {
             $this->initOneTranslation($l->label, $template_only);
         }
-        return $this->vars;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->vars, func_get_args());
     }
 
     private function initOneTranslation($label = "", $template_only = false, $force = false) 
@@ -230,54 +230,69 @@ class TranslationsEntity extends Entity
         }
         
         if (!isset($this->vars[$label])) {
-            $file = __DIR__ . '/../../design/' . $this->templateConfig->getTheme() . '/lang/' . $label . '.php';
-            if (file_exists($file)) {
+            
+            $langFile = $this->getReadLangFile($label, $this->templateConfig->getTheme());
+            
+            if (file_exists($langFile)) {
                 $lang = array();
                 if ($force === false) {
-                    require_once $file;
+                    require_once $langFile;
                 } else {
-                    require $file;
+                    require $langFile;
                 }
                 
                 // Подключаем файл переводов по умолчанию, но с возможностью переопределить в самом шаблоне
                 if ($template_only === false) {
-                    $file_lang_general = __DIR__ . '/../lang_general/' . $label . '.php';
-                    if (file_exists($file_lang_general)) {
+                    $fileLangGeneral = __DIR__ . '/../lang_general/' . $label . '.php';
+                    if (file_exists($fileLangGeneral)) {
                         $lang_general = array();
                         if ($force === false) {
-                            require_once $file_lang_general;
+                            require_once $fileLangGeneral;
                         } else {
-                            require $file_lang_general;
+                            require $fileLangGeneral;
                         }
                         $lang = $lang + $lang_general;
                     }
                 }
 
-                $this->vars[$label] = $lang;
+                $this->vars[$label] = ExtenderFacade::execute([static::class, __FUNCTION__], $lang, func_get_args());
             } else {
-                $this->vars[$label] = [];
+                $this->vars[$label] = ExtenderFacade::execute([static::class, __FUNCTION__], [], func_get_args());
             }
         }
 
-        return $this->vars[$label];
+        return $this->vars[$label];// no ExtenderFacade
     }
 
     private function writeTranslations($langLabel, $translations)
     {
         if (empty($langLabel)) {
-            return;
+            return false;
         }
 
-        $dir = __DIR__ . '/../../design/' . $this->templateConfig->getTheme() . '/lang/';
-        if (file_exists($dir)) {
-            $content = "<?php\n\n";
-            $content .= "\$lang = array();\n";
-            foreach($translations as $label=>$value) {
-                $content .= "\$lang['".$label."'] = \"".addcslashes($value, "\n\r\\\"")."\";\n";
-            }
-            $file = fopen($dir.$langLabel.'.php', 'w');
-            fwrite($file, $content);
-            fclose($file);
+        $langFile = $this->getWriteLangFile($langLabel, $this->templateConfig->getTheme());
+        
+        $content = "<?php\n\n";
+        $content .= "\$lang = array();\n";
+        foreach($translations as $label=>$value) {
+            $content .= "\$lang['".$label."'] = \"".addcslashes($value, "\n\r\\\"")."\";\n";
         }
+        $file = fopen($langFile, 'w');
+        fwrite($file, $content);
+        fclose($file);
+            
+        return ExtenderFacade::execute([static::class, __FUNCTION__], null, func_get_args());
+    }
+    
+    private function getReadLangFile($langLabel, $theme)
+    {
+        $langFile = __DIR__ . '/../../design/' . $theme . '/lang/' . $langLabel . '.php';
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $langFile, func_get_args());
+    }
+    
+    private function getWriteLangFile($langLabel, $theme)
+    {
+        $langFile = __DIR__ . '/../../design/' . $theme . '/lang/' . $langLabel . '.php';
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $langFile, func_get_args());
     }
 }

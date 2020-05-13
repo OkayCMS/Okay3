@@ -7,7 +7,7 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {if $banners_images_count}
@@ -69,6 +69,12 @@
     {if $banners_images}
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
+            {$block = {get_design_block block="banners_images_custom_block"}}
+            {if $block}
+                <div class="custom_block">
+                    {$block}
+                </div>
+            {/if}
             <form class="fn_form_list" method="post">
                 <div id="main_list" class=" okay_list products_list fn_sort_list">
                     <input type="hidden" name="session_id" value="{$smarty.session.id}" />
@@ -119,6 +125,7 @@
                                     <div class="okay_list_name_brand">
                                         {$banners_image->image}
                                     </div>
+                                    {get_design_block block="banners_images_list_name" vars=['banners_image' => $banners_image]}
                                 </div>
 
                                 <div class="okay_list_boding okay_list_brands_group">

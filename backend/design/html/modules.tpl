@@ -3,7 +3,7 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->modules_list_title|escape}
@@ -119,7 +119,7 @@
                         <label class="okay_ckeckbox" for="check_all_2"></label>
                     </div>
                     <div class="okay_list_option">
-                        <select name="action" class="selectpicker">
+                        <select name="action" class="selectpicker form-control">
                             <option value="enable">{$btr->general_do_enable|escape}</option>
                             <option value="disable">{$btr->general_do_disable|escape}</option>
                             <option value="delete">{$btr->general_delete|escape}</option>

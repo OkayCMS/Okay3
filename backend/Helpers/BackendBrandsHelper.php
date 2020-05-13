@@ -285,4 +285,12 @@ class BackendBrandsHelper
         $brands = $this->brandsEntity->find(['category_id' => $category->children]);
         return ExtenderFacade::execute(__METHOD__, $brands, func_get_args());
     }
+
+    public function duplicate($ids)
+    {
+        foreach($ids as $id) {
+            $this->brandsEntity->duplicate((int)$id);
+        }
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
 }

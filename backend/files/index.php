@@ -26,6 +26,8 @@ $license->check();
 $modules = $DI->get(Modules::class);
 $modules->startEnabledModules();
 
+$license->registerSmartyPlugins();
+
 /** @var Request $request */
 $request = $DI->get(Request::class);
 

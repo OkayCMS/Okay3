@@ -138,6 +138,12 @@
         z-index: 1;
         height: auto;
     }
+    .header-contact__inner--adress:hover{
+        background: transparent;
+        box-shadow: none;
+        z-index: 1;
+        height: auto;
+    }
     .header-contact__inner:hover .header-contact__item{
         opacity: 1;
         visibility: visible;

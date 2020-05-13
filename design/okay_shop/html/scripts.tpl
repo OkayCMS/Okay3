@@ -253,6 +253,8 @@
         });
     }
 
+    {get_design_block block="front_scripts_after_validate"}
+    
     {if $settings->sj_shares}
          if($(".fn_share").length>0) {
         {if $js_custom_socials}

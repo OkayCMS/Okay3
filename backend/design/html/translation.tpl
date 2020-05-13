@@ -6,22 +6,21 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-6 col-md-6">
+    <div class="col-lg-12 col-md-12">
         {if !$translation->id}
             <div class="heading_page">{$btr->translation_add|escape}{if $settings->admin_theme} {$btr->theme_theme} {$settings->admin_theme|escape}{/if}</div>
         {else}
             <div class="heading_page">{$translation->label|escape}{if $settings->admin_theme} {$btr->theme_theme} {$settings->admin_theme|escape}{/if}</div>
         {/if}
     </div>
-    <div class="col-lg-4 col-md-3 text-xs-right float-xs-right"></div>
 </div>
 
 {if $locked_theme}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="">
-                    {$btr->general_protected|escape}
+            <div class="alert alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">{$btr->general_protected|escape}</div>
                 </div>
             </div>
         </div>
@@ -32,22 +31,22 @@
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    <span class="text">
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
                         {if $message_success == 'added'}
-                            {$btr->translation_added|escape}
+                        {$btr->translation_added|escape}
                         {elseif $message_success == 'updated'}
-                            {$btr->translation_updated|escape}
+                        {$btr->translation_updated|escape}
                         {/if}
-                    </span>
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{url controller=TranslationsAdmin id=null}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                <a class="alert__button" href="{$smarty.get.return}">
+                    {include file='svg_icon.tpl' svgId='return'}
+                    <span>{$btr->general_back|escape}</span>
+                </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -57,17 +56,31 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
-                    {if $message_error == 'label_empty'}{$btr->translation_empty|escape}{/if}
-                    {if $message_error == 'label_exists'}{$btr->translation_used|escape}{/if}
-                    {if $message_error == 'label_is_class'}{$btr->translation_not_allowed|escape}{/if}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_error == 'label_empty'}
+                        {$btr->translation_empty|escape}
+                        {/if}
+                        {if $message_error == 'label_exists'}
+                        {$btr->translation_used|escape}
+                        {/if}
+                        {if $message_error == 'label_is_class'}
+                        {$btr->translation_not_allowed|escape}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 {/if}
 
+{$block = {get_design_block block="translation_custom_block"}}
+{if $block}
+    <div class="custom_block">
+        {$block}
+    </div>
+{/if}
 
 {*Главная форма страницы*}
 <form method="post" enctype="multipart/form-data">
@@ -106,6 +119,14 @@
                         </div>
                     {/foreach}
                 </div>
+                
+                {$block = {get_design_block block="translation_data_block"}}
+                {if $block}
+                    <div class="custom_block">
+                        {$block}
+                    </div>
+                {/if}
+
                 {if !$locked_theme}
                     <div class="row">
                         <div class="col-lg-12 col-md-12 mt-1">

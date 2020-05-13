@@ -30,6 +30,7 @@ class Notify
     private $templateConfig;
     private $design;
     private $backendTranslations;
+    private $frontTranslations;
     private $rootDir;
     private $logger;
     
@@ -41,6 +42,7 @@ class Notify
         TemplateConfig $templateConfig,
         OrdersHelper $ordersHelper,
         BackendTranslations $backendTranslations,
+        FrontTranslations $frontTranslations,
         PHPMailer $PHPMailer,
         LoggerInterface $logger,
         $rootDir
@@ -53,6 +55,7 @@ class Notify
         $this->ordersHelper = $ordersHelper;
         $this->entityFactory = $entityFactory;
         $this->backendTranslations = $backendTranslations;
+        $this->frontTranslations = $frontTranslations;
         $this->logger = $logger;
         $this->rootDir = $rootDir;
     }
@@ -144,9 +147,6 @@ class Notify
         /** @var CurrenciesEntity $currenciesEntity */
         $currenciesEntity = $this->entityFactory->get(CurrenciesEntity::class);
         
-        /** @var TranslationsEntity $translationsEntity */
-        $translationsEntity = $this->entityFactory->get(TranslationsEntity::class);
-        
         if (!($order = $ordersEntity->get(intval($orderId))) || empty($order->email)) {
             return false;
         }
@@ -155,6 +155,9 @@ class Notify
         if (!empty($order->lang_id)) {
             $currentLangId = $this->languages->getLangId();
             $this->languages->setLangId($order->lang_id);
+            
+            // Переинициализируем на новый язык
+            $this->frontTranslations->init();
 
             $currencies = $currenciesEntity->find(['enabled'=>1]);
             // Берем валюту из сессии
@@ -167,7 +170,7 @@ class Notify
             $this->design->assign("currency", $currency);
             $this->settings->initSettings();
             $this->design->assign('settings', $this->settings);
-            $this->design->assign('lang', $translationsEntity->find(array('lang_id'=>$order->lang_id)));
+            $this->design->assign('lang', $this->frontTranslations);
         }
         /*/lang_modify...*/
         
@@ -200,6 +203,9 @@ class Notify
         /*lang_modify...*/
         if (!empty($currentLangId)) {
             $this->languages->setLangId($currentLangId);
+
+            // Вернем переводы на предыдущий язык
+            $this->frontTranslations->init();
             
             $currencies = $currenciesEntity->find(['enabled'=>1]);
             // Берем валюту из сессии
@@ -364,9 +370,6 @@ class Notify
         /** @var CommentsEntity $commentsEntity */
         $commentsEntity = $this->entityFactory->get(CommentsEntity::class);
 
-        /** @var TranslationsEntity $translationsEntity */
-        $translationsEntity = $this->entityFactory->get(TranslationsEntity::class);
-
         /** @var ProductsEntity $productsEntity */
         $productsEntity = $this->entityFactory->get(ProductsEntity::class);
 
@@ -389,9 +392,12 @@ class Notify
             $currentLangId = $this->languages->getLangId();
             $this->languages->setLangId($parentComment->lang_id);
 
+            // Переинициализируем на новый язык
+            $this->frontTranslations->init();
+
             $this->settings->initSettings();
             $this->design->assign('settings', $this->settings);
-            $this->design->assign('lang', $translationsEntity->find(array('lang_id'=>$parentComment->lang_id)));
+            $this->design->assign('lang', $this->frontTranslations);
         }
         /*/lang_modify...*/
 
@@ -418,6 +424,10 @@ class Notify
         /*lang_modify...*/
         if (!empty($currentLangId)) {
             $this->languages->setLangId($currentLangId);
+            
+            // Вернем переводы на предыдущий язык
+            $this->frontTranslations->init();
+            
             $this->settings->initSettings();
             $this->design->assign('settings', $this->settings);
         }
@@ -432,9 +442,6 @@ class Notify
         /** @var UsersEntity $usersEntity */
         $usersEntity = $this->entityFactory->get(UsersEntity::class);
 
-        /** @var TranslationsEntity $translationsEntity */
-        $translationsEntity = $this->entityFactory->get(TranslationsEntity::class);
-        
         if(!($user = $usersEntity->get(intval($userId)))) {
             return false;
         }
@@ -443,7 +450,7 @@ class Notify
 
         $this->settings->initSettings();
         $this->design->assign('settings', $this->settings);
-        $this->design->assign('lang', $translationsEntity->find(['lang_id'=>$currentLangId]));
+        $this->design->assign('lang', $this->frontTranslations);
         
         $this->design->assign('user', $user);
         $this->design->assign('code', $code);
@@ -500,9 +507,6 @@ class Notify
         /** @var FeedbacksEntity $feedbackEntity */
         $feedbackEntity = $this->entityFactory->get(FeedbacksEntity::class);
 
-        /** @var TranslationsEntity $translationsEntity */
-        $translationsEntity = $this->entityFactory->get(TranslationsEntity::class);
-        
         if(!($feedback = $feedbackEntity->get(intval($comment_id)))) {
             return false;
         }
@@ -516,8 +520,10 @@ class Notify
         if (!empty($feedback->lang_id)) {
             $currentLangId = $this->languages->getLangId();
             $this->languages->setLangId($feedback->lang_id);
+            
+            $this->frontTranslations->init();
 
-            $this->design->assign('lang', $translationsEntity->find(['lang_id'=>$feedback->lang_id]));
+            $this->design->assign('lang', $this->frontTranslations);
         }
         /*/lang_modify...*/
 

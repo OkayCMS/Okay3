@@ -205,6 +205,7 @@ $services = [
             new SR(TemplateConfig::class),
             new SR(\Okay\Helpers\OrdersHelper::class),
             new SR(BackendTranslations::class),
+            new SR(FrontTranslations::class),
             new SR(PHPMailer::class),
             new SR(LoggerInterface::class),
             new PR('root_dir'),
@@ -283,6 +284,7 @@ $services = [
         'arguments' => [
             new SR(LoggerInterface::class),
             new SR(Modules::class),
+            new PR('design.debug_translation'),
         ],
     ],
     FrontTranslations::class => [
@@ -438,6 +440,12 @@ $services = [
         'class' => UserReferer::class,
         'arguments' => [
             new SR(Parser::class),
+        ],
+    ],
+    Phone::class => [
+        'class' => Phone::class,
+        'arguments' => [
+            new SR(Settings::class),
         ],
     ],
 ];

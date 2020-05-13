@@ -1,12 +1,6 @@
 {* Title *}
 {$meta_title=$btr->users_users scope=global}
 
-{if $users_count>0}
-    <div class="row">
-        <progress id="progressbar" class="progress progress-xs progress-info mt-0" style="display: none" value="0" max="100"></progress>
-    </div>
-{/if}
-
 {*Название страницы*}
 <div class="main_header">
     <div class="main_header__item">

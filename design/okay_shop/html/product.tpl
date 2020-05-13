@@ -79,8 +79,8 @@
                                 </span>
                                 {*Вывод количества голосов данного товара, скрыт ради микроразметки*}
                                 {if $product->rating > 0}
-                                <span class="rating_text" itemprop="reviewCount">( {$product->votes|string_format:"%.0f"} )</span>
-                                <span class="rating_text hidden" itemprop="ratingValue">({$product->rating|string_format:"%.1f"})</span>
+                                <span class="rating_text">( <span itemprop="reviewCount">{$product->votes|string_format:"%.0f"}</span> )</span>
+                                <span class="rating_text hidden">( <span itemprop="ratingValue">{$product->rating|string_format:"%.1f"}</span> )</span>
                                 {*Вывод лучшей оценки товара для микроразметки*}
                                 <span class="rating_text hidden" itemprop="bestRating" style="display:none;">5</span>
                                 {else}

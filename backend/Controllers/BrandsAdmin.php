@@ -43,6 +43,10 @@ class BrandsAdmin extends IndexAdmin
                     $backendBrandsHelper->moveToPage($ids, $targetPage, $filter);
                     break;
                 }
+                case 'duplicate': {
+                    $backendBrandsHelper->duplicate($ids);
+                    break;
+                }
             }
         }
 

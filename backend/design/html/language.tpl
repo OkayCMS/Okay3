@@ -6,36 +6,35 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-6 col-md-6">
+    <div class="col-lg-12 col-md-12">
         {if !$language->id}
             <div class="heading_page">{$btr->language_add|escape}</div>
         {else}
             <div class="heading_page">{$language->name|escape}</div>
         {/if}
     </div>
-    <div class="col-lg-4 col-md-3 text-xs-right float-xs-right"></div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    <span class="text">
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
                         {if $message_success == 'added'}
-                            {$btr->language_added|escape}
+                        {$btr->language_added|escape}
                         {elseif $message_success == 'updated'}
-                            {$btr->language_updated|escape}
+                        {$btr->language_updated|escape}
                         {/if}
-                    </span>
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                <a class="alert__button" href="{$smarty.get.return}">
+                    {include file='svg_icon.tpl' svgId='return'}
+                    <span>{$btr->general_back|escape}</span>
+                </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -45,13 +44,15 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
-                    {if $message_error == 'label_empty'}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_error == 'label_empty'}
                         {$btr->language_empty_label|escape}
-                    {elseif $message_error == 'label_exists'}
+                        {elseif $message_error == 'label_exists'}
                         {$btr->language_used|escape}
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>

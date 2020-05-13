@@ -7,6 +7,7 @@ namespace Okay\Admin\Helpers;
 use Okay\Admin\Requests\BackendOrdersRequest;
 use Okay\Core\BackendTranslations;
 use Okay\Core\EntityFactory;
+use Okay\Core\Phone;
 use Okay\Core\Request;
 use Okay\Entities\DeliveriesEntity;
 use Okay\Entities\ManagersEntity;
@@ -57,6 +58,7 @@ class BackendOrderHistoryHelper
      * @param $orderBeforeUpdate
      * @param $orderAfterUpdate
      * @param $purchasesBeforeUpdate
+     * @return null
      * @throws \Exception
      */
     public function updateHistory($orderBeforeUpdate, $orderAfterUpdate, $purchasesBeforeUpdate)
@@ -101,6 +103,8 @@ class BackendOrderHistoryHelper
                 'text' => implode('<br/>', $changeText),
             ]);
         }
+
+        return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     public function setLabel($orderId, $labelId)
@@ -171,8 +175,8 @@ class BackendOrderHistoryHelper
     {
         $changeOrderMessage = $this->getChangePurchasesMessage($purchasesBeforeUpdate, $purchasesAfterUpdate);
         
-        if ($note = $this->request->post('note')) {
-            $changeOrderMessage[] = $note;
+        if ($historyComment = $this->request->post('history_comment')) {
+            $changeOrderMessage[] = $historyComment;
         }
         
         // Все изменения только в созданном заказе
@@ -306,18 +310,18 @@ class BackendOrderHistoryHelper
                     . " \"{$orderAfterUpdate->address}\"";
             }
 
-            // Изменил телефон
+            // Изменил телефон (Изменения сравниваются и выводятся с учетом форматирования)
             if (property_exists($orderBeforeUpdate, 'phone')
                 && property_exists($orderAfterUpdate, 'phone')
-                && $orderBeforeUpdate->phone != $orderAfterUpdate->phone) {
+                && ($bPhone = Phone::format($orderBeforeUpdate->phone)) != ($aPhone = Phone::format($orderAfterUpdate->phone))) {
                 $changeOrderMessage[] = $this->BT->getTranslation('order_history_change')
                     . " "
                     . $this->BT->getTranslation('order_history_phone')
                     . " "
                     . $this->BT->getTranslation('order_history_from')
-                    . " \"{$orderBeforeUpdate->phone}\" "
+                    . " \"{$bPhone}\" "
                     . $this->BT->getTranslation('order_history_to')
-                    . " \"{$orderAfterUpdate->phone}\"";
+                    . " \"{$aPhone}\"";
             }
 
             // Изменил почту

@@ -8,7 +8,7 @@
             {/if}
             <a class="" aria-label="{$post->name|escape}" href="{$url}">
                 {if $post->image}
-                    <img class="lazy" data-src="{$post->image|resize:420:220:false:$config->resized_blog_dir:center:center}" alt="{$post->name|escape}" title="{$post->name|escape}"/>
+                    <img class="lazy" data-src="{$post->image|resize:420:220:false:$config->resized_blog_dir:center:center}" src="{$post->image|resize:420:220:false:$config->resized_blog_dir:center:center}" alt="{$post->name|escape}" title="{$post->name|escape}"/>
                 {else}
                     <div class="article__no_image d-flex align-items-start">
                         {include file="svg.tpl" svgId="no_image"}

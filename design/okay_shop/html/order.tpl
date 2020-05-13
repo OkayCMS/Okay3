@@ -101,10 +101,7 @@
                                     </div>
                                     <div class="purchase_detail__column_value">
                                         <div class="purchase_detail__price">
-                                            {if !$order->separate_delivery}
-                                                <span>{$order->delivery_price|convert} <span class="currency"> {$currency->sign|escape}</span></span>
-                                            {else}
-                                            {/if}
+                                            <span>{$order->delivery_price|convert} <span class="currency"> {$currency->sign|escape}</span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -251,7 +248,7 @@
                                             <td>
                                                 <span data-language="order_phone">{$lang->order_phone}</span>
                                             </td>
-                                            <td>{$order->phone|escape}</td>
+                                            <td>{$order->phone|phone}</td>
                                         </tr>
                                     {/if}
                                     {if $order->address}

@@ -2,28 +2,29 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-6 col-md-6">
+    <div class="col-lg-12 col-md-12">
         <div class="heading_page">{$btr->settings_catalog_catalog|escape}</div>
     </div>
-    <div class="col-lg-4 col-md-3 text-xs-right float-xs-right"></div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success && empty($message_error)}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    {if $message_success == 'saved'}
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_success == 'saved'}
                         {$btr->settings_catalog_catalog|escape}
-                    {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                <a class="alert__button" href="{$smarty.get.return}">
+                    {include file='svg_icon.tpl' svgId='return'}
+                    <span>{$btr->general_back|escape}</span>
+                </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -33,11 +34,13 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
-                    {if $message_error=='truncate_table_password_failed'}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_error=='truncate_table_password_failed'}
                         {$btr->truncate_table_password_failed|escape}
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -124,11 +127,12 @@
                                 </select>
                             </div>
                         </div>
+
                         <div class="col-lg-4 col-md-6 mt-2">
                             <div class="fn_step-9">
                                 <div class="heading_label boxes_inline">{$btr->settings_catalog_preorder_not_in_stock|escape}</div>
                                 <div class="boxes_inline">
-                                   <div class="okay_switch clearfix">
+                                    <div class="okay_switch clearfix">
                                         <label class="switch switch-default">
                                             <input class="switch-input" name="is_preorder" value='1' type="checkbox" {if $settings->is_preorder}checked=""{/if}/>
                                             <span class="switch-label"></span>
@@ -138,6 +142,10 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        {get_design_block block="settings_catalog_general"}
+                    </div>
+                    <div class="row">
 
                         <div class="col-lg-4 col-md-6 mt-2">
                             <div class="fn_step-10">
@@ -158,8 +166,28 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <div class="col-lg-4 col-md-6 mt-2">
+                            <div class="fn_step-10">
+                                <div class="heading_label boxes_inline">
+                                    {$btr->settings_hide_single_filters|escape}
+                                    <i class="fn_tooltips" title="{$btr->settings_hide_single_filters_notice|escape}">
+                                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                    </i>
+                                </div>
+                                <div class="boxes_inline">
+                                    <div class="okay_switch clearfix">
+                                        <label class="switch switch-default">
+                                            <input class="switch-input" name="hide_single_filters" value='1' type="checkbox" {if $settings->hide_single_filters}checked=""{/if}/>
+                                            <span class="switch-label"></span>
+                                            <span class="switch-handle"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                        {get_design_block block="settings_catalog_general"}
+                        {get_design_block block="settings_catalog_general_row_2"}
                     </div>
                 </div>
             </div>

@@ -1,7 +1,6 @@
 {* Title *}
 {$meta_title=$btr->import_log_products scope=global}
 
-
 {*Название страницы*}
 <div class="main_header">
     <div class="main_header__item">

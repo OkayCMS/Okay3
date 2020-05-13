@@ -58,10 +58,10 @@
                     <div class="order_history__content">
                         <div class="order_history__title">
                             <span>{$btr->order_history_changed_on}</span>
-                            <span style="color: #{$all_status[$history_item->new_status_id]->color};">{$all_status[$history_item->new_status_id]->name}</span>
+                            <span style="color: #{$all_status[$history_item->new_status_id]->color};">{$all_status[$history_item->new_status_id]->name|escape}</span>
                             <span class="tag tag-chanel_unknown">{$history_item->date|date} | {$history_item->date|time}</span>
-                            <span>{$btr->order_history_by_manager}</span>
-                            <span>{$history_item->manager_name}</span>
+                            <span>{$btr->order_history_by_manager|escape}</span>
+                            <span>{$history_item->manager_name|escape}</span>
                         </div>
                     </div>
 
@@ -71,10 +71,10 @@
                     <div class="order_history__icon">{include file='svg_icon.tpl' svgId='left_comments'}</div>
                     <div class="order_history__content">
                         <div class="order_history__title">
-                            <span>{$btr->order_history_changed}</span>
+                            <span>{$btr->order_history_changed|escape}</span>
                             <span class="tag tag-chanel_unknown">{$history_item->date|date} | {$history_item->date|time}</span>
-                            <span>{$btr->order_history_by_manager}</span>
-                            <span>{$history_item->manager_name}</span>
+                            <span>{$btr->order_history_by_manager|escape}</span>
+                            <span>{$history_item->manager_name|escape}</span>
                         </div>
                         <div class="boxed boxed--grey">
                             <div class="boxed__content">

@@ -16,8 +16,10 @@ class EntityField
     const TYPE_DECIMAL = 'decimal';
     const TYPE_TEXT    = 'text';
     const TYPE_ENUM    = 'enum';
-    const TYPE_DATETIME  = 'datetime';
-    const TYPE_TIMESTAMP = 'timestamp';
+    const TYPE_MEDIUMTEXT = 'mediumtext';
+    const TYPE_LONGTEXT   = 'longtext';
+    const TYPE_DATETIME   = 'datetime';
+    const TYPE_TIMESTAMP  = 'timestamp';
     const INDEX = 'INDEX';
     const INDEX_FULLTEXT = 'FULLTEXT';
     const INDEX_UNIQUE = 'UNIQUE';
@@ -26,7 +28,7 @@ class EntityField
     private $length = 255;
     private $values = [];
     private $default = null;
-    private $nullable = false;
+    private $nullable = true;
     private $isLangField = false;
     private $autoIncrement = false;
     private $primaryKey = false;
@@ -147,7 +149,7 @@ class EntityField
         return $this;
     }
     
-    public function setTypeVarchar($length, $nullable = false)
+    public function setTypeVarchar($length, $nullable = true)
     {
         if (!is_int($length)) {
             throw new Exception("Length must be integer");
@@ -215,16 +217,24 @@ class EntityField
         return $this;
     }
     
-    public function setTypeText($length = null)
+    public function setTypeText()
     {
-        if ($length !== null && !is_int($length)) {
-            throw new Exception("Length must be integer or null");
-        }
-        
         $this->resetAll();
-        
         $this->type = self::TYPE_TEXT;
-        $this->length = $length;
+        return $this;
+    }
+    
+    public function setTypeMediumText()
+    {
+        $this->resetAll();
+        $this->type = self::TYPE_MEDIUMTEXT;
+        return $this;
+    }
+    
+    public function setTypeLongText()
+    {
+        $this->resetAll();
+        $this->type = self::TYPE_LONGTEXT;
         return $this;
     }
     
@@ -244,21 +254,41 @@ class EntityField
         return $this;
     }
 
-    public function setIndex($length = null)
+    /**
+     * @param null $length
+     * @param EntityField ...$fields Экземпляры класса EntityField в сочетании с которыми нужно сделать
+     * составной индекс
+     * @return $this
+     */
+    public function setIndex($length = null, EntityField ...$fields)
     {
-        $this->indexes[self::INDEX] = $length;
+        $this->indexes[self::INDEX] = [
+            'length' => $length,
+            'fields' => $fields,
+        ];
         return $this;
     }
 
     public function setIndexFulltext()
     {
-        $this->indexes[self::INDEX_FULLTEXT] = null;
+        $this->indexes[self::INDEX_FULLTEXT] = [
+            'length' => null,
+        ];
         return $this;
     }
 
-    public function setIndexUnique($length = null)
+    /**
+     * @param null $length
+     * @param EntityField ...$fields Экземпляры класса EntityField в сочетании с которыми нужно сделать 
+     * составной индекс
+     * @return $this
+     */
+    public function setIndexUnique($length = null, EntityField ...$fields)
     {
-        $this->indexes[self::INDEX_UNIQUE] = $length;
+        $this->indexes[self::INDEX_UNIQUE] = [
+            'length' => $length,
+            'fields' => $fields,
+        ];
         return $this;
     }
     

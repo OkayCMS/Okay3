@@ -3,6 +3,14 @@
 namespace Okay\Modules\OkayCMS\NovaposhtaCost;
 
 return [
+    'OkayCMS_NovaposhtaCost_find_city' => [
+        'slug' => 'ajax/np/find_city',
+        'to_front' => true,
+        'params' => [
+            'controller' => __NAMESPACE__ . '\Controllers\NovaposhtaCostSearchController',
+            'method' => 'findCity',
+        ],
+    ],
     'OkayCMS_NovaposhtaCost_get_cities' => [
         'slug' => 'ajax/np/get_cities',
         'to_front' => true,

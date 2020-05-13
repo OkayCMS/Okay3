@@ -28,7 +28,16 @@
     <div class="main_header__item main_header__item--sort_date">
         <form class="box_date_filter fn_date_filter main_header__inner" method="get">
             <input type="hidden" name="controller" value="OrdersAdmin">
-            <input type="hidden" name="status" value="{$status}">
+            {if $keyword}
+                <input type="hidden" name="keyword" value="{$keyword|escape}" >
+            {/if}
+            
+            {if $status_id}
+                <input type="hidden" name="status" value="{$status_id|escape}" >
+            {/if}
+            {if $label_id}
+                <input type="hidden" name="label" value="{$label_id|escape}" >
+            {/if}
             <ul class="filter_date__list form-control">
                 <li class="filter_date__item">
                     <button type="button" class="fn_last_week filter_date__button ">{$btr->orders_date_filter_last_week}</button>
@@ -65,25 +74,70 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
-                    {if $message_error=='error_closing'}
-                        {$btr->orders_in|escape}
-                        {foreach $error_orders as $error_order_id}
-                            <div>
-                                № {$error_order_id}
-                            </div>
-                        {/foreach}
-                        {$btr->orders_shortage|escape}
-                    {else}
-                        {$message_error|escape}
-                    {/if}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_error=='error_closing'}
+                            {$btr->orders_in|escape}
+                            {foreach $error_orders as $error_order_id}
+                                <div>
+                                    № {$error_order_id}
+                                </div>
+                            {/foreach}
+                            {$btr->orders_shortage|escape}
+                        {else}
+                            {$message_error|escape}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 {/if}
 
+{* Visited info *}
+<div class="boxed wrap_view_info">
+    <div class="view_info_dates">
+        <div class="view_info_dates__title">{$btr->orders_date_filter_list_orders|escape}:</div>
+        <div class="view_info_dates__text">
+            {$btr->orders_date_filter_list_orders_from|escape}
+            {if $from_date}
+                {$from_date|date}
+            {else}
+                {$orders_from_date|date}
+            {/if}
+            {$btr->orders_date_filter_list_orders_to|escape}
+            {if $to_date}
+                {$to_date|date}
+            {else}
+                {$orders_to_date|date}
+            {/if}
+        </div>
+        {if $from_date || $to_date}
+            <button class="fn_reset_date_filter btn btn-secondary" type="button">{$btr->orders_date_filter_list_orders_reset|escape}</button>
+        {/if}
+    </div>
+    <div class="view_info_visited">
+        
+
+        {foreach $all_status as $s}
+            {if isset($count_orders_by_statuses[$s->id])}
+                {$ordersCount = $count_orders_by_statuses[$s->id]}
+                <div class="view_info_visited__item">
+                    <div class="view_info_visited__inner">
+                        <div class="view_info_visited__left">
+                            <a href="{url status=$s->id}" class="view_info_visited__status" style="color: #{$s->color};">{$s->name|escape}</a>
+                            <div class="view_info_visited__percent">{round($ordersCount->count / $count_orders_for_statuses * 100, 1)}%</div>
+                        </div>
+                        <div class="view_info_visited__right">
+                            <div class="view_info_visited__count">{$ordersCount->count|escape}</div>
+                        </div>
+                    </div>
+                </div>
+            {/if}
+        {/foreach}
+    </div>
+</div>
 
 <div class="boxed fn_toggle_wrap">
     <div class="row">
@@ -96,21 +150,15 @@
                     </div>
                 </div>
                 <div class="boxed_sorting toggle_body_wrap off fn_card">
-                    {if $from_date && $to_date}
-                    <div class="heading_box heading_box__flex  mb-2">
-                        <span>{$btr->orders_date_filter_list_orders_from|escape}  {$from_date|date} {$btr->orders_date_filter_list_orders_to|escape} {$to_date|date} </span>
-                        <button class="fn_reset_date_filter btn btn_small btn-secondary ml-2" type="button">Сбросить</button>
-                    </div>
-                    {/if}
                 {*Блок фильтров*}
                 <div class="row">
                     {if $all_status}
                         <div class="col-md-3 col-lg-3 col-sm-12">
                             <select name="status" class="selectpicker form-control"  onchange="location = this.value;">
                                 {foreach $all_status as $order_status}
-                                    <option value="{url controller=OrdersAdmin status=$order_status->id keyword=null id=null page=null label=null from_date=null to_date=null}" {if $status == $order_status->id}selected=""{/if} >{$order_status->name|escape}</option>
+                                    <option value="{url controller=OrdersAdmin status=$order_status->id keyword=null id=null page=null label=null from_date=null to_date=null}" {if $status_id == $order_status->id}selected=""{/if} >{$order_status->name|escape}</option>
                                 {/foreach}
-                                <option value="{url controller=OrdersAdmin status=null keyword=null id=null page=null label=null from_date=null to_date=null}" {if !$status}selected{/if}>{$btr->general_all_status|escape}</option>
+                                <option value="{url controller=OrdersAdmin status=null keyword=null id=null page=null label=null from_date=null to_date=null}" {if !$status_id}selected{/if}>{$btr->general_all_status|escape}</option>
                             </select>
                         </div>
                     {/if}
@@ -118,15 +166,27 @@
                         <div class="col-md-3 col-lg-3 col-sm-12">
                             <select class="selectpicker form-control" onchange="location = this.value;">
                                 {foreach $labels as $l}
-                                    <option value="{url label=$l->id}" {if $label->id == $l->id}selected{/if}>{$l->name|escape}</option>
+                                    <option value="{url label=$l->id}" {if $label_id == $l->id}selected{/if}>{$l->name|escape}</option>
                                 {/foreach}
-                                <option value="{url label=null}" {if !$label} selected{/if}>{$btr->general_all_label|escape}</option>
+                                <option value="{url label=null}" {if !$label_id} selected{/if}>{$btr->general_all_label|escape}</option>
                             </select>
                         </div>
                     {/if}
                     <div class="col-md-3 col-lg-3 col-sm-12 float-md-right">
                         <form class="search" method="get">
                             <input type="hidden" name="controller" value="OrdersAdmin">
+                            {if $from_date}
+                                <input type="hidden" name="from_date" value="{$from_date|escape}" >
+                            {/if}
+                            {if $to_date}
+                                <input type="hidden" name="to_date" value="{$to_date|escape}" >
+                            {/if}
+                            {if $status_id}
+                                <input type="hidden" name="status" value="{$status_id|escape}" >
+                            {/if}
+                            {if $label_id}
+                                <input type="hidden" name="label" value="{$label_id|escape}" >
+                            {/if}
                             <div class="input-group input-group--search">
                                 <input name="keyword" class="form-control" placeholder="{$btr->general_search|escape}" type="text" value="{$keyword|escape}" >
                                 <button type="submit" class="btn"><i class="fa fa-search"></i></button>
@@ -192,42 +252,41 @@
                                         {/if}
                                         {if $order->referer_channel}
                                             <div class="order_paid">
-                                            {if $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_EMAIL}
-
-                                            <span class="tag tag-chanel_email" title="{$order->referer_source}">
-                                                {include file='svg_icon.tpl' svgId='tag_email'} {$order->referer_channel}
-                                            </span>
-                                            {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_SEARCH}
-                                            <span class="tag tag-chanel_search" title="{$order->referer_source}">
-                                                {include file='svg_icon.tpl' svgId='tag_search'} {$order->referer_channel}
-                                            </span>
-                                            {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_SOCIAL}
-                                            <span class="tag tag-chanel_social" title="{$order->referer_source}">
-                                                {include file='svg_icon.tpl' svgId='tag_social'} {$order->referer_channel}
-                                            </span>
-                                            {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_REFERRAL}
-                                            <span class="tag tag-chanel_referral" title="{$order->referer_source}">
-                                                {include file='svg_icon.tpl' svgId='tag_referral'} {$order->referer_channel}
-                                            </span>
-                                            {else}
-                                            <span class="tag tag-chanel_unknown" title="{$order->referer_source}">
-                                                {include file='svg_icon.tpl' svgId='tag_unknown'} {$order->referer_channel}
-                                            </span>
-                                            {/if}
+                                                {if $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_EMAIL}
+                                                    <span class="tag tag-chanel_email" title="{$order->referer_source}">
+                                                        {include file='svg_icon.tpl' svgId='tag_email'} {$order->referer_channel}
+                                                    </span>
+                                                {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_SEARCH}
+                                                    <span class="tag tag-chanel_search" title="{$order->referer_source}">
+                                                        {include file='svg_icon.tpl' svgId='tag_search'} {$order->referer_channel}
+                                                    </span>
+                                                {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_SOCIAL}
+                                                    <a href="{$order->referer_source|escape}" target="_blank" class="tag tag-chanel_social" title="{$order->referer_source}">
+                                                        {include file='svg_icon.tpl' svgId='tag_social'} {$order->referer_channel}
+                                                    </a>
+                                                {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_REFERRAL}
+                                                    <a href="{$order->referer_source|escape}" target="_blank" class="tag tag-chanel_referral" title="{$order->referer_source}">
+                                                        {include file='svg_icon.tpl' svgId='tag_referral'} {$order->referer_channel}
+                                                    </a>
+                                                {else}
+                                                    <span class="tag tag-ind_unknown" title="{$order->referer_source}">
+                                                        {include file='svg_icon.tpl' svgId='tag_unknown'} {$order->referer_channel}
+                                                    </span>
+                                                {/if}
                                             </div>
                                         {/if}
                                     </div>
 
                                     <div class="okay_list_boding okay_list_orders_name">
-                                        <a href="{url controller=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}" class="text_400 mb-h">{$order->name|escape}</a>
-                                        {if $order->note}
-                                            <div class="note">{$order->note|escape}</div>
-                                        {/if}
+                                        <a href="{url controller=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}" class="text_400 mb-q">{$order->name|escape}</a>
                                         <div class="hidden-lg-up mb-h">
                                             <div class="text_600 font_12" style="color: #{$order->status_color};">{$orders_status[$order->status_id]->name|escape}</div>
                                         </div>
-                                        <div class="font_12 text_600 text_grey mb-h"><span class="hidden-md-down">{$btr->orders_order_in|escape}</span>
-                                        <span class="font_12 text_600 text_grey mb-h">{$order->date|date} | {$order->date|time}</span></div>
+                                        <div class="font_12 text_500 text_grey mb-q"><span class="hidden-md-down">{$btr->orders_order_in|escape}</span>
+                                        <span class="font_12 text_500 text_grey mb-q">{$order->date|date} | {$order->date|time}</span></div>
+                                        {if $order->note}
+                                        <div class="tag tag-chanel_search mb-q">{include file='svg_icon.tpl' svgId='warn_icon'} {$order->note|escape}</div>
+                                        {/if}
 
                                         {get_design_block block="orders_list_name"}
                                     </div>
@@ -284,7 +343,6 @@
                                         </button>
                                     </div>
                                 </div>
-
                                 {*История заказа*}
                                 <div class="okay_list_row order_history_block" style="display: none">
                                     {include 'order_history.tpl' order_history=$orders_history[$order->id]}
@@ -552,8 +610,8 @@ $(function() {
         });
     });
     {/literal}
-    var status = '{$status|escape}',
-        label='{$label->id|escape}',
+    var status = '{$status_id|escape}',
+        label='{$label_id|escape}',
         from_date = '{$from_date}',
         to_date = '{$to_date}';
     {literal}

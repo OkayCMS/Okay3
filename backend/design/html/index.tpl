@@ -174,9 +174,9 @@
                             {if $new_orders_counter > 0}
                             <div class="notif_item">
                                 <a href="index.php?controller=OrdersAdmin" class="l_notif">
-                                            <span class="notif_icon boxed_notify">
-                                                {include file='svg_icon.tpl' svgId='left_orders'}
-                                            </span>
+                                    <span class="notif_icon boxed_notify">
+                                        {include file='svg_icon.tpl' svgId='left_orders'}
+                                    </span>
                                     <span class="notif_title">{$btr->general_orders|escape}</span>
                                 </a>
                                 <span class="notif_count">{$new_orders_counter}</span>
@@ -185,9 +185,9 @@
                             {if $new_comments_counter > 0}
                             <div class="notif_item">
                                 <a href="index.php?controller=CommentsAdmin" class="l_notif">
-                                            <span class="notif_icon boxed_warning">
-                                                {include file='svg_icon.tpl' svgId='left_comments'}
-                                            </span>
+                                    <span class="notif_icon boxed_warning">
+                                        {include file='svg_icon.tpl' svgId='left_comments'}
+                                    </span>
                                     <span class="notif_title">{$btr->general_comments|escape}</span>
                                 </a>
                                 <span class="notif_count">{$new_comments_counter}</span>
@@ -196,9 +196,9 @@
                             {if $new_feedbacks_counter > 0}
                             <div class="notif_item">
                                 <a href="index.php?controller=FeedbacksAdmin" class="l_notif">
-                                            <span class="notif_icon boxed_yellow">
-                                                {include file='svg_icon.tpl' svgId='email'}
-                                            </span>
+                                    <span class="notif_icon boxed_yellow">
+                                        {include file='svg_icon.tpl' svgId='email'}
+                                    </span>
                                     <span class="notif_title">{$btr->general_feedback|escape}</span>
                                 </a>
                                 <span class="notif_count">{$new_feedbacks_counter}</span>
@@ -207,9 +207,9 @@
                             {if $new_callbacks_counter > 0}
                             <div class="notif_item">
                                 <a href="index.php?controller=CallbacksAdmin" class="l_notif">
-                                            <span class="notif_icon boxed_attention">
-                                                {include file='svg_icon.tpl' svgId='phone'}
-                                            </span>
+                                    <span class="notif_icon boxed_attention">
+                                        {include file='svg_icon.tpl' svgId='phone'}
+                                    </span>
                                     <span class="notif_title">{$btr->general_callback|escape}</span>
                                 </a>
                                 <span class="notif_count">{$new_callbacks_counter}</span>
@@ -418,6 +418,13 @@
 
 {*main scripts*}
 
+{$block = {get_design_block block="main_custom_block_before_js"}}
+{if !empty($block)}
+    <div>
+        {$block}
+    </div>
+{/if}
+
 <script>
     $(function(){
 
@@ -483,8 +490,28 @@
                 $('.scrollbar-variant').scrollbar();
             }
         }
+        if($('.input_file').size()>0){
+            document.querySelector("html").classList.add('fn_input_file');
 
-        if($('form.fn_fast_button').size()>0){
+            var fileInput  = document.querySelector( ".input_file" ),
+                button     = document.querySelector( ".input_file_trigger" ),
+                the_return = document.querySelector(".input_file_return");
+
+            button.addEventListener( "keydown", function( event ) {
+                if ( event.keyCode == 13 || event.keyCode == 32 ) {
+                    fileInput.focus();
+                }
+            });
+            button.addEventListener( "click", function( event ) {
+                fileInput.focus();
+                return false;
+            });
+            fileInput.addEventListener( "change", function( event ) {
+                the_return.innerHTML = this.value;
+            });
+        }
+
+            if($('form.fn_fast_button').size()>0){
             {literal}
             
             // Связка селектов массовых действий
@@ -514,9 +541,13 @@
                 }
             }
             
-            $('input,textarea,select, .dropdown-toggle, .fn_sort_item, .fn_category_item').bind('keyup change dragover click',function(){
+            $('input,textarea,select, .dropdown-toggle, .fn_sort_item, .fn_category_item').bind('keyup change dragover',function(){
                $('.fn_fast_save').show();
             });
+            $('#fn_add_purchase').bind('click',function(){
+                $('.fn_fast_save').show();
+            });
+
             $('.fn_fast_save .fast_save_button').on('click', function () {
                 $('body').find("form.fn_fast_button").trigger('submit');
             });
@@ -1083,5 +1114,14 @@
         }
     });
 
+
 </script>
+
+
+{$block = {get_design_block block="main_custom_block_after_js"}}
+{if !empty($block)}
+    <div>
+        {$block}
+    </div>
+{/if}
 </html>

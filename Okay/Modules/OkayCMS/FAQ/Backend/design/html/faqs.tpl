@@ -5,13 +5,13 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->faq_title|escape}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url controller="OkayCMS.FAQ.FAQAdmin"}">
+                <a class="btn btn_small btn-info" href="{url controller='OkayCMS.FAQ.FAQAdmin'}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->faq_add|escape}</span>
                 </a>

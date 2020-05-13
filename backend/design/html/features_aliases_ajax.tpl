@@ -4,11 +4,13 @@
         {$btr->feature_feature_aliases|escape}
     </div>
     <div class="fn_sort_list">
-        <div class="boxed boxed_warning">
-            <div class="">
-                {$btr->feature_delete_alias_notice|escape}
+        <div class="alert alert--icon alert--error">
+            <div class="alert__content">
+                <div class="alert__title">{$btr->alert_error|escape}</div>
+                <p>{$btr->feature_delete_alias_notice|escape}</p>
             </div>
         </div>
+
         <div class="okay_list ok_related_list">
             <div class="okay_list_head">
                 <div class="okay_list_heading okay_list_drag"></div>

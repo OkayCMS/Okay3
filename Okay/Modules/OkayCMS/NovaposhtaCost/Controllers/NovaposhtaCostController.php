@@ -12,11 +12,14 @@ use Okay\Core\Money;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\DeliveriesEntity;
 use Okay\Entities\OrdersEntity;
+use Okay\Entities\ProductsEntity;
+use Okay\Modules\OkayCMS\NovaposhtaCost\Entities\NPCitiesEntity;
 use Okay\Modules\OkayCMS\NovaposhtaCost\NovaposhtaCost;
 use Psr\Log\LoggerInterface;
 
 class NovaposhtaCostController extends AbstractController
 {
+    
     public function getCities(NovaposhtaCost $novaposhtaCost)
     {
         $selected_city = $this->request->get('selected_city');
@@ -79,8 +82,7 @@ class NovaposhtaCostController extends AbstractController
         if ($response->success) {
             $currency = $currenciesEntity->get($currencyId);
             
-            if ($this->settings->get('newpost_currency_id')) {
-                $npCurrency = $currenciesEntity->get((int)$this->settings->get('newpost_currency_id'));
+            if ($npCurrency = $currenciesEntity->findOne(['code' => 'UAH'])) {
             
                 $priceResponse['success'] = $response->success;
                 $priceResponse['price'] = $response->data[0]->Cost + (isset($response->data[0]->CostRedelivery) ? $response->data[0]->CostRedelivery : 0);
@@ -95,36 +97,9 @@ class NovaposhtaCostController extends AbstractController
                 
                 $priceResponse['price_formatted'] = $money->convert($priceResponse['price'], $currency->id) . ' ' . $currency->sign;
             } else {
-                $logger->warning('Novaposhta cost need set delivery currency');
+                $logger->warning('Novaposhta cost need create currency with code UAH');
                 $priceResponse['success'] = false;
             }
-
-            /*$language = $this->languages->get_language($this->languages->lang_id());
-            $this->design->assign('language', $language);
-            $this->design->assign('lang', $this->translations->get_translations(array('lang'=>$language->label)));
-
-            $this->design->assign('cart', $this->cart->get_cart());*/
-
-            /*$delivery = $this->delivery->get_delivery('novaposhta_cost');
-            $delivery->price = $priceResponse['price'];*/
-
-            //$payment_methods = $this->payment->get_payment_methods(array('delivery_id'=>$delivery->id, 'enabled'=>1));
-
-            /*Убираем способы оплаты в зависимости что выбрал пользователь (наложенный платеж или нет)*/
-            /*foreach ($payment_methods as $k=>$payment_method){
-                if($payment_method->is_novaposhta_redelivery != $redelivery){
-                    unset($payment_methods[$k]);
-                }
-            }
-
-            $delivery->payment_methods = $payment_methods;
-
-            $this->design->assign('delivery', $delivery);
-            $this->design->assign('all_currencies', $this->money->get_currencies());
-
-            if ($data->client) {
-                $priceResponse['payments_tpl'] = $this->design->fetch('novaposhta_cost_payments.tpl');
-            }*/
 
             $priceResponse['delivery_id'] = $deliveryId;
 

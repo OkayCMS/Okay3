@@ -7,3 +7,4 @@ $lang['no_faqs'] = 'No records';
 $lang['faq_added'] = 'FAQ added';
 $lang['faq_updated'] = 'FAQ updated';
 $lang['faq_answer'] = 'Answer';
+$lang['faq_question'] = 'Question';

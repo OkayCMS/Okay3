@@ -10,11 +10,7 @@
                 {include file='svg_icon.tpl' svgId='icon_tooltips'}
             </i>
             </div>
-            <div class="boxes_inline">
-
-            </div>
         </div>
-
     </div>
 </div>
 
@@ -22,18 +18,20 @@
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    {if $message_success == 'saved'}
-                        {$btr->general_settings_saved|escape}
-                    {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_success == 'saved'}
+                            {$btr->general_settings_saved|escape}
+                        {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                <a class="alert__button" href="{$smarty.get.return}">
+                    {include file='svg_icon.tpl' svgId='return'}
+                    <span>{$btr->general_back|escape}</span>
+                </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -102,8 +100,8 @@
                 <div class="activity_of_switch_item settings_router_switch">
                     <div class="okay_switch clearfix">
                         <label class="switch_label">
-                            {$btr->settings_router_url_slash_end}
-                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
+                            {$btr->settings_router_url_slash_end|escape}
+                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice|escape}">
                                 {include file='svg_icon.tpl' svgId='icon_tooltips'}
                             </i>
                         </label>
@@ -120,7 +118,7 @@
                         <label for="category_routes_default" class="okay_type_radio">
                             <span>
                                 {$rootUrl}/
-                                <input name="category_routes_template__default" placeholder="catalog" class="form-control prefix-url-input" type="text" value="{if $settings->category_routes_template__default}{$settings->category_routes_template__default}{else}catalog{/if}" />
+                                <input name="category_routes_template__default" placeholder="catalog" class="form-control prefix-url-input" type="text" value="{if $settings->category_routes_template__default}{$settings->category_routes_template__default|escape}{else}catalog{/if}" />
                                 /category
                             </span>
                         </label>
@@ -136,7 +134,7 @@
                     <div class="okay_type_radio_wrap">
                         <input id="category_routes_prefix_and_path" class="hidden_check" name="category_routes_template" type="radio" value="prefix_and_path" {if $settings->category_routes_template == 'prefix_and_path'} checked="" {/if} />
                         <label for="category_routes_prefix_and_path" class="okay_type_radio">
-                            <span>{$rootUrl}/<input name="category_routes_template__prefix_and_path" placeholder="catalog" class="form-control prefix-url-input" type="text" value="{if $settings->category_routes_template__prefix_and_path}{$settings->category_routes_template__prefix_and_path}{else}catalog{/if}" />/category-level-1/.../category</span>
+                            <span>{$rootUrl}/<input name="category_routes_template__prefix_and_path" placeholder="catalog" class="form-control prefix-url-input" type="text" value="{if $settings->category_routes_template__prefix_and_path}{$settings->category_routes_template__prefix_and_path|escape}{else}catalog{/if}" />/category-level-1/.../category</span>
                         </label>
                     </div>
 
@@ -159,8 +157,8 @@
                 <div class="activity_of_switch_item settings_router_switch">
                     <div class="okay_switch clearfix">
                         <label class="switch_label">
-                            {$btr->settings_router_url_slash_end}
-                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
+                            {$btr->settings_router_url_slash_end|escape}
+                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice|escape}">
                                 {include file='svg_icon.tpl' svgId='icon_tooltips'}
                             </i>
                         </label>
@@ -175,13 +173,13 @@
                     <div class="okay_type_radio_wrap">
                         <input id="product_routes_default" class="hidden_check" name="product_routes_template" type="radio" value="default" {if empty($settings->product_routes_template) || $settings->product_routes_template == 'default'} checked="" {/if} />
                         <label for="product_routes_default" class="okay_type_radio">
-                            <span>{$rootUrl}/<input name="product_routes_template__default" placeholder="products" class="form-control prefix-url-input" type="text" value="{if $settings->product_routes_template__default}{$settings->product_routes_template__default}{else}products{/if}" />/product-name</span>
+                            <span>{$rootUrl}/<input name="product_routes_template__default" placeholder="products" class="form-control prefix-url-input" type="text" value="{if $settings->product_routes_template__default}{$settings->product_routes_template__default|escape}{else}products{/if}" />/product-name</span>
                         </label>
                     </div>
                     <div class="okay_type_radio_wrap">
                         <input id="product_routes_prefix_and_all_categories" class="hidden_check" name="product_routes_template" type="radio" value="prefix_and_path" {if $settings->product_routes_template == 'prefix_and_path'} checked="" {/if} />
                         <label for="product_routes_prefix_and_all_categories" class="okay_type_radio">
-                            <span>{$rootUrl}/<input name="product_routes_template__prefix_and_path" placeholder="catalog" class="form-control prefix-url-input" type="text" value="{if $settings->product_routes_template__prefix_and_path}{$settings->product_routes_template__prefix_and_path}{else}catalog{/if}" />/category-level-1/.../category/product-name</span>
+                            <span>{$rootUrl}/<input name="product_routes_template__prefix_and_path" placeholder="catalog" class="form-control prefix-url-input" type="text" value="{if $settings->product_routes_template__prefix_and_path}{$settings->product_routes_template__prefix_and_path|escape}{else}catalog{/if}" />/category-level-1/.../category/product-name</span>
                         </label>
                     </div>
                     <div class="okay_type_radio_wrap">
@@ -219,7 +217,7 @@
                 <div class="activity_of_switch_item settings_router_switch">
                     <div class="okay_switch clearfix">
                         <label class="switch_label">
-                            {$btr->settings_router_url_slash_end}
+                            {$btr->settings_router_url_slash_end|escape}
                             <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
                                 {include file='svg_icon.tpl' svgId='icon_tooltips'}
                             </i>
@@ -236,7 +234,7 @@
                     <div class="okay_type_radio_wrap">
                         <input id="brand_routes_default" class="hidden_check" name="brand_routes_template" type="radio" value="default" {if empty($settings->brand_routes_template) || $settings->brand_routes_template == 'default'} checked="" {/if} />
                         <label for="brand_routes_default" class="okay_type_radio">
-                            <span>{$rootUrl}/<input name="brand_routes_template__default" placeholder="brand" class="form-control prefix-url-input" type="text" value="{if $settings->brand_routes_template__default}{$settings->brand_routes_template__default}{else}brand{/if}" />/brand-name</span>
+                            <span>{$rootUrl}/<input name="brand_routes_template__default" placeholder="brand" class="form-control prefix-url-input" type="text" value="{if $settings->brand_routes_template__default}{$settings->brand_routes_template__default|escape}{else}brand{/if}" />/brand-name</span>
                         </label>
                     </div>
 
@@ -261,8 +259,8 @@
                 <div class="activity_of_switch_item settings_router_switch">
                     <div class="okay_switch clearfix">
                         <label class="switch_label">
-                            {$btr->settings_router_url_slash_end}
-                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
+                            {$btr->settings_router_url_slash_end|escape}
+                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice|escape}">
                                 {include file='svg_icon.tpl' svgId='icon_tooltips'}
                             </i>
                         </label>
@@ -278,7 +276,7 @@
                     <div class="okay_type_radio_wrap">
                         <input id="blog_item_routes_default" class="hidden_check" name="blog_item_routes_template" type="radio" value="default" {if empty($settings->blog_item_routes_template) || $settings->blog_item_routes_template == 'default'} checked="" {/if} />
                         <label for="blog_item_routes_default" class="okay_type_radio">
-                            <span>{$rootUrl}/<input name="blog_item_routes_template__default" placeholder="blog" class="form-control prefix-url-input" type="text" value="{if $settings->blog_item_routes_template__default}{$settings->blog_item_routes_template__default}{else}blog{/if}" />/post-name</span>
+                            <span>{$rootUrl}/<input name="blog_item_routes_template__default" placeholder="blog" class="form-control prefix-url-input" type="text" value="{if $settings->blog_item_routes_template__default}{$settings->blog_item_routes_template__default|escape}{else}blog{/if}" />/post-name</span>
                         </label>
                     </div>
 
@@ -303,8 +301,8 @@
                 <div class="activity_of_switch_item settings_router_switch">
                     <div class="okay_switch clearfix">
                         <label class="switch_label">
-                            {$btr->settings_router_url_slash_end}
-                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
+                            {$btr->settings_router_url_slash_end|escape}
+                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice|escape}">
                                 {include file='svg_icon.tpl' svgId='icon_tooltips'}
                             </i>
                         </label>
@@ -320,7 +318,7 @@
                     <div class="okay_type_radio_wrap">
                         <input id="news_item_routes_default" class="hidden_check" name="news_item_routes_template" type="radio" value="default" {if empty($settings->news_item_routes_template) || $settings->news_item_routes_template == 'default'} checked="" {/if} />
                         <label for="news_item_routes_default" class="okay_type_radio">
-                            <span>{$rootUrl}/<input name="news_item_routes_template__default" placeholder="news" class="form-control prefix-url-input" type="text" value="{if $settings->news_item_routes_template__default}{$settings->news_item_routes_template__default}{else}news{/if}" />/news-name</span>
+                            <span>{$rootUrl}/<input name="news_item_routes_template__default" placeholder="news" class="form-control prefix-url-input" type="text" value="{if $settings->news_item_routes_template__default}{$settings->news_item_routes_template__default|escape}{else}news{/if}" />/news-name</span>
                         </label>
                     </div>
 
@@ -350,8 +348,8 @@
 
                         <div class="okay_switch clearfix">
                             <label class="switch_label">
-                                {$btr->settings_router_url_slash_end}
-                                <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
+                                {$btr->settings_router_url_slash_end|escape}
+                                <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice|escape}">
                                     {include file='svg_icon.tpl' svgId='icon_tooltips'}
                                 </i>
                             </label>
@@ -365,7 +363,7 @@
 
                     <div class="okay_type_radio_wrap">
                         <label for="" class="okay_type_radio_no_width" >
-                            <span>{$btr->common_routes_posts}: {$rootUrl}/<input name="all_blog_routes_template__default" placeholder="brands" class="form-control prefix-url-input" type="text" value="{if $settings->all_blog_routes_template__default}{$settings->all_blog_routes_template__default}{else}blog{/if}" /></span>
+                            <span>{$btr->common_routes_posts}: {$rootUrl}/<input name="all_blog_routes_template__default" placeholder="brands" class="form-control prefix-url-input" type="text" value="{if $settings->all_blog_routes_template__default}{$settings->all_blog_routes_template__default|escape}{else}blog{/if}" /></span>
                         </label>
 
                         <div class="okay_switch clearfix">
@@ -385,7 +383,7 @@
 
                     <div class="okay_type_radio_wrap">
                         <label for="" class="okay_type_radio_no_width" >
-                            <span>{$btr->common_routes_news}: {$rootUrl}/<input name="all_news_routes_template__default" placeholder="brands" class="form-control prefix-url-input" type="text" value="{if $settings->all_news_routes_template__default}{$settings->all_news_routes_template__default}{else}news{/if}" /></span>
+                            <span>{$btr->common_routes_news}: {$rootUrl}/<input name="all_news_routes_template__default" placeholder="brands" class="form-control prefix-url-input" type="text" value="{if $settings->all_news_routes_template__default}{$settings->all_news_routes_template__default|escape}{else}news{/if}" /></span>
                         </label>
 
                         <div class="okay_switch clearfix">

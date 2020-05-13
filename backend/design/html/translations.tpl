@@ -3,7 +3,7 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->translations_translate|escape}{if $settings->admin_theme} {$btr->theme_theme} {$settings->admin_theme|escape}{/if}
@@ -18,30 +18,37 @@
             {/if}
         </div>
     </div>
-    <div class="col-md-5 col-lg-4 col-sm-12 float-xs-right"></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="alert alert--icon">
+            <div class="alert__content">
+                <div class="alert__title">{$btr->alert_description|escape}</div>
+                <p>{$btr->general_translation_attention|escape}</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 {if $locked_theme}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="">
-                    {$btr->general_protected|escape}
+            <div class="alert alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">{$btr->general_protected|escape}</div>
                 </div>
             </div>
         </div>
     </div>
 {/if}
 
-<div class="row">
-    <div class="col-lg-12 col-md-12 col-sm-12">
-        <div class="boxed boxed_attention">
-            <div class="">
-                {$btr->general_translation_attention|escape}
-            </div>
-        </div>
+{$block = {get_design_block block="translations_custom_block"}}
+{if $block}
+    <div class="row custom_block">
+        {$block}
     </div>
-</div>
+{/if}
 
 {*Главная форма страницы*}
 <div class="boxed fn_toggle_wrap">

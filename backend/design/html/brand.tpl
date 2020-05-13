@@ -25,29 +25,30 @@
             {/if}
         </div>
     </div>
-    <div class="col-md-12 col-lg-12 col-sm-12 float-xs-right"></div>
 </div>
 
 {*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    {if $message_success=='added'}
-                        {$btr->brand_added|escape}
-                    {elseif $message_success=='updated'}
-                        {$btr->brand_updated|escape}
-                    {else}
-                        {$message_success|escape}
-                    {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_success=='added'}
+                            {$btr->brand_added|escape}
+                        {elseif $message_success=='updated'}
+                            {$btr->brand_updated|escape}
+                        {else}
+                            {$message_success|escape}
+                        {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                    <a class="alert__button" href="{$smarty.get.return}">
+                        {include file='svg_icon.tpl' svgId='return'}
+                        <span>{$btr->general_back|escape}</span>
+                    </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -57,19 +58,21 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
-                    {if $message_error=='url_exists'}
-                        {$btr->brand_exists|escape}
-                    {elseif $message_error=='global_url_exists'}
-                        {$btr->global_url_exists|escape}
-                    {elseif $message_error=='empty_name'}
-                        {$btr->general_enter_title|escape}
-                    {elseif $message_error == 'empty_url'}
-                        {$btr->general_enter_url|escape}
-                    {else}
-                        {$message_error|escape}
-                    {/if}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_error=='url_exists'}
+                            {$btr->brand_exists|escape}
+                        {elseif $message_error=='global_url_exists'}
+                            {$btr->global_url_exists|escape}
+                        {elseif $message_error=='empty_name'}
+                            {$btr->general_enter_title|escape}
+                        {elseif $message_error == 'empty_url'}
+                            {$btr->general_enter_url|escape}
+                        {else}
+                            {$message_error|escape}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>

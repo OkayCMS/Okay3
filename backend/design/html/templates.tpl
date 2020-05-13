@@ -4,22 +4,33 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-10 col-md-10">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->general_theme|escape} {$theme} {$btr->general_template|escape} {$template_file}
             </div>
         </div>
     </div>
-    <div class="col-md-2 col-lg-2 col-sm-12 float-xs-right"></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="alert alert--icon">
+            <div class="alert__content">
+                <div class="alert__title mb-q">{$btr->alert_description|escape}</div>
+                <p>{$btr->general_design_message|escape}</p> <p><strong>{$btr->general_design_message2|escape}</strong></p>
+            </div>
+        </div>
+    </div>
 </div>
 
 {*Вывод ошибок*}
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="">
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
                     {if $message_error == 'permissions'}
                         {$btr->general_permission|escape} {$template_file}
                     {elseif $message_error == 'theme_locked'}
@@ -27,23 +38,12 @@
                     {else}
                         {$message_error|escape}
                     {/if}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 {/if}
-
-<div class="row">
-    <div class="col-lg-12 col-md-12 col-sm-12">
-        <div class="boxed boxed_attention">
-            <div class="">
-                {$btr->general_design_message|escape}
-                {$btr->general_design_message2|escape}
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <div class="row">
     <div class="col-lg-12 col-md-12">
@@ -138,7 +138,13 @@
             $.ajax({
                 type: 'POST',
                 url: 'ajax/save_template.php',
-                data: {'content': content, 'theme':'{/literal}{$theme}{literal}', 'template': '{/literal}{$template_file}{literal}', 'session_id': '{/literal}{$smarty.session.id}{literal}'},
+                data: {
+                    'content': content,
+                    'theme':'{/literal}{$theme}{literal}',
+                    'template': '{/literal}{$template_file}{literal}',
+                    'session_id': '{/literal}{$smarty.session.id}{literal}',
+                    {/literal}{if $smarty.get.email}'email': true,{/if}{literal}
+                },
                 success: function(data){
                     $('.CodeMirror').animate({'background-color': '#fff'},500);
                     $('.CodeMirror').animate({'background-color': '#272822'},500);

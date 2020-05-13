@@ -3,7 +3,7 @@
 
 {*Название страницы*}
 <div class="row">
-    <div class="col-lg-7 col-md-7">
+    <div class="col-lg-12 col-md-12">
         <div class="wrap_heading">
             <div class="box_heading heading_page">
                 {$btr->module_design_title} ({$module->vendor}/{$module->module_name})
@@ -12,11 +12,11 @@
     </div>
 </div>
 
-<div class="boxed boxed_attention">
-    <div class="">
-        {$btr->theme_coverage_module_design|escape}
+<div class="alert alert--icon">
+    <div class="alert__content">
+        <div class="alert__title mb-q">{$btr->alert_description|escape}</div>
+        <p>{$btr->theme_coverage_module_design}</p>
     </div>
-
 </div>
 
 {*Главная форма страницы*}
@@ -63,7 +63,7 @@
                             <label class="okay_ckeckbox" for="check_all_2"></label>
                         </div>
                         <div class="okay_list_option">
-                            <select name="action" class="selectpicker">
+                            <select name="action" class="selectpicker form-control">
                                 <option value="clone_to_theme">{$btr->module_design_copy_to_actual_theme_for_edit}</option>
                             </select>
                         </div>

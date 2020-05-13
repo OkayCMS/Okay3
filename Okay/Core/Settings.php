@@ -53,39 +53,33 @@ class Settings
         if (isset($this->vars_lang[$param])) {
             return;
         }
-        $this->vars[$param] = $value;
-
+        
         if(is_array($value)) {
-            $value = serialize($value);
+            $valuePrepared = serialize($value);
         } else {
-            $value = (string) $value;
+            $valuePrepared = (string) $value;
         }
-
-        $select = $this->queryFactory->newSelect();
-        $select->cols(['count(*)' => 'count'])
-            ->from('__settings')
-            ->where('param = :param');
-        $select->bindValue('param', $param);
-
-        $this->db->query($select);
-        if($this->db->result('count')>0) {
-            $update = $this->queryFactory->newUpdate();
-            $update->table('__settings')
-                ->cols(['value' => $value])
-                ->where('param = :param');
-            $update->bindValue('param', $param);
-
-            $this->db->query($update);
-        } else {
+        
+        if(!isset($this->vars[$param])) {
             $insert = $this->queryFactory->newInsert();
             $insert->into('__settings')
                 ->cols([
-                    'value' => $value,
+                    'value' => $valuePrepared,
                     'param' => $param,
                 ]);
 
             $this->db->query($insert);
+        } elseif ($this->vars[$param] != $value) {
+            $update = $this->queryFactory->newUpdate();
+            $update->table('__settings')
+                ->cols(['value' => $valuePrepared])
+                ->where('param = :param');
+            $update->bindValue('param', $param);
+
+            $this->db->query($update);
         }
+
+        $this->vars[$param] = $value;
     }
     
     public function __get($param)

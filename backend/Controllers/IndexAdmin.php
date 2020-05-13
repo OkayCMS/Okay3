@@ -212,6 +212,11 @@ class IndexAdmin
             $this->design->assign('message_success', $messageSuccess);
         }
 
+        // Запоминаем логин менеджера для работы темы под админом
+        if (!empty($this->manager->login)) {
+            setcookie('admin_login', $this->manager->login, time() + 60 * 60 * 24 * 3, '/');
+        }
+
         if (isset($_SESSION['show_learn'])) {
             unset($_SESSION['show_learn']);
             $response->redirectTo($this->request->getRootUrl() . '/backend/index.php?controller=LearningAdmin');

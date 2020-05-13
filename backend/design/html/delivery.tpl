@@ -23,20 +23,22 @@
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_success">
-                <div class="heading_box">
-                    {if $message_success == 'added'}
+            <div class="alert alert--center alert--icon alert--success">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_success == 'added'}
                         {$btr->delivery_added|escape}
-                    {elseif $message_success == 'updated'}
+                        {elseif $message_success == 'updated'}
                         {$btr->delivery_updated|escape}
-                    {/if}
-                    {if $smarty.get.return}
-                        <a class="btn btn_return float-xs-right" href="{$smarty.get.return}">
-                            {include file='svg_icon.tpl' svgId='return'}
-                            <span>{$btr->general_back|escape}</span>
-                        </a>
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
+                {if $smarty.get.return}
+                <a class="alert__button" href="{$smarty.get.return}">
+                    {include file='svg_icon.tpl' svgId='return'}
+                    <span>{$btr->general_back|escape}</span>
+                </a>
+                {/if}
             </div>
         </div>
     </div>
@@ -46,13 +48,15 @@
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="boxed boxed_warning">
-                <div class="heading_box">
-                    {if $message_error=='empty_name'}
+            <div class="alert alert--center alert--icon alert--error">
+                <div class="alert__content">
+                    <div class="alert__title">
+                        {if $message_error=='empty_name'}
                         {$btr->general_enter_title|escape}
-                    {else}
+                        {else}
                         {$message_error|escape}
-                    {/if}
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -243,7 +247,7 @@
                         <div class="col-lg-6 pr-0">
                             <div class="form-group clearfix">
                                 <div class="heading_label" >{$btr->payment_method_type|escape}</div>
-                                <select name="module_id" class="selectpicker">
+                                <select name="module_id" class="selectpicker form-control">
                                     <option value='null'>{$btr->payment_method_manual|escape}</option>
                                     {foreach $delivery_modules as $delivery_module}
                                         <option value="{$delivery_module->id}" {if $delivery->module_id == $delivery_module->id}selected{/if} >{$delivery_module->vendor|escape}/{$delivery_module->module_name|escape}</option>
@@ -263,7 +267,7 @@
                                         <div class="form-group clearfix">
                                             <div class="heading_label" >{$setting->name|escape}</div>
                                             <div class="">
-                                                <select name="delivery_settings[{$setting->variable}]" class="selectpicker">
+                                                <select name="delivery_settings[{$setting->variable}]" class="selectpicker form-control">
                                                     {foreach $setting->options as $option}
                                                         <option value="{$option->value}" {if isset($delivery->delivery_settings[$setting->variable]) && $option->value==$delivery->delivery_settings[$setting->variable]}selected{/if}>{$option->name|escape}</option>
                                                     {/foreach}
