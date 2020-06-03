@@ -297,22 +297,16 @@
                         </form>
                     </div>
                     {* Social buttons *}
-                    {if $settings->site_social_links}
+                    {if $site_social}
                         <div class="footer__title d-flex align-items-center justify-content-between">
                             <span data-language="index_in_networks">{$lang->index_in_networks}</span>
                             <span class="fn_switch_parent footer__title_arrow hidden-lg-up">{include file="svg.tpl" svgId="arrow_right"}</span>
                         </div>
                         <div class="footer__content footer__social social footer__hidden">
-                            {*Домен некоторых соц. сетей не соответствует стилям font-awesome, для них сделаны эти алиасы*}
-                            {$social_aliases.ok = 'odnoklassniki'}
-
-                            {foreach $settings->site_social_links as $social_link}
-                            {$social_domain = preg_replace('~(https?://)?(www\.)?([^\.]+)?\..*~', '$3', $social_link)}
-                            {if isset($social_aliases.$social_domain) || $social_domain}
-                            <a class="social__link {if isset($social_aliases.$social_domain)}{$social_aliases.$social_domain}{else}{$social_domain}{/if}" rel="noreferrer" aria-label="{$social_domain}" href="{if !preg_match('~^https?://.*$~', $social_link)}https://{/if}{$social_link|escape}" target="_blank" title="{$social_domain}">
-                                <i class="fa fa-{if isset($social_aliases.$social_domain)}{$social_aliases.$social_domain}{else}{$social_domain}{/if}"></i>
-                            </a>
-                            {/if}
+                            {foreach $site_social as $social}
+                                <a class="social__link {$social.domain|escape}" rel="noreferrer" aria-label="{$social_domain}" href="{if !preg_match('~^https?://.*$~', $social.url)}https://{/if}{$social.url|escape}" target="_blank" title="{$social.domain|escape}">
+                                    <i class="fa fa-{$social.domain|escape}"></i>
+                                </a>
                             {/foreach}
                         </div>
                     {/if}

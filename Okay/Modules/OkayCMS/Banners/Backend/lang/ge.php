@@ -62,3 +62,7 @@ $lang['banner_show_all_products'] = 'ჩვენება პროდუქტ
 $lang['banner_faq_id_group'] = 'უნიკალური იდენტიფიკატორი შეგიძლიათ გამოიყენოთ ბანერების ჯგუფის სტილიზაციისთვის. კოდში მას ემატება პრეფიქსი fn_banner_.';
 $lang['banner_label_id_group'] = 'Id ჯგუფის ბანერი';
 $lang['banner_label_individual_shortcode'] = 'კოდირების სახელი';
+$lang['admintooltip_edit_banner'] = 'შეცვალეთ ბანერი';
+$lang['admintooltip_add_banner'] = 'დაამატე ბანერი';
+$lang['admintooltip_edit_slide'] = 'შეცვალეთ ბანერის სურათი';
+$lang['admintooltip_add_slide'] = 'დაამატე ბანერის სურათი';

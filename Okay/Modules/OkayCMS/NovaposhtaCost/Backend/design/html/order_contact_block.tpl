@@ -123,7 +123,7 @@
     
     $('select.warehouses_novaposhta').on('change', function() {
         if($(this).val() != ''){
-            let city_name = $('select.city_novaposhta').children(':selected').val(),
+            let city_name = $('.fn_newpost_city_name').val(),
                 warehouse_name = $(this).val(),
                 delivery_address = city_name + ', ' + warehouse_name;
             $('textarea[name="address"]').text(delivery_address);

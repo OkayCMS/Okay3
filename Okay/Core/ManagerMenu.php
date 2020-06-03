@@ -4,6 +4,7 @@
 namespace Okay\Core;
 
 
+use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Core\Modules\Module;
 
 class ManagerMenu
@@ -47,6 +48,8 @@ class ManagerMenu
         ],
         'left_blog' => [
             'left_blog_title'            => ['BlogAdmin', 'PostAdmin'],
+            'left_blog_categories_title' => ['BlogCategoriesAdmin', 'BlogCategoryAdmin'],
+            'left_authors_title'         => ['AuthorsAdmin', 'AuthorAdmin'],
         ],
         'left_comments' => [
             'left_comments_title'        => ['CommentsAdmin'],
@@ -98,6 +101,139 @@ class ManagerMenu
     ];
 
     /**
+     * Полный список элементов меню быстрого редактирования
+     * 
+     * @var array 
+     */
+    private $fastMenu = [
+        'feature' => [
+            [
+                'controller' => 'FeatureAdmin',
+                'translation' => 'admintooltip_edit_feature',
+                'params' => [
+                    'id' => 'id',
+                ],
+            ],
+            [
+                'controller' => 'FeatureAdmin',
+                'translation' => 'admintooltip_add_feature',
+            ],
+        ],
+        'language' => [
+            [
+                'controller' => 'TranslationAdmin',
+                'translation' => 'admintooltip_edit_translarion',
+                'params' => [
+                    'id' => 'id',
+                ],
+            ],
+        ],
+        'product' => [
+            [
+                'controller' => 'ProductAdmin',
+                'translation' => 'admintooltip_edit_product',
+                'params' => [
+                    'id' => 'id',
+                ],
+            ],
+            [
+                'controller' => 'ProductAdmin',
+                'translation' => 'admintooltip_add_product',
+            ],
+        ],
+        'brand' => [
+            [
+                'controller' => 'BrandAdmin',
+                'translation' => 'admintooltip_edit_brand',
+                'params' => [
+                    'id' => 'id',
+                ],
+            ],
+            [
+                'controller' => 'BrandAdmin',
+                'translation' => 'admintooltip_add_brand',
+            ],
+        ],
+        'page' => [
+            [
+                'controller' => 'PageAdmin',
+                'translation' => 'admintooltip_edit_page',
+                'params' => [
+                    'id' => 'id',
+                ],
+            ],
+            [
+                'controller' => 'PageAdmin',
+                'translation' => 'admintooltip_add_page',
+            ],
+        ],
+        'author' => [
+            [
+                'controller' => 'AuthorAdmin',
+                'translation' => 'admintooltip_edit_author',
+                'params' => [
+                    'id' => 'id',
+                ],
+            ],
+            [
+                'controller' => 'AuthorAdmin',
+                'translation' => 'admintooltip_add_author',
+            ],
+        ],
+        'post' => [
+            [
+                'controller' => 'PostAdmin',
+                'translation' => 'admintooltip_edit_post',
+                'params' => [
+                    'id' => 'id',
+                ],
+            ],
+        ],
+        'category' => [
+            [
+                'controller' => 'CategoryAdmin',
+                'translation' => 'admintooltip_edit_category',
+                'params' => [
+                    'id' => 'id',
+                ],
+            ],
+            [
+                'controller' => 'CategoryAdmin',
+                'translation' => 'admintooltip_add_category',
+            ],
+            [
+                'controller' => 'ProductAdmin',
+                'translation' => 'admintooltip_add_product',
+                'params' => [
+                    'category_id' => 'id',
+                ],
+                'action' => 'add',
+            ],
+        ],
+        'blog_category' => [
+            [
+                'controller' => 'BlogCategoryAdmin',
+                'translation' => 'admintooltip_edit_category',
+                'params' => [
+                    'id' => 'id',
+                ],
+            ],
+            [
+                'controller' => 'BlogCategoryAdmin',
+                'translation' => 'admintooltip_add_category',
+            ],
+            [
+                'controller' => 'PostAdmin',
+                'translation' => 'admintooltip_add_post',
+                'params' => [
+                    'category_id' => 'id',
+                ],
+                'action' => 'add',
+            ],
+        ],
+    ];
+    
+    /**
      * Ссылки на изображения для дополнительных секцый меню. Представляют из себя ассоциативный массив с именем
      * секции в качестве ключа и путем к картинке относительно корня проекта
      *
@@ -127,6 +263,59 @@ class ManagerMenu
         }
     }
 
+    public function getFastMenu()
+    {
+        return ExtenderFacade::execute(__METHOD__, $this->fastMenu, func_get_args());
+    }
+
+    /**
+     * Добавление элемента меню быстрого редактирования для администратора.
+     *
+     * @param string $dataProperty data атрибут который должен быть у html элемента, и при наведении на который будет
+     * открываться данное меню
+     * @param array ...$menuItems массив описаний ссылок меню
+     * @throws \Exception
+     * @example $this->extendBackendMenu('property', [
+            'controller' => 'Vendor.Module.Controller',
+            'translation' => 'translation_var_add',
+        ], [
+            'controller' => 'Vendor.Module.Controller',
+            'translation' => 'translation_var_edit',
+            'params' => [
+                'id' => 'id',
+            ],
+            'action' => 'edit',
+        ]);
+     * При наведении на элемент с атрибутом data-property="1" будут построены ссылки на добавление сущности через
+     * контроллер Vendor.Module.Controller и на редактирование с GET параметром id=1 (указанным в data-property).
+     */
+    public function addFastMenuItem($dataProperty, ...$menuItems)
+    {
+        $validatedMenuItems = [];
+        foreach ($menuItems as $item) {
+            $validatedMenuItem = [];
+            if (!empty($item['controller'])) {
+                $validatedMenuItem['controller'] = $item['controller'];
+            } else {
+                throw new \Exception('Controller is required for fastMenu');
+            }
+            if (!empty($item['translation'])) {
+                $validatedMenuItem['translation'] = $item['translation'];
+            } else {
+                throw new \Exception('Translation is required for fastMenu');
+            }
+            if (!empty($item['params'])) {
+                $validatedMenuItem['params'] = $item['params'];
+            }
+            if (!empty($item['action']) && in_array($item['action'], ['add', 'edit'])) {
+                $validatedMenuItem['action'] = $item['action'];
+            }
+            $validatedMenuItems[] = $validatedMenuItem;
+        }
+        
+        $this->fastMenu[$dataProperty] = $validatedMenuItems;
+    }
+    
     /**
      * Добавить новый контроллера в меню. Чтобы зайдя на этот модуль "Модули" отображался как активный пункт меню
      *
@@ -245,6 +434,19 @@ class ManagerMenu
         return $preparedItems;
     }
 
+    /**
+     * Данный метод позволяет расширять меню админ панели посредством добавления новых пунктов меню в оную
+     *
+     * @param $section - ленг корневого пункта меню. Если указать существующий, то пункты меню второго уровня добавляться в конец списка внутри существующего пункта меню
+     * @param $menuItemsByControllers - ассоциативный массив с ленгами пунктов меню в качестве ключа и соответствующими им контроллерами в качестве значений
+     * @param $icon - путь к файлу относительно папки Backend модуля или текст svg картинки
+     * @throws \Exception
+     *
+     * @example $this->extendBackendMenu('first_level_menu_name', [
+    'lang_name_menu_item_1' => ['SomeOneAdmin'],
+    'lang_name_menu_item_2' => ['SomeTwoAdmin', 'SomeThreeAdmin'],
+    ], 'icon');
+     */
     public function extendMenu($section, array $menuItemsByControllers, $icon)
     {
         foreach($menuItemsByControllers as $itemName => $controllers) {
@@ -370,7 +572,11 @@ class ManagerMenu
         $permissionBlockMenu = [];
 
         foreach($blockMenu as $itemName => $controllers) {
-            $permissionBlockMenu[$itemName] = $this->managers->getPermissionByController($controllers[0]);
+            $permission = $this->managers->getPermissionByController($controllers[0]);
+            // Берем первый попавшийся пункт как основной для одинаковых пермишинов, иначе array_flip будет брать последний
+            if (!in_array($permission, $permissionBlockMenu)) {
+                $permissionBlockMenu[$itemName] = $permission;
+            }
         }
 
         return array_flip($permissionBlockMenu);

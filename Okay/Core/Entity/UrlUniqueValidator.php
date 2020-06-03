@@ -5,6 +5,8 @@ namespace Okay\Core\Entity;
 
 
 use Okay\Core\EntityFactory;
+use Okay\Entities\AuthorsEntity;
+use Okay\Entities\BlogCategoriesEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\BlogEntity;
@@ -37,15 +39,29 @@ class UrlUniqueValidator
 
         /** @var BlogEntity $blogEntity */
         $blogEntity = $this->entityFactory->get(BlogEntity::class);
-        $post = $blogEntity->get((string) $url);
+        $post = $blogEntity->findOne(['url' => $url]);
         if (!empty($post) && $entityName !== BlogEntity::class && $post->id != $id) {
+            return false;
+        }
+
+        /** @var BlogCategoriesEntity $blogCategoriesEntity */
+        $blogCategoriesEntity = $this->entityFactory->get(BlogCategoriesEntity::class);
+        $category = $blogCategoriesEntity->findOne(['url' => $url]);
+        if (!empty($category) && $entityName !== BlogCategoriesEntity::class && $category->id != $id) {
             return false;
         }
 
         /** @var BrandsEntity $brandsEntity */
         $brandsEntity = $this->entityFactory->get(BrandsEntity::class);
-        $brand = $brandsEntity->get((string) $url);
+        $brand = $brandsEntity->findOne(['url' => $url]);
         if (!empty($brand) && $entityName !== BrandsEntity::class && $brand->id != $id) {
+            return false;
+        }
+
+        /** @var AuthorsEntity $authorsEntity */
+        $authorsEntity = $this->entityFactory->get(AuthorsEntity::class);
+        $author = $authorsEntity->findOne(['url' => $url]);
+        if (!empty($author) && $entityName !== AuthorsEntity::class && $author->id != $id) {
             return false;
         }
 

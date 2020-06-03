@@ -366,6 +366,19 @@ $(function(){
         });
     }
 
+    /* Aside products */
+    if( $('.fn_aside_products_slide').length ) {
+        $('.fn_aside_products_slide').owlCarousel({
+            loop:false,
+            margin:0,
+            items:1,
+            lazyLoad:true,
+            mouseDrag:false,
+            nav:true,
+            dotsEach:false,
+        });
+    }
+
 
     /* Mobile search */
     $(document).on("click", ".fn_search_toggle", function() {
@@ -479,7 +492,7 @@ $(function(){
             $(this).addClass('down');
         }
     });
-    $('.catalog_menu .selected').parents('.parent').addClass('opened').find('> .switch').addClass('active');
+    $('.blog_catalog .selected').parents('.parent').addClass('opened').find('> .switch').addClass('active');
 
 
     /* Tabs */
@@ -942,4 +955,57 @@ if( $( '.fn_comparison_products' ).length ) {
 if( $( '.block__description' ).length ) {
     $('.block__description').find('iframe').wrap('<p class="video"></p>');
     $('.block__description').find('table').wrap('<div class="table_responsive"></div>');
+
+    $(document).ready(function() {
+        $('img.fn_img_zoom').each(function(i){
+            if(this.parentNode.tagName!='A'){
+                $(this).wrap('<a class="fn_image_zoom" data-fancybox="fn_image_zoom'+i+'" rel="fancybox_'+i+'" href="'+this.src+'" target="_blank"/>');
+            }
+        });
+        $('img.fn_img_gallery').each(function(i){
+            if(this.parentNode.tagName!='A'){
+                $(this).wrap('<a class="fn_image_gallery" data-fancybox="fn_image_gallery" rel="image_gallery" href="'+this.src+'" target="_blank"/>');
+            }
+        });
+        $('img.fn_img_slider').each(function(i){
+            if(this.parentNode.tagName!='A'){
+                $(this).wrap('<a class="fn_image_slider" data-fancybox="fn_image_slider" rel="image_slider" href="'+this.src+'" target="_blank"/>');
+            }
+        });
+
+        $("a.fn_image_gallery").wrapAll("<div class='fn_slider_gallery owl-carousel'></div>");
+
+        $("a.fn_image_slider").wrapAll("<div class='fn_slider_mce owl-carousel'></div>");
+
+        if( $('.fn_slider_gallery').length ) {
+            $('.fn_slider_gallery').owlCarousel({
+                loop:false,
+                margin:0,
+                lazyLoad:true,
+                mouseDrag:false,
+                nav:true,
+                items:1,
+                dotsEach:true,
+                responsive:{
+                    768:{
+                        mouseDrag:true,
+                        items:2
+                    },
+                    992:{items:3}
+                }
+            });
+        }
+        if( $('.fn_slider_mce').length ) {
+            $('.fn_slider_mce').owlCarousel({
+                loop:true,
+                margin:0,
+                lazyLoad:true,
+                mouseDrag:true,
+                nav:true,
+                items:1,
+                dotsEach:true
+            });
+        }
+    });
+
 }

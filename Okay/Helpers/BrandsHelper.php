@@ -35,12 +35,7 @@ class BrandsHelper implements GetListInterface
     {
 
         if ($excludedFields === null) {
-            $excludedFields = [
-                'description',
-                'meta_title',
-                'meta_keywords',
-                'meta_description',
-            ];
+            $excludedFields = $this->getExcludeFields();
         }
         
         /** @var BrandsEntity $brandsEntity */
@@ -58,6 +53,17 @@ class BrandsHelper implements GetListInterface
         return ExtenderFacade::execute(__METHOD__, $brands, func_get_args());
     }
 
+    public function getExcludeFields()
+    {
+        $excludedFields = [
+            'description',
+            'meta_title',
+            'meta_keywords',
+            'meta_description',
+        ];
+        return ExtenderFacade::execute(__METHOD__, $excludedFields, func_get_args());
+    }
+    
     // Данный метод остаётся для обратной совместимости, но объявлен как deprecated, и будет удалён в будущих версиях
     public function getBrandsList($filter = [], $sort = null)
     {

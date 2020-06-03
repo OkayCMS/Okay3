@@ -50,6 +50,10 @@ class HotlineController extends AbstractController
 
         // Запрещаем выполнять запросы в БД во время генерации урла т.к. мы работаем с небуферизированными запросами
         ProductRoute::setNotUseSqlToGenerate();
+
+        // Увеличиваем лимит ф-ции GROUP_CONCAT()
+        $query = $queryFactory->newSqlQuery();
+        $query->setStatement('SET SESSION group_concat_max_len = 1000000;')->execute();
         
         // Для экономии памяти работаем с небуферизированными запросами
         $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);

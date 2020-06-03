@@ -151,38 +151,60 @@
 
         {* Blog page *}
         {elseif $controller == "BlogController"}
-            {if $post}
+
+            {if $category}
+                {foreach from=$category->path item=cat}
+                    {if !$cat@last || !empty($post)}
+                        {if $cat->visible}
+                            <li itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                                <a itemprop="item" href="{url_generator route='blog_category' url=$cat->url}">
+                                    <span itemprop="name">{$cat->name|escape}</span>
+                                </a>
+                                <meta itemprop="position" content="{$level++}" />
+                            </li>
+                        {/if}
+                    {else}
+                        <li itemprop="itemListElement" itemscope
+                            itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                            <span itemprop="name">{$cat->name|escape}</span>
+                            <meta itemprop="position" content="{$level++}" />
+                        </li>
+                    {/if}
+                {/foreach}
+
+                {if $post}
+                    <li itemprop="itemListElement" itemscope
+                        itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                        <span itemprop="name">{$post->name|escape}</span>
+                        <meta itemprop="position" content="{$level++}" />
+                    </li>
+                {/if}
+            {else}
                 <li itemprop="itemListElement" itemscope
                     itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
-
-                    {if $post->type_post == "news"}
-                        {$prev_url = {url_generator route='news'}}
-                    {else}
-                        {$prev_url = {url_generator route='blog'}}
-                    {/if}
-                    
-                    <a itemprop="item" href="{$prev_url}">
-                        {if $post->type_post == "news"}
-                            <span itemprop="name" data-language="main_news">{$lang->main_news}</span>
-                        {else}
-                            <span itemprop="name" data-language="breadcrumbs_blog">{$lang->breadcrumbs_blog}</span>
-                        {/if}
+                    <span itemprop="name" data-language="breadcrumbs_blog">{$lang->breadcrumbs_blog}</span>
+                    <meta itemprop="position" content="{$level++}" />
+                </li>
+            {/if}
+        {elseif $controller == "AuthorsController"}
+            {if $author}
+                <li itemprop="itemListElement" itemscope
+                    itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
+                    <a itemprop="item" href="{url_generator route='authors'}">
+                        <span itemprop="name">{$lang->breadcrumbs_authors}</span>
                     </a>
                     <meta itemprop="position" content="{$level++}" />
                 </li>
                 <li itemprop="itemListElement" itemscope
                     itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
-                    <span itemprop="name">{$post->name|escape}</span>
+                    <span itemprop="name">{$author->name|escape}</span>
                     <meta itemprop="position" content="{$level++}" />
                 </li>
             {else}
                 <li itemprop="itemListElement" itemscope
                     itemtype="https://schema.org/ListItem" class="d-inline-flex align-items-center breadcrumbs__item">
-                    {if $typePost == "news"}
-                        <span itemprop="name" data-language="main_news">{$lang->main_news}</span>
-                    {else}
-                        <span itemprop="name" data-language="breadcrumbs_blog">{$lang->breadcrumbs_blog}</span>
-                    {/if}
+                    <span itemprop="name">{$lang->breadcrumbs_authors}</span>
                     <meta itemprop="position" content="{$level++}" />
                 </li>
             {/if}

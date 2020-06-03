@@ -420,7 +420,7 @@ class OrdersEntity extends Entity
     {
         if (!empty($fromDate)) {
             $this->select->where('o.date >= :from_date')
-                ->bindValue('from_date', date('Y-m-d', strtotime($fromDate)));
+                ->bindValue('from_date', date('Y-m-d 00:00:00', strtotime($fromDate)));
         }
     }
 
@@ -428,7 +428,7 @@ class OrdersEntity extends Entity
     {
         if (!empty($toDate)) {
             $this->select->where('o.date < :to_date')
-                ->bindValue('to_date', date('Y-m-d', strtotime($toDate) + 3600 * 24));
+                ->bindValue('to_date', date('Y-m-d 23:59:59', strtotime($toDate)));
         }
     }
 

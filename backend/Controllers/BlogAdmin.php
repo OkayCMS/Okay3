@@ -4,14 +4,18 @@
 namespace Okay\Admin\Controllers;
 
 
+use Okay\Admin\Helpers\BackendBlogCategoriesHelper;
 use Okay\Admin\Helpers\BackendBlogHelper;
+use Okay\Admin\Requests\BackendBlogCategoriesRequest;
 use Okay\Admin\Requests\BackendBlogRequest;
 
 class BlogAdmin extends IndexAdmin
 {
     public function fetch(
         BackendBlogRequest $blogRequest,
-        BackendBlogHelper  $backendBlogHelper
+        BackendBlogHelper  $backendBlogHelper,
+        BackendBlogCategoriesHelper $blogCategoriesHelper,
+        BackendBlogCategoriesRequest $blogCategoriesRequest
     ) {
         if ($this->request->method('post')) {
             $ids = $blogRequest->postCheck();
@@ -31,15 +35,21 @@ class BlogAdmin extends IndexAdmin
             }
         }
 
+        // Категории
+        $categories = $blogCategoriesHelper->getCategoriesTree();
+        $categoryId = $blogCategoriesRequest->getCategoryId();
+        
         $filter     = $backendBlogHelper->buildPostsFilter();
+        
         $posts      = $backendBlogHelper->findPosts($filter);
         $postsCount = $backendBlogHelper->getPostsCount($filter);
 
         $keyword  = isset($filter['keyword'])   ? $filter['keyword']   : '';
-        $typePost = isset($filter['type_post']) ? $filter['type_post'] : '';
 
+        $this->design->assign('category_id',    $categoryId);
+        $this->design->assign('categories',     $categories);
+        
         $this->design->assign('keyword',      $keyword);
-        $this->design->assign('type_post',    $typePost);
         $this->design->assign('posts_count',  $postsCount);
         $this->design->assign('pages_count',  ceil($postsCount/$filter['limit']));
         $this->design->assign('current_page', $filter['page']);

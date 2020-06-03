@@ -32,6 +32,11 @@ class BannersHelper
      */
     private $design;
 
+    /**
+     * @var EntityFactory
+     */
+    private $entityFactory;
+
     public function __construct(
         EntityFactory $entityFactory,
         Request       $request,
@@ -81,9 +86,15 @@ class BannersHelper
 
     public function getSelectedEntities($banner)
     {
-        $banner->category_selected  = explode(",",$banner->categories);//Создаем массив категорий
-        $banner->brand_selected     = explode(",",$banner->brands);//Создаем массив брендов
-        $banner->page_selected      = explode(",",$banner->pages);//Создаем массив страниц
+        if (!empty($banner->categories)) {
+            $banner->category_selected = explode(",", $banner->categories);//Создаем массив категорий
+        }
+        if (!empty($banner->categories)) {
+            $banner->brand_selected     = explode(",",$banner->brands);//Создаем массив брендов
+        }
+        if (!empty($banner->categories)) {
+            $banner->page_selected      = explode(",",$banner->pages);//Создаем массив страниц
+        }
         return ExtenderFacade::execute(__METHOD__, $banner, func_get_args());
     }
 
@@ -147,9 +158,9 @@ class BannersHelper
         return ExtenderFacade::execute(__METHOD__, $banners, func_get_args());
     }
 
-    public function getBannersListForAdmin()
+    public function getBannersListForAdmin($filter)
     {
-        $banners = $this->bannersEntity->find();
+        $banners = $this->bannersEntity->mappedBy('id')->find($filter);
 
         if ($banners) {
             $categories = $this->entityFactory->get(CategoriesEntity::class)->find();
@@ -179,4 +190,36 @@ class BannersHelper
         return ExtenderFacade::execute(__METHOD__, $banners, func_get_args());
     }
 
+    public function buildFilter()
+    {
+        $filter = [];
+        $filter['page'] = max(1, $this->request->get('page', 'integer'));
+        $filter['limit'] = 20;
+        
+        return ExtenderFacade::execute(__METHOD__, $filter, func_get_args());
+    }
+
+    public function countBannersImages($filter)
+    {
+        $bannerImagesCount = $this->bannersEntity->count($filter);
+        return ExtenderFacade::execute(__METHOD__, $bannerImagesCount, func_get_args());
+    }
+
+    public function makePagination($bannersImagesCount, $filter)
+    {
+        if ($this->request->get('page') == 'all') {
+            $filter['limit'] = $bannersImagesCount;
+        }
+
+        if ($filter['limit'] > 0) {
+            $pagesCount = ceil($bannersImagesCount/$filter['limit']);
+        } else {
+            $pagesCount = 0;
+        }
+
+        $filter['page'] = min($filter['page'], $pagesCount);
+
+        return [$filter, $pagesCount];
+    }
+    
 }

@@ -82,9 +82,9 @@ class FrontExtender implements ExtensionInterface
                 }
                 $this->design->assign('banner_data', $banner);
                 // Если баннер отмечен как шорткод, передадим такую переменную в дизайн
-                if (!empty($banner->individual_shortcode)) {
+                if (!empty($banner->as_individual_shortcode)) {
                     $bannerHtml = $this->design->fetch('show_banner.tpl');
-                    $this->shortCodesParts[$banner->individual_shortcode] = $bannerHtml;
+                    $this->shortCodesParts['banner_shortcode_' . $banner->group_name] = $bannerHtml;
                 } else {
                     $this->totalBannersHtml .= $this->design->fetch('show_banner.tpl');
                 }

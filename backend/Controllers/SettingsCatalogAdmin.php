@@ -22,7 +22,10 @@ class SettingsCatalogAdmin extends IndexAdmin
         $this->design->assign('managers', $managersList);
 
         if ($this->request->method('POST')) {
-            $backendSettingsCatalogHelper->updateSettings();
+            
+            if ($this->request->post('save')) {
+                $backendSettingsCatalogHelper->updateSettings();
+            }
 
             if ($settingsCatalogRequest->postTruncateTableConfirm()) {
                 if ($error = $backendValidateHelper->getTruncateTableValidateError()) {

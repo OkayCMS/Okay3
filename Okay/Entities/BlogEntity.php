@@ -16,10 +16,16 @@ class BlogEntity extends Entity implements RelatedProductsInterface
         'id',
         'url',
         'visible',
+        'show_table_content',
         'date',
         'image',
-        'type_post',
         'last_modify',
+        'main_category_id',
+        'author_id',
+        'read_time',
+        'updated_date',
+        'rating',
+        'votes',
     ];
     
     protected static $langFields = [
@@ -49,6 +55,16 @@ class BlogEntity extends Entity implements RelatedProductsInterface
     protected static $tableAlias = 'b';
     protected static $alternativeIdField = 'url';
 
+    public function update($ids, $object)
+    {
+        $res = parent::update($ids, $object);
+
+        /** @var RouterCacheEntity $routerCacheEntity */
+        $routerCacheEntity = $this->entity->get(RouterCacheEntity::class);
+        $routerCacheEntity->deleteWrongCache();
+        return $res;
+    }
+    
     public function delete($ids)
     {
         if (empty($ids)) {
@@ -57,11 +73,9 @@ class BlogEntity extends Entity implements RelatedProductsInterface
         
         $ids = (array)$ids;
 
-        $postTypes = $this->cols(['type_post'])->find(['id' => $ids]);
-        
         $comments = $this->entity->get(CommentsEntity::class);
         $commentsIds = $comments->cols(['id'])->find([
-            'type' => $postTypes,
+            'type' => 'post',
             'object_id' => $ids,
         ]);
 
@@ -81,95 +95,73 @@ class BlogEntity extends Entity implements RelatedProductsInterface
             );
         }
         
-        if (in_array('news', $postTypes)) {
-            $this->settings->lastModifyNews = date("Y-m-d H:i:s");
-        }
-        if (in_array('blog', $postTypes)) {
-            $this->settings->lastModifyPosts = date("Y-m-d H:i:s");
-        }
-        
         parent::delete($ids);
+
+        /** @var RouterCacheEntity $routerCacheEntity */
+        $routerCacheEntity = $this->entity->get(RouterCacheEntity::class);
+        $routerCacheEntity->deleteWrongCache();
+
+        return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
 
-    /*Выбираем следующию запись от текущей*/
-    public function getNextPost($id)
+    public function getNeighborsPosts($categoryId, $date)
     {
-        $id = (int)$id;
-        
-        $res = $this->cols([
-            'date',
-            'type_post',
-        ])->get($id);
-
+        $pIds = [];
+        // предыдущий товар
         $select = $this->queryFactory->newSelect();
-        $select->cols([
-            'id',
-        ])->from('__blog')
-            ->where('(date = :date AND id > :id OR date > :date2)')
-            ->where('visible = 1')
-            ->where('type_post = :type_post')
-            ->orderBy([
-                'date ASC',
-                'id'
-            ])
-            ->limit(1);
-        
-        $select->bindValues([
-            'date' => $res->date,
-            'id' => $id,
-            'type_post' => $res->type_post,
-            'date2' => $res->date,
-        ]);
-        
+        $select->from(self::getTable() . ' b')
+            ->cols(['id'])
+            ->join('left', '__blog_categories_relation pc', 'pc.post_id=b.id')
+            ->where('b.date>:date')
+            ->where('pc.position=(SELECT MIN(pc2.position) FROM __blog_categories_relation pc2 WHERE pc.post_id=pc2.post_id)')
+            ->where('pc.category_id=:category_id')
+            ->where('b.visible')
+            ->orderBy(['b.date ASC'])
+            ->limit(1)
+            ->bindValues([
+                'date' => $date,
+                'category_id' => $categoryId,
+            ]);
+
         $this->db->query($select);
-        $nextId = $this->db->result('id');
-        
-        if($nextId) {
-            return ExtenderFacade::execute([static::class, __FUNCTION__], $this->get((int) $nextId), func_get_args());
+        $pid = $this->db->result('id');
+        if ($pid) {
+            $pIds[$pid] = 'prev';
         }
 
-        return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
-    }
-
-    /*Выбираем предыдущую запись от текущей*/
-    public function getPrevPost($id)
-    {
-        $id = (int)$id;
-        $res = $this->cols([
-            'date',
-            'type_post',
-        ])->get($id);
-        
+        // следующий товар
         $select = $this->queryFactory->newSelect();
-        $select->cols([
-            'id',
-        ])->from('__blog')
-            ->where('(date = :date AND id < :id OR date < :date2)')
-            ->where('visible = 1')
-            ->where('type_post = :type_post')
-            ->orderBy([
-                'date DESC',
-                'id'
-            ])
-            ->limit(1);
+        $select->from(self::getTable() . ' b')
+            ->cols(['id'])
+            ->join('left', '__blog_categories_relation pc', 'pc.post_id=b.id')
+            ->where('b.date<:date')
+            ->where('pc.position=(SELECT MIN(pc2.position) FROM __blog_categories_relation pc2 WHERE pc.post_id=pc2.post_id)')
+            ->where('pc.category_id=:category_id')
+            ->where('b.visible')
+            ->orderBy(['b.date DESC'])
+            ->limit(1)
+            ->bindValues([
+                'date' => $date,
+                'category_id' => $categoryId,
+            ]);
 
-        $select->bindValues([
-            'date' => $res->date,
-            'id' => $id,
-            'type_post' => $res->type_post,
-            'date2' => $res->date,
-        ]);
-        
         $this->db->query($select);
-        $nextId = $this->db->result('id');
-
-        if ($nextId) {
-            return ExtenderFacade::execute([static::class, __FUNCTION__], $this->get((int) $nextId), func_get_args());
+        $pid = $this->db->result('id');
+        
+        if ($pid) {
+            $pIds[$pid] = 'next';
         }
-
-        return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
+        
+        $result = ['next'=>'', 'prev'=>''];
+        if (!empty($pIds)) {
+            foreach ($this->find(array('id'=>array_keys($pIds))) as $p) {
+                $result[$pIds[$p->id]] = $p;
+            }
+        }
+        
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
-
+    
     public function getRelatedProducts(array $filter = [])
     {
         $select = $this->queryFactory->newSelect();
@@ -229,6 +221,25 @@ class BlogEntity extends Entity implements RelatedProductsInterface
                 ->bindValue('related_id', (int)$relatedId);
         }
         $this->db->query($delete);
+    }
+
+    protected function filter__category_id($categoriesIds)
+    {
+        $this->select->join(
+            'INNER',
+            '__blog_categories_relation AS bc',
+            'b.id = bc.post_id AND bc.category_id IN(:category_ids)'
+        );
+
+        $this->select->bindValue('category_ids', $categoriesIds);
+
+        $this->select->groupBy(['b.id']);
+    }
+
+    protected function filter__without_category($categoriesIds)
+    {
+        $this->select->where("(SELECT count(*)=0 FROM __blog_categories_relation bc WHERE bc.post_id=b.id)=:without_category");
+        $this->select->bindValue('without_category', $categoriesIds);
     }
     
 }

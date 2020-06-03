@@ -288,7 +288,7 @@
                                         <div class="tag tag-chanel_search mb-q">{include file='svg_icon.tpl' svgId='warn_icon'} {$order->note|escape}</div>
                                         {/if}
 
-                                        {get_design_block block="orders_list_name"}
+                                        {get_design_block block="orders_list_name" vars=['order' => $order]}
                                     </div>
 
                                     <div class="okay_list_boding okay_list_order_status">

@@ -112,7 +112,7 @@
                                         <a class="d-flex align-items-center justify-content-center main_brands__link" aria-label="{$b->name|escape}" href="{url_generator route='brand' url=$b->url}" data-brand="{$b->id}">
                                             {if $b->image}
                                                 <div class="d-flex align-items-center justify-content-center main_brands__image">
-                                                    <img class="main_brands_img lazy" data-src="{$b->image|resize:100:50:false:$config->resized_brands_dir}" src="{$b->image|resize:100:50:false:$config->resized_brands_dir}" alt="{$b->name|escape}" title="{$b->name|escape}">
+                                                    <img class="main_brands_img lazy" data-src="{$b->image|resize:100:50:false:$config->resized_brands_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$b->name|escape}" title="{$b->name|escape}">
                                                 </div>
                                             {else}
                                                 <div class="d-flex align-items-center justify-content-center main_brands__name">
@@ -133,7 +133,7 @@
 {/if}
 
 {* Last_posts *}
-{get_posts var=last_posts limit=4 type_post="news"}
+{get_posts var=last_posts limit=4 category_id=1}
 {if $last_posts}
     <div class="main-articles container">
         <div class="block block--boxed block--border">
@@ -142,7 +142,7 @@
                     <span data-language="main_news">{$lang->main_news}</span>
                 </div>
                 <div class="block__header_button">
-                    <a class="block__more d-flex align-items-center" href="{url_generator route='news'}">
+                    <a class="block__more d-flex align-items-center" href="{url_generator route='blog_category' url=$blog_categories[1]->url}">
                         <span data-language="main_all_news">{$lang->main_all_news} </span>{include file="svg.tpl" svgId="arrow_right2"}
                     </a>
                 </div>

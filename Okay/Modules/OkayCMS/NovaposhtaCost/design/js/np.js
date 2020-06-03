@@ -14,6 +14,23 @@ const configParamsObj = {
     }
 };
 
+const whsParams = {
+    matcher: function (params, data) {
+        if ($.trim(params.term) === '') {
+            return data;
+        }
+        if ($.isNumeric(params.term)){
+            if (~data.text.indexOf("№"+params.term)){
+                return data;
+            }
+        } else if (~data.text.toLowerCase().indexOf(params.term.toLowerCase())) {
+            var modifiedData = $.extend({}, data, true);
+            return modifiedData;
+        }
+        return null;
+    }
+};
+
 init();
 $('select.city_novaposhta').select2(configParamsObj);
 
@@ -130,10 +147,13 @@ function calc_delivery_price(e) {
                 }
                 if (data.warehouses_response.success) {
                     warehouses_block.show();
+                    selected_whref = $('.fn_select_warehouses_novaposhta').find(':selected').attr('data-warehouse_ref');
+                    if(!$('.fn_select_warehouses_novaposhta').find(':selected').val() || data.warehouses_response.warehouses.indexOf(selected_whref)== -1){
                     warehouses_block.find('.fn_select_warehouses_novaposhta')
                         .html(data.warehouses_response.warehouses)
                         .attr('disabled', false)
-                        .select2(configParamsObj);
+                        .select2(whsParams);
+                    }
                 } else {
                     warehouses_block.hide();
                     warehouses_block.find('.fn_select_warehouses_novaposhta')
@@ -198,7 +218,7 @@ function get_np_payment_method_ids() {
 function set_warehouse() {
     if ($(this).val() != '') {
         $('input[name="address"]').trigger('focus');
-        let city_name = $('select.city_novaposhta').children(':selected').val(),
+        let city_name = $('.city_novaposhta').val(),
             warehouse_name = $(this).val(),
             delivery_address = city_name + ', ' + warehouse_name;
         $('input[name="address"]').val(delivery_address);

@@ -7,8 +7,10 @@ namespace Okay\Admin\Helpers;
 use Okay\Core\Config;
 use Okay\Core\EntityFactory;
 use Okay\Core\Image;
+use Okay\Core\QueryFactory;
 use Okay\Core\Request;
 use Okay\Core\Settings;
+use Okay\Entities\BlogCategoriesEntity;
 use Okay\Entities\BlogEntity;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
@@ -18,6 +20,11 @@ class BackendBlogHelper
      * @var BlogEntity
      */
     private $blogEntity;
+    
+    /**
+     * @var BlogCategoriesEntity
+     */
+    private $categoriesEntity;
 
     /**
      * @var Request
@@ -38,19 +45,27 @@ class BackendBlogHelper
      * @var Settings
      */
     private $settings;
+    
+    /**
+     * @var QueryFactory
+     */
+    private $queryFactory;
 
     public function __construct(
         EntityFactory $entityFactory,
         Request $request,
         Config $config,
         Image $imageCore,
-        Settings $settings
+        Settings $settings,
+        QueryFactory $queryFactory
     ) {
         $this->blogEntity = $entityFactory->get(BlogEntity::class);
+        $this->categoriesEntity = $entityFactory->get(BlogCategoriesEntity::class);
         $this->request    = $request;
         $this->config     = $config;
         $this->imageCore  = $imageCore;
         $this->settings   = $settings;
+        $this->queryFactory = $queryFactory;
     }
 
     public function disable($ids)
@@ -91,14 +106,18 @@ class BackendBlogHelper
             $filter['keyword'] = $keyword;
         }
 
-        $typePost = $this->request->get('type_post', 'string');
-        if (!empty($typePost)) {
-            $filter['type_post'] = $typePost;
-        }
-
         $postsCount = $this->blogEntity->count($filter);
         if($this->request->get('page') == 'all') {
             $filter['limit'] = $postsCount;
+        }
+
+        // Категории
+        $categoryId = $this->request->get('category_id', 'integer');
+        $category = $this->categoriesEntity->findOne(['id' => $categoryId]);
+        if(!empty($categoryId) && !empty($category)) {
+            $filter['category_id'] = $category->children;
+        } elseif ($categoryId == -1) {
+            $filter['without_category'] = 1;
         }
 
         return ExtenderFacade::execute(__METHOD__, $filter, func_get_args());
@@ -149,6 +168,7 @@ class BackendBlogHelper
             $post = new \stdClass;
             $post->date = date($this->settings->get('date_format'), time());
             $post->visible = 1;
+            $post->show_table_content = 1;
         }
         
         return ExtenderFacade::execute(__METHOD__, $post, func_get_args());
@@ -198,6 +218,60 @@ class BackendBlogHelper
                 $this->blogEntity->addRelatedProduct($post->id, $relatedProduct->related_id, $pos++);
             }
         }
+
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
+    public function findPostCategories($post)
+    {
+        $postCategories = [];
+        if (!empty($post->id)) {
+            foreach ($this->categoriesEntity->getPostCategories($post->id) as $pc) {
+                $postCategories[$pc->category_id] = $pc;
+            }
+
+            if (!empty($postCategories)) {
+                foreach ($this->categoriesEntity->find(['id' => array_keys($postCategories)]) as $category) {
+                    $postCategories[$category->id] = $category;
+                }
+            }
+        }
+
+        if (empty($postCategories)) {
+            if ($category_id = $this->request->get('category_id')) {
+                $category = $this->categoriesEntity->findOne(['id' => $category_id]);
+                $postCategories[$category_id] = $category;
+            } else {
+                $postCategories = [];
+            }
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $postCategories, func_get_args());
+    }
+
+    public function prepareUpdatePostCategories($post, $postCategories)
+    {
+        return ExtenderFacade::execute(__METHOD__, $postCategories, func_get_args());
+    }
+
+    public function updatePostCategories($post, $postCategories)
+    {
+        $delete = $this->queryFactory->newDelete();
+        $delete->from('__blog_categories_relation')
+            ->where('post_id=:post_id')
+            ->bindValue('post_id', $post->id)->execute();
+
+        if (is_array($postCategories)) {
+            $i = 0;
+            foreach($postCategories as $category) {
+                $this->categoriesEntity->addPostCategory($post->id, $category->id, $i);
+                $i++;
+            }
+            unset($i);
+        }
+
+        $mainCategory = reset($postCategories);
+        $this->blogEntity->update($post->id, ['main_category_id'=>$mainCategory->id]);
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }

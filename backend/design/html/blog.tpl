@@ -49,13 +49,19 @@
                 <div class="boxed_sorting toggle_body_wrap off fn_card">
                 <div class="row">
                     <div class="col-md-3 col-lg-3 col-sm-12">
-                        <div class="fn_step-0">
-                            <select class="selectpicker form-control px-0"  onchange="location = this.value;">
-                                <option value="{url controller=BlogAdmin type_post=null keyword=null id=null page=null}" {if !$type_post}selected=""{/if} >{$btr->general_all|escape}</option>
-                                <option value="{url controller=BlogAdmin type_post="blog" keyword=null id=null page=null}" {if $type_post == "blog"}selected=""{/if} >{$btr->blog_articles|escape}</option>
-                                <option value="{url controller=BlogAdmin type_post="news" keyword=null id=null page=null}" {if $type_post == "news"}selected=""{/if} >{$btr->blog_news|escape}</option>
-                            </select>
-                        </div>
+                        <select id="id_categories" name="categories_filter" title="{$btr->general_category_filter|escape}" class="selectpicker form-control" data-live-search="true" data-size="10" onchange="location = this.value;">
+                            <option value="{url keyword=null brand_id=null page=null limit=null category_id=null}" {if !$category_id}selected{/if}>{$btr->general_all_categories|escape}</option>
+                            <option value="{url keyword=null brand_id=null page=null limit=null category_id=-1}" {if $category_id==-1}selected{/if}>{$btr->products_without_category|escape}</option>
+                            {function name=category_select level=0}
+                                {foreach $categories as $c}
+                                    <option value='{url keyword=null brand_id=null page=null limit=null category_id=$c->id}' {if $category_id == $c->id}selected{/if}>
+                                        {section sp $level}- {/section}{$c->name|escape}
+                                    </option>
+                                    {category_select categories=$c->subcategories level=$level+1}
+                                {/foreach}
+                            {/function}
+                            {category_select categories=$categories}
+                        </select>
                     </div>
                 </div>
             </div>
@@ -85,7 +91,6 @@
                             </div>
                             <div class="okay_list_heading okay_list_photo">{$btr->general_photo|escape}</div>
                             <div class="okay_list_heading okay_list_blog_name">{$btr->blog_name|escape}</div>
-                            <div class="okay_list_heading okay_list_blog_type">{$btr->blog_type|escape}</div>
                             <div class="okay_list_heading okay_list_status">{$btr->general_enable|escape}</div>
                             <div class="okay_list_heading okay_list_setting okay_list_blog_setting">{$btr->general_activities|escape}</div>
                             <div class="okay_list_heading okay_list_close"></div>
@@ -114,23 +119,8 @@
                                         <div class="okay_list_boding okay_list_blog_name">
                                             <a class="link" href="{url controller=PostAdmin id=$post->id return=$smarty.server.REQUEST_URI}">{$post->name|escape}</a>
                                             <span class="text_grey">{$post->date|date}</span>
-                                            <div class="hidden-lg-up mt-q">
-                                                {if $post->type_post == "blog"}
-                                                    <div class="tag tag-warning">{$btr->blog_articles|escape}</div>
-                                                    {else}
-                                                    <div class="tag tag-info">{$btr->blog_one_news|escape}</div>
-                                                {/if}
-                                            </div>
 
                                             {get_design_block block="blog_post_name" vars=['post'=>$post]}
-                                        </div>
-
-                                        <div class="okay_list_boding okay_list_blog_type">
-                                            {if $post->type_post == "blog"}
-                                                <div class="tag tag-warning">{$btr->blog_articles|escape}</div>
-                                                {else}
-                                                <div class="tag tag-info">{$btr->blog_one_news|escape}</div>
-                                            {/if}
                                         </div>
 
                                         <div class="okay_list_boding okay_list_status">
@@ -143,12 +133,7 @@
 
                                         <div class="okay_list_setting okay_list_blog_setting">
                                             {*open*}
-                                            {if $post->type_post == 'blog'}
-                                                {$url = {url_generator route='blog_item' url=$post->url}}
-                                            {elseif $post->type_post == 'news'}
-                                                {$url = {url_generator route='news_item' url=$post->url}}
-                                            {/if}
-                                            <a href="../{$url}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
+                                            <a href="{url_generator route='post' url=$post->url absolute=1}" target="_blank" data-hint="{$btr->general_view|escape}" class="setting_icon setting_icon_open hint-bottom-middle-t-info-s-small-mobile  hint-anim">
                                                 {include file='svg_icon.tpl' svgId='eye'}
                                             </a>
 

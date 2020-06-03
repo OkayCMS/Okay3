@@ -59,6 +59,8 @@ class Validator
         if (!$this->isSafe($phone)) {
             return false;
         }
+
+        $phone = Phone::clear($phone);
         if (empty($phone)) {
             return !$is_required;
         }

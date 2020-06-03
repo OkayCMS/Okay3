@@ -6,7 +6,6 @@ namespace Okay\Core\Routes\Strategies\Category;
 
 use Okay\Core\EntityFactory;
 use Okay\Core\Routes\CategoryRoute;
-use Okay\Core\Routes\ProductRoute;
 use Okay\Core\Routes\Strategies\AbstractRouteStrategy;
 use Okay\Core\ServiceLocator;
 use Okay\Entities\CategoriesEntity;
@@ -57,7 +56,7 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
         $slug = trim($category->path_url, '/');
 
         // Запоминаем в оперативке slug для этого урла
-        ProductRoute::setUrlSlugAlias($url, $slug);
+        CategoryRoute::setUrlSlugAlias($url, $slug);
         
         $this->cacheEntity->add([
             'url' => $url,

@@ -214,9 +214,9 @@ abstract class AbstractInit
     }
     
     /**
-     * Данный метод позволяет расшинять меню админ панели посредством добавления новых пунктов меню в оную
+     * Данный метод позволяет расширять меню админ панели посредством добавления новых пунктов меню в оную
      *
-     * @param $firstLevelName - ленг корневого пункта меню. Если указать существуюзщий, то пункты меню второго уровня добавяться в конец списка внутри существующего пунта меню
+     * @param $firstLevelName - ленг корневого пункта меню. Если указать существующий, то пункты меню второго уровня добавляться в конец списка внутри существующего пункта меню
      * @param $menuItemsByControllers - ассоциативный массив с ленгами пунктов меню в качестве ключа и соответствующими им контроллерами в качестве значений
      * @param $icon - путь к файлу относительно папки Backend модуля или текст svg картинки
      * @throws \Exception
@@ -241,6 +241,32 @@ abstract class AbstractInit
         }
 
         $this->managerMenu->extendMenu($firstLevelName, $menuItemsByControllers, $icon);
+    }
+
+    /**
+     * Добавление элемента меню быстрого редактирования для администратора.
+     * 
+     * @param string $dataProperty data атрибут который должен быть у html элемента, и при наведении на который будет
+     * открываться данное меню
+     * @param array ...$menuItems массив описаний ссылок меню
+     * 
+     * @example $this->extendBackendMenu('property', [
+            'controller' => 'Vendor.Module.Controller',
+            'translation' => 'translation_var_add',
+        ], [
+            'controller' => 'Vendor.Module.Controller',
+            'translation' => 'translation_var_edit',
+            'params' => [
+                'id' => 'id',
+            ],
+            'action' => 'edit',
+        ]);
+     * При наведении на элемент с атрибутом data-property="1" будут построены ссылки на добавление сущности через 
+     * контроллер Vendor.Module.Controller и на редактирование с GET параметром id=1 (указанным в data-property).
+     */
+    protected function addFastMenuItem($dataProperty, ...$menuItems)
+    {
+        call_user_func_array([$this->managerMenu, 'addFastMenuItem'], array_merge([$dataProperty], $menuItems));
     }
 
     /**

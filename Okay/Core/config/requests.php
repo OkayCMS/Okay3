@@ -3,6 +3,8 @@
 
 namespace Okay\Core;
 
+use Okay\Admin\Requests\BackendAuthorsRequest;
+use Okay\Admin\Requests\BackendBlogCategoriesRequest;
 use Okay\Admin\Requests\BackendBlogRequest;
 use Okay\Admin\Requests\BackendBrandsRequest;
 use Okay\Admin\Requests\BackendCallbacksRequest;
@@ -29,7 +31,7 @@ use Okay\Requests\CartRequest;
 use Okay\Requests\CommonRequest;
 use Okay\Requests\UserRequest;
 
-$requestContainers = [
+return [
     BackendProductsRequest::class => [
         'class' => BackendProductsRequest::class,
         'arguments' => [
@@ -44,6 +46,19 @@ $requestContainers = [
     ],
     BackendCategoriesRequest::class => [
         'class' => BackendCategoriesRequest::class,
+        'arguments' => [
+            new SR(Request::class),
+        ]
+    ],
+    BackendAuthorsRequest::class => [
+        'class' => BackendAuthorsRequest::class,
+        'arguments' => [
+            new SR(Request::class),
+            new SR(Translit::class),
+        ]
+    ],
+    BackendBlogCategoriesRequest::class => [
+        'class' => BackendBlogCategoriesRequest::class,
         'arguments' => [
             new SR(Request::class),
         ]
@@ -173,5 +188,3 @@ $requestContainers = [
         ]
     ],
 ];
-
-return $requestContainers;

@@ -24,6 +24,7 @@ use Okay\Core\TemplateConfig;
 use Okay\Core\UserReferer\UserReferer;
 use Okay\Core\WishList;
 use Okay\Entities\AdvantagesEntity;
+use Okay\Entities\BlogCategoriesEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\LanguagesEntity;
@@ -175,6 +176,8 @@ class MainHelper
         $entityFactory = $this->SL->getService(EntityFactory::class);
         /** @var CategoriesEntity $categoriesEntity */
         $categoriesEntity = $entityFactory->get(CategoriesEntity::class);
+        /** @var BlogCategoriesEntity $blogCategoriesEntity */
+        $blogCategoriesEntity = $entityFactory->get(BlogCategoriesEntity::class);
         /** @var PagesEntity $pagesEntity */
         $pagesEntity = $entityFactory->get(PagesEntity::class);
 
@@ -220,10 +223,29 @@ class MainHelper
         $design->assign('payment_methods', $this->getPaymentMethods());
         $design->assign('phone_example', $phone->getPhoneExample());
         
+        if (!empty($settings->get('site_social_links'))) {
+            $socials = [];
+            foreach ($settings->get('site_social_links') as $k=>$socialUrl) {
+                if (empty($socialUrl)) {
+                    continue;
+                }
+                $social['domain'] = JsSocial::getSocialDomain($socialUrl);
+                $social['url'] = $socialUrl;
+                $socials[] = $social;
+            }
+            
+            $design->assign('site_social', $socials);
+        }
+        
         // Категории товаров
         $allCategories = $categoriesEntity->find();
         $this->countVisible($categoriesEntity->getCategoriesTree(), $allCategories);
         $design->assign('categories', $categoriesEntity->getCategoriesTree());
+        
+        // Категории блога
+        $allBlogCategories = $blogCategoriesEntity->find();
+        $this->countVisible($blogCategoriesEntity->getCategoriesTree(), $allBlogCategories);
+        $design->assign('blog_categories', $blogCategoriesEntity->getCategoriesTree());
 
         $design->assign('js_custom_socials', $this->SL->getService(JsSocial::class)->getCustomSocials());
 

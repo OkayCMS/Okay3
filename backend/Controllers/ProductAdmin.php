@@ -6,6 +6,7 @@ namespace Okay\Admin\Controllers;
 
 use Okay\Admin\Helpers\BackendCategoriesHelper;
 use Okay\Admin\Helpers\BackendValidateHelper;
+use Okay\Entities\RouterCacheEntity;
 use \stdClass;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\CurrenciesEntity;
@@ -27,7 +28,8 @@ class ProductAdmin extends IndexAdmin
         BackendVariantsHelper      $backendVariantsHelper,
         BackendFeaturesHelper      $backendFeaturesHelper,
         BackendSpecialImagesHelper $backendSpecialImagesHelper,
-        BackendValidateHelper      $backendValidateHelper
+        BackendValidateHelper      $backendValidateHelper,
+        RouterCacheEntity          $routerCacheEntity
     ) {
 
         if ($this->request->method('post') && !empty($_POST)) {
@@ -52,6 +54,8 @@ class ProductAdmin extends IndexAdmin
                     $backendProductsHelper->update($preparedProduct);
                     $product = $backendProductsHelper->getProduct($preparedProduct->id);
 
+                    $routerCacheEntity->deleteByUrl('product', $product->url);
+                    
                     $this->postRedirectGet->storeMessageSuccess('updated');
                 }
 

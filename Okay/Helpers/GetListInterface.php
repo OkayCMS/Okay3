@@ -16,4 +16,7 @@ interface GetListInterface
      */
     
     public function getList($filter = [], $sortName = null, $excludedFields = null);
+
+    public function getExcludeFields();
+    
 }

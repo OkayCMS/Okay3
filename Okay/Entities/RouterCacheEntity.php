@@ -17,6 +17,20 @@ class RouterCacheEntity extends Entity
 
     protected static $table = 'router_cache';
     
+    public function deleteByUrl($objectType, $url)
+    {
+        $delete = $this->queryFactory->newDelete();
+        
+        $delete->from(self::getTable())
+            ->where('type=:type')
+            ->where('url=:url')
+            ->bindValue('type', $objectType)
+            ->bindValue('url', $url)
+            ->execute();
+        
+        return true;
+    }
+    
     public function deleteProductsCache()
     {
         $delete = $this->queryFactory->newDelete();
@@ -34,6 +48,28 @@ class RouterCacheEntity extends Entity
         
         $delete->from(self::getTable())
             ->where('type="category"')
+            ->execute();
+        
+        return true;
+    }
+    
+    public function deleteBlogCategoriesCache()
+    {
+        $delete = $this->queryFactory->newDelete();
+        
+        $delete->from(self::getTable())
+            ->where('type="blog_category"')
+            ->execute();
+        
+        return true;
+    }
+    
+    public function deleteBlogCache()
+    {
+        $delete = $this->queryFactory->newDelete();
+        
+        $delete->from(self::getTable())
+            ->where('type="post"')
             ->execute();
         
         return true;
@@ -59,6 +95,20 @@ class RouterCacheEntity extends Entity
             LEFT JOIN " . CategoriesEntity::getTable() . " AS c ON c.url=r.url AND r.type='category'
             WHERE r.type='category' AND c.id IS NULL")
             ->execute();
+
+        // Удаляем ненужный кеш категорий блога
+        $sql = $this->queryFactory->newSqlQuery();
+        $sql->setStatement("DELETE r FROM " . self::getTable() . " AS r 
+            LEFT JOIN " . BlogCategoriesEntity::getTable() . " AS c ON c.url=r.url AND r.type='blog_category'
+            WHERE r.type='blog_category' AND c.id IS NULL")
+            ->execute();
+
+        // Удаляем ненужный кеш блога
+        $sql = $this->queryFactory->newSqlQuery();
+        $sql->setStatement("DELETE r FROM " . self::getTable() . " AS r 
+            LEFT JOIN " . BlogEntity::getTable() . " AS c ON c.url=r.url AND r.type='post'
+            WHERE r.type='post' AND c.id IS NULL")
+            ->execute();
         
         return true;
     }
@@ -82,6 +132,28 @@ class RouterCacheEntity extends Entity
             ->leftJoin(self::getTable() . ' AS r', 'p.url=r.url AND r.type = "product"')
             ->where('r.url IS NULL');
         
+        return $select->results('url');
+    }
+
+    public function getBlogCategoriesUrlsWithoutCache()
+    {
+        $select = $this->queryFactory->newSelect();
+        $select->cols(['c.url'])
+            ->from(BlogCategoriesEntity::getTable() . ' AS c')
+            ->leftJoin(self::getTable() . ' AS r', 'c.url=r.url AND r.type = "blog_category"')
+            ->where('r.url IS NULL');
+
+        return $select->results('url');
+    }
+
+    public function getBlogUrlsWithoutCache()
+    {
+        $select = $this->queryFactory->newSelect();
+        $select->cols(['c.url'])
+            ->from(BlogEntity::getTable() . ' AS c')
+            ->leftJoin(self::getTable() . ' AS r', 'c.url=r.url AND r.type = "blog"')
+            ->where('r.url IS NULL');
+
         return $select->results('url');
     }
     

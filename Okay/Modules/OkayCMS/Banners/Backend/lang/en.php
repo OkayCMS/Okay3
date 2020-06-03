@@ -68,3 +68,7 @@ $lang['banner_label_individual_shortcode'] = 'Shortcode Name';
 $lang['banner_faq_id_group'] = 'Уникальный идентификатор можно использовать для стилизаций группы баннеров. В коде он добавляется к приставке fn_banner_ .';
 $lang['banner_label_id_group'] = 'Id группы баннера';
 $lang['banner_label_individual_shortcode'] = 'Название шорткода';
+$lang['admintooltip_edit_banner'] = 'Change banner';
+$lang['admintooltip_add_banner'] = 'Add banner';
+$lang['admintooltip_edit_slide'] = 'Change banner image';
+$lang['admintooltip_add_slide'] = 'Add banner image';

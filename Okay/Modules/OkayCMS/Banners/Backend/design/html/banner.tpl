@@ -123,7 +123,7 @@
                             </div>
                         </div>
                     </div>
-                    {if $banner->individual_shortcode}
+                    {if $banner->as_individual_shortcode}
                     <div class="col-xl-4 col-lg-6 col-sm-12 pr-0">
                         <div class="">
                             <div class="heading_label">
@@ -131,7 +131,7 @@
                             </div>
                             <div class="form-group">
                                 <span class="boxes_inline bnr_id_grup">
-                                    <input type="text" class="form-control" name="individual_shortcode" value="{literal}{${/literal}{$banner->individual_shortcode}{literal}}{/literal}" />
+                                    <input type="text" class="form-control" readonly value="{literal}{$banner_shortcode_{/literal}{$banner->group_name}{literal}}{/literal}" />
                                 </span>
                             </div>
                         </div>
@@ -142,7 +142,7 @@
                             <div class="activity_of_switch_item">
                                 <span class="okay_switch okay_switch--nowrap clearfix">
                                     <label class="switch switch-default switch-pill switch-primary-outline-alt boxes_inline mr-h">
-                                        <input class="switch-input" name="use_individual_shortcode" value='1' type="checkbox" {if $banner->individual_shortcode}checked=""{/if}/>
+                                        <input class="switch-input" name="as_individual_shortcode" value='1' type="checkbox" {if $banner->as_individual_shortcode}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>

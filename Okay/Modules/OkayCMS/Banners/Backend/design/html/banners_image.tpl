@@ -75,7 +75,7 @@
                                 </div>
                                 <select name="banner_id" class="selectpicker form-control mb-1">
                                     {foreach $banners as $banner}
-                                    <option value="{$banner->id}" {if $banners_image->banner_id == $banner->id}selected{/if}>{$banner->name|escape}</option>
+                                    <option value="{$banner->id}" {if $banners_image->banner_id == $banner->id}selected{elseif !$banners_image->id && $banner_id == $banner->id}selected{/if}>{$banner->name|escape}</option>
                                     {/foreach}
                                 </select>
                             </div>

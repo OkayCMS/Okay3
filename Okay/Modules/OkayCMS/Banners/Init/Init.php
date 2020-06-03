@@ -112,6 +112,32 @@ class Init extends AbstractInit
             <path d="M.918.04h22.164v14.92H.918V.04zM2.2 1.349v12.344h19.614V1.348H2.2zm1.616 5.939l3.968-3.608v7.216L3.816 7.287zm16.475 0l-4 3.636V3.651l4 3.636z" fill="currentColor" />
         </svg>');
         
+        
+        $this->addFastMenuItem('slide', [
+            'controller' => 'OkayCMS.Banners.BannerAdmin',
+            'translation' => 'admintooltip_edit_banner',
+            'params' => [
+                'banner_slide_id' => 'id',
+            ],
+            'action' => 'edit',
+        ], [
+            'controller' => 'OkayCMS.Banners.BannerAdmin',
+            'translation' => 'admintooltip_add_banner',
+        ], [
+            'controller' => 'OkayCMS.Banners.BannersImageAdmin',
+            'translation' => 'admintooltip_edit_slide',
+            'params' => [
+                'banner_slide_id' => 'id',
+            ],
+            'action' => 'edit',
+        ], [
+            'controller' => 'OkayCMS.Banners.BannersImageAdmin',
+            'translation' => 'admintooltip_add_slide',
+            'params' => [
+                'banner_slide_id_add' => 'id',
+            ],
+        ]);
+        
         $this->addResizeObject('banners_images_dir', 'resized_banners_images_dir');
 
         $this->extendUpdateObject('okay_cms__banners', self::PERMISSION, BannersEntity::class);

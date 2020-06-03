@@ -148,7 +148,7 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                            {get_design_block block="comments_custom_block" vars=['comment' => $comment]}
+                                            {get_design_block block="comments_comment_info" vars=['comment' => $comment]}
                                         </div>
 
                                         <div class="okay_list_boding okay_list_comments_btn">

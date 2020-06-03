@@ -23,9 +23,9 @@ class DefaultStrategy extends AbstractRouteStrategy
         $prefix = $this->settings->get('all_blog_routes_template__default');
 
         if (empty($prefix)) {
-            $prefix = 'blog';
+            $prefix = 'all-posts';
         }
 
-        return ['/'.$prefix, [], ['{$typePost}' => 'blog']];
+        return ['/'.$prefix, [], []];
     }
 }

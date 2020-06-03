@@ -52,6 +52,9 @@ body {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
 }
+#tinymce{
+    padding: 20px;
+}
 
 /***** #Headings ***********************************************************/
 h1,.h1,
@@ -77,15 +80,16 @@ h6,.h6{font-size: 18px;}
 
 /***** #Links ***************************************************************/
 a {
-    color: var(--okay-button-color);
+    color: var(--okay-basic-company);
     text-decoration: underline;
     background-color: transparent;
     -webkit-text-decoration-skip: objects;
     transition: all 0.2s ease;
 }
+.tooltip a:hover,
 a:hover,
 a:focus{
-    color: var(--okay-button-color);
+    color: var(--okay-basic-company);
     outline-width: 0;
     text-decoration: none;
 }
@@ -143,7 +147,7 @@ ul li {font-weight: 500;margin: 0 0 1rem 0;}
 blockquote {
     margin: 1rem 0 1.5rem;
     color: rgb(94, 94, 94);
-    padding: 20px 20px 20px 40px;
+    padding: 20px 30px;
     border-left: 8px solid rgb(194, 194, 194);
     position: relative;
     background: rgb(248, 248, 248);
@@ -155,19 +159,9 @@ blockquote {
     max-width: 100%;
     font-family: inherit;
 }
-blockquote:before {
-    content: "\201C";
-    color: rgb(194, 194, 194);
-    font-size: 70px;
-    position: absolute;
-    left: 0;
-    top: 0;
-    padding: 0;
-    display: block;
-}
 blockquote p {
     font-style: italic;
-    font-size: 18px;
+    font-size: 16px;
     margin-top: 0;
 }
 blockquote cite {
@@ -182,6 +176,11 @@ blockquote cite:before {content: "\2014 \2009";}
 .block{
     position: relative;
     margin-bottom: 15px;
+}
+.block--comment{
+    margin-top: 20px;
+    padding-top: 60px;
+    border-top: 3px solid #ddd;
 }
 .block--boxed{
     position: relative;
@@ -333,7 +332,8 @@ blockquote cite:before {content: "\2014 \2009";}
 .block__description--style {
     background:var(--okay-boxed-color);
     color:var(--okay-boxed-text);
-    font-size: 1.2em;
+    font-size: 16px;
+    line-height: 1.8;
 }
 .block__description iframe {
     margin-left:auto;
@@ -358,13 +358,17 @@ blockquote cite:before {content: "\2014 \2009";}
     border: 3px solid #fff;
     background-color: rgba(0, 0, 0, .3);
 }
-.block__description .video{
+.block__description .video,
+.block__description .mce-object-iframe{
     position: relative;
-    padding-bottom: 56.25%;
+    padding-bottom: 36%;
     padding-top: 30px;
     height: 0;
+    width: 70%;
+    margin: 0px auto;
     overflow: hidden;
 }
+.block__description .mce-object-iframe iframe,
 .block__description .video iframe{
     position: absolute;
     top: 0;
@@ -373,7 +377,15 @@ blockquote cite:before {content: "\2014 \2009";}
     height: 100%;
     border: 1px solid rgb(219, 219, 219);
 }
-.block__description img {margin:1rem 0}
+.block__description a.fn_image_gallery,
+.block__description a.fn_image_zoom{display: block;line-height: 1;margin: 1.5rem auto;}
+.block__description a.fn_image_zoom img{border: 1px solid #eee;padding: 1px;}
+.block__description a.fn_image_gallery {padding: 3px 6px}
+.block__description img {
+    display: block;
+    margin: 0 auto;
+    height: auto !important
+}
 .block__description figure{
     margin: 0;
     border: 1px solid #dbdbdb;
@@ -480,10 +492,7 @@ blockquote cite:before {content: "\2014 \2009";}
 .block__description ol li {
     font-weight: 500;
     font-family: inherit;
-}
-.block__description img {
-    margin: 1rem 0;
-    height: auto !important
+    font-size: 15px;
 }
 
 .boxed{
@@ -648,6 +657,34 @@ a.button--blick:hover:after,
 }
 @keyframes shine {
     100% {left: 125%;}
+}
+
+.btn_order{
+    display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    cursor:pointer;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-decoration:none;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    color: var(--okay-button-text);
+    background-color: var(--okay-button-color);
+    border-color: var(--okay-button-color);
+}
+.btn_order:hover,
+.btn_order:active{
+    color: var(--okay-button-text);
+    text-decoration: none;
+    opacity: 0.8;
 }
 
 /***** #Form  *************************************************************/
@@ -975,6 +1012,8 @@ input::-webkit-input-placeholder{
 .error {
     color: rgb(231, 71, 71);
     font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
 }
 .form__group label.error,
 .form__captcha label.error {display: none!important;}
@@ -1481,7 +1520,27 @@ select{
     color: #fff;
     font-weight: 600;
 }
-
+.fn_auto_navigation_anchor{
+    opacity: 0;
+    visibility: hidden;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-top: -90px;
+    padding-top: 90px;
+    display: inline-block;
+    background-size: 20px;
+    background-position-y: bottom;
+    padding-right: 25px;
+    vertical-align: baseline;
+    background-repeat: no-repeat;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjYzLjgwNyAyNjMuODA3IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAyNjMuODA3IDI2My44MDc7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGc+PGc+Cgk8cGF0aCBkPSJNMTQ2Ljk1OSwxMDEuODY5bC0xOS44NDgsMTkuODQ2bDE3Ljg3MSwxNy44NzNjMy41MTIsMy41MTMsNS40NDcsOC4xODIsNS40NDcsMTMuMTQ2YzAuMDAxLDQuOTY0LTEuOTMzLDkuNjMtNS40NDYsMTMuMTQyICAgbC02NC40NDIsNjQuNDQ0Yy03LjI0OCw3LjI0OC0xOS4wNDIsNy4yNDktMjYuMjg5LDAuMDAxbC0xNy44NzMtMTcuODc1Yy0zLjUxLTMuNTA5LTUuNDQzLTguMTc0LTUuNDQyLTEzLjEzNyAgIGMwLTQuOTY0LDEuOTM2LTkuNjM0LDUuNDQ4LTEzLjE0Nmw1MS4xNjYtNTEuMTY2bC0xOS44NDctMTkuODQ2bC01MS4xNjYsNTEuMTY2Yy04LjgxMyw4LjgxNC0xMy42NjcsMjAuNTMtMTMuNjY3LDMyLjk5ICAgYy0wLjAwMSwxMi40NjIsNC44NTIsMjQuMTc4LDEzLjY2NCwzMi45ODZsMTcuODczLDE3Ljg3NGM5LjA5NSw5LjA5NCwyMS4wNDIsMTMuNjQxLDMyLjk4OSwxMy42NDEgICBjMTEuOTQ4LDAsMjMuODk2LTQuNTQ3LDMyLjk5MS0xMy42NDJsNjQuNDQxLTY0LjQ0MmM4LjgxNi04LjgxMiwxMy42Ny0yMC41MjgsMTMuNjY5LTMyLjk5MSAgIGMtMC4wMDEtMTIuNDYxLTQuODU0LTI0LjE3Ni0xMy42NjYtMzIuOTlMMTQ2Ljk1OSwxMDEuODY5eiIgZGF0YS1vcmlnaW5hbD0iIzAwMDAwMCIgY2xhc3M9ImFjdGl2ZS1wYXRoIiBzdHlsZT0iZmlsbDojQTNBM0EzIiBkYXRhLW9sZF9jb2xvcj0iIzAwMDAwMCI+PC9wYXRoPgoJPHBhdGggZD0iTTI0Ny4yNzMsMzEuNTM4bC0xNy44NzItMTcuODczQzIyMC41ODksNC44NTMsMjA4Ljg3MywwLDE5Ni40MSwwYy0xMi40NjIsMC0yNC4xNzgsNC44NTQtMzIuOTg3LDEzLjY2NUw5OC45NzQsNzguMTExICAgYy04LjgxMyw4LjgxMS0xMy42NjUsMjAuNTI3LTEzLjY2NSwzMi45OWMwLjAwMSwxMi40NjUsNC44NTUsMjQuMTgyLDEzLjY2OCwzMi45ODhsMTcuODczLDE3Ljg3M2wxOS44NDctMTkuODQ2bC0xNy44NzYtMTcuODc2ICAgYy0zLjUxMS0zLjUwOS01LjQ0NS04LjE3NS01LjQ0NS0xMy4xNGMwLTQuOTY1LDEuOTMzLTkuNjMyLDUuNDQzLTEzLjE0Mmw2NC40NS02NC40NDhjMy41MS0zLjUxLDguMTc3LTUuNDQzLDEzLjE0Mi01LjQ0MyAgIGM0Ljk2NSwwLDkuNjMzLDEuOTM0LDEzLjE0NCw1LjQ0NGwxNy44NzMsMTcuODc1YzMuNTEsMy41MDksNS40NDMsOC4xNzQsNS40NDIsMTMuMTM4YzAsNC45NjUtMS45MzUsOS42MzMtNS40NDUsMTMuMTQ1ICAgbC01MS4xNyw1MS4xNjdsMTkuODQ2LDE5Ljg0N2w1MS4xNzEtNTEuMTY4YzguODEyLTguODEzLDEzLjY2NS0yMC41MjksMTMuNjY2LTMyLjk4OSAgIEMyNjAuOTM4LDUyLjA2MywyNTYuMDg1LDQwLjM0NywyNDcuMjczLDMxLjUzOHoiIGRhdGEtb3JpZ2luYWw9IiMwMDAwMDAiIGNsYXNzPSJhY3RpdmUtcGF0aCIgc3R5bGU9ImZpbGw6I0EzQTNBMyIgZGF0YS1vbGRfY29sb3I9IiMwMDAwMDAiPjwvcGF0aD4KPC9nPjwvZz4gPC9zdmc+);
+}
+.fn_auto_navigation_header:hover .fn_auto_navigation_anchor{
+    opacity: 1;
+    visibility: visible;
+    z-index: 2222;
+}
 /***** #Popup ****************************************************************/
 .popup {
     padding: 20px!important;
@@ -2113,4 +2172,17 @@ select{
     background:var(--okay-button-color);
     border-color:  var(--okay-button-color);
 }
-
+.fn_social_image i:before{content: "\f0ac";}
+.fn_social_image .fa-github:before{content: "\f09b";}
+.fn_social_image .fa-google-plus:before{content: "\f0d5";}
+.fn_social_image .fa-google:before{content: "\f1a0";}
+.fn_social_image .fa-twitter:before{content: "\f099";}
+.fn_social_image .fa-pinterest-p:before{content: "\f231";}
+.fn_social_image .fa-odnoklassniki:before{content: "\f263";}
+.fn_social_image .fa-facebook:before{content: "\f09a";}
+.fn_social_image .fa-skype:before{content: "\f17e";}
+.fn_social_image .fa-vk:before{content: "\f189";}
+.fn_social_image .fa-whatsapp:before{content: "\f232";}
+.fn_social_image .fa-youtube:before{content: "\f167";}
+.fn_social_image .fa-instagram:before{content: "\f16d";}
+.fn_social_image .fa-linkedin:before{content: "\f0e1";}

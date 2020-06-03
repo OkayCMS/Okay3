@@ -207,6 +207,13 @@ class ExportOrders extends AbstractExport
             $s1_3->addChild ( "Наименование", "Заказ оплачен" );
             $s1_3->addChild ( "Значение", $order->paid?'true':'false' );
             
+            if (!empty($order->payment_date)) {
+                $date = new \DateTime($order->payment_date);
+                $s1_3 = $s1_2->addChild("ЗначениеРеквизита");
+                $s1_3->addChild("Наименование", "Дата оплаты");
+                $s1_3->addChild("Значение", $date->format('Y-m-d'));
+            }
+            
             // Статус
             if (isset($allStatuses[$order->status_id])) {
                 $status = $allStatuses[$order->status_id];

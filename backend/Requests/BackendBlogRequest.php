@@ -41,12 +41,22 @@ class BackendBlogRequest
     public function postArticle()
     {
         $post = new \stdClass;
-        $post->id   = $this->request->post('id', 'integer');
-        $post->name = $this->request->post('name');
-        $post->date = date('Y-m-d H:i:s', strtotime($this->request->post('date')));
-        $post->url  = trim($this->request->post('url', 'string'));
-        $post->visible      = $this->request->post('visible', 'integer');
-        $post->type_post    = $this->request->post('type_post');
+        $post->id        = $this->request->post('id', 'integer');
+        $post->author_id = $this->request->post('author_id', 'integer');
+        $post->read_time = $this->request->post('read_time', 'integer');
+        $post->name      = $this->request->post('name');
+        $post->date      = date('Y-m-d H:i:s', strtotime($this->request->post('date')));
+        $post->rating = $this->request->post('rating', 'float');
+        $post->votes  = $this->request->post('votes', 'integer');
+        
+        if (($time = strtotime($this->request->post('updated_date'))) > 0) {
+            $post->updated_date = date('Y-m-d', $time);
+        } else {
+            $post->updated_date = null;
+        }
+        $post->url              = trim($this->request->post('url', 'string'));
+        $post->visible          = $this->request->post('visible', 'integer');
+        $post->show_table_content = $this->request->post('show_table_content', 'integer');
         $post->meta_title       = $this->request->post('meta_title');
         $post->meta_keywords    = $this->request->post('meta_keywords');
         $post->meta_description = $this->request->post('meta_description');
@@ -60,12 +70,63 @@ class BackendBlogRequest
         return ExtenderFacade::execute(__METHOD__, $post, func_get_args());
     }
 
+    public function postMenuItems()
+    {
+        $postFields = $this->request->post('menu_items');
+
+        if (empty($postFields)) {
+            return ExtenderFacade::execute(__METHOD__, false, func_get_args());
+        }
+
+        foreach ($this->request->post('menu_items') as $field => $values) {
+            foreach ($values as $i => $v) {
+                if (empty($menuItems[$i])) {
+                    $menuItems[$i] = new \stdClass();
+                    $menuItems[$i]->i_tm = $i;
+                }
+                $menuItems[$i]->$field = $v;
+            }
+        }
+
+        // сортируем по родителю
+        usort($menuItems, function ($item1, $item2) {
+            if ($item1->parent_index == $item2->parent_index) {
+                return $item1->i_tm - $item2->i_tm;
+            }
+            return strcmp($item1->parent_index, $item2->parent_index);
+        });
+        $tm = [];
+        foreach ($menuItems as $key => $item) {
+            
+            $tm[$item->index] = $item;
+        }
+        $menuItems = $tm;
+
+        return ExtenderFacade::execute(__METHOD__, $menuItems, func_get_args());
+    }
+
     public function postDeleteImage()
     {
         $deleteImage = $this->request->post('delete_image');
         return ExtenderFacade::execute(__METHOD__, $deleteImage, func_get_args());
     }
 
+    public function postCategories()
+    {
+        $postCategories = $this->request->post('categories');
+        if (is_array($postCategories)) {
+            $pc = [];
+            foreach ($postCategories as $c) {
+                $x = new \stdClass();
+                $x->id = $c;
+                $pc[$x->id] = $x;
+            }
+            $postCategories = $pc;
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $postCategories, func_get_args());
+    }
+    
     public function fileImage()
     {
         $image = $this->request->files('image');

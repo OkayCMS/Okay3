@@ -26,5 +26,5 @@
         {/function}
         {categories_tree categories=$categories}
     </categories>
-
+    {get_design_block block=OkayCMS_Hotline_head}
     <items>

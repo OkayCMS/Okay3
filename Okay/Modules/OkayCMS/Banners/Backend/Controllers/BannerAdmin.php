@@ -31,12 +31,7 @@ class BannerAdmin extends IndexAdmin
 
             $banner = $bannersRequest->postBanner();
 
-            $individualShortCode = '';
-            if($banner->individual_shortcode) {
-                $individualShortCode = $banner->individual_shortcode;
-            }
-
-            if (!empty($banner->individual_shortcode) && ($b = $bannersEntity->get($banner->individual_shortcode)) && $b->id!=$banner->id) {
+            if (!empty($banner->as_individual_shortcode) && ($b = $bannersEntity->findOne(['' => $banner->group_name])) && $b->id!=$banner->id) {
                 $this->design->assign('message_error', 'shortcode_exists');
             } else {
                 if (empty($banner->id)) {
@@ -44,26 +39,24 @@ class BannerAdmin extends IndexAdmin
                     $preparedBanner = $bannersHelper->prepareAdd($banner);
                     $banner->id = $bannersHelper->add($preparedBanner);
                     $this->design->assign('message_success', 'added');
-                }
-                else {
+                } else {
                     $preparedBanner = $bannersHelper->prepareUpdate($banner);
                     $bannersHelper->update($preparedBanner->id, $preparedBanner);
                     $this->design->assign('message_success', 'updated');
                 }
 
-                if ($this->request->post('use_individual_shortcode', 'boolean')) {
-                    if (empty($individualShortCode)) {
-                        $banner->individual_shortcode = 'banner_shortcode_group_' . $banner->id;
-                    }
-                } else {
-                    $banner->individual_shortcode = '';
-                }
                 $bannersEntity->update($banner->id, $banner);
             }
             $banner = $bannersHelper->addSelectedEntities($banner);
         } else {
             $bannerId = $this->request->get('id', 'integer');
-            $banner   = $bannersHelper->getBanner($bannerId);
+
+            // Если пришли с меню быстрого редактирования
+            if ($bannerSlideId = $this->request->get('banner_slide_id')) {
+                list($bannerId, $slideId) = explode(':', $bannerSlideId);
+            }
+            
+            $banner   = $bannersHelper->getBanner((int)$bannerId);
             $banner   = $bannersHelper->getSelectedEntities($banner);
         }
 

@@ -21,5 +21,6 @@ return [
     (new Css('jquery-ui.min.css')),
     (new Css('media.css')),
     (new Css('mobile_menu.css')),
+    (new Css('theme-editor.css'))
 ];
 

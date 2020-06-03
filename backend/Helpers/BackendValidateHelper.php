@@ -10,6 +10,8 @@ use Okay\Core\Request;
 use Okay\Core\Settings;
 use Okay\Core\EntityFactory;
 use Okay\Core\Modules\Extender\ExtenderFacade;
+use Okay\Entities\AuthorsEntity;
+use Okay\Entities\BlogCategoriesEntity;
 use Okay\Entities\BlogEntity;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\CategoriesEntity;
@@ -115,6 +117,44 @@ class BackendValidateHelper
         } elseif(empty($brand->name)) {
             $error = 'empty_name';
         } elseif(empty($brand->url)) {
+            $error = 'empty_url';
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $error, func_get_args());
+    }
+
+    public function getBlogCategoryValidateError($category)
+    {
+        $categoriesEntity = $this->entityFactory->get(BlogCategoriesEntity::class);
+
+        $error = '';
+        if (($c = $categoriesEntity->get($category->url)) && $c->id != $category->id) {
+            $error = 'url_exists';
+        } elseif ($this->settings->get('global_unique_url') && !$this->urlUniqueValidator->validateGlobal($category->url, BlogCategoriesEntity::class, $category->id)) {
+            $error = 'global_url_exists';
+        } elseif (empty($category->name)) {
+            $error = 'empty_name';
+        } elseif (empty($category->url)) {
+            $error = 'empty_url';
+        } elseif (substr($category->url, -1) == '-' || substr($category->url, 0, 1) == '-') {
+            $error = 'url_wrong';
+        }
+
+        return ExtenderFacade::execute(__METHOD__, $error, func_get_args());
+    }
+    
+    public function getAuthorsValidateError($author)
+    {
+        $authorsEntity = $this->entityFactory->get(AuthorsEntity::class);
+
+        $error = '';
+        if (($b = $authorsEntity->get($author->url)) && $b->id!=$author->id) {
+            $error = 'url_exists';
+        } elseif ($this->settings->get('global_unique_url') && !$this->urlUniqueValidator->validateGlobal($author->url, AuthorsEntity::class, $author->id)) {
+            $error = 'global_url_exists';
+        } elseif(empty($author->name)) {
+            $error = 'empty_name';
+        } elseif(empty($author->url)) {
             $error = 'empty_url';
         }
 

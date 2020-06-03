@@ -44,7 +44,16 @@ class BannersImageAdmin extends IndexAdmin
             $bannersImage = $bannersImagesHelper->getBannerImage((int)$bannersImage->id);
         } else {
             $bannersImageId = $this->request->get('id', 'integer');
-            $bannersImage   = $bannersImagesHelper->getBannerImage($bannersImageId);
+
+            // Если пришли с меню быстрого редактирования
+            if ($bannerSlideId = $this->request->get('banner_slide_id')) {
+                list($bannerId, $bannersImageId) = explode(':', $bannerSlideId);
+            } elseif ($bannerSlideId = $this->request->get('banner_slide_id_add')) {
+                list($bannerId) = explode(':', $bannerSlideId);
+                $this->design->assign('banner_id', $bannerId);
+            }
+            
+            $bannersImage = $bannersImagesHelper->getBannerImage($bannersImageId);
         }
         
         $banners = $bannersEntity->find();//todo

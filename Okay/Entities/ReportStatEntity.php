@@ -34,7 +34,7 @@ class ReportStatEntity extends Entity
     public function find(array $filter = [])
     {
         $this->select->join('LEFT', '__orders AS o', 'o.id = p.order_id');
-        $this->select->groupBy(['p.variant_id', 'p.product_id', 'p.product_name', 'p.variant_name', 'p.sku', 'o.id']);
+        $this->select->groupBy(['p.variant_id', 'p.product_id', 'p.product_name', 'p.variant_name', 'p.sku']);
         $this->select->limit(null);
 
         return parent::find($filter);
@@ -54,7 +54,38 @@ class ReportStatEntity extends Entity
         $this->db->query($this->select);
         return ExtenderFacade::execute([static::class, __FUNCTION__], $this->getResult('count'), func_get_args());
     }
+    
+    public function countNullable(array $filter = [])
+    {
+        $this->setUp();
+        $this->select->join('LEFT', '__orders AS o', 'o.id = p.order_id');
+        $this->buildFilter($filter);
+        $this->select->cols(["COUNT( " . $this->getTableAlias() . ".id) as count"]);
 
+        $this->select->where('p.variant_id IS NULL');
+        
+        // Уберем группировку и сортировку при подсчете по умолчанию
+        $this->select->resetGroupBy();
+        $this->select->resetOrderBy();
+
+        $this->db->query($this->select);
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $this->getResult('count'), func_get_args());
+    }
+
+    protected function filter__category_id($categoriesIds)
+    {
+        $this->select->join(
+            'INNER',
+            '__products AS pr',
+            'pr.id = p.product_id AND pr.main_category_id IN(:category_ids)'
+        );
+        
+        $this->select->where('p.product_id IS NOT NULL');
+        $this->select->bindValue('category_ids', $categoriesIds);
+
+        $this->select->groupBy(['p.id']);
+    }
+    
     protected function customOrder($order = null, array $orderFields = [], array $additionalData = [])
     {
         // Пример, как реализовать кастомную сортировку.

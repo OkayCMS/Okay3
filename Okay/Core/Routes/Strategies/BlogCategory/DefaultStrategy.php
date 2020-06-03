@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Okay\Core\Routes\Strategies\BlogItem;
+namespace Okay\Core\Routes\Strategies\BlogCategory;
 
 
 use Okay\Core\Routes\Strategies\AbstractRouteStrategy;
@@ -20,12 +20,12 @@ class DefaultStrategy extends AbstractRouteStrategy
 
     public function generateRouteParams($url)
     {
-        $prefix = $this->settings->get('blog_item_routes_template__default');
+        $prefix = $this->settings->get('blog_category_routes_template__default');
 
         if (empty($prefix)) {
             $prefix = 'blog';
         }
 
-        return ['/'.$prefix.'/{$url}', [], ['{$typePost}' => 'blog']];
+        return ['/'.$prefix.'/{$url}', [], []];
     }
 }

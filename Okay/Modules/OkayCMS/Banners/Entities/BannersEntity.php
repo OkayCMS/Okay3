@@ -19,7 +19,7 @@ class BannersEntity extends Entity
         'categories',
         'pages',
         'brands',
-        'individual_shortcode',
+        'as_individual_shortcode',
         'settings',
         'show_all_products',
     ];
@@ -30,7 +30,7 @@ class BannersEntity extends Entity
 
     protected static $table = 'okaycms__banners';
     protected static $tableAlias = 'b';
-    protected static $alternativeIdField = 'individual_shortcode';
+    protected static $alternativeIdField = 'group_name';
 
     public function delete($ids)
     {

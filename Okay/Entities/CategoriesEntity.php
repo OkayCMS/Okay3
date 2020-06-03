@@ -357,6 +357,7 @@ class CategoriesEntity extends Entity
     
     protected function filter__id($ids)
     {
+        $ids = (array)$ids;
         $this->filteredCategoryIds = array_merge($this->filteredCategoryIds, $ids);
         $this->filteredCategoryIds = array_unique($this->filteredCategoryIds);
     }

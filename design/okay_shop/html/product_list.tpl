@@ -2,36 +2,37 @@
 <div class="product_preview fn_product">
     <div class="fn_transfer clearfix">
         <div class="product_preview__center">
-            <div class="d-flex product_preview__image fn_loader_image">
+            <div class="d-flex product_preview__image">
                 <a class="d-flex align-items-center justify-content-center" aria-label="{$product->name|escape}" href="{if $controller=='Comparison'}{$product->image->filename|resize:800:600:w}{else}{url_generator route='product' url=$product->url}{/if}" {if $controller=='Comparison'}data-fancybox="group" data-caption="{$product->name|escape}"{/if}>
                     {if $product->image->filename}
-                        <img class="fn_img preview_img lazy" data-src="{$product->image->filename|resize:300:180}" src="{$product->image->filename|resize:300:180}" alt="{$product->name|escape}" title="{$product->name|escape}"/>
+                        <img class="fn_img preview_img lazy" data-src="{$product->image->filename|resize:300:180}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$product->name|escape}" title="{$product->name|escape}"/>
                     {else}
                         <div class="fn_img product_preview__no_image d-flex align-items-center justify-content-center" title="{$product->name|escape}">
                             {include file="svg.tpl" svgId="no_image"}
                         </div>
                     {/if}
-                </a>
 
-                {if $product->featured || $product->special || ($product->variant->price>0 && $product->variant->compare_price>0 && $product->variant->compare_price>$product->variant->price)}
+                    {if $product->featured || $product->special || ($product->variant->price>0 && $product->variant->compare_price>0 && $product->variant->compare_price>$product->variant->price)}
                     <div class="stickers">
                         {if $product->featured}
                         <span class="sticker sticker--hit" data-language="product_sticker_hit">{$lang->product_sticker_hit}</span>
                         {/if}
                         <span class="fn_discount_label {if $product->variant->price>0 && $product->variant->compare_price>0 && $product->variant->compare_price>$product->variant->price}{else} hidden{/if}">
-                            <span class="sticker sticker--discount">
-                                {if $product->variant->price>0 && $product->variant->compare_price>0 && $product->variant->compare_price>$product->variant->price}
-                                {round((($product->variant->price-$product->variant->compare_price)/$product->variant->compare_price)*100, 2)}&nbsp;%
-                                {/if}
+                                <span class="sticker sticker--discount">
+                                    {if $product->variant->price>0 && $product->variant->compare_price>0 && $product->variant->compare_price>$product->variant->price}
+                                    {round((($product->variant->price-$product->variant->compare_price)/$product->variant->compare_price)*100, 2)}&nbsp;%
+                                    {/if}
+                                </span>
                             </span>
-                        </span>
                         {if $product->special}
-                            <span class="sticker sticker--special">
-                                <img class="sticker__image" src='files/special/{$product->special}' alt='{$product->special|escape}' title="{$product->special|escape}"/>
-                            </span>
+                        <span class="sticker sticker--special">
+                                    <img class="sticker__image" src='files/special/{$product->special}' alt='{$product->special|escape}' title="{$product->special|escape}"/>
+                                </span>
                         {/if}
                     </div>
-                {/if}
+                    {/if}
+                </a>
+
                 {* Wishlist *}
                 {if $controller != "WishListController"}
                     {if is_array($wishlist->ids) && in_array($product->id, $wishlist->ids)}

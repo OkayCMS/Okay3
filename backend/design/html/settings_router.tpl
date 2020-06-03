@@ -148,6 +148,7 @@
                 {get_design_block block="settings_router_category"}
             </div>
         </div>
+        
         {* Группа урлов товаров *}
         <div class="col-lg-6 col-md-12">
             <div class="boxed fn_toggle_wrap min_height_270px">
@@ -249,91 +250,7 @@
             </div>
         </div>
 
-        {* Группа урлов постов блога *}
-        <div class="col-lg-6 col-md-12">
-            <div class="boxed fn_toggle_wrap">
-                <div class="heading_box">
-                    {$btr->blog_routing|escape}
-                </div>
-
-                <div class="activity_of_switch_item settings_router_switch">
-                    <div class="okay_switch clearfix">
-                        <label class="switch_label">
-                            {$btr->settings_router_url_slash_end|escape}
-                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice|escape}">
-                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                            </i>
-                        </label>
-                        <label class="switch switch-default">
-                            <input class="switch-input" name="blog_item_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->blog_item_routes_template_slash_end}checked=""{/if}/>
-                            <span class="switch-label"></span>
-                            <span class="switch-handle"></span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="toggle_body_wrap on fn_card">
-                    <div class="okay_type_radio_wrap">
-                        <input id="blog_item_routes_default" class="hidden_check" name="blog_item_routes_template" type="radio" value="default" {if empty($settings->blog_item_routes_template) || $settings->blog_item_routes_template == 'default'} checked="" {/if} />
-                        <label for="blog_item_routes_default" class="okay_type_radio">
-                            <span>{$rootUrl}/<input name="blog_item_routes_template__default" placeholder="blog" class="form-control prefix-url-input" type="text" value="{if $settings->blog_item_routes_template__default}{$settings->blog_item_routes_template__default|escape}{else}blog{/if}" />/post-name</span>
-                        </label>
-                    </div>
-
-                    <div class="okay_type_radio_wrap">
-                        <input id="blog_item_routes_no_prefix" class="hidden_check" name="blog_item_routes_template" type="radio" value="no_prefix" {if $settings->blog_item_routes_template == 'no_prefix'} checked="" {/if} />
-                        <label for="blog_item_routes_no_prefix" class="okay_type_radio">
-                            <span>{$rootUrl}/post-name</span>
-                        </label>
-                    </div>
-                </div>
-                {get_design_block block="settings_router_blog"}
-            </div>
-        </div>
-
-        {* Группа урлов новостей *}
-        <div class="col-lg-6 col-md-12 pr-0">
-            <div class="boxed fn_toggle_wrap">
-                <div class="heading_box">
-                    {$btr->news_routing|escape}
-                </div>
-
-                <div class="activity_of_switch_item settings_router_switch">
-                    <div class="okay_switch clearfix">
-                        <label class="switch_label">
-                            {$btr->settings_router_url_slash_end|escape}
-                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice|escape}">
-                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                            </i>
-                        </label>
-                        <label class="switch switch-default">
-                            <input class="switch-input" name="news_item_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->news_item_routes_template_slash_end}checked=""{/if}/>
-                            <span class="switch-label"></span>
-                            <span class="switch-handle"></span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="toggle_body_wrap on fn_card">
-                    <div class="okay_type_radio_wrap">
-                        <input id="news_item_routes_default" class="hidden_check" name="news_item_routes_template" type="radio" value="default" {if empty($settings->news_item_routes_template) || $settings->news_item_routes_template == 'default'} checked="" {/if} />
-                        <label for="news_item_routes_default" class="okay_type_radio">
-                            <span>{$rootUrl}/<input name="news_item_routes_template__default" placeholder="news" class="form-control prefix-url-input" type="text" value="{if $settings->news_item_routes_template__default}{$settings->news_item_routes_template__default|escape}{else}news{/if}" />/news-name</span>
-                        </label>
-                    </div>
-
-                    <div class="okay_type_radio_wrap">
-                        <input id="news_item_routes_no_prefix" class="hidden_check" name="news_item_routes_template" type="radio" value="no_prefix" {if $settings->news_item_routes_template == 'no_prefix'} checked="" {/if} />
-                        <label for="news_item_routes_no_prefix" class="okay_type_radio">
-                            <span>{$rootUrl}/news-name</span>
-                        </label>
-                    </div>
-                </div>
-                {get_design_block block="settings_router_news"}
-            </div>
-        </div>
-
-        {* Группа урлов для общих размеров *}
+        {* Группа урлов для общих разделов *}
         <div class="col-lg-6 col-md-12">
             <div class="boxed fn_toggle_wrap">
                 <div class="heading_box">
@@ -363,7 +280,7 @@
 
                     <div class="okay_type_radio_wrap">
                         <label for="" class="okay_type_radio_no_width" >
-                            <span>{$btr->common_routes_posts}: {$rootUrl}/<input name="all_blog_routes_template__default" placeholder="brands" class="form-control prefix-url-input" type="text" value="{if $settings->all_blog_routes_template__default}{$settings->all_blog_routes_template__default|escape}{else}blog{/if}" /></span>
+                            <span>{$btr->common_routes_posts}: {$rootUrl}/<input name="all_blog_routes_template__default" placeholder="all-posts" class="form-control prefix-url-input" type="text" value="{if $settings->all_blog_routes_template__default}{$settings->all_blog_routes_template__default|escape}{else}blog{/if}" /></span>
                         </label>
 
                         <div class="okay_switch clearfix">
@@ -380,31 +297,128 @@
                             </label>
                         </div>
                     </div>
-
-                    <div class="okay_type_radio_wrap">
-                        <label for="" class="okay_type_radio_no_width" >
-                            <span>{$btr->common_routes_news}: {$rootUrl}/<input name="all_news_routes_template__default" placeholder="brands" class="form-control prefix-url-input" type="text" value="{if $settings->all_news_routes_template__default}{$settings->all_news_routes_template__default|escape}{else}news{/if}" /></span>
-                        </label>
-
-                        <div class="okay_switch clearfix">
-                            <label class="switch_label">
-                                {$btr->settings_router_url_slash_end}
-                                <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice}">
-                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                                </i>
-                            </label>
-                            <label class="switch switch-default">
-                                <input class="switch-input" name="all_news_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->all_news_routes_template_slash_end}checked=""{/if}/>
-                                <span class="switch-label"></span>
-                                <span class="switch-handle"></span>
-                            </label>
-                        </div>
-                    </div>
                 </div>
                 {get_design_block block="settings_router_news"}
             </div>
         </div>
 
+        {* Группа урлов категорий блога *}
+        <div class="col-lg-6 col-md-12 pr-0">
+            <div class="boxed fn_toggle_wrap min_height_270px">
+                <div class="heading_box">
+                    {$btr->category_blog_routing|escape}
+                </div>
+
+                <div class="activity_of_switch_item settings_router_switch">
+                    <div class="okay_switch clearfix">
+                        <label class="switch_label">
+                            {$btr->settings_router_url_slash_end|escape}
+                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </label>
+                        <label class="switch switch-default">
+                            <input class="switch-input" name="blog_category_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->blog_category_routes_template_slash_end}checked=""{/if}/>
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="toggle_body_wrap on fn_card">
+                    <div class="okay_type_radio_wrap">
+                        <input id="blog_category_routes_default" class="hidden_check" name="blog_category_routes_template" type="radio" value="default" {if empty($settings->blog_category_routes_template) || $settings->blog_category_routes_template == 'default'} checked="" {/if} />
+                        <label for="blog_category_routes_default" class="okay_type_radio">
+                            <span>
+                                {$rootUrl}/
+                                <input name="blog_category_routes_template__default" placeholder="blog" class="form-control prefix-url-input" type="text" value="{if $settings->blog_category_routes_template__default}{$settings->blog_category_routes_template__default|escape}{else}blog{/if}" />
+                                /category
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="okay_type_radio_wrap">
+                        <input id="blog_category_routes_no_prefix" class="hidden_check" name="blog_category_routes_template" type="radio" value="no_prefix" {if $settings->blog_category_routes_template == 'no_prefix'} checked="" {/if} />
+                        <label for="blog_category_routes_no_prefix" class="okay_type_radio">
+                            <span>{$rootUrl}/category</span>
+                        </label>
+                    </div>
+
+                    <div class="okay_type_radio_wrap">
+                        <input id="blog_category_routes_prefix_and_path" class="hidden_check" name="blog_category_routes_template" type="radio" value="prefix_and_path" {if $settings->blog_category_routes_template == 'prefix_and_path'} checked="" {/if} />
+                        <label for="blog_category_routes_prefix_and_path" class="okay_type_radio">
+                            <span>{$rootUrl}/<input name="blog_category_routes_template__prefix_and_path" placeholder="catalog" class="form-control prefix-url-input" type="text" value="{if $settings->blog_category_routes_template__prefix_and_path}{$settings->blog_category_routes_template__prefix_and_path|escape}{else}blog{/if}" />/category-level-1/.../category</span>
+                        </label>
+                    </div>
+
+                    <div class="okay_type_radio_wrap">
+                        <input id="blog_category_routes_no_prefix_and_path" class="hidden_check" name="blog_category_routes_template" type="radio" value="no_prefix_and_path" {if $settings->blog_category_routes_template == 'no_prefix_and_path'} checked="" {/if} />
+                        <label for="blog_category_routes_no_prefix_and_path" class="okay_type_radio">
+                            <span>{$rootUrl}/category-level-1/.../category</span>
+                        </label>
+                    </div>
+                </div>
+                {get_design_block block="settings_router_blog_category"}
+            </div>
+        </div>
+
+        {* Группа урлов записей блога *}
+        <div class="col-lg-6 col-md-12">
+            <div class="boxed fn_toggle_wrap min_height_270px">
+                <div class="heading_box">
+                    {$btr->blog_routing|escape}
+                </div>
+                <div class="activity_of_switch_item settings_router_switch">
+                    <div class="okay_switch clearfix">
+                        <label class="switch_label">
+                            {$btr->settings_router_url_slash_end|escape}
+                            <i class="fn_tooltips" title="{$btr->settings_router_url_slash_end_notice|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </label>
+                        <label class="switch switch-default">
+                            <input class="switch-input" name="blog_item_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->blog_item_routes_template_slash_end}checked=""{/if}/>
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="toggle_body_wrap on fn_card">
+                    <div class="okay_type_radio_wrap">
+                        <input id="post_routes_default" class="hidden_check" name="post_routes_template" type="radio" value="default" {if empty($settings->post_routes_template) || $settings->post_routes_template == 'default'} checked="" {/if} />
+                        <label for="post_routes_default" class="okay_type_radio">
+                            <span>{$rootUrl}/<input name="post_routes_template__default" placeholder="post" class="form-control prefix-url-input" type="text" value="{if $settings->post_routes_template__default}{$settings->post_routes_template__default|escape}{else}post{/if}" />/post-url</span>
+                        </label>
+                    </div>
+                    <div class="okay_type_radio_wrap">
+                        <input id="post_routes_prefix_and_all_categories" class="hidden_check" name="post_routes_template" type="radio" value="prefix_and_path" {if $settings->post_routes_template == 'prefix_and_path'} checked="" {/if} />
+                        <label for="post_routes_prefix_and_all_categories" class="okay_type_radio">
+                            <span>{$rootUrl}/<input name="post_routes_template__prefix_and_path" placeholder="post" class="form-control prefix-url-input" type="text" value="{if $settings->post_routes_template__prefix_and_path}{$settings->post_routes_template__prefix_and_path|escape}{else}post{/if}" />/category-level-1/.../category/post-url</span>
+                        </label>
+                    </div>
+                    <div class="okay_type_radio_wrap">
+                        <input id="post_routes_no_prefix_and_path" class="hidden_check" name="post_routes_template" type="radio" value="no_prefix_and_path" {if $settings->post_routes_template == 'no_prefix_and_path'} checked="" {/if} />
+                        <label for="post_routes_no_prefix_and_path" class="okay_type_radio">
+                            <span>{$rootUrl}/category-level-1/.../category/post-url</span>
+                        </label>
+                    </div>
+
+                    <div class="okay_type_radio_wrap">
+                        <input id="post_routes_no_prefix_and_category" class="hidden_check" name="post_routes_template" type="radio" value="no_prefix_and_category" {if $settings->post_routes_template == 'no_prefix_and_category'} checked="" {/if} />
+                        <label for="post_routes_no_prefix_and_category" class="okay_type_radio">
+                            <span>{$rootUrl}/category/post-url</span>
+                        </label>
+                    </div>
+
+                    <div class="okay_type_radio_wrap">
+                        <input id="post_routes_no_prefix" class="hidden_check" name="post_routes_template" type="radio" value="no_prefix" {if $settings->post_routes_template == 'no_prefix'} checked="" {/if} />
+                        <label for="post_routes_no_prefix" class="okay_type_radio">
+                            <span>{$rootUrl}/post-url</span>
+                        </label>
+                    </div>
+                </div>
+                {get_design_block block="settings_router_post"}
+            </div>
+        </div>
     </div>
 
     {$block = {get_design_block block="settings_router_custom_block"}}

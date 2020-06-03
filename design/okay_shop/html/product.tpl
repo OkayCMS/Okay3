@@ -22,7 +22,7 @@
                     {* Main product image *}
                     <div class="gallery_image product-page__image f_row justify-content-center">
                         <div class="product-page__img">
-                            <img class="fn_img fn_xzoom-fancy product_img xzoom4" xoriginal="{$product->image->filename|resize:1200:1000:w}" itemprop="image" src="{$product->image->filename|resize:800:550}" alt="{$product->name|escape}" title="{$product->name|escape}">
+                            <img class="fn_img fn_xzoom-fancy product_img xzoom4" xoriginal="{$product->image->filename|resize:1800:1800:w}" itemprop="image" src="{$product->image->filename|resize:800:550}" alt="{$product->name|escape}" title="{$product->name|escape}">
 
                             {if $product->featured || $product->special || $product->variant->compare_price}
                                 <div class="stickers stickers_product-page">
@@ -47,14 +47,14 @@
                         <div class="scrollbar-inner">
                         {* cut removes the first image, if you need start from the second - write cut:2 *}
                         {foreach $product->images as $i=>$image}
-                        <a href="{$image->filename|resize:1200:1000:w}" class="product-page__images-item">
+                        <a href="{$image->filename|resize:1800:1800:w}" class="product-page__images-item">
                             <img class="xzoom-gallery4" src="{$image->filename|resize:60:60}" xpreview="{$image->filename|resize:800:550}" alt="{$product->name|escape}"/>
                         </a>
                         {/foreach}
                         </div>
                     </div>
                     {else}
-                        <a href="{$product->image->filename|resize:1200:1000:w}" class="hidden">
+                        <a href="{$product->image->filename|resize:1800:1800:w}" class="hidden">
                             <img class="xzoom-gallery4" xpreview="{$product->image->filename|resize:800:550}" alt="{$product->name|escape}"/>
                         </a>
                     {/if}
@@ -73,7 +73,7 @@
                     <div class="d-flex justify-content-between align-items-start">
                         <div class="details_boxed__rating">
                             {*<div class="details_boxed__title" data-language="product_rating">{$lang->product_rating}:</div>*}
-                            <div id="product_{$product->id}" class="product__rating"{if $product->rating > 0} itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating"{/if}>
+                            <div id="product_{$product->id}" class="product__rating fn_rating" data-rating_post_url="{url_generator route='ajax_product_rating'}" {if $product->rating > 0} itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating"{/if}>
                                 <span class="rating_starOff">
                                     <span class="rating_starOn" style="width:{$product->rating*90/5|string_format:'%.0f'}px;"></span>
                                 </span>

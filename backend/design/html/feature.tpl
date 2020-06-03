@@ -180,7 +180,13 @@
                             <p>{$btr->feature_message|escape}</p>
                         </div>
                     </div>
-                    <div class="activity_of_switch_item mb-2"> {* row block *}
+
+                    <button id="select_all_categories" type="submit" class="btn btn_small btn-secondary mb-1">
+                        {include file='svg_icon.tpl' svgId='checked'}
+                        <span>{$btr->feature_select_all_categories|escape}</span>
+                    </button>
+
+                    {*<div class="activity_of_switch_item mb-2">
                         <div class="okay_switch clearfix">
                             <label class="switch_label">{$btr->feature_select_all_categories|escape}</label>
                             <label class="switch switch-default">
@@ -189,7 +195,7 @@
                                 <span class="switch-handle"></span>
                             </label>
                         </div>
-                    </div>
+                    </div>*}
 
                     <select class="selectpicker form-control fn_select_all_categories col-xs-12 px-0" multiple name="feature_categories[]" size="10" data-selected-text-format="count" >
                         {function name=category_select selected_id=$product_category level=0}
@@ -527,8 +533,8 @@
 
 {literal}
     <script>
-        $(document).on('change', '#select_all_categories', function () {
-            $('.fn_select_all_categories option').prop("selected", $(this).is(':checked'));
+        $(document).on('click', '#select_all_categories', function () {
+            $('.fn_select_all_categories option').prop("selected", true);
             $('.fn_select_all_categories').selectpicker('refresh');
         });
 

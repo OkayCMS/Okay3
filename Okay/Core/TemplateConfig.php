@@ -347,7 +347,7 @@ class TemplateConfig
     public function getTheme()
     {
         // Если тема уже удалена, выключим её для админа
-        if (!empty($this->adminTheme) && !is_dir('design/' . $this->adminTheme . '/html')) {
+        if (!empty($this->adminTheme) && !is_dir(__DIR__ . '/../../design/' . $this->adminTheme . '/html')) {
             $SL = ServiceLocator::getInstance();
 
             /** @var Settings $settings */
@@ -484,6 +484,44 @@ class TemplateConfig
         $dynamicJs = $minifier->minify();
 
         return $dynamicJs;
+    }
+
+    /**
+     * Метод возвращает все зарегистрированные css из активного шаблона, нужно чтобы в админке в редакторе их подставить
+     * 
+     * @return array
+     */
+    public function getRegisteredCss()
+    {
+        $this->registerTemplateFiles();
+
+        $css = [];
+        
+        // Подключаем основной файл стилей
+        if (($cssFilename = $this->compileRegisteredCss('head')) !== '') {
+            $css[] = $cssFilename;
+        }
+
+        // Подключаем дополнительные индивидуальные файлы стилей
+        if (($individualCss_filenames = $this->compileRegisteredIndividualCss('head')) !== []) {
+            foreach ($individualCss_filenames as $cssFilename) {
+                $css[] = $cssFilename;
+            }
+        }
+        
+        // Подключаем основной файл стилей
+        if (($cssFilename = $this->compileRegisteredCss('footer')) !== '') {
+            $css[] = $cssFilename;
+        }
+
+        // Подключаем дополнительные индивидуальные файлы стилей
+        if (($individualCss_filenames = $this->compileRegisteredIndividualCss('footer')) !== []) {
+            foreach ($individualCss_filenames as $cssFilename) {
+                $css[] = $cssFilename;
+            }
+        }
+        
+        return $css;
     }
     
     /**

@@ -19,7 +19,7 @@
                                                 {if $c->image}
                                                     <img class="lazy" src="{$c->image|resize:20:20:false:$config->resized_categories_dir}" alt="{$c->name|escape}"/>
                                                 {else}
-                                                    <div class="filter_catalog__no_image d-flex align-items-center justify-content-center" title="{$browsed_product->name|escape}">
+                                                    <div class="filter_catalog__no_image d-flex align-items-center justify-content-center" title="{$c->name|escape}">
                                                         {include file="svg.tpl" svgId="no_image"}
                                                     </div>
                                                 {/if}

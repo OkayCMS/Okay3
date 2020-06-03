@@ -23,6 +23,12 @@ class SettingsRouterAdmin extends IndexAdmin
             if ($this->settings->get('category_routes_template') != $this->request->post('category_routes_template')) {
                 $cacheEntity->deleteCategoriesCache();
             }
+            if ($this->settings->get('blog_category_routes_template') != $this->request->post('blog_category_routes_template')) {
+                $cacheEntity->deleteBlogCategoriesCache();
+            }
+            if ($this->settings->get('post_routes_template') != $this->request->post('post_routes_template')) {
+                $cacheEntity->deleteBlogCache();
+            }
             
             $backendSettingsHelper->updateRouterSettings();
             $this->design->assign('message_success', 'saved');

@@ -86,6 +86,14 @@ resized_brands_dir = files/resized/brands/
 original_categories_dir = files/originals/categories/
 resized_categories_dir = files/resized/categories/
 
+;Изображения оригиналов и нарезок фоток категории блога
+original_blog_categories_dir = files/originals/blog_categories/
+resized_blog_categories_dir = files/resized/blog_categories/
+
+;Изображения оригиналов и нарезок фоток авторов
+original_authors_dir = files/originals/authors/
+resized_authors_dir = files/resized/authors/
+
 ;Изображения оригиналов и нарезок фоток доставки
 original_deliveries_dir = files/originals/deliveries/
 resized_deliveries_dir = files/resized/deliveries/

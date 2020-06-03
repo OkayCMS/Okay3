@@ -342,6 +342,22 @@ class Router {
                 $productRoute->generateSlugUrl($url);
             }
         }
+
+        $blogCategoryRoute = self::$routeFactory->create('blog_category');
+        if ($blogCategoryRoute->getIsUsesSqlToGenerate()) {
+            $urls = $routerCacheEntity->getBlogCategoriesUrlsWithoutCache();
+            foreach ($urls as $url) {
+                $blogCategoryRoute->generateSlugUrl($url);
+            }
+        }
+
+        $postRoute = self::$routeFactory->create('post');
+        if ($postRoute->getIsUsesSqlToGenerate()) {
+            $urls = $routerCacheEntity->getBlogUrlsWithoutCache();
+            foreach ($urls as $url) {
+                $postRoute->generateSlugUrl($url);
+            }
+        }
     }
     
     public static function generateUrl($routeName, $params = [], $isAbsolute = false, $langId = null)

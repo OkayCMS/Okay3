@@ -962,6 +962,11 @@
                     set_meta();
                 })
             }
+            if($(".fn_meta_author").size()>0) {
+                $("select[name=author_id]").on("change",function () {
+                    set_meta();
+                })
+            }
             if($(".fn_meta_categories").size()>0) {
                 $(".fn_meta_categories").on("change",function () {
                     set_meta();
@@ -989,22 +994,27 @@
         }
 
         function generate_meta_keywords() {
-            name = $('input[name="name"]').val();
-            result = name;
-            if($(".fn_meta_brand").size() > 0) {
-                brand = $('select[name="brand_id"] option:selected').data('brand_name');
+            let result = $('input[name="name"]').val();
+            
+            if ($(".fn_meta_brand").size() > 0) {
+                let brand = $('select[name="brand_id"] option:selected').data('brand_name');
                 if (typeof(brand) == 'string' && brand != '')
                     result += ', ' + brand;
+            }
+            if ($(".fn_meta_author").size() > 0) {
+                let author = $('select[name="author_id"] option:selected').data('author_name');
+                if (typeof(author) == 'string' && author != '')
+                    result += ', ' + author;
             }
 
             if($(".fn_meta_categories").size()>0) {
                 if($(".fn_product_categories_list .fn_category_item").size() == 0) {
-                    c = $(".fn_meta_categories option:selected").data("category_name");
+                    let c = $(".fn_meta_categories option:selected").data("category_name");
                     if (typeof(c) == 'string' && c != '')
                         result += ', ' + c;
                 } else {
-                    cat = $(".fn_product_categories_list .fn_category_item:first");
-                    c = cat.find("input").data("cat_name");
+                    let cat = $(".fn_product_categories_list .fn_category_item:first");
+                    let c = cat.find("input").data("cat_name");
                     if (typeof(c) == 'string' && c != '')
                         result += ', ' + c;
                 }
@@ -1064,13 +1074,21 @@
         * */
         $('.tabs').each(function(i) {
             var cur_nav = $(this).find('.tab_navigation'),
-                cur_tabs = $(this).find('.tab_container');
-            if(cur_nav.children('.selected').size() > 0) {
-                $(cur_nav.children('.selected').attr("href")).show();
+                cur_tabs = $(this).find('.tab_container'),
+                cur_tab;
+
+            {if $smarty.get.active_tab}
+                cur_nav.children().removeClass('selected');
+                cur_nav.children('[href="#{$smarty.get.active_tab|escape}"]').addClass('selected');
+            {/if}
+            
+            if (cur_nav.children('.selected').size() > 0) {
+                cur_tab = $(cur_nav.children('.selected').attr("href"));
             } else {
                 cur_nav.children().first().addClass('selected');
-                cur_tabs.children().first().show();
+                cur_tab = cur_tabs.children().first();
             }
+            cur_tab.show();
         });
 
         $('.tab_navigation_link').click(function(e){
@@ -1079,11 +1097,21 @@
                 return true;
             }
             var cur_nav = $(this).closest('.tabs').find('.tab_navigation'),
-                cur_tabs = $(this).closest('.tabs').find('.tab_container');
+                cur_tabs = $(this).closest('.tabs').find('.tab_container'),
+                cur_tab = $($(this).attr("href"));
             cur_tabs.children().hide();
             cur_nav.children().removeClass('selected');
             $(this).addClass('selected');
-            $($(this).attr("href")).fadeIn(200);
+
+            let newUrl;
+            if (window.location.href.indexOf('active_tab') !== -1) {
+                newUrl = window.location.href.replace(/([?&]active_tab)=([^#&]*)/g, '$1=' + cur_tab.attr('id'));
+            } else {
+                newUrl = window.location + '&active_tab=' + cur_tab.attr('id');
+            }
+
+            history.pushState(null, null, newUrl);
+            cur_tab.fadeIn(200);
         });
         /*Скрипт табов end*/
 

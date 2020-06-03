@@ -467,11 +467,14 @@ body:not(.top-nav) header.navbar {
 .min_height_210px{
     min-height: 210px;
 }
-.min_height_210px{
-    min-height: 210px;
+.min_height_220px{
+    min-height: 220px;
 }
 .min_height_230px{
     min-height: 230px;
+}
+.min_height_240px{
+    min-height: 240px;
 }
 .min_height_250px{
     min-height: 250px;
@@ -3070,7 +3073,7 @@ label.switch_label i{
     text-align: left;
 }
 .okay_list .okay_list_blog_name{
-    width: calc(100% - 570px);
+    width: calc(100% - 400px);
     position: relative;
     text-align: left;
 }
@@ -3294,6 +3297,11 @@ label.switch_label i{
     width: 150px;
 }
 .okay_list .okay_list_brands_name{
+    width: calc(100% - 430px);
+    position: relative;
+    text-align: left;
+}
+.okay_list .okay_list_authors_name{
     width: calc(100% - 430px);
     position: relative;
     text-align: left;
@@ -5476,6 +5484,56 @@ body.menu-pin .menu_switch .menu_hamburger::after {
     z-index: 10;
 }
 
+/************************************************************************* Author.tpl  */
+
+.author_images_list{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-left: -1%;
+    margin-right: -1%;
+    margin-bottom: -10px;
+    overflow: hidden;
+}
+.author_images_list li{
+    min-height: 100px;
+    overflow: hidden;
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-bottom: 10px;
+    position: relative;
+    height: 120px;
+    line-height: 115px;
+    background: #F8F8F8;
+    width: 215px;
+    float: left;
+    text-align: center;
+    cursor: pointer;
+    -moz-transition: 0.1s all;
+    -webkit-transition: 0.1s all;
+    transition: 0.1s all;
+    box-sizing: border-box;
+}
+.author_image_item{
+    border: 1px solid #ddd;
+    padding: 0;
+    float: left;
+    width: 18%;
+    text-align: center;
+    line-height: 100px;
+    cursor: grab;
+}
+.author_image_item:hover .remove_image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    width: 40px;
+    height: 40px;
+    border: none;
+    z-index: 10;
+}
+
 
 /************************************************************************* Product.tpl  */
 .toggle_arrow_wrap{
@@ -7114,7 +7172,10 @@ base::-moz-progress-bar,
 .fn_fast_save .additional_params>div {
     width: 100% !important;
 }
+.fn_delete_social,
 .fn_disable_url{cursor:pointer;}
+.fn_delete_social svg{width: 14px;height:14px;}
+.fn_delete_social:hover svg{color: rgb(248, 40, 40);}
 div.tox-fullscreen {
     top: 55px!important;
     height: calc(100% - 55px);
@@ -8179,3 +8240,22 @@ ul.submenu .menu_counter {
     font-size: 38px;
     font-weight: bold;
 }
+.fn_social_image {
+    width: 25px;
+    display: inline-block;
+    text-align: center;
+}
+.fn_social_image i:before{content: "\f0ac";}
+.fn_social_image .fa-github:before{content: "\f09b";}
+.fn_social_image .fa-google-plus:before{content: "\f0d5";}
+.fn_social_image .fa-google:before{content: "\f1a0";}
+.fn_social_image .fa-twitter:before{content: "\f099";}
+.fn_social_image .fa-pinterest-p:before{content: "\f231";}
+.fn_social_image .fa-odnoklassniki:before{content: "\f263";}
+.fn_social_image .fa-facebook:before{content: "\f09a";}
+.fn_social_image .fa-skype:before{content: "\f17e";}
+.fn_social_image .fa-vk:before{content: "\f189";}
+.fn_social_image .fa-whatsapp:before{content: "\f232";}
+.fn_social_image .fa-youtube:before{content: "\f167";}
+.fn_social_image .fa-instagram:before{content: "\f16d";}
+.fn_social_image .fa-linkedin:before{content: "\f0e1";}

@@ -47,12 +47,7 @@ class ProductsHelper implements GetListInterface
     public function getList($filter = [], $sortName = null, $excludedFields = null)
     {
         if ($excludedFields === null) {
-            $excludedFields = [
-                'description',
-                'meta_title',
-                'meta_keywords',
-                'meta_description',
-            ];
+            $excludedFields = $this->getExcludeFields();
         }
 
         /** @var ProductsEntity $productsEntity */
@@ -88,6 +83,17 @@ class ProductsHelper implements GetListInterface
         }
         
         return ExtenderFacade::execute(__METHOD__, $products, func_get_args());
+    }
+
+    public function getExcludeFields()
+    {
+        $excludedFields = [
+            'description',
+            'meta_title',
+            'meta_keywords',
+            'meta_description',
+        ];
+        return ExtenderFacade::execute(__METHOD__, $excludedFields, func_get_args());
     }
     
     // Данный метод остаётся для обратной совместимости, но объявлен как deprecated, и будет удалён в будущих версиях

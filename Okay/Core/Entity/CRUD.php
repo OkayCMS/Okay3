@@ -4,9 +4,7 @@
 namespace Okay\Core\Entity;
 
 
-use Aura\SqlQuery\Common\Select;
-use Aura\SqlQuery\QueryFactory;
-use Okay\Core\Database;
+use Okay\Core\QueryFactory\Select;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
 trait CRUD
@@ -55,6 +53,22 @@ trait CRUD
         return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
     }
 
+    /**
+     * @param array $filter
+     * @return Select
+     */
+    public function getSelect(array $filter = [])
+    {
+        $this->setUp();
+        $this->buildPagination($filter);
+        $this->buildFilter($filter);
+        $this->select->distinct(true);
+        
+        $this->select->cache();
+        
+        return $this->select; // No ExtenderFacade
+    }
+    
     public function find(array $filter = [])
     {
         $this->setUp();

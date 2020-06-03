@@ -25,12 +25,12 @@ class ReportStatsAdmin extends IndexAdmin
         $filter_check = $this->request->get('filter_check');
         
         if (!empty($date_from)) {
-            $filter['date_from'] = date("Y-m-d 00:00:01", strtotime($date_from));
+            $filter['date_from'] = date("Y-m-d 00:00:00", strtotime($date_from));
             $this->design->assign('date_from', $date_from);
         }
         
         if (!empty($date_to)) {
-            $filter['date_to'] = date("Y-m-d 23:59:00", strtotime($date_to));
+            $filter['date_to'] = date("Y-m-d 23:59:59", strtotime($date_to));
             $this->design->assign('date_to', $date_to);
         }
         $this->design->assign('filter_check', $filter_check);
@@ -52,35 +52,32 @@ class ReportStatsAdmin extends IndexAdmin
         
         $filter['page'] = max(1, $this->request->get('page', 'integer'));
         $filter['limit'] = 40;
-        $cat_filter = $this->request->get('category_id','integer');
-        $this->design->assign('category',$cat_filter );
-        $temp_filter = $filter;
-        unset($temp_filter['limit']);
-        unset($temp_filter['page']);
+        $catFilter = $this->request->get('category_id','integer');
+        $this->design->assign('category',$catFilter );
 
-        $stat_count = $reportStatEntity->count($temp_filter);
-        $this->design->assign('posts_count',$stat_count );
+        if ($cat = $categoriesEntity->get($catFilter)) {
+            $filter['category_id'] = $cat->children;
+        }
+
+        $statCount = $reportStatEntity->count($filter);
+        $statCount += $reportStatEntity->countNullable($filter);
         
-        if($this->request->get('page') == 'all') {
-            $filter['limit'] = $stat_count;
+        $this->design->assign('posts_count', $statCount );
+        
+        if ($this->request->get('page') == 'all') {
+            $filter['limit'] = $statCount;
         }
         
-        $this->design->assign('pages_count', ceil($stat_count/$filter['limit']));
+        $this->design->assign('pages_count', ceil($statCount/$filter['limit']));
         $this->design->assign('current_page', $filter['page']);
 
         /*Выборка товаров для статистики*/
         $report_stat_purchases = $reportStatEntity->find($filter);
-        $cat = $categoriesEntity->get($cat_filter);
+        
         foreach ($report_stat_purchases as $id=>$r) {
             if (!empty($r->product_id)) {
                 $tmp_cat = $categoriesEntity->findOne(array('product_id' => $r->product_id));
-                
-                if (!empty($cat_filter) && (!isset($tmp_cat->path[$cat->level_depth-1]) || !in_array($cat_filter,(array)$tmp_cat->path[$cat->level_depth-1]->children))) {
-                    unset($report_stat_purchases[$id]);
-                } else {
-                    $report_stat_purchases[$id]->category = $tmp_cat;
-                }
-
+                $report_stat_purchases[$id]->category = $tmp_cat;
             }
         }
 
@@ -92,4 +89,127 @@ class ReportStatsAdmin extends IndexAdmin
         $this->response->setContent($this->design->fetch('reportstats.tpl'));
     }
 
+    public function export(
+        ReportStatEntity $reportStatEntity,
+        CategoriesEntity $categoriesEntity
+    ) {
+
+        $columnsNames = [
+            'category_name' => 'Категория',
+            'product_name'  => 'Название товара',
+            'sum_price'     => 'Сумма',
+            'amount'        => 'Количество',
+        ];
+
+        $columnDelimiter = ';';
+        $statCount       = 100;
+        $exportFilesDir  = 'backend/files/export/';
+        $filename        = 'export_stat_products.csv';
+        
+        $page = $this->request->get('page');
+        if (empty($page) || $page==1) {
+            $page = 1;
+            if (is_writable($exportFilesDir.$filename)) {
+                unlink($exportFilesDir.$filename);
+            }
+        }
+
+        $f = fopen($exportFilesDir.$filename, 'ab');
+        if ($page == 1) {
+            fputcsv($f, $columnsNames, $columnDelimiter);
+        }
+
+        $filter = [];
+        $dateFilter = $this->request->get('date_filter');
+        if (!empty($dateFilter)) {
+            $filter['date_filter'] = $dateFilter;
+        }
+
+        if ($this->request->get('date_from') || $this->request->get('date_to')) {
+            $dateFrom = $this->request->get('date_from');
+            $dateTo = $this->request->get('date_to');
+        }
+
+        $catFilter = $this->request->get('category_id', 'int');
+        if ($cat = $categoriesEntity->get($catFilter)) {
+            $filter['category_id'] = $cat->children;
+        }
+
+        if (!empty($dateFrom)) {
+            $filter['date_from'] = date("Y-m-d 00:00:00", strtotime($dateFrom));
+        }
+        if (!empty($dateTo)) {
+            $filter['date_to'] = date("Y-m-d 23:59:59", strtotime($dateTo));
+        }
+        $status = $this->request->get('status', 'integer');
+        if (!empty($status)) {
+            $filter['status'] = $status;
+        }
+
+        $sortProd = $this->request->get('sort_prod');
+        if (!empty($sortProd)) {
+            $filter['sort_prod'] = $sortProd;
+        } else {
+            $filter['sort_prod'] = 'price';
+        }
+        
+        $filter['page'] = max(1, $this->request->get('page', 'integer'));
+        $filter['limit'] = 40;
+
+        if ($this->request->get('page') == 'all') {
+            $filter['limit'] = $statCount;
+        }
+        
+        $totalCount = $reportStatEntity->count($filter);
+        $totalCount += $reportStatEntity->countNullable($filter);
+
+        $totalSum = 0;
+        $totalAmount = 0;
+        $reportStatPurchases = $reportStatEntity->find($filter);
+        
+        foreach ($reportStatPurchases as $id=>$r) {
+            if (!empty($r->product_id)) {
+                $tmpCat = $categoriesEntity->findOne(['product_id' => $r->product_id]);
+                $reportStatPurchases[$id]->category_name = $tmpCat->name;
+            } else {
+                $reportStatPurchases[$id]->category_name = '';
+            }
+        }
+
+        foreach ($reportStatPurchases as $u) {
+            $totalSum += $u->sum_price;
+            $totalAmount += $u->amount;
+            $str = [];
+            foreach($columnsNames as $n=>$c) {
+                $str[] = $u->$n;
+            }
+            fputcsv($f, $str, $columnDelimiter);
+        }
+
+        $total = [
+            'category_name' => 'Итого',
+            'product_name'  => ' ',
+            'price'         => $totalSum,
+            'amount'        => $totalAmount
+        ];
+
+        fputcsv($f, $total, $columnDelimiter);
+        fclose($f);
+
+        file_put_contents(
+            $exportFilesDir.$filename,
+            iconv( "utf-8", "windows-1251//IGNORE", file_get_contents($exportFilesDir.$filename))
+        );
+
+        if ($statCount*$page < $totalCount) {
+            $data = ['end'=>false, 'page'=>$page, 'totalpages'=>$totalCount/$statCount];
+        } else {
+            $data = ['end'=>true, 'page'=>$page, 'totalpages'=>$totalCount/$statCount];
+        }
+
+        if ($data) {
+            $this->response->setContent(json_encode($data), RESPONSE_JSON);
+        }
+    }
+    
 }

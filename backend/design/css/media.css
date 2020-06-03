@@ -198,6 +198,7 @@
     .okay_list .okay_list_brands_tag {width: 260px;}
     .okay_list .okay_list_delivery_name {width: calc(100% - 390px);}
     .okay_list .okay_list_blog_name {width: calc(100% - 300px);}
+    .okay_list .okay_list_authors_name {width: calc(100% - 200px);}
     .okay_list .okay_list_page_name {width: calc(100% - 435px);}
     .okay_list .okay_list_coupon_name {width: calc(100% - 220px);}
     .okay_list .okay_list_users_name {width: calc(100% - 260px);}
@@ -552,7 +553,7 @@
     .okay_list .okay_list_blog_name {
         width: calc(100% - 80px);
     }
-    
+    .okay_list .okay_list_authors_name {width: calc(100% - 120px);}
     .okay_list .okay_list_page_name {
         width: calc(100% - 200px);
     }

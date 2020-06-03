@@ -14,6 +14,9 @@ class BannersAdmin extends IndexAdmin
         BannersEntity $bannersEntity,
         BannersHelper $bannersHelper
     ) {
+
+        $filter = $bannersHelper->buildFilter();
+        
         /*Принимаем выбранные группы баннеров*/
         if ($this->request->method('post')) {
             $ids = $this->request->post('check');
@@ -46,8 +49,14 @@ class BannersAdmin extends IndexAdmin
             }
         }
 
-        $banners = $bannersHelper->getBannersListForAdmin();
+        $bannersCount              = $bannersHelper->countBannersImages($filter);
+        list($filter, $pagesCount) = $bannersHelper->makePagination($bannersCount, $filter);
+        $banners = $bannersHelper->getBannersListForAdmin($filter);
 
+        $this->design->assign('banners_count', $bannersCount);
+        $this->design->assign('pages_count', $pagesCount);
+        $this->design->assign('current_page', $filter['page']);
+        
         $this->design->assign('banners', $banners);
 
         $this->response->setContent($this->design->fetch('banners.tpl'));

@@ -66,3 +66,7 @@ $lang['banner_show_all_products'] = 'Отображать для всех тов
 $lang['banner_faq_id_group'] = 'Уникальный идентификатор можно использовать для стилизаций группы баннеров. В коде он добавляется к приставке fn_banner_ .';
 $lang['banner_label_id_group'] = 'Id группы баннера';
 $lang['banner_label_individual_shortcode'] = 'Название шорткода';
+$lang['admintooltip_edit_banner'] = 'Изменить баннер';
+$lang['admintooltip_add_banner'] = 'Добавить баннер';
+$lang['admintooltip_edit_slide'] = 'Изменить изображение баннера';
+$lang['admintooltip_add_slide'] = 'Добавить изображение баннера';

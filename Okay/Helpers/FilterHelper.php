@@ -7,6 +7,7 @@ namespace Okay\Helpers;
 use Okay\Core\Design;
 use Okay\Core\EntityFactory;
 use Okay\Core\Languages;
+use Okay\Core\Money;
 use Okay\Core\Request;
 use Okay\Core\Router;
 use Okay\Core\Settings;
@@ -25,6 +26,7 @@ class FilterHelper
     private $router;
     private $design;
     private $settings;
+    private $money;
     
     private $categoryFeatures = null;
     private $categoryFeaturesByUrl;
@@ -54,13 +56,15 @@ class FilterHelper
         Languages $languages,
         Request $request,
         Router $router,
-        Design $design
+        Design $design,
+        Money $money
     ) {
         $this->entityFactory = $entityFactory;
         $this->request = $request;
         $this->router = $router;
         $this->design = $design;
         $this->settings = $settings;
+        $this->money = $money;
 
         /** @var LanguagesEntity $languagesEntity */
         $languagesEntity = $entityFactory->get(LanguagesEntity::class);
@@ -152,7 +156,13 @@ class FilterHelper
         }
 
         if (!empty($filter['price']) && $filter['price']['min'] != '' && $filter['price']['max'] != '') {
-            $brandsFilter['price'] = $filter['price'];
+            if (isset($filter['price']['min'])) {
+                $brandsFilter['price']['min'] = round($this->money->convert($filter['price']['min'], null, false));
+            }
+
+            if (isset($filter['price']['max'])) {
+                $brandsFilter['price']['max'] = round($this->money->convert($filter['price']['max'], null, false));
+            }
         }
 
         // В выборку указываем выбранные бренды, чтобы достать еще и все выбранные бренды, чтобы их можно было отменить
@@ -295,7 +305,15 @@ class FilterHelper
         }
 
         if (!empty($filter['price']) && $filter['price']['min'] != '' && $filter['price']['max'] != '') {
-            $featuresValuesFilter['price'] = $filter['price'];
+
+            if (isset($filter['price']['min'])) {
+                $featuresValuesFilter['price']['min'] = round($this->money->convert($filter['price']['min'], null, false));
+            }
+
+            if (isset($filter['price']['max'])) {
+                $featuresValuesFilter['price']['max'] = round($this->money->convert($filter['price']['max'], null, false));
+            }
+            
         }
 
         return ExtenderFacade::execute(__METHOD__, $featuresValuesFilter, func_get_args());

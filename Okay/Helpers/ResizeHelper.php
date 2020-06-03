@@ -44,6 +44,10 @@ class ResizeHelper
                 $originalImgDir = $this->config->get('original_blog_dir');
                 $resizedImgDir = $this->config->get('resized_blog_dir');
             }
+            if ($object == 'blog_categories') {
+                $originalImgDir = $this->config->get('original_blog_categories_dir');
+                $resizedImgDir = $this->config->get('resized_blog_categories_dir');
+            }
             if ($object == 'brands') {
                 $originalImgDir = $this->config->get('original_brands_dir');
                 $resizedImgDir = $this->config->get('resized_brands_dir');
@@ -67,6 +71,10 @@ class ResizeHelper
             if ($object == 'lang') {
                 $originalImgDir = $this->config->get('lang_images_dir');
                 $resizedImgDir = $this->config->get('lang_resized_dir');
+            }
+            if ($object == 'authors') {
+                $originalImgDir = $this->config->get('original_authors_dir');
+                $resizedImgDir = $this->config->get('resized_authors_dir');
             }
             $extendsResizeObjects = $this->image->getResizeObjects();
 

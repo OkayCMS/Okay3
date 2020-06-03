@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Okay\Core\Routes\Strategies\NewsItem;
+namespace Okay\Core\Routes\Strategies\Post;
 
 
 use Okay\Core\Routes\Strategies\AbstractRouteStrategy;
@@ -20,12 +20,12 @@ class DefaultStrategy extends AbstractRouteStrategy
 
     public function generateRouteParams($url)
     {
-        $prefix = $this->settings->get('news_item_routes_template__default');
+        $prefix = $this->settings->get('post_routes_template__default');
 
         if (empty($prefix)) {
-            $prefix = 'news';
+            $prefix = 'post';
         }
 
-        return ['/'.$prefix.'/{$url}', [], ['{$typePost}' => 'news']];
+        return ['/'.$prefix.'/{$url}', [], []];
     }
 }

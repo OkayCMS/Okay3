@@ -4,6 +4,8 @@
 namespace Okay\Core;
 
 
+use Okay\Admin\Helpers\BackendAuthorsHelper;
+use Okay\Admin\Helpers\BackendBlogCategoriesHelper;
 use Okay\Admin\Helpers\BackendBlogHelper;
 use Okay\Admin\Helpers\BackendCallbacksHelper;
 use Okay\Admin\Helpers\BackendCategoryStatsHelper;
@@ -37,6 +39,7 @@ use Okay\Admin\Helpers\BackendBrandsHelper;
 use Okay\Admin\Helpers\BackendCategoriesHelper;
 use Okay\Admin\Helpers\BackendSpecialImagesHelper;
 use Okay\Admin\Helpers\BackendCurrenciesHelper;
+use Okay\Helpers\AuthorsHelper;
 use Okay\Helpers\BlogHelper;
 use Okay\Helpers\BrandsHelper;
 use Okay\Helpers\CartHelper;
@@ -46,6 +49,7 @@ use Okay\Helpers\DeliveriesHelper;
 use Okay\Helpers\MainHelper;
 use Okay\Helpers\MetadataHelpers\AllProductsMetadataHelper;
 use Okay\Helpers\MetadataHelpers\BestsellersMetadataHelper;
+use Okay\Helpers\MetadataHelpers\BlogCategoryMetadataHelper;
 use Okay\Helpers\MetadataHelpers\BrandMetadataHelper;
 use Okay\Helpers\MetadataHelpers\CartMetadataHelper;
 use Okay\Helpers\MetadataHelpers\CategoryMetadataHelper;
@@ -54,6 +58,7 @@ use Okay\Helpers\MetadataHelpers\DiscountedMetadataHelper;
 use Okay\Helpers\MetadataHelpers\OrderMetadataHelper;
 use Okay\Helpers\MetadataHelpers\PostMetadataHelper;
 use Okay\Helpers\MetadataHelpers\ProductMetadataHelper;
+use Okay\Helpers\MetadataHelpers\AuthorMetadataHelper;
 use Okay\Helpers\PaymentsHelper;
 use Okay\Helpers\RelatedProductsHelper;
 use Okay\Helpers\CommonHelper;
@@ -157,6 +162,25 @@ return [
             new SR(Config::class),
         ]
     ],
+    BackendBlogCategoriesHelper::class => [
+        'class' => BackendBlogCategoriesHelper::class,
+        'arguments' => [
+            new SR(EntityFactory::class),
+            new SR(Image::class),
+            new SR(Config::class),
+        ]
+    ],
+    BackendAuthorsHelper::class => [
+        'class' => BackendAuthorsHelper::class,
+        'arguments' => [
+            new SR(EntityFactory::class),
+            new SR(Config::class),
+            new SR(Image::class),
+            new SR(QueryFactory::class),
+            new SR(Database::class),
+            new SR(Request::class),
+        ]
+    ],
     BackendBrandsHelper::class => [
         'class' => BackendBrandsHelper::class,
         'arguments' => [
@@ -250,6 +274,7 @@ return [
             new SR(Config::class),
             new SR(Image::class),
             new SR(Settings::class),
+            new SR(QueryFactory::class),
         ]
     ],
     BackendCallbacksHelper::class => [
@@ -394,6 +419,7 @@ return [
             new SR(Request::class),
             new SR(Router::class),
             new SR(Design::class),
+            new SR(Money::class),
         ],
     ],
     MoneyHelper::class => [
@@ -437,6 +463,13 @@ return [
     ],
     BlogHelper::class => [
         'class' => BlogHelper::class,
+        'arguments' => [
+            new SR(EntityFactory::class),
+            new SR(AuthorsHelper::class),
+        ]
+    ],
+    AuthorsHelper::class => [
+        'class' => AuthorsHelper::class,
         'arguments' => [
             new SR(EntityFactory::class),
         ]
@@ -498,6 +531,12 @@ return [
     ],
     AllProductsMetadataHelper::class => [
         'class' => AllProductsMetadataHelper::class,
+    ],
+    BlogCategoryMetadataHelper::class => [
+        'class' => BlogCategoryMetadataHelper::class,
+    ],
+    AuthorMetadataHelper::class => [
+        'class' => AuthorMetadataHelper::class,
     ],
     XmlFeedHelper::class => [
         'class' => XmlFeedHelper::class,

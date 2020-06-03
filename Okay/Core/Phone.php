@@ -59,7 +59,7 @@ class Phone
      */
     public static function clear($phoneNumber)
     {
-        return preg_replace('~[^0-9.+]~', '', $phoneNumber);
+        return substr(preg_replace('~[^0-9.+]~', '', $phoneNumber), 0, PhoneNumberUtil::MAX_LENGTH_FOR_NSN);
     }
 
     /**

@@ -7,6 +7,15 @@ namespace Okay\Core;
 class JsSocial
 {
 
+    /**
+     * Домен некоторых соц. сетей не соответствует стилям font-awesome, для них сделаны эти алиасы
+     * 
+     * @var string[] 
+     */
+    private static $socialAliases = [
+        "ok" => 'odnoklassniki',
+    ];
+
     private $jsSocials = [
         "email",
         "twitter",
@@ -24,6 +33,7 @@ class JsSocial
         "odnoklassniki",
         "vkontakte",
     ];
+    
     private $customJsSocials = [
         "odnoklassniki" => [
             "label" => "ok",
@@ -40,6 +50,16 @@ class JsSocial
     public function getCustomSocials()
     {
         return $this->customJsSocials;
+    }
+    
+    public static function getSocialDomain($link)
+    {
+        $socialDomain = preg_replace('~^(https?://)?(www\.)?([^.]+)?\..*$~', '$3', $link);
+        
+        if (isset(self::$socialAliases[$socialDomain])) {
+            return self::$socialAliases[$socialDomain];
+        }
+        return $socialDomain;
     }
     
 }

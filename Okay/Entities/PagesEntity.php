@@ -20,8 +20,6 @@ class PagesEntity extends Entity
         'discounted',
         'bestsellers',
         'brands',
-        'blog',
-        'news',
         'wishlist',
         'comparison',
         'cart',
@@ -29,6 +27,7 @@ class PagesEntity extends Entity
         'contact',
         'user',
         '404',
+        'authors',
     ];
 
     protected static $fields = [

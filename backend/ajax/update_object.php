@@ -32,6 +32,16 @@ switch ($object) {
             $entity = $entityFactory->get(\Okay\Entities\CategoriesEntity::class);
         }
         break;
+    case 'blog_category':
+        if ($managers->access('blog_categories', $manager)) {
+            $entity = $entityFactory->get(\Okay\Entities\BlogCategoriesEntity::class);
+        }
+        break;
+    case 'authors':
+        if ($managers->access('authors', $manager)) {
+            $entity = $entityFactory->get(\Okay\Entities\AuthorsEntity::class);
+        }
+        break;
     case 'brands':
         if ($managers->access('brands', $manager)) {
             $entity = $entityFactory->get(\Okay\Entities\BrandsEntity::class);

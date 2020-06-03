@@ -281,22 +281,16 @@ class BackendFeaturesValuesHelper
 
     public function sortFeatureValuePositionsAlphabet($feature)
     {
-        $featuresValues = $this->findFeaturesValues(['feature_id' => $feature->id]);
-        $index = [];
-        foreach($featuresValues as $fv) {
-                $index[] = $fv->value;
-        }
-        array_multisort($index, $featuresValues);
-
-        foreach($featuresValues as $fv) {
-            $featureValuesIds[] = $fv->id;
+        $featuresValues = [];
+        foreach($this->featuresValuesEntity->cols(['id', 'value'])->find(['feature_id' => $feature->id]) as $fv) {
+            $featuresValues[$fv->id] = $fv->value;
         }
 
-        asort($featureValuesIds, SORT_NATURAL);
+        asort($featuresValues, SORT_NATURAL);
         $i = 0;
-        foreach($featureValuesIds as $featureValueId) {
-            $this->featuresValuesEntity->update($featureValuesIds[$i], ['position'=>$featureValueId]);
-            $i++;
+        $featureValueIds = array_keys($featuresValues);
+        foreach($featureValueIds as $featureValueId) {
+            $this->featuresValuesEntity->update($featureValueId, ['position'=>$i++]);
         }
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());

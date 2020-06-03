@@ -138,11 +138,7 @@ class SiteMapHelper
         
         $postsCount = $blogEntity->count(['visible'=>1]);
         foreach ($blogEntity->find(['visible'=>1, 'limit'=>$postsCount]) as $p) {
-            if ($p->type_post == 'news') {
-                $url = Router::generateUrl('news_item', ['url' => $p->url], true);
-            } else {
-                $url = Router::generateUrl('blog_item', ['url' => $p->url], true);
-            }
+            $url = Router::generateUrl('post', ['url' => $p->url], true);
             $lastModify = substr($p->last_modify, 0, 10);
 
             $post = [

@@ -272,8 +272,8 @@ class BackendProductsHelper
 
         if (empty($productCategories)) {
             if ($category_id = $this->request->get('category_id')) {
-                $productCategories[$category_id] = new \stdClass();
-                $productCategories[$category_id]->id = $category_id;
+                $category = $this->categoriesEntity->findOne(['id' => $category_id]);
+                $productCategories[$category_id] = $category;
             } else {
                 $productCategories = [];
             }

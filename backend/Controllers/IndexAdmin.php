@@ -20,6 +20,7 @@ use Okay\Core\Response;
 use Okay\Core\Settings;
 use Okay\Core\ManagerMenu;
 use Okay\Core\BackendTranslations;
+use Okay\Core\TemplateConfig;
 use Okay\Core\Translit;
 use Okay\Entities\ManagersEntity;
 use Okay\Entities\LanguagesEntity;
@@ -122,7 +123,8 @@ class IndexAdmin
         Router $router,
         BackendMainHelper $backendMainHelper,
         Module $module,
-        BackendPostRedirectGet $postRedirectGet
+        BackendPostRedirectGet $postRedirectGet,
+        TemplateConfig $templateConfig
     ) {
         $this->design        = $design;
         $this->request       = $request;
@@ -147,6 +149,7 @@ class IndexAdmin
         $this->design->assign('rootUrl', $this->request->getRootUrl());
         
         $design->assign('manager', $this->manager);
+        $design->assign('registered_front_css', $templateConfig->getRegisteredCss());
 
         $supportInfo = $supportInfoEntity->getInfo();
         $this->design->assign('support_info', $supportInfo);

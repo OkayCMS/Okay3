@@ -146,7 +146,6 @@
                         {get_design_block block="settings_catalog_general"}
                     </div>
                     <div class="row">
-
                         <div class="col-lg-4 col-md-6 mt-2">
                             <div class="fn_step-10">
                                 <div class="heading_label boxes_inline">
@@ -189,6 +188,16 @@
 
                         {get_design_block block="settings_catalog_general_row_2"}
                     </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 ">
+                            <button type="submit" class="btn btn_small btn_blue float-md-right" type="submit" name="save" value="1">
+                                {include file='svg_icon.tpl' svgId='checked'}
+                                <span>{$btr->general_apply|escape}</span>
+                            </button>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -314,7 +323,7 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-12 col-md-12 ">
-                            <button type="submit" class="btn btn_small btn_blue float-md-right">
+                            <button type="submit" class="btn btn_small btn_blue float-md-right" type="submit" name="save" value="1">
                                 {include file='svg_icon.tpl' svgId='checked'}
                                 <span>{$btr->general_apply|escape}</span>
                             </button>

@@ -31,20 +31,18 @@
 use Okay\Core\Routes\ProductRoute;
 use Okay\Core\Routes\CategoryRoute;
 use Okay\Core\Routes\BrandRoute;
-use Okay\Core\Routes\BlogItemRoute;
-use Okay\Core\Routes\NewsItemRoute;
+use Okay\Core\Routes\BlogCategoryRoute;
 use Okay\Core\Routes\AllBlogRoute;
-use Okay\Core\Routes\AllNewsRoute;
 use Okay\Core\Routes\AllBrandsRoute;
 use Okay\Core\Routes\PageRoute;
+use Okay\Core\Routes\PostRoute;
 
 $productRouteParams   = (new ProductRoute())->generateRouteParams();
 $categoryRouteParams  = (new CategoryRoute())->generateRouteParams();
 $brandRouteParams     = (new BrandRoute())->generateRouteParams();
-$blogItemRouteParams  = (new BlogItemRoute())->generateRouteParams();
-$newsItemRouteParams  = (new NewsItemRoute())->generateRouteParams();
+$blogCategoryRouteParams = (new BlogCategoryRoute())->generateRouteParams();
+$postRouteParams      = (new PostRoute())->generateRouteParams();
 $allBlogRouteParams   = (new AllBlogRoute())->generateRouteParams();
-$allNewsRouteParams   = (new AllNewsRoute())->generateRouteParams();
 $allBrandsRouteParams = (new AllBrandsRoute())->generateRouteParams();
 $pageRouteParams      = (new PageRoute())->generateRouteParams();
 
@@ -134,7 +132,13 @@ return [
             'controller' => 'ProductController',
             'method' => 'rating',
         ],
-        'to_front' => true,
+    ],
+    'ajax_post_rating' => [
+        'slug' => '/ajax/post_rating',
+        'params' => [
+            'controller' => 'BlogController',
+            'method' => 'rating',
+        ],
     ],
     'search' => [
         'slug' => '/all-products{$filtersUrl}',
@@ -281,24 +285,6 @@ return [
         ],
         'defaults' => $allBrandsRouteParams->getDefaults(),
     ],
-    'blog' => [
-        'slug' => $allBlogRouteParams->getSlug(),
-        'patterns' => $allBlogRouteParams->getPatterns(),
-        'params' => [
-            'controller' => 'BlogController',
-            'method' => 'fetchBlog',
-        ],
-        'defaults' => $allBlogRouteParams->getDefaults(),
-    ],
-    'news' => [
-        'slug' => $allNewsRouteParams->getSlug(),
-        'patterns' => $allNewsRouteParams->getPatterns(),
-        'params' => [
-            'controller' => 'BlogController',
-            'method' => 'fetchBlog',
-        ],
-        'defaults' => $allNewsRouteParams->getDefaults(),
-    ],
     'product' => [
         'slug' => $productRouteParams->getSlug(),
         'patterns' => $productRouteParams->getPatterns(),
@@ -326,23 +312,46 @@ return [
         ],
         'defaults' => $brandRouteParams->getDefaults()
     ],
-    'blog_item' => [
-        'slug' => $blogItemRouteParams->getSlug(),
-        'patterns' => $blogItemRouteParams->getPatterns(),
+    'author' => [
+        'slug' => 'authors/{$url}',
         'params' => [
-            'controller' => 'BlogController',
-            'method' => 'fetchPost',
+            'controller' => 'AuthorsController',
+            'method' => 'render',
         ],
-        'defaults' => $blogItemRouteParams->getDefaults()
     ],
-    'news_item' => [
-        'slug' => $newsItemRouteParams->getSlug(),
-        'patterns' => $newsItemRouteParams->getPatterns(),
+    'authors' => [
+        'slug' => 'authors',
+        'params' => [
+            'controller' => 'AuthorsController',
+            'method' => 'authorsList',
+        ],
+    ],
+    'blog' => [ // общий раздел блога, без выбранной категории
+        'slug' => $allBlogRouteParams->getSlug(),
+        'patterns' => $allBlogRouteParams->getPatterns(),
+        'params' => [
+            'controller' => 'BlogController',
+            'method' => 'fetchBlog',
+        ],
+        'defaults' => $allBlogRouteParams->getDefaults(),
+    ],
+    'post' => [
+        'slug' => $postRouteParams->getSlug(),
+        'patterns' => $postRouteParams->getPatterns(),
         'params' => [
             'controller' => 'BlogController',
             'method' => 'fetchPost',
         ],
-        'defaults' => $newsItemRouteParams->getDefaults(),
+        'defaults' => $postRouteParams->getDefaults()
+    ],
+    'blog_category' => [ // Блог с фильтром по категории
+        'slug' => $blogCategoryRouteParams->getSlug(),
+        'patterns' => $blogCategoryRouteParams->getPatterns(),
+        'params' => [
+            'controller' => 'BlogController',
+            'method' => 'fetchBlog',
+        ],
+        'defaults' => $blogCategoryRouteParams->getDefaults()
     ],
     'page' => [
         'slug' => $pageRouteParams->getSlug(),

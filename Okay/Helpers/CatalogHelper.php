@@ -144,6 +144,22 @@ class CatalogHelper
         return ExtenderFacade::execute(__METHOD__, $prices, func_get_args());
     }
     
+    public function getOtherFiltersFilter(array $filter)
+    {
+
+        if (!empty($filter['price']) && $filter['price']['min'] != '' && $filter['price']['max'] != '') {
+            if (isset($filter['price']['min'])) {
+                $filter['price']['min'] = round($this->money->convert($filter['price']['min'], null, false));
+            }
+
+            if (isset($filter['price']['max'])) {
+                $filter['price']['max'] = round($this->money->convert($filter['price']['max'], null, false));
+            }
+        }
+        
+        return ExtenderFacade::execute(__METHOD__, $filter, func_get_args());
+    }
+    
     public function getOtherFilters(array $filter)
     {
         $SL = ServiceLocator::getInstance();

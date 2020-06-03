@@ -4,6 +4,7 @@ use Okay\Core\EntityFactory;
 use Okay\Core\Config;
 use Okay\Core\Response;
 use Okay\Core\Design;
+use Okay\Core\ManagerMenu;
 use Okay\Core\BackendTranslations;
 use Okay\Entities\LanguagesEntity;
 use Okay\Entities\ManagersEntity;
@@ -23,6 +24,9 @@ $DI = include 'Okay/Core/config/container.php';
 
 /** @var Config $config */
 $config = $DI->get(Config::class);
+
+/** @var ManagerMenu $managerMenu */
+$managerMenu = $DI->get(ManagerMenu::class);
 
 /** @var License $license */
 $license = $DI->get(License::class);
@@ -61,6 +65,15 @@ $design->assign('btr', $backendTranslations);
 $language = $manager = $DI->get(EntityFactory::class)->get(LanguagesEntity::class)->get((string)$manager->lang);
 $design->assign('language', $language);
 
+$menuSelector = [];
+$fastMenu = $managerMenu->getFastMenu();
+foreach ($fastMenu as $dataProperty => $menuItem) {
+    $menuSelector[] = '[data-' . $dataProperty . ']';
+}
+
+$design->assign('menu_selector', '"' . implode(', ', $menuSelector) . '"');
+$design->assign('fast_menu', $fastMenu);
+
 $response->addHeader('Content-Type: application/javascript');
-$response->setContent($design->fetch('tooltip.js'), RESPONSE_JAVASCRIPT);
+$response->setContent($design->fetch('tooltip.tpl'), RESPONSE_JAVASCRIPT);
 $response->sendContent();

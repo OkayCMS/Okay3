@@ -38,7 +38,7 @@
                     <a href="{url controller=CategoryAdmin id=$category->id return={url controller=CategoriesAdmin category_id=$category->id}}">
                         {$category->name|escape}
                     </a>
-                    {get_design_block block="categories_list_name"}
+                    {get_design_block block="categories_list_name" vars=['category' => $category]}
                 </div>
 
 
@@ -63,7 +63,7 @@
                         {include file='svg_icon.tpl' svgId='icon_copy'}
                     </button>
 
-                    {get_design_block block="categories_actions"}
+                    {get_design_block block="categories_actions" vars=['category' => $category]}
                 </div>
                 <div class="okay_list_boding okay_list_close">
                     {*delete*}

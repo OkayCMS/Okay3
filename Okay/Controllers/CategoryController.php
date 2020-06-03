@@ -199,7 +199,8 @@ class CategoryController extends AbstractController
         $this->design->assign('features', $this->categoryFeatures);
         $this->design->assign('selected_filters', $currentFeatures);
 
-        $this->design->assign('other_filters', $catalogHelper->getOtherFilters($filter));
+        $otherFiltersFilter = $catalogHelper->getOtherFiltersFilter($filter);
+        $this->design->assign('other_filters', $catalogHelper->getOtherFilters($otherFiltersFilter));
         
         $prices = $catalogHelper->getPrices($filter, $this->catalogType, $category->id);
         $this->design->assign('prices', $prices);
