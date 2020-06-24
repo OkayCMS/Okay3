@@ -101,7 +101,7 @@
                         <div class="fn_menu_switch menu_switcher hidden-lg-up">
                             <div class="menu_switcher__heading d-flex align-items-center">
                                 <i class="fa fa-bars catalog_icon"></i>
-                                <span class="" data-language="index_categories">{$lang->index_mobile_menu}</span>
+                                <span class="" data-language="index_mobile_menu">{$lang->index_mobile_menu}</span>
                             </div>
                         </div>
                         {* Catalog heading *}
@@ -142,7 +142,7 @@
     </header>
 
     {* Тело сайта *}
-    <div id="fn_content" class="main">
+    <div class="main">
         {* Include module banner *}
         {if !empty($global_banners)}
             <div class="container">

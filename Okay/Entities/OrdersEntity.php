@@ -76,10 +76,17 @@ class OrdersEntity extends Entity
 
     public function update($id, $order)
     {
-        if (is_array($order)) {
-            $order = (object)$order;
+        if (is_object($order)) {
+            $order = (array)$order;
         }
 
+        if (!empty($order['paid'])) {
+            $currentPaid = $this->cols(['paid'])->findOne(['id' => $id]);
+            if ($order['paid'] != $currentPaid) {
+                $order['payment_date'] = 'now()';
+            }
+        }
+        
         parent::update($id, $order);
         return $id;
     }

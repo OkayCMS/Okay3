@@ -4,6 +4,7 @@
 namespace Okay\Core\Routes;
 
 
+use Okay\Core\Languages;
 use Okay\Core\Request;
 use Okay\Core\Routes\Strategies\AbstractRouteStrategy;
 use Okay\Core\ServiceLocator;
@@ -22,6 +23,11 @@ abstract class AbstractRoute
      * @var Settings
      */
     protected $settings;
+
+    /**
+     * @var Languages
+     */
+    protected $languages;
 
     /**
      * @var AbstractRouteStrategy
@@ -46,6 +52,7 @@ abstract class AbstractRoute
         $this->params = $params;
 
         $serviceLocator = ServiceLocator::getInstance();
+        $this->languages = $serviceLocator->getService(Languages::class);
         $this->settings = $serviceLocator->getService(Settings::class);
         $this->strategy = $this->getStrategy();
         $this->isUsesSqlToGenerate = $this->strategy->getIsUsesSqlToGenerate();
@@ -117,26 +124,15 @@ abstract class AbstractRoute
 
     private function prepareUrl($uri)
     {
-
-        if ($this->hasLangPrefix($uri)) {
-            $uri = $this->removeLangPrefix($uri);
-        }
+        $uri = $this->removeLangPrefix($uri);
 
         return explode('?', $uri)[0];
     }
 
-    private function hasLangPrefix($uri)
-    {
-        return strlen(explode('/', $uri)[0]) == 2;
-    }
-
     private function removeLangPrefix($uri)
     {
-        if ($uri[0] === '/') {
-            return substr($uri, 4);
-        }
-
-        return substr($uri, 3);
+        $langLink = $this->languages->getLangLink($this->languages->getLangId());
+        return str_replace($langLink, '', $uri);
     }
 
     abstract public function hasSlashAtEnd();

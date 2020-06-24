@@ -82,7 +82,7 @@ class YandexXMLHelper
     public function getQuery($uploadCategories = [])
     {
         $subSelect = $this->getSubSelect($uploadCategories);
-        if ($this->settings->get('okaycms__yandex_xml__use_full_description_in_upload')) {
+        if ($this->settings->get('okaycms__yandex_xml__use_full_description_to_yandex')) {
             $descriptionField = 'lp.description';
         } else {
             $descriptionField = 'lp.annotation';

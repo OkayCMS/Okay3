@@ -77,11 +77,11 @@
 
                         {* User's password *}
                         <div class="form__group">
-                            <p class="change_pass" onclick="$('#password').toggle();return false;">
+                            <p class="change_pass" onclick="$('#fn_password').toggle().prop('type', 'password').prop('name', 'password');return false;">
                                 <span data-language="user_change_password">{$lang->user_change_password}</span>
                                 {include file="svg.tpl" svgId="arrow_right2"}
                             </p>
-                            <input class="form__input form__placeholder--focus " id="password" value="" name="password" type="password" style="display:none;" {*placeholder="{$lang->user_change_password}"*}/>
+                            <input class="form__input form__placeholder--focus " id="fn_password" value="" name="" type="" style="display:none;" {*placeholder="{$lang->user_change_password}"*}/>
                         </div>
                     </div>
 

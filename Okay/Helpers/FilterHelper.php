@@ -118,6 +118,11 @@ class FilterHelper
         $this->filtersUrl = $filtersUrl;
     }
 
+    public function getFiltersUrl()
+    {
+        return $this->filtersUrl; // No ExtenderFacade
+    }
+
     public function setCategoryFeatureValue($featureValue)
     {
         if ($this->categoryFeatures === null) {
@@ -435,6 +440,11 @@ class FilterHelper
         return ExtenderFacade::execute(__METHOD__, $currentBrands, func_get_args());
     }
 
+    private function getNotFeaturesParts()
+    {
+        return ExtenderFacade::execute(__METHOD__, ['brand', 'filter', 'page', 'sort'], func_get_args());
+    }
+    
     public function getCurrentCategoryFeatures($filtersUrl) // todo возвращать только в конце
     {
         if ($this->categoryFeatures === null) {
@@ -449,7 +459,7 @@ class FilterHelper
             }
             @list($paramName, $paramValues) = explode('-', $v);
 
-            if (!in_array($paramName, ['brand', 'filter', 'page', 'sort'])) {
+            if (!in_array($paramName, $this->getNotFeaturesParts())) {
                 if (isset($this->categoryFeaturesByUrl[$paramName])
                     && ($feature = $this->categoryFeaturesByUrl[$paramName])
                     && !isset($selectedFeatures[$feature->id])) {
@@ -495,6 +505,18 @@ class FilterHelper
         return ExtenderFacade::execute(__METHOD__, $currentFeatures, func_get_args());
     }
 
+    /**
+     * Метод используется для разбора пользовательских фильтров расширяющих стандартные ЧПУ
+     * 
+     * @param $paramName
+     * @param $paramValues
+     * @return array
+     */
+    public function userGetMetaArray($paramName, $paramValues)
+    {
+        return ExtenderFacade::execute(__METHOD__, [], func_get_args());
+    }
+    
     public function getMetaArray()
     {
         /** @var TranslationsEntity $translationsEntity */
@@ -514,36 +536,41 @@ class FilterHelper
             }
             @list($paramName, $paramValues) = explode('-', $v);
 
-            switch ($paramName) {
-                case 'brand':
-                {
-                    $paramValues = mb_substr($v, strlen($paramName) + 1);
-                    foreach (explode('_', $paramValues) as $bv) {
-                        if (($brand = $this->getBrand($bv)) && empty($metaArray['brand'][$brand->id])) {
-                            $metaArray['brand'][$brand->id] = $brand->name;
-                        }
-                    }
-                    break;
-                }
-                case 'filter':
-                {
-                    foreach (explode('_', $paramValues) as $f) {
-                        if (empty($metaArray['filter'][$f])) {
-                            $metaArray['filter'][$f] = $translations->{"features_filter_" . $f};
-                        }
-                    }
-                    break;
-                }
-                case 'page': // no break
-                case 'sort':
-                    break;
-                default:
-                {
-                    if (isset($this->categoryFeaturesByUrl[$paramName])
-                        && ($feature = $this->categoryFeaturesByUrl[$paramName])
-                        && !isset($selectedFeatures[$feature->id])) {
+            if ($res = $this->userGetMetaArray($paramName, $paramValues)) {
+                $metaArray = array_merge($metaArray, $res);
+            } else {
 
-                        $selectedFeatures[$feature->id] = explode('_', $paramValues);
+                switch ($paramName) {
+                    case 'brand':
+                    {
+                        $paramValues = mb_substr($v, strlen($paramName) + 1);
+                        foreach (explode('_', $paramValues) as $bv) {
+                            if (($brand = $this->getBrand($bv)) && empty($metaArray['brand'][$brand->id])) {
+                                $metaArray['brand'][$brand->id] = $brand->name;
+                            }
+                        }
+                        break;
+                    }
+                    case 'filter':
+                    {
+                        foreach (explode('_', $paramValues) as $f) {
+                            if (empty($metaArray['filter'][$f])) {
+                                $metaArray['filter'][$f] = $translations->{"features_filter_" . $f};
+                            }
+                        }
+                        break;
+                    }
+                    case 'page': // no break
+                    case 'sort':
+                        break;
+                    default:
+                    {
+                        if (isset($this->categoryFeaturesByUrl[$paramName])
+                            && ($feature = $this->categoryFeaturesByUrl[$paramName])
+                            && !isset($selectedFeatures[$feature->id])) {
+
+                            $selectedFeatures[$feature->id] = explode('_', $paramValues);
+                        }
                     }
                 }
             }
@@ -682,6 +709,45 @@ class FilterHelper
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
+
+    /**
+     * Метод возвращает ассоциативный массив из одного элемента, ключ которого - название параметра фильтра
+     * Например для фильтра по модели УРЛ будет catalog/category/model-s нужно вернуть массив ['model' => 's']
+     *
+     * @param $paramName
+     * @param $paramValues
+     * @return array
+     */
+    private function filterChpuUrlParseUrl($paramName, $paramValues)
+    {
+        return ExtenderFacade::execute(__METHOD__, [], func_get_args());
+    }
+
+    /**
+     * Метод парсит параметры, переданные из смарти ф-ции {furl}, нужно вернуть ассоциативный массив, на базе которого 
+     * в методе filterChpuUrlBuildUrl можно будет построить урл
+     * 
+     * @param $paramName
+     * @param $paramValues
+     * @param $resultArray
+     * @return array
+     */
+    private function filterChpuUrlParseParams($paramName, $paramValues, &$resultArray)
+    {
+        return ExtenderFacade::execute(__METHOD__, [], [$paramName, $paramValues, &$resultArray]);
+    }
+
+    /**
+     * Метод предназначен для построения ЧПУ урла из модулей
+     * @param $resultArray
+     * @param $filterParamsCount
+     * @param $seoHideFilter
+     * @return string
+     */
+    private function filterChpuUrlBuildUrl($resultArray, &$filterParamsCount, &$seoHideFilter)
+    {
+        return ExtenderFacade::execute(__METHOD__, '', [$resultArray, &$filterParamsCount, &$seoHideFilter]);
+    }
     
     // из-за особенностей смарти, при использовании этого метода из плагина, нужно отдельно передавать
     // экземпляр Smarty, чтобы отрабатывал assign
@@ -700,43 +766,48 @@ class FilterHelper
         if (!empty($this->filtersUrl)) {
             foreach ($uriArray as $k => $v) {
                 list($paramName, $paramValues) = explode('-', $v);
-                switch ($paramName) {
-                    case 'brand':
-                    {
-                        $paramValues = mb_substr($v, strlen($paramName) + 1);
-                        $resultArray['brand'] = explode('_', $paramValues);
-                        break;
-                    }
-                    case 'filter':
-                    {
-                        $resultArray['filter'] = explode('_', $paramValues);
-                        break;
-                    }
-                    case 'sort':
-                    {
-                        $resultArray['sort'] = strval($paramValues);
-                        break;
-                    }
-                    case 'page':
-                    {
-                        $resultArray['page'] = $paramValues;
-                        break;
-                    }
-                    default:
-                    {
-                        // Ключем массива должно быть id значения
-                        if (!empty($this->featuresUrls)) {
-                            $paramValuesArray = [];
-                            $featureId = array_search($paramName, $this->featuresUrls);
-                            foreach (explode('_', $paramValues) as $valueTranslit) {
-                                if ($valueId = array_search($valueTranslit, $currentFeaturesValues[$featureId])) {
-                                    if (isset($featuresAltLang[$featureId][$valueId])) {
-                                        $valueTranslit = $featuresAltLang[$featureId][$valueId];
+                
+                if ($parsedUrl = $this->filterChpuUrlParseUrl($paramName, $paramValues)) {
+                    $resultArray = array_merge($resultArray, $parsedUrl);
+                } else {
+                    switch ($paramName) {
+                        case 'brand':
+                        {
+                            $paramValues = mb_substr($v, strlen($paramName) + 1);
+                            $resultArray['brand'] = explode('_', $paramValues);
+                            break;
+                        }
+                        case 'filter':
+                        {
+                            $resultArray['filter'] = explode('_', $paramValues);
+                            break;
+                        }
+                        case 'sort':
+                        {
+                            $resultArray['sort'] = strval($paramValues);
+                            break;
+                        }
+                        case 'page':
+                        {
+                            $resultArray['page'] = $paramValues;
+                            break;
+                        }
+                        default:
+                        {
+                            // Ключем массива должно быть id значения
+                            if (!empty($this->featuresUrls)) {
+                                $paramValuesArray = [];
+                                $featureId = array_search($paramName, $this->featuresUrls);
+                                foreach (explode('_', $paramValues) as $valueTranslit) {
+                                    if ($valueId = array_search($valueTranslit, $currentFeaturesValues[$featureId])) {
+                                        if (isset($featuresAltLang[$featureId][$valueId])) {
+                                            $valueTranslit = $featuresAltLang[$featureId][$valueId];
+                                        }
+                                        $paramValuesArray[$valueId] = $valueTranslit;
                                     }
-                                    $paramValuesArray[$valueId] = $valueTranslit;
                                 }
+                                $resultArray['features'][$paramName] = $paramValuesArray;
                             }
-                            $resultArray['features'][$paramName] = $paramValuesArray;
                         }
                     }
                 }
@@ -745,59 +816,65 @@ class FilterHelper
 
         //Определяем переданные параметры для ссылки
         foreach($params as $paramName=>$paramValues) {
-            switch($paramName) {
-                case 'brand': {
-                    if(is_null($paramValues)) {
-                        unset($resultArray['brand']);
-                    } elseif(in_array($paramValues,$resultArray['brand'])) {
-                        unset($resultArray['brand'][array_search($paramValues,$resultArray['brand'])]);
-                    } else {
-                        $resultArray['brand'][] = $paramValues;
+            if ($parsedParams = $this->filterChpuUrlParseParams($paramName, $paramValues, $resultArray)) {
+                $resultArray = array_merge($resultArray, $parsedParams);
+            } else {
+                switch ($paramName) {
+                    case 'brand':
+                    {
+                        if (is_null($paramValues)) {
+                            unset($resultArray['brand']);
+                        } elseif (in_array($paramValues, $resultArray['brand'])) {
+                            unset($resultArray['brand'][array_search($paramValues, $resultArray['brand'])]);
+                        } else {
+                            $resultArray['brand'][] = $paramValues;
+                        }
+                        break;
                     }
-                    break;
-                }
-                case 'filter': {
-                    if (is_null($paramValues)) {
-                        unset($resultArray['filter']);
-                    } elseif (in_array($paramValues, $resultArray['filter'])) {
-                        unset($resultArray['filter'][array_search($paramValues, $resultArray['filter'])]);
-                    } else {
-                        $resultArray['filter'][] = $paramValues;
+                    case 'filter':
+                    {
+                        if (is_null($paramValues)) {
+                            unset($resultArray['filter']);
+                        } elseif (in_array($paramValues, $resultArray['filter'])) {
+                            unset($resultArray['filter'][array_search($paramValues, $resultArray['filter'])]);
+                        } else {
+                            $resultArray['filter'][] = $paramValues;
+                        }
+                        if (empty($resultArray['filter'])) {
+                            unset($resultArray['filter']);
+                        }
+                        break;
                     }
-                    if (empty($resultArray['filter'])) {
-                        unset($resultArray['filter']);
-                    }
-                    break;
-                }
-                case 'sort':
-                    $resultArray['sort'] = strval($paramValues);
-                    break;
-                case 'page':
-                    $resultArray['page'] = $paramValues;
-                    break;
-                default:
-                    if(is_null($paramValues)) {
-                        unset($resultArray['features'][$paramName]);
-                    } elseif(!empty($resultArray['features']) && in_array($paramName,array_keys($resultArray['features']), true) && in_array($paramValues,$resultArray['features'][$paramName], true)) {
-                        unset($resultArray['features'][$paramName][array_search($paramValues,$resultArray['features'][$paramName])]);
-                    } else {
-                        if (!empty($this->featuresUrls)) {
-                            $featureId = array_search($paramName, $this->featuresUrls);
-                            
-                            if (!empty($categoryFeatures[$featureId]->values)) {
-                                $paramValues = (array)$paramValues;
-                                foreach ($paramValues as $valueTranslit) {
-                                    if (!empty($valueId = $categoryFeatures[$featureId]->values_ids[$valueTranslit])) {
-                                        $resultArray['features'][$paramName][$valueId] = $valueTranslit;
+                    case 'sort':
+                        $resultArray['sort'] = strval($paramValues);
+                        break;
+                    case 'page':
+                        $resultArray['page'] = $paramValues;
+                        break;
+                    default:
+                        if (is_null($paramValues)) {
+                            unset($resultArray['features'][$paramName]);
+                        } elseif (!empty($resultArray['features']) && in_array($paramName, array_keys($resultArray['features']), true) && in_array($paramValues, $resultArray['features'][$paramName], true)) {
+                            unset($resultArray['features'][$paramName][array_search($paramValues, $resultArray['features'][$paramName])]);
+                        } else {
+                            if (!empty($this->featuresUrls)) {
+                                $featureId = array_search($paramName, $this->featuresUrls);
+
+                                if (!empty($categoryFeatures[$featureId]->values)) {
+                                    $paramValues = (array)$paramValues;
+                                    foreach ($paramValues as $valueTranslit) {
+                                        if (!empty($valueId = $categoryFeatures[$featureId]->values_ids[$valueTranslit])) {
+                                            $resultArray['features'][$paramName][$valueId] = $valueTranslit;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    if(empty($resultArray['features'][$paramName])) {
-                        unset($resultArray['features'][$paramName]);
-                    }
-                    break;
+                        if (empty($resultArray['features'][$paramName])) {
+                            unset($resultArray['features'][$paramName]);
+                        }
+                        break;
+                }
             }
         }
 
@@ -828,6 +905,8 @@ class FilterHelper
             $resultString .= '/filter-' . implode("_", $resultArray['filter']);
         }
 
+        $resultString .= $this->filterChpuUrlBuildUrl($resultArray, $filter_params_count, $seoHideFilter);
+        
         if (!empty($resultArray['features'])) {
             $filter_params_count ++;
             $resultString .= $this->sortFeatures($resultArray['features']);

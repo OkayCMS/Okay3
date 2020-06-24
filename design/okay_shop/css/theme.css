@@ -2584,7 +2584,7 @@ b.filter__catalog_link.selected{
     max-width: calc(100% - 75px);
     text-align: center;
 }
-.product-page__img{padding: 0 20px;}
+.product-page__img{padding: 0 20px;width: 100%;}
 .gallery_image a{display: block;}
 .product-page__no_image{
     width: 100%;
@@ -2613,7 +2613,7 @@ b.filter__catalog_link.selected{
     margin-bottom: 10px;
     transition: all 0.2s;
 }
-.product-page__images-item img{max-height: 100%;}
+
 .product-page__item{position: relative;}
 .product-page__promo_img{
     position: absolute;
@@ -3967,6 +3967,7 @@ table.order_details {min-width: auto;}
 .advantages__item:last-child{margin-bottom: 0;}
 .advantages__preview{
     text-align: center;
+    height: 100%;
     color: rgb(58, 58, 58);
     background: rgb(255, 255, 255);
     border-right: 1px solid;

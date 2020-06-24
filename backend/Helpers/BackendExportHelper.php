@@ -132,7 +132,7 @@ class BackendExportHelper
         $filter = ['page' => $page, 'limit' => $productsCount];
         $featuresFilter = [];
         if (($cid = $this->request->get('category_id', 'integer')) && ($category = $this->categoriesEntity->get($cid))) {
-            $featuresFilter['category_id'] = $category->children;
+            $featuresFilter['product_category_id'] = $category->children;
             $filter['category_id']         = $category->children;
         }
 

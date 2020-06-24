@@ -61,18 +61,34 @@ class Notify
     }
 
     /* SMTP отправка емейла*/
-    public function SMTP($to, $subject, $message, $from = '', $replyTo = '')
+    public function SMTP($to, $subject, $message, $from = '', $replyTo = '', $debug = 0)
     {
+        ob_start();
         $this->PHPMailer->IsSMTP(); // telling the class to use SMTP
         $this->PHPMailer->Host       = $this->settings->get('smtp_server');
-        $this->PHPMailer->SMTPDebug  = 0;
+        $this->PHPMailer->SMTPDebug  = $debug;
         $this->PHPMailer->SMTPAuth   = true;
         $this->PHPMailer->CharSet    = 'utf-8';
+        
+        if ($this->settings->get('disable_validate_smtp_certificate')) {
+            $this->PHPMailer->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ]
+            ];
+        }
+        
         $this->PHPMailer->Port       = $this->settings->get('smtp_port');
         if ($this->PHPMailer->Port == 465) {
-            $this->PHPMailer->SMTPSecure = "ssl";
+            $this->PHPMailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             // Добавляем протокол, если не указали
             $this->PHPMailer->Host = (strpos($this->PHPMailer->Host, "ssl://") === false) ? "ssl://".$this->PHPMailer->Host : $this->PHPMailer->Host;
+        } elseif ($this->PHPMailer->Port == 587) {
+            $this->PHPMailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            // Добавляем протокол, если не указали
+            $this->PHPMailer->Host = (strpos($this->PHPMailer->Host, "tls://") === false) ? "tls://".$this->PHPMailer->Host : $this->PHPMailer->Host;
         }
         $this->PHPMailer->Username   = $this->settings->get('smtp_user');
         $this->PHPMailer->Password   = $this->settings->get('smtp_pass');
@@ -103,7 +119,14 @@ class Notify
         $this->PHPMailer->clearAddresses();
 
         if ($success) {
-            return;
+            ob_end_clean();
+            return true;
+        }
+        
+        if ($debug !== 0) {
+            $trace = nl2br(ob_get_contents());
+            ob_end_clean();
+            return $trace;
         }
 
         if ($this->PHPMailer->SMTPDebug != 0) {

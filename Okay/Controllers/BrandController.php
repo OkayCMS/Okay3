@@ -98,6 +98,10 @@ class BrandController extends AbstractController
         $this->design->assign('prices', $prices);
 
         $filter = $filterHelper->getBrandProductsFilter($filter);
+
+        if ($filter === false) {
+            return false;
+        }
         
         $paginate = $catalogHelper->paginate(
             $this->settings->get('products_num'),

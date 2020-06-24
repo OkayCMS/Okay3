@@ -22,7 +22,7 @@
                     {* Main product image *}
                     <div class="gallery_image product-page__image f_row justify-content-center">
                         <div class="product-page__img">
-                            <img class="fn_img fn_xzoom-fancy product_img xzoom4" xoriginal="{$product->image->filename|resize:1800:1800:w}" itemprop="image" src="{$product->image->filename|resize:800:550}" alt="{$product->name|escape}" title="{$product->name|escape}">
+                            <img class="fn_img fn_xzoom-fancy product_img xzoom4" xoriginal="{$product->image->filename|resize:1800:1800:w}" itemprop="image" src="{$product->image->filename|resize:800:800}" alt="{$product->name|escape}" title="{$product->name|escape}">
 
                             {if $product->featured || $product->special || $product->variant->compare_price}
                                 <div class="stickers stickers_product-page">
@@ -48,14 +48,14 @@
                         {* cut removes the first image, if you need start from the second - write cut:2 *}
                         {foreach $product->images as $i=>$image}
                         <a href="{$image->filename|resize:1800:1800:w}" class="product-page__images-item">
-                            <img class="xzoom-gallery4" src="{$image->filename|resize:60:60}" xpreview="{$image->filename|resize:800:550}" alt="{$product->name|escape}"/>
+                            <img class="xzoom-gallery4" src="{$image->filename|resize:60:60}" xpreview="{$image->filename|resize:800:800}" alt="{$product->name|escape}"/>
                         </a>
                         {/foreach}
                         </div>
                     </div>
                     {else}
                         <a href="{$product->image->filename|resize:1800:1800:w}" class="hidden">
-                            <img class="xzoom-gallery4" xpreview="{$product->image->filename|resize:800:550}" alt="{$product->name|escape}"/>
+                            <img class="xzoom-gallery4" xpreview="{$product->image->filename|resize:800:800}" alt="{$product->name|escape}"/>
                         </a>
                     {/if}
                 {else}

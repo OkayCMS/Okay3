@@ -166,7 +166,7 @@
 
                         <div class="col-md-6">
                             <div class="heading_label">{$btr->settings_notify_test_smtp}</div>
-                            <div class="mb-1">
+                            <div class="mb-1 clearfix">
                                 <button type="button" class="fn_test_smtp btn btn_small btn_blue float-xs-left">
                                     {include file='svg_icon.tpl' svgId='refresh_icon'}
                                     <span>{$btr->settings_notify_do_test_smtp|escape}</span>
@@ -174,6 +174,18 @@
                                 <div class="fn_test_smtp_status float-xs-left form-control"></div>
                             </div>
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="heading_label">{$btr->settings_notify_disable_validate_cert}</div>
+                            <div class="mb-1">
+                                <label class="switch switch-default">
+                                    <input class="switch-input" name="disable_validate_smtp_certificate" value='1' type="checkbox" {if $settings->disable_validate_smtp_certificate}checked=""{/if}/>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
                         {get_design_block block="settings_notify_smtp"}
                     </div>
                     <div class="row fn_row hidden">
@@ -198,22 +210,26 @@
 
 {* Learning script *}
 {include file='learning_hints.tpl' hintId='hint_settings_notify'}
-
+<input type=hidden name="session_id" value="{$smarty.session.id}">
 <script>
     $(document).on('click', '.fn_test_smtp', function() {
         $('.fn_test_smtp_status').fadeOut(100);
         var server = $('input[name="smtp_server"]').val(),
             port   = $('input[name="smtp_port"]').val(),
             user   = $('input[name="smtp_user"]').val(),
-            pass   = $('input[name="smtp_pass"]').val();
+            pass   = $('input[name="smtp_pass"]').val(),
+            disable_validate   = $('input[name="disable_validate_smtp_certificate"]').is(':checked')?1:0;
+        
         $.ajax({
-            url: 'ajax/test_smtp.php',
+            url: '{url controller='SettingsNotifyAdmin@testSMTP'}',
             type: 'POST',
             data: {
-                server: server,
-                port: port,
-                user: user,
-                pass: pass
+                smtp_server: server,
+                smtp_port: port,
+                smtp_user: user,
+                smtp_pass: pass,
+                disable_validate_smtp_certificate: disable_validate,
+                session_id: '{$smarty.session.id}',
             },
             success: function (data) {
                 $('.fn_test_smtp_status').text(data.message);

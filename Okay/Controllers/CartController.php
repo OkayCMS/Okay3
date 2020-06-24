@@ -53,6 +53,13 @@ class CartController extends AbstractController
             $this->response->redirectTo(Router::generateUrl('cart', [], true), 301);
         }
 
+        // Если нам запостили amounts, обновляем их
+        if ($amounts = $request->post('amounts')) {
+            foreach ($amounts as $variantId => $amount) {
+                $cartCore->updateItem($variantId, $amount);
+            }
+        }
+        
         $this->setMetadataHelper($cartMetadataHelper);
         
         $cart = $cartCore->get();
@@ -98,20 +105,15 @@ class CartController extends AbstractController
                 $this->response->redirectTo(Router::generateUrl('order', ['url' => $order->url], true));
             }
         } else {
-            // Если нам запостили amounts, обновляем их
-            if ($amounts = $request->post('amounts')) {
-                foreach ($amounts as $variantId=>$amount) {
-                    $cartCore->updateItem($variantId, $amount);
-                }
-
+            
+            if ($request->post('amounts')) {
                 $couponCode = $cartRequest->postCoupon();
-                if(empty($couponCode)) {
+                if (empty($couponCode)) {
                     $cartCore->applyCoupon('');
                     $this->response->redirectTo(Router::generateUrl('cart', [], true));
-                } 
-                else {
+                } else {
                     $coupon = $couponsEntity->get((string)$couponCode);
-                    if(empty($coupon) || !$coupon->valid) {
+                    if (empty($coupon) || !$coupon->valid) {
                         $cartCore->applyCoupon($couponCode);
                         $this->design->assign('coupon_error', 'invalid');
                     } else {

@@ -211,7 +211,7 @@
                                     <div class="heading_label heading_label--required">
                                         <span>{$btr->general_category|escape}</span>
                                     </div>
-                                    <div id="product_cats">
+                                    <div id="product_cats" class="clearfix">
                                         {assign var ='first_category' value=reset($post_categories)}
                                         <select class="selectpicker form-control  mb-1 fn_post_category fn_meta_categories" data-live-search="true">
                                             <option value="0" selected="" disabled="" data-category_name="">{$btr->product_select_category}</option>
@@ -223,7 +223,7 @@
                                             {/function}
                                             {category_select categories=$categories}
                                         </select>
-                                        <div id="sortable_cat" class="fn_post_categories_list">
+                                        <div id="sortable_cat" class="fn_post_categories_list clearfix">
                                             {foreach $post_categories as $post_category}
                                                 <div class="fn_category_item product_category_item {if $post_category@first}first_category{/if}">
                                                     <span class="product_cat_name">{$post_category->name|escape}</span>

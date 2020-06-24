@@ -116,7 +116,7 @@
                     {/if}
 
                     <div class="post_share">
-                        <div id="post_{$post->id}" class="post__rating product__rating fn_rating" data-rating_post_url="{url_generator route='ajax_post_rating'}" {if $post->rating > 0} itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating"{/if}>
+                        <div id="post_{$post->id}" class="post__rating product__rating fn_rating" data-rating_post_url="{url_generator route='ajax_post_rating'}">
                             <div class="share__text post_share__text">
                                 <span data-language="product_share">{$lang->post_rating_title}</span>
                             </div>
@@ -125,10 +125,10 @@
                             </span>
                             {*Вывод количества голосов данного товара, скрыт ради микроразметки*}
                             {if $post->rating > 0}
-                            <span class="rating_text">( <span itemprop="reviewCount">{$post->votes|string_format:"%.0f"}</span> )</span>
-                            <span class="rating_text hidden">( <span itemprop="ratingValue">{$post->rating|string_format:"%.1f"}</span> )</span>
+                            <span class="rating_text">( <span>{$post->votes|string_format:"%.0f"}</span> )</span>
+                            <span class="rating_text hidden">( <span>{$post->rating|string_format:"%.1f"}</span> )</span>
                             {*Вывод лучшей оценки товара для микроразметки*}
-                            <span class="rating_text hidden" itemprop="bestRating" style="display:none;">5</span>
+                            <span class="rating_text hidden" style="display:none;">5</span>
                             {else}
                             <span class="rating_text hidden">({$post->rating|string_format:"%.1f"})</span>
                             {/if}
@@ -378,20 +378,18 @@
 <script type="application/ld+json">
 
     { "@context": "http://schema.org",
-        "@type": "NewsArticle",
+        "@type": "Article",
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "{/literal}{$canonical}{literal}"
         },
         "headline": "{/literal}{$h1|escape}{literal}",
         "alternativeHeadline": "{/literal}{$h1|escape}{literal}",
-        "image": {
-            "@type": "ImageObject",
-            "url": "{/literal}{$post->image|resize:800:800:false:$config->resized_blog_dir}{literal}",
-            "width": 800,
-            "height": 800
+        "image": "{/literal}{$post->image|resize:800:800:false:$config->resized_blog_dir}{literal}",
+        "author": {
+            "@type": "Person",
+            "name": "{/literal}{$post->author->name|escape}{literal}"
         },
-        "editor": "{/literal}{$post->author->name|escape}{literal}",
         "publisher": {
             "@type": "Organization",
             "name": "{/literal}{$settings->site_name|escape}{literal}",
@@ -407,21 +405,17 @@
         "dateCreated": "{/literal}{$post->date|date_format:'%Y-%m-%d'}{literal}",
         {/literal}
         {if $post->updated_date > 0}
-        "dateModified": "{$post->updated_date|date_format:'%Y-%m-%d'}",
+        {literal}
+        "dateModified": "{/literal}{$post->updated_date|date_format:'%Y-%m-%d'}{literal}",
+        {/literal}
         {else}
-        "dateModified": "{$post->date|date_format:'%Y-%m-%d'}",
+        {literal}
+        "dateModified": "{/literal}{$post->date|date_format:'%Y-%m-%d'}{literal}",
+        {/literal}
         {/if}
         {literal}
-        "author": {
-            "@type": "Person",
-            "name": "{/literal}{$post->author->name|escape}{literal}"
-        },
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "{/literal}{$post->rating|string_format:"%.1f"}{literal}",
-            "ratingCount": "{/literal}{$post->votes|string_format:"%.0f"}{literal}"
-          },
-        "description": "{/literal}{$post->annotation|strip_tags|escape}{literal}"
+        "description": "{/literal}{$post->annotation|strip_tags|escape}{literal}",
+        "articleBody": "{/literal}{$description|strip_tags|escape}{literal}"
     }
 
 </script>

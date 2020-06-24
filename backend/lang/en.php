@@ -1446,3 +1446,4 @@ $lang['post_rating'] = 'Post rating';
 $lang['author_position_name'] = 'Position';
 $lang['author_add_codial'] = 'Add social network';
 $lang['author_socials'] =' Social author network ';
+$lang['settings_notify_disable_validate_cert'] = 'Disable certificate verification (not safe)';

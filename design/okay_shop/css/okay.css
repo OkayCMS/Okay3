@@ -1784,7 +1784,7 @@ select{
     -o-transition: none;
     transition: none;
 }
-.xzoom-container {display: inline-block;}
+.xzoom-container {display: block;}
 .xzoom-thumbs {text-align: center;margin-bottom: 10px;}
 .xzoom-source, .xzoom-hidden {
     display: block;
@@ -1795,7 +1795,7 @@ select{
 .xzoom-hidden {overflow: hidden;}
 .xzoom-preview {
     border: 1px solid #888;
-    background: #2f4f4f;
+    background: #fff;
     box-shadow: -0px -0px 10px rgba(0,0,0,0.50);
 }
 .xzoom-lens {

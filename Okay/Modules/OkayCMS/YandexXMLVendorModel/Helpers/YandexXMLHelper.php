@@ -20,7 +20,7 @@ use Okay\Entities\ProductsEntity;
 use Okay\Entities\RouterCacheEntity;
 use Okay\Entities\VariantsEntity;
 use Okay\Helpers\XmlFeedHelper;
-use Okay\Modules\OkayCMS\YandexXML\Init\Init;
+use Okay\Modules\OkayCMS\YandexXMLVendorModel\Init\Init;
 
 class YandexXMLHelper
 {

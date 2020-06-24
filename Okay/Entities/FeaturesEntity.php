@@ -332,5 +332,35 @@ class FeaturesEntity extends Entity
 
         $this->select->bindValue('categories_ids', (array)$categoriesIds);
     }
+
+    // Особый фильтр по категории. Фильтрует не по связке свойства и категории, а по имеющимся значениям свойств
+    // у товаров указанной категории.
+    protected function filter__product_category_id($categoriesIds)
+    {
+        
+        $this->select->join('INNER',
+            '__features_values AS fv',
+            'fv.feature_id = ' . $this->getTableAlias() . '.id'
+        );
+        
+        $this->select->join('INNER',
+            '__products_features_values AS pv',
+            'pv.value_id = fv.id'
+        );
+        
+        $this->select->join('INNER',
+            '__products AS p',
+            'p.id = pv.product_id'
+        );
+        
+        $this->select->join('INNER',
+            '__products_categories AS pc',
+            'p.id = pc.product_id AND pc.category_id IN(:export_categories_ids)'
+        );
+        
+        $this->select->groupBy([$this->getTableAlias() . '.id']);
+            
+        $this->select->bindValue('export_categories_ids', (array)$categoriesIds);
+    }
     
 }

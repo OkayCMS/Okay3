@@ -242,7 +242,7 @@
                             {include file='svg_icon.tpl' svgId='icon_tooltips'}
                         </i>
                     </div>
-                    <div id="product_cats">
+                    <div id="product_cats" class="clearfix">
                         {assign var ='first_category' value=reset($product_categories)}
                         <select class="selectpicker form-control  mb-1 fn_product_category fn_meta_categories" data-live-search="true">
                             <option value="0" selected="" disabled="" data-category_name="">{$btr->product_select_category}</option>
@@ -254,7 +254,7 @@
                             {/function}
                             {category_select categories=$categories}
                         </select>
-                        <div id="sortable_cat" class="fn_product_categories_list">
+                        <div id="sortable_cat" class="fn_product_categories_list clearfix">
                             {foreach $product_categories as $product_category}
                                 <div class="fn_category_item product_category_item {if $product_category@first}first_category{/if}">
                                     <span class="product_cat_name">{$product_category->name|escape}</span>

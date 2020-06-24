@@ -43,8 +43,7 @@
                         </div>
                         {* User's password *}
                         <div class="form__group">
-                            <input class="form__input form__placeholder--focus" type="password" name="password" value="" readonly
-                                   onfocus="this.removeAttribute('readonly');" data-language="form_password" />
+                            <input class="form__input form__placeholder--focus" type="password" name="password" value="" data-language="form_password" />
                             <span class="form__placeholder">{$lang->form_password}*</span>
                             {*  Remind password link *}
                             <a class="password_remind" href="{url_generator route="password_remind"}">

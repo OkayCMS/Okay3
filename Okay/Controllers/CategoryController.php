@@ -206,6 +206,9 @@ class CategoryController extends AbstractController
         $this->design->assign('prices', $prices);
 
         $filter = $filterHelper->getCategoryProductsFilter($filter);
+        if ($filter === false) {
+            return false;
+        }
         
         $paginate = $catalogHelper->paginate(
             $this->settings->get('products_num'),

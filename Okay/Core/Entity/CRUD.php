@@ -66,7 +66,9 @@ trait CRUD
         
         $this->select->cache();
         
-        return $this->select; // No ExtenderFacade
+        $select = clone $this->select;
+        $this->flush();
+        return $select; // No ExtenderFacade
     }
     
     public function find(array $filter = [])

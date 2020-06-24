@@ -120,14 +120,14 @@ class BackendSettingsHelper
 
     public function updateSettings()
     {
-        $this->settings->set('decimals_point', $this->request->post('decimals_point', 'string', ','));
-        $this->settings->set('thousands_separator', $this->request->post('thousands_separator', 'string', ' '));
+        $this->settings->set('decimals_point', $this->request->post('decimals_point', null, ','));
+        $this->settings->set('thousands_separator', $this->request->post('thousands_separator', null, ' '));
         $this->settings->set('products_num', $this->request->post('products_num', 'int', 24));
         $this->settings->set('max_order_amount', $this->request->post('max_order_amount', 'int', 50));
         $this->settings->set('comparison_count', $this->request->post('comparison_count', 'int', 5));
         $this->settings->set('posts_num', $this->request->post('posts_num', 'int', 8));
         $this->settings->set('missing_products', $this->request->post('missing_products', null, 'default'));
-        $this->settings->set('hide_single_filters', $this->request->post('hide_single_filters', 'int', 1));
+        $this->settings->set('hide_single_filters', $this->request->post('hide_single_filters', 'int'));
         $this->settings->update('units', $this->request->post('units'));
 
         if ($this->request->post('is_preorder', 'integer')) {
@@ -255,6 +255,7 @@ class BackendSettingsHelper
         $this->settings->set('smtp_port', $this->request->post('smtp_port'));
         $this->settings->set('smtp_user', $this->request->post('smtp_user'));
         $this->settings->set('smtp_pass', $this->request->post('smtp_pass'));
+        $this->settings->set('disable_validate_smtp_certificate', $this->request->post('disable_validate_smtp_certificate', 'int'));
         $this->settings->update('notify_from_name', $this->request->post('notify_from_name'));
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }

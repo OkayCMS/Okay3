@@ -1446,3 +1446,4 @@ $lang['post_rating'] = 'Рейтинг записи';
 $lang['author_position_name'] = 'Посада';
 $lang['author_add_codial'] = 'Додати соц. мережа';
 $lang['author_socials'] = 'Соц. мережі автора ';
+$lang['settings_notify_disable_validate_cert'] = 'Не перевіряти сертифіката (небезпечно)';

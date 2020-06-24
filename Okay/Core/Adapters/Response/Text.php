@@ -10,7 +10,7 @@ class Text extends AbstractResponse
     public function getSpecialHeaders()
     {
         return [
-            'Content-type: text/html; charset=utf-8',
+            'Content-type: text/plain; charset=utf-8',
         ];
     }
     

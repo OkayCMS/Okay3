@@ -575,7 +575,7 @@ $(function(){
     if( $('.xzoom4').length ) {
         var xzoom = $('.xzoom4').xzoom({
             zoomWidth: 600,
-            adaptive: 'true',
+            adaptive: false,
             position: "inside",
             title: true,
             tint: '#fff',

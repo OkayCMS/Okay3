@@ -151,7 +151,7 @@
 
                                                             {if $payment_method->image}
                                                                 <div class="delivery__image">
-                                                                    <img src="{$payment_method->image|resize:40:25:false:$config->resized_payments_dir}" />
+                                                                    <img src="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" />
                                                                 </div>
                                                             {/if}
                                                         </label>

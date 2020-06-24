@@ -30,8 +30,7 @@ class BannerAdmin extends IndexAdmin
         if ($this->request->method('POST')) {
 
             $banner = $bannersRequest->postBanner();
-
-            if (!empty($banner->as_individual_shortcode) && ($b = $bannersEntity->findOne(['' => $banner->group_name])) && $b->id!=$banner->id) {
+            if (!empty($banner->as_individual_shortcode) && ($b = $bannersEntity->findOne(['group_name' => $banner->group_name])) && $b->id!=$banner->id) {
                 $this->design->assign('message_error', 'shortcode_exists');
             } else {
                 if (empty($banner->id)) {
