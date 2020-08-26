@@ -69,10 +69,10 @@ class FastOrderController extends AbstractController
             'amount'     => $amount
         ]);
 
+        $order = $ordersEntity->findOne(['id' => $orderId]);
         $ordersHelper->finalCreateOrderProcedure($order);
         $ordersEntity->updateTotalPrice($orderId);
 
-        $order = $ordersEntity->get((int) $orderId);
         $notify->emailOrderUser($order->id);
         $notify->emailOrderAdmin($order->id);
 

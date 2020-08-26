@@ -23,3 +23,6 @@
 * [Модульность](./modules/README.md)
 * [Модуль, быстрый старт](./modules/quick_start.md)
 * [Режим разработчика](./dev_mode.md)
+* [Пример конфигурации сервера Nginx](./nginx/nginx.conf)
+* [Импорт](./import.md)
+* [Экспорт](./export.md)

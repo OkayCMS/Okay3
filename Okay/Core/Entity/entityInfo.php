@@ -15,11 +15,7 @@ trait entityInfo
      */
     final public static function getDifferentFields($excludedFields)
     {
-        $fields = static::getFields();
-        $langFields = static::getLangFields();
-        $additionalFields = static::getAdditionalFields();
-
-        $allFields = array_merge($fields, $langFields, $additionalFields);
+        $allFields = static::getAllDefaultFields();
         foreach ($excludedFields as $field) {
             if (($fieldKey = array_search($field, $allFields)) !== false && isset($allFields[$fieldKey])) {
                 unset($allFields[$fieldKey]);
@@ -28,13 +24,27 @@ trait entityInfo
         
         return (array)$allFields;
     }
+
+    /**
+     * Метод возвращает все зарегистрированные поля сущности
+     * 
+     * @return array
+     */
+    final public static function getAllDefaultFields()
+    {
+        $fields = static::getFields();
+        $langFields = static::getLangFields();
+        $additionalFields = static::getAdditionalFields();
+        
+        return $allFields = array_merge($fields, $langFields, $additionalFields);
+    }
     
     /**
      * @var array $fields
      */
     final public function setSelectFields(array $fields)
     {
-        $this->selectFields = $fields;
+        $this->selectFields = array_merge($this->selectFields, $fields);
     }
     
     /**
@@ -125,9 +135,25 @@ trait entityInfo
         return (string)static::$alternativeIdField;
     }
 
+    final public static function setLangTable($langTable)
+    {
+        static::$langTable = $langTable;
+    }
+
+    final public static function setLangObject($langObject)
+    {
+        static::$langObject = $langObject;
+    }
+
     final public static function addField($name)
     {
         if (!in_array($name, static::getFields())) {
+            // Если это поле отмечено как ленговое, но его регистрируют как не ленговое, удалим его из ленговых
+            if (in_array($name, static::getLangFields())) {
+                $langFields = static::getLangFields();
+                unset($langFields[array_search($name, $langFields)]);
+                static::$langFields = $langFields;
+            }
             static::$fields[] = $name;
         }
     }
@@ -135,6 +161,12 @@ trait entityInfo
     final public static function addLangField($name)
     {
         if (!in_array($name, static::getLangFields())) {
+            // Если это поле отмечено как не ленговое, но его регистрируют как ленговое, удалим его из не ленговых
+            if (in_array($name, static::getFields())) {
+                $fields = static::getFields();
+                unset($fields[array_search($name, $fields)]);
+                static::$fields = $fields;
+            }
             static::$langFields[] = $name;
         }
     }

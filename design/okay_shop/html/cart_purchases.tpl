@@ -6,7 +6,7 @@
         <div class="purchase__image d-flex">
             <a href="{url_generator route="product" url=$purchase->product->url}">
                 {if $purchase->product->image}
-                    <img class="" alt="{$purchase->product->name|escape}" src="{$purchase->product->image->filename|resize:70:70}">
+                    <img src="{$purchase->product->image->filename|resize:70:70}" alt="{$purchase->product->name|escape}" title="{$purchase->product->name|escape}"/>
                 {else}
                     <div class="purchase__no_image d-flex align-items-start">
                         {include file="svg.tpl" svgId="no_image"}

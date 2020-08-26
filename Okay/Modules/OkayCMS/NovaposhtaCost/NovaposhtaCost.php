@@ -65,9 +65,6 @@ class NovaposhtaCost
         $warehousesEntity = $this->entityFactory->get(NPWarehousesEntity::class);
         
         $filter = ['city_ref' => $cityRef];
-        /*if (!empty($warehouseRef)) {
-            $filter['ref'] = $warehouseRef;
-        }*/
         
         // Если таблица пунктов пуста, спарсим все пункты
         if (!$warehousesEntity->count()) {
@@ -77,7 +74,7 @@ class NovaposhtaCost
         $warehouses = $warehousesEntity->find($filter);
 
         $result['success'] = true;
-        $result['warehouses'] = '<option selected disabled value="">Выберите отделение доставки</option>';
+        $result['warehouses'] = '<option'.(empty($warehouseRef)? ' selected' : '').' disabled value="">Выберите отделение доставки</option>';
         foreach ($warehouses as $warehouse) {
             $result['warehouses'] .= '<option value="'.$warehouse->name.'" data-warehouse_ref="'.$warehouse->ref.'"'.(!empty($warehouseRef) && $warehouseRef == $warehouse->ref ? 'selected' : '').'>'.$warehouse->name.'</option>';
         }
@@ -387,7 +384,7 @@ class NovaposhtaCost
      * @param string $request json параметры запроса
      * @return bool|mixed
      */
-    private function npRequest($request)
+    public function npRequest($request)
     {
         if (empty($request)) {
             return false;

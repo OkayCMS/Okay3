@@ -107,6 +107,9 @@
                     </div>
                 </form>
             </div>
+            <div class="col-lg-12 col-md-12 col-sm 12 txt_center">
+                {include file='pagination.tpl'}
+            </div>
         </div>
     {else}
         <div class="heading_box mt-1">

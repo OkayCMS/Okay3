@@ -5,6 +5,11 @@ const RESPONSE_JSON = 'Json';
 const RESPONSE_XML  = 'Xml';
 const RESPONSE_JAVASCRIPT  = 'JavaScript';
 const RESPONSE_IMAGE  = 'Image';
+const RESPONSE_IMAGE_SVG  = 'ImageSvg';
+const RESPONSE_IMAGE_PNG  = 'ImagePng';
+const RESPONSE_IMAGE_JPG  = 'ImageJpg';
+const RESPONSE_IMAGE_GIF  = 'ImageGif';
+const RESPONSE_IMAGE_WEBP  = 'ImageWebp';
 const RESPONSE_TEXT  = 'Text';
 
 const MISSING_PRODUCTS_DEFAULT  = 'default';

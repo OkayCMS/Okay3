@@ -39,7 +39,28 @@ class ResizeController extends AbstractController
         }
         
         if (is_readable($resizedFilename)) {
-            $this->response->setContent(file_get_contents($resizedFilename), RESPONSE_IMAGE);
+            
+            $responseType = RESPONSE_IMAGE;
+            switch (strtolower(pathinfo($resizedFilename, PATHINFO_EXTENSION))) {
+                case 'png':
+                    $responseType = RESPONSE_IMAGE_PNG;
+                    break;
+                case 'jpg':// No break
+                case 'jpeg':
+                    $responseType = RESPONSE_IMAGE_JPG;
+                    break;
+                case 'gif':
+                    $responseType = RESPONSE_IMAGE_GIF;
+                    break;
+                case 'svg':
+                    $responseType = RESPONSE_IMAGE_SVG;
+                    break;
+                case 'webp':
+                    $responseType = RESPONSE_IMAGE_WEBP;
+                    break;
+            }
+            
+            $this->response->setContent(file_get_contents($resizedFilename), $responseType);
         }
     }
     

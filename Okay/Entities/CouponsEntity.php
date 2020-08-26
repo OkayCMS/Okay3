@@ -36,6 +36,8 @@ class CouponsEntity extends Entity
     protected static $table = '__coupons';
     protected static $tableAlias = 'c';
     protected static $alternativeIdField = 'code';
+    protected static $langTable;
+    protected static $langObject;
     
     protected function filter__valid($valid)
     {

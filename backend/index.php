@@ -102,6 +102,7 @@ $license->check();
 $modules->startAllModules();
 
 $license->registerSmartyPlugins();
+$modules->indexingNotInstalledModules();
 
 $license->bindModulesRoutes();
 
@@ -162,14 +163,28 @@ if (($controllerParams = $module->getBackendControllerParams($backendControllerN
     $design->setModuleTemplatesDir($module->getModuleDirectory($vendor, $moduleName) . 'Backend/design/html');
     $controllerName = $module->getBackendControllersNamespace($vendor, $moduleName) . '\\' . $controllerName;
 } else {
-    $design->setTemplatesDir('backend/design/html');
+    
     $backendControllerName = preg_replace("/[^A-Za-z0-9]+/", "", $backendControllerName);
-    $controllerName = '\\Okay\\Admin\\Controllers\\' . $backendControllerName;
 
-    if (!class_exists($controllerName)) {
-        $backendControllerName = array_search(reset($manager->permissions), $managers->getControllersPermissions());
+    // Всегда открываем контроллер, который стоит в меню первым
+    if (!class_exists('\\Okay\\Admin\\Controllers\\' . $backendControllerName)) {
+        $menu = $managerMenu->getMenu($manager);
+        $subMenu = reset($menu);
+        $backendControllerName = reset($subMenu);
     }
-    $controllerName = '\\Okay\\Admin\\Controllers\\' . $backendControllerName;
+    if (($controllerParams = $module->getBackendControllerParams($backendControllerName)) && in_array($backendControllerName, $modulesBackendControllers)) {
+
+        $vendor = $controllerParams['vendor'];
+        $moduleName = $controllerParams['module'];
+        $controllerName = $controllerParams['controller'];
+
+        $design->useModuleDir();
+        $design->setModuleTemplatesDir($module->getModuleDirectory($vendor, $moduleName) . 'Backend/design/html');
+        $controllerName = $module->getBackendControllersNamespace($vendor, $moduleName) . '\\' . $controllerName;
+    } else {
+        $design->setTemplatesDir('backend/design/html');
+        $controllerName = '\\Okay\\Admin\\Controllers\\' . $backendControllerName;
+    }
 }
 
 $backend = new $controllerName($manager, $backendControllerName);

@@ -22,6 +22,8 @@ class SpecialImagesEntity extends Entity
 
     protected static $table = '__spec_img';
     protected static $tableAlias = 'p';
+    protected static $langTable;
+    protected static $langObject;
 
     /*Удаление промо-изображений*/
     public function delete($imageId) {

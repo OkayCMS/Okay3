@@ -5,6 +5,8 @@ namespace Okay\Core;
 
 
 use Okay\Core\Modules\Module;
+use Okay\Core\Modules\Modules;
+use Okay\Core\TplMod\TplMod;
 use OkayLicense\License;
 use Smarty;
 use Mobile_Detect;
@@ -20,20 +22,20 @@ class Design
      */
     public $smarty;
 
-    /**
-     * @var Mobile_Detect
-     */
+    /** @var Mobile_Detect */
     public $detect;
 
-    /**
-     * @var TemplateConfig
-     */
+    /** @var TemplateConfig */
     private $templateConfig;
 
-    /**
-     * @var Module
-     */
+    /** @var Module */
     private $module;
+
+    /** @var Modules */
+    private $modules;
+
+    /** @var TplMod */
+    private $tplMod;
 
     /** @var array */
     private $smartyFunctions = [];
@@ -105,6 +107,8 @@ class Design
         'ltrim',
         'rtrim',
         'array_keys',
+        'pathinfo',
+        'strtolower',
     ];
 
 
@@ -113,17 +117,22 @@ class Design
         Mobile_Detect $mobileDetect,
         TemplateConfig $templateConfig,
         Module $module,
+        Modules $modules,
+        TplMod $tplMod,
         $smartyCacheLifetime,
         $smartyCompileCheck,
         $smartyHtmlMinify,
         $smartyDebugging,
         $smartySecurity,
         $smartyCaching,
+        $smartyForceCompile,
         $rootDir
     ) {
         $this->templateConfig = $templateConfig;
         $this->detect         = $mobileDetect;
         $this->module         = $module;
+        $this->modules        = $modules;
+        $this->tplMod         = $tplMod;
         $this->rootDir        = $rootDir;
 
         $this->smarty = $smarty;
@@ -160,6 +169,39 @@ class Design
         if ($smartyHtmlMinify) {
             $this->smarty->loadFilter('output', 'trimwhitespace');
         }
+
+        if ($smartyForceCompile) {
+            $smarty->setForceCompile(true);
+        }
+        
+        $this->smarty->registerFilter('pre', [$this, 'applyTplModifiers']);
+    }
+    
+    public function applyTplModifiers($content, $s)
+    {
+        
+        $currentFile = $s->_current_file;
+        
+        // Определяем модификации чего сейчас нам нужны, фронта или бека
+        if (strpos($currentFile, $this->rootDir.'backend/design/html') !== false) {
+            $modifications = $this->modules->getBackendModulesTplModifications();
+        } else {
+            $modifications = $this->modules->getFrontModulesTplModifications();
+        }
+        $fileModifications = [];
+        if (!empty($modifications)) {
+            foreach ($modifications as $modification) {
+                if ($modification->file == substr($currentFile, -strlen($modification->file))) {
+                    $fileModifications = array_merge($fileModifications, $modification->changes);
+                }
+            }
+        }
+        
+        if (!empty($fileModifications)) {
+            $content = $this->tplMod->buildFile($content, $fileModifications);
+        }
+        
+        return $content;
     }
 
     /**
@@ -399,6 +441,30 @@ class Design
     public function setSmartyTemplatesDir($dir)
     {
         $this->smarty->setTemplateDir($dir);
+    }
+    
+    public function clearCompiled()
+    {
+        $theme = $this->templateConfig->getTheme();
+        $dir = $this->rootDir.'compiled/'.$theme;
+        if ($handle = opendir($dir)) {
+            while (false !== ($file = readdir($handle))) {
+                if ($file != "." && $file != "..") {
+                    @unlink($dir."/".$file);
+                }
+            }
+            closedir($handle);
+        }
+
+        $dir = $this->rootDir.'backend/design/compiled/';
+        if ($handle = opendir($dir)) {
+            while (false !== ($file = readdir($handle))) {
+                if ($file != "." && $file != ".." && $file != '.keep_folder') {
+                    @unlink($dir."/".$file);
+                }
+            }
+            closedir($handle);
+        }
     }
 
 }

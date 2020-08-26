@@ -33,7 +33,7 @@ RewriteRule	^admin/?$  backend [L]
 
 # Кэширование / поддерживается не на всех хостингах
 <ifmodule mod_expires.c>
-    <filesmatch "\.(jpg|jpeg|png|gif|js|css|swf|ico|woff|mp3)$">
+    <filesmatch "\.(jpg|jpeg|png|webp|svg|gif|js|css|swf|ico|woff|mp3)$">
         ExpiresActive on
         ExpiresDefault "access plus 7 days"
     </filesmatch>

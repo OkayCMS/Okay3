@@ -24,7 +24,13 @@
                                 <li class="blog_catalog__item parent">
                                     <a class="blog_catalog__link {if $category->id == $c->id} selected{/if}" href="{url_generator route='blog_category' url=$c->url}" data-blog_category="{$c->id}">
                                         {if $c->image}
-                                            <img class="lazy" src="{$c->image|resize:20:20:false:$config->resized_blog_categories_dir}" alt="{$c->name|escape}"/>
+                                            <picture>
+                                                {if $settings->support_webp}
+                                                    <source class="lazy" type="image/webp" data-srcset="{$c->image|resize:20:20:false:$config->resized_blog_categories_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                                {/if}
+                                                <source class="lazy" data-srcset="{$c->image|resize:20:20:false:$config->resized_blog_categories_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                                <img class="lazy" data-src="{$c->image|resize:20:20:false:$config->resized_blog_categories_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$c->name|escape}" title="{$c->name|escape}"/>
+                                            </picture>
                                         {else}
                                             <span class="blog_catalog__no_image d-flex align-items-center justify-content-center" title="{$c->name|escape}">
                                                 {include file="svg.tpl" svgId="no_image"}
@@ -39,7 +45,13 @@
                                 <li class="blog_catalog__item">
                                     <a class="blog_catalog__link {if $category->id == $c->id} selected{/if}" href="{url_generator route='blog_category' url=$c->url}" data-blog_category="{$c->id}">
                                         {if $c->image}
-                                            <img class="lazy" src="{$c->image|resize:20:20:false:$config->resized_blog_categories_dir}" alt="{$c->name|escape}"/>
+                                        <picture>
+                                            {if $settings->support_webp}
+                                                <source class="lazy" type="image/webp" data-srcset="{$c->image|resize:20:20:false:$config->resized_blog_categories_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                            {/if}
+                                            <source class="lazy" data-srcset="{$c->image|resize:20:20:false:$config->resized_blog_categories_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                            <img class="lazy" data-src="{$c->image|resize:20:20:false:$config->resized_blog_categories_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$c->name|escape}" title="{$c->name|escape}"/>
+                                        </picture>
                                         {else}
                                             <span class="blog_catalog__no_image d-flex align-items-center justify-content-center" title="{$c->name|escape}">
                                                 {include file="svg.tpl" svgId="no_image"}
@@ -89,7 +101,13 @@
             <a class="d-flex align-items-center justify-content-center sidebar_card__link" href="{url_generator route='product' url=$product->url}">
                 <div class="sidebar_card__image">
                     {if $product->image->filename}
-                    <img class="lazy" data-src="{$product->image->filename|resize:60:60}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$product->name|escape}" title="{$product->name|escape}">
+                    <picture>
+                        {if $settings->support_webp}
+                            <source class="lazy" type="image/webp" data-srcset="{$product->image->filename|resize:60:60}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                        {/if}
+                        <source class="lazy" data-srcset="{$product->image->filename|resize:60:60}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                        <img class="lazy" data-src="{$product->image->filename|resize:60:60}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$product->name|escape}" title="{$product->name|escape}"/>
+                    </picture>
                     {else}
                     <div class="sidebar_card__no_image d-flex align-items-center justify-content-center" title="{$product->name|escape}">
                         {include file="svg.tpl" svgId="no_image"}

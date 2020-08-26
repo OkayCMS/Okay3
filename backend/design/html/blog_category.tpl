@@ -122,7 +122,7 @@
                                 </div>
                             </div>
                         </div>
-                        {get_design_block block="category_heading"}
+                        {get_design_block block="blog_category_heading"}
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
                         <div class="activity_of_switch">
@@ -142,7 +142,7 @@
                                 </div>
                             </div>
                         </div>
-                        {get_design_block block="category_switch_checkboxes"}
+                        {get_design_block block="blog_category_switch_checkboxes"}
                     </div>
                 </div>
             </div>
@@ -170,7 +170,7 @@
                                 <div class="fn_parent_image">
                                     <div class="category_image image_wrapper fn_image_wrapper text-xs-center">
                                         <a href="javascript:;" class="fn_delete_item remove_image"></a>
-                                        <img src="{$category->image|resize:300:120:false:$config->resized_categories_dir}" alt="" />
+                                        <img src="{$category->image|resize:300:120:false:$config->resized_blog_categories_dir}" alt="" />
                                     </div>
                                 </div>
                             {else}
@@ -187,7 +187,7 @@
                         </li>
                     </ul>
                 </div>
-                {get_design_block block="category_image"}
+                {get_design_block block="blog_category_image"}
             </div>
         </div>
         <div class="col-lg-8 col-md-12">
@@ -236,7 +236,7 @@
                         </div>
                     </div>
                 </div>
-                {get_design_block block="category_parameters"}
+                {get_design_block block="blog_category_parameters"}
             </div>
         </div>
     </div>
@@ -278,12 +278,12 @@
                         <textarea name="meta_description" class="form-control okay_textarea fn_meta_field">{$category->meta_description|escape}</textarea>
                     </div>
                 </div>
-                {get_design_block block="category_meta_data"}
+                {get_design_block block="blog_category_meta_data"}
             </div>
         </div>
     </div>
 
-    {$block = {get_design_block block="category_custom_block"}}
+    {$block = {get_design_block block="blog_category_custom_block"}}
     {if !empty($block)}
         <div class="custom_block">
             {$block}

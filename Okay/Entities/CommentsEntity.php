@@ -35,6 +35,8 @@ class CommentsEntity extends Entity
 
     protected static $table = '__comments';
     protected static $tableAlias = 'c';
+    protected static $langTable;
+    protected static $langObject;
 
     protected function filter__approved($value, &$filter)
     {

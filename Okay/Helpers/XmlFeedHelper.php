@@ -218,7 +218,9 @@ class XmlFeedHelper
         $uploadCategories = [];
         foreach ($categoriesIds as $cId) {
             $category = $categoriesEntity->get((int)$cId);
-            $uploadCategories = array_merge($uploadCategories, $category->children);
+            if (!empty($category)) {
+                $uploadCategories = array_merge($uploadCategories, $category->children);
+            }
         }
         return $uploadCategories; // no ExtenderFacade
     }

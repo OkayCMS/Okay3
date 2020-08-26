@@ -131,6 +131,10 @@ class DeliveriesHelper
             // Сортируем массив id способов оплаты для доставки в соответствии с позициями способов оплаты.
             // Также откинем не активные способы полаты
             $delivery->payment_methods_ids = array_intersect(array_keys($paymentMethods), $deliveriesEntity->getDeliveryPayments($delivery->id));
+            
+            if (!empty($delivery->settings) && is_string($delivery->settings)) {
+                $delivery->settings = unserialize($delivery->settings);
+            }
         }
         
         return ExtenderFacade::execute(__METHOD__, $deliveries, func_get_args());

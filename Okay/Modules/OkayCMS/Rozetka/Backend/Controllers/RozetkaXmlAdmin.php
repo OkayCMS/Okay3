@@ -5,99 +5,70 @@ namespace Okay\Modules\OkayCMS\Rozetka\Backend\Controllers;
 
 
 use Okay\Admin\Controllers\IndexAdmin;
-use Okay\Core\Database;
-use Okay\Core\QueryFactory;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\CategoriesEntity;
-use Okay\Entities\ProductsEntity;
-use Okay\Helpers\ProductsHelper;
+use Okay\Modules\OkayCMS\Rozetka\Entities\RozetkaFeedsEntity;
+use Okay\Modules\OkayCMS\Rozetka\Entities\RozetkaRelationsEntity;
+use Okay\Modules\OkayCMS\Rozetka\Helpers\BackendRozetkaHelper;
 
 class RozetkaXmlAdmin extends IndexAdmin
 {
 
     public function fetch(
-        CategoriesEntity $categoriesEntity,
-        BrandsEntity $brandsEntity,
-        ProductsEntity $productsEntity,
-        ProductsHelper $productsHelper,
-        QueryFactory $queryFactory,
-        Database $database
+        CategoriesEntity       $categoriesEntity,
+        BrandsEntity           $brandsEntity,
+        BackendRozetkaHelper   $backendRozetkaHelper,
+        RozetkaRelationsEntity $relationsEntity,
+        RozetkaFeedsEntity     $feedsEntity
     ) {
-        if ($this->request->post('add_all_categories')) {
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(CategoriesEntity::getTable())->set('to_rozetka', 1)
-            );
-            $categoriesEntity->initCategories();
-        } elseif($this->request->post('remove_all_categories')) {
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(CategoriesEntity::getTable())->set('to_rozetka', 0)
-            );
-            $categoriesEntity->initCategories();
-        } elseif ($this->request->post('add_all_brands')) {
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(BrandsEntity::getTable())->set('to_rozetka', 1)
-            );
-        } elseif($this->request->post('remove_all_brands')) {
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(BrandsEntity::getTable())->set('to_rozetka', 0)
-            );
-        } elseif ($this->request->method('post')) {
-            
-            $categoriesToXml   = $this->request->post('categories');
-            $brandsToXml       = $this->request->post('brands');
-            $productsToXml     = $this->request->post('related_products');
-            $productsNotToXml  = $this->request->post('not_related_products');
+        if ($this->request->method('post')) {
+            $postFeeds = $this->request->post('feeds');
 
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(CategoriesEntity::getTable())->set('to_rozetka', 0)
-            );
-            $categoriesEntity->initCategories();
-            
-            if (!empty($categoriesToXml)) {
-                $categoriesEntity->update($categoriesToXml, ['to_rozetka' => 1]);
+            if ($errors = $backendRozetkaHelper->validateFeeds($postFeeds)) {
+                $this->design->assign('errors', $errors);
+            } else {
+                $postRelatedCategories = $this->request->post('related_categories');
+                $postRelatedBrands = $this->request->post('related_brands');
+
+                $backendRozetkaHelper->updateFeeds($postFeeds);
+                $backendRozetkaHelper->updateRelatedCategories($postRelatedCategories);
+                $backendRozetkaHelper->updateRelatedBrands($postRelatedBrands);
+                $backendRozetkaHelper->updateRelatedProducts();
+                $backendRozetkaHelper->updateNotRelatedProducts();
+
+                if ($this->request->post('add_feed')) {
+                    $backendRozetkaHelper->addFeed();
+                } else if ($feedId = $this->request->post('remove_feed')) {
+                    $backendRozetkaHelper->removeFeed($feedId);
+                } else if ($feedId = $this->request->post('add_all_categories')) {
+                    $backendRozetkaHelper->addAllCategories($feedId);
+                } else if($feedId = $this->request->post('remove_all_categories')) {
+                    $relationsEntity->removeAllCategoriesByFeedId($feedId);
+                } else if ($feedId = $this->request->post('add_all_brands')) {
+                    $backendRozetkaHelper->addAllBrands($feedId);
+                } else if($feedId = $this->request->post('remove_all_brands')) {
+                    $relationsEntity->removeAllBrandsByFeedId($feedId);
+                }
+
+                $this->updateCheckboxes();
             }
-            
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(BrandsEntity::getTable())->set('to_rozetka', 0)
-            );
-            if (!empty($brandsToXml)) {
-                $brandsEntity->update($brandsToXml, ['to_rozetka' => 1]);
-            }
-            
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(ProductsEntity::getTable())->set('to_rozetka', 0)
-            );
-            if (!empty($productsToXml)) {
-                $productsEntity->update($productsToXml, ['to_rozetka' => 1]);
-            }
-            
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(ProductsEntity::getTable())->set('not_to_rozetka', 0)
-            );
-            if (!empty($productsNotToXml)) {
-                $productsEntity->update($productsNotToXml, ['not_to_rozetka' => 1]);
-            }
-            
-            $this->updateCheckboxes();
         }
 
-        $allCategories       = $categoriesEntity->getCategoriesTree();
-        $allBrands           = $brandsEntity->find(['limit' => $brandsEntity->count()]);
-        $relatedProducts     = $productsHelper->getList(['to_rozetka' => 1]);
-        $notRelatedProducts  = $productsHelper->getList(['not_to_rozetka' => 1]);
-        
+        $allFeeds                = $feedsEntity->find();
+        $allCategories           = $categoriesEntity->getCategoriesTree();
+        $allBrands               = $brandsEntity->find(['limit' => $brandsEntity->count()]);
+        $allRelatedCategoriesIds = $backendRozetkaHelper->getAllRelatedCategoriesIds();
+        $allRelatedBrandsIds     = $backendRozetkaHelper->getAllRelatedBrandsIds();
+        $allRelatedProducts      = $backendRozetkaHelper->getAllRelatedProducts();
+        $allNotRelatedProducts   = $backendRozetkaHelper->getAllNotRelatedProducts();
+
+        $this->design->assign('feeds', $allFeeds);
         $this->design->assign('categories', $allCategories);
         $this->design->assign('brands', $allBrands);
-        $this->design->assign('related_products', $relatedProducts);
-        $this->design->assign('not_related_products', $notRelatedProducts);
+        $this->design->assign('allRelatedCategoriesIds', $allRelatedCategoriesIds);
+        $this->design->assign('allRelatedBrandsIds', $allRelatedBrandsIds);
+        $this->design->assign('related_products', $allRelatedProducts);
+        $this->design->assign('not_related_products', $allNotRelatedProducts);
 
         $this->response->setContent($this->design->fetch('rozetka_xml.tpl'));
     }

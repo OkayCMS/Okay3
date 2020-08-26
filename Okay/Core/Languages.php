@@ -137,12 +137,12 @@ class Languages
     }
 
     /*Выборка мультиязычных данных*/
-    public function getDescription($data, $fields, $clear = true)/*TODO нужно ил clear??*/
+    public function getDescription($data, $fields, $clear = true)
     {
         if (empty($this->languagesList)) {
             return false;
         }
-        // todo сделать проверку нужно чтобы не возвращался пустой объект если все поля ленговые
+        
         $intersect = array_intersect($fields, array_keys((array)$data));
         if (!empty($intersect)) {
             $description = new \stdClass;

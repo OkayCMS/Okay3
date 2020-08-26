@@ -21,5 +21,7 @@ class SubscribesEntity extends Entity
     protected static $table = '__subscribe_mailing';
     protected static $tableAlias = 's';
     protected static $alternativeIdField = 'email';
+    protected static $langTable;
+    protected static $langObject;
     
 }

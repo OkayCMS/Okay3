@@ -15,6 +15,12 @@ class NPCostDeliveryDataEntity extends Entity
         'order_id',
         'delivery_term',
         'redelivery',
+        'city_name',
+        'area_name',
+        'region_name',
+        'street',
+        'house',
+        'apartment',
     ];
 
     protected static $table = '__okaycms__np_cost_delivery_data';

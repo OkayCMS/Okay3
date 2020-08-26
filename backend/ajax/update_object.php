@@ -1,5 +1,7 @@
 <?php
 
+use Okay\Core\Design;
+
 require_once 'configure.php';
 
 // Проверка сессии для защиты от xss
@@ -132,6 +134,9 @@ switch ($object) {
         break;
     case 'module':
         if ($managers->access('modules', $manager)) {
+            /** @var Design $design */
+            $design = $DI->get(Design::class);
+            $design->clearCompiled();
             $entity = $entityFactory->get(\Okay\Entities\ModulesEntity::class);
         }
         break;

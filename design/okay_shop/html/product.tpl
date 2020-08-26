@@ -20,43 +20,60 @@
             <div class="block--boxed block--border boxed--stretch d-md-flex justify-content-between">
                 {if $product->images}
                     {* Main product image *}
-                    <div class="gallery_image product-page__image f_row justify-content-center">
-                        <div class="product-page__img">
-                            <img class="fn_img fn_xzoom-fancy product_img xzoom4" xoriginal="{$product->image->filename|resize:1800:1800:w}" itemprop="image" src="{$product->image->filename|resize:800:800}" alt="{$product->name|escape}" title="{$product->name|escape}">
-
-                            {if $product->featured || $product->special || $product->variant->compare_price}
-                                <div class="stickers stickers_product-page">
-                                    {if $product->featured}
-                                    <span class="sticker sticker--hit" data-language="product_sticker_hit">{$lang->product_sticker_hit}</span>
-                                    {/if}
-                                    {if $product->variant->compare_price}
-                                    <span class="sticker sticker--discount" data-language="product_sticker_discount">{$lang->product_sticker_discount}</span>
-                                    {/if}
-                                    {if $product->special}
-                                        <span class="sticker sticker--special">
-                                            <img class="sticker__image" src='files/special/{$product->special}' alt='{$product->special|escape}' title="{$product->special|escape}"/>
-                                        </span>
-                                    {/if}
-                                </div>
+                    <div class="gallery_image product-page__image {if $product->images|count == 1} product-page__image--full {/if} f_row justify-content-center">
+                        <div class="product-page__img swiper-container gallery-top">
+                            <div class="swiper-wrapper">
+                                {foreach $product->images as $i=>$image}
+                                    <a href="{$image->filename|resize:1800:1800:w}" data-fancybox="we2" class="swiper-slide">
+                                        <picture>
+                                            {if $settings->support_webp}
+                                                <source class="lazy" type="image/webp" data-srcset="{$image->filename|resize:600:800}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                            {/if}
+                                                <source class="lazy" data-srcset="{$image->filename|resize:600:800}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                                <img class="lazy" data-src="{$image->filename|resize:600:800}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$product->name|escape}" title="{$product->name|escape}"/>
+                                        </picture>
+                                    </a>
+                                {/foreach}
+                            </div>
+                            {if $product->images|count > 1}
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
                             {/if}
                         </div>
+                        {if $product->featured || $product->special || $product->variant->compare_price}
+                            <div class="stickers stickers_product-page">
+                                {if $product->featured}
+                                <span class="sticker sticker--hit" data-language="product_sticker_hit">{$lang->product_sticker_hit}</span>
+                                {/if}
+                                {if $product->variant->compare_price}
+                                <span class="sticker sticker--discount" data-language="product_sticker_discount">{$lang->product_sticker_discount}</span>
+                                {/if}
+                                {if $product->special}
+                                    <span class="sticker sticker--special">
+                                        <img class="sticker__image" src='files/special/{$product->special}' alt='{$product->special|escape}' title="{$product->special|escape}"/>
+                                    </span>
+                                {/if}
+                            </div>
+                        {/if}
                     </div>
                     {* Additional product images *}
                     {if $product->images|count > 1}
-                    <div class="product-page__images xzoom-thumbs d-md-flex justify-content-center justify-content-md-start flex-md-column">
-                        <div class="scrollbar-inner">
-                        {* cut removes the first image, if you need start from the second - write cut:2 *}
-                        {foreach $product->images as $i=>$image}
-                        <a href="{$image->filename|resize:1800:1800:w}" class="product-page__images-item">
-                            <img class="xzoom-gallery4" src="{$image->filename|resize:60:60}" xpreview="{$image->filename|resize:800:800}" alt="{$product->name|escape}"/>
-                        </a>
-                        {/foreach}
+                    <div class="product-page__images swiper-container gallery-thumbs d-md-flex justify-content-center justify-content-md-start flex-md-column hidden-sm-down">
+                        <div class="swiper-wrapper">
+                            {* cut removes the first image, if you need start from the second - write cut:2 *}
+                            {foreach $product->images as $i=>$image}
+                            <div class="swiper-slide product-page__images-item">
+                                <picture>
+                                    {if $settings->support_webp}
+                                        <source class="lazy" type="image/webp" data-srcset="{$image->filename|resize:60:60}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                    {/if}
+                                        <source class="lazy" data-srcset="{$image->filename|resize:60:60}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                        <img class="lazy" data-src="{$image->filename|resize:60:60}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$product->name|escape}" title="{$product->name|escape}"/>
+                                </picture>
+                            </div>
+                            {/foreach}
                         </div>
                     </div>
-                    {else}
-                        <a href="{$product->image->filename|resize:1800:1800:w}" class="hidden">
-                            <img class="xzoom-gallery4" xpreview="{$product->image->filename|resize:800:800}" alt="{$product->name|escape}"/>
-                        </a>
                     {/if}
                 {else}
                     <div class="product-page__no_image d-flex align-items-center justify-content-center" title="{$product->name|escape}">

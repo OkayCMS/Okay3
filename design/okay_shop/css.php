@@ -18,9 +18,7 @@ return [
     (new Css('theme.css')),
     (new Css('select2.min.css')),
     (new Css('jquery.fancybox.min.css')),
-    (new Css('jquery-ui.min.css')),
     (new Css('media.css')),
-    (new Css('mobile_menu.css')),
-    (new Css('theme-editor.css'))
+    (new Css('mobile_menu.css'))
 ];
 

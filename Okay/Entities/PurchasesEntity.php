@@ -29,6 +29,8 @@ class PurchasesEntity extends Entity
 
     protected static $table = '__purchases';
     protected static $tableAlias = 'p';
+    protected static $langTable;
+    protected static $langObject;
     private static $order;
     private $useCache = false;
     

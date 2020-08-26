@@ -195,6 +195,12 @@ $plugins = [
             new SR(Config::class),
         ],
     ],
+    Plugins\ReadSvg::class => [
+        'class' => Plugins\ReadSvg::class,
+        'arguments' => [
+            new SR(Config::class),
+        ],
+    ],
 ];
 
 $DI->bindServices($plugins);

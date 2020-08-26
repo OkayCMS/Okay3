@@ -99,7 +99,7 @@ class CommentsHelper
                 // Отправляем email
                 $this->notify->emailCommentAdmin($commentId);
                 
-                ExtenderFacade::execute(__METHOD__, null, func_get_args());
+                ExtenderFacade::execute(__METHOD__, $commentId, func_get_args());
                 
                 Response::redirectTo($_SERVER['REQUEST_URI'].'#comment_'.$commentId);
             }

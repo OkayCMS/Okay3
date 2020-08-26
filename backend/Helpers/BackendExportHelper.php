@@ -316,4 +316,19 @@ class BackendExportHelper
         file_put_contents($exportFilesDir.$filename, iconv( "utf-8", "windows-1251//IGNORE", file_get_contents($exportFilesDir.$filename)));
         return $data;
     }
+
+    public function getBrandsForExportFilter($brandsCount)
+    {
+        $brands = [];
+        $brands = $this->brandsEntity->find(['limit'=>$brandsCount]);
+        return ExtenderFacade::execute(__METHOD__, $brands, func_get_args());
+    }
+
+    public function getCategoriesForExportFilter()
+    {
+        $categories = [];
+        $categories = $this->categoriesEntity->getCategoriesTree();
+        return ExtenderFacade::execute(__METHOD__, $categories, func_get_args());
+    }
+
 }

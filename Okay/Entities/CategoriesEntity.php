@@ -4,7 +4,6 @@
 namespace Okay\Entities;
 
 
-use Aura\SqlQuery\Exception;
 use Okay\Core\Entity\Entity;
 use Okay\Core\Image;
 use Okay\Core\Modules\Extender\ExtenderFacade;
@@ -533,7 +532,7 @@ class CategoriesEntity extends Entity
 
         $categories = $this->db->results($field);
         $this->flush();
-        return $categories;
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $categories, func_get_args());
     }
 
     private function determineLevelDepth($category)

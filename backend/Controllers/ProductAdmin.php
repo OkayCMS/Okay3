@@ -100,11 +100,6 @@ class ProductAdmin extends IndexAdmin
         } else {
             $id      = $this->request->get('id', 'integer');
             $product = $backendProductsHelper->getProduct($id);
-            if (empty($product->id)) {
-                // Сразу активен
-                $product = new stdClass();
-                $product->visible = 1;
-            }
 
             $productVariants   = $backendVariantsHelper->findProductVariants($product);
             $relatedProducts   = $backendProductsHelper->findRelatedProducts($product);

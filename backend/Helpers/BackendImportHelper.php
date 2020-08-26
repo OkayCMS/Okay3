@@ -299,8 +299,6 @@ class BackendImportHelper
     private function parseVariantData($itemFromCsv)
     {
         $variant = [];
-        $variant['price'] = 0;
-        $variant['compare_price'] = 0;
 
         if (isset($itemFromCsv['variant'])) {
             $variant['name'] = trim($itemFromCsv['variant']);
@@ -522,7 +520,7 @@ class BackendImportHelper
     
     private function isFeature($importColumnName)
     {
-        if (!in_array($importColumnName, $this->import->getInternalColumnsNames())) {
+        if (!in_array($importColumnName, $this->import->getInternalColumnsNames()) && !in_array($importColumnName, $this->getModulesColumnsNames())) {
             return true;
         }
 
@@ -587,6 +585,14 @@ class BackendImportHelper
         if (empty($tm) && !empty($fields)) {
             $variant[$fields[0]] = "";
         }
+
+        // Чтобы не ругалось что поле не может быть NULL
+        if (!isset($variant['price'])) {
+            $variant['price'] = 0;
+        }
+        if (!isset($variant['compare_price'])) {
+            $variant['compare_price'] = 0;
+        }
         
         return ExtenderFacade::execute(__METHOD__, $variant, func_get_args());
     }
@@ -627,5 +633,11 @@ class BackendImportHelper
     private function prepareAddCategory($category)
     {
         return ExtenderFacade::execute(__METHOD__, $category, func_get_args());
+    }
+
+    public function getModulesColumnsNames()
+    {
+        $modulesColumnsNames = [];
+        return ExtenderFacade::execute(__METHOD__, $modulesColumnsNames, func_get_args());
     }
 }

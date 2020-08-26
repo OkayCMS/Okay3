@@ -8,5 +8,6 @@
     <input type="hidden" name="server_url"  value="{$server_url|escape}"/>
     <input type="hidden" name="type"        value="buy"/>
     <input type="hidden" name="signature"   value="{$sign|escape}"/>
+    <input type="hidden" name="language"    value="{if $language->label == 'ua'}uk{elseif $language->label == 'ru'}ru{else}en{/if}"/>
     <input type="submit" class="button"     value="{$lang->form_to_pay}">
 </form>

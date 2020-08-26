@@ -60,6 +60,13 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
      * @var array список запущенных модулей
      */
     private $runningModules = [];
+    
+    /**
+     * @var array параметры модулей из файла module.json
+     */
+    private $modulesParams = [];
+    private $modulesModifications = ['front' => [], 'backend' => []];
+    private $modificationsInit = false;
 
     public function __construct(
         EntityFactory $entityFactory,
@@ -155,20 +162,124 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
             }
 
             // Запоминаем какие модули мы запустили, они понадобятся чтобы активировать их js и css
-            $this->runningModules[] = [
+            $this->runningModules[$module->vendor . '/' . $module->module_name] = [
                 'vendor' => $module->vendor,
                 'module_name' => $module->module_name,
+                'is_active' => $module->enabled,
             ];
 
             $moduleConfigFile = __DIR__ . '/../../Modules/' . $module->vendor . '/' . $module->module_name . '/config/config.php';
             if (is_file($moduleConfigFile)) {
                 $this->config->loadConfigsFrom($moduleConfigFile);
             }
+
+            $moduleJsonFileFile = __DIR__ . '/../../Modules/' . $module->vendor . '/' . $module->module_name . '/Init/module.json';
+
+            if (file_exists($moduleJsonFileFile)) {
+                $this->modulesParams[$module->vendor . '/' . $module->module_name] = json_decode(file_get_contents($moduleJsonFileFile));
+            }
             
             $this->backendControllersList = array_merge($this->backendControllersList, $this->license->startModule($module->id, $module->vendor, $module->module_name));
         }
     }
 
+    public function getBackendModulesTplModifications()
+    {
+        $this->initModulesModifications();
+        return $this->modulesModifications['backend'];
+    }
+
+    public function getFrontModulesTplModifications()
+    {
+        $this->initModulesModifications();
+        return $this->modulesModifications['front'];
+    }
+    
+    private function initModulesModifications()
+    {
+        if ($this->modificationsInit === true) {
+            return;
+        }
+
+        $allowedModifiers = [
+            'append',
+            'appendBefore',
+            'prepend',
+            'appendAfter',
+            'html',
+            'text',
+            'replace',
+            'remove',
+        ];
+        
+        $frontModifications = [];
+        $backendModifications = [];
+        if (!empty($this->modulesParams)) {
+            $modulesParams = array_reverse($this->modulesParams);
+            foreach ($modulesParams as $vendorModule => $params) {
+                
+                // Для выключенных модулей не нужно инициализировать модификаторы
+                if (!isset($this->runningModules[$vendorModule]) || !$this->runningModules[$vendorModule]['is_active']) {
+                    continue;
+                }
+                
+                $moduleDir = __DIR__ . '/../../Modules/' . $vendorModule . '/';
+                if (!empty($params->modifications->front)) {
+                    foreach ($params->modifications->front as $modification) {
+                        if (!empty($modification->changes)) {
+                            foreach ($modification->changes as $change) {
+                                
+                                // Если не указали комментарий, добавим название модуля
+                                if (empty($change->comment)) {
+                                    $change->comment = $vendorModule;
+                                }
+                                
+                                foreach ($allowedModifiers as $modifier) {
+                                    // Если в значении модификатора указано имя файла - значение считаем с самого файла
+                                    if (property_exists($change, $modifier)) {
+                                        if (is_file($moduleDir . 'design/html/' . $change->{$modifier})) {
+                                            $change->{$modifier} = file_get_contents($moduleDir . 'design/html/' . $change->{$modifier});
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $frontModifications = array_merge($frontModifications, $params->modifications->front);
+                }
+                
+                if (!empty($params->modifications->backend)) {
+                    foreach ($params->modifications->backend as $modification) {
+                        if (!empty($modification->changes)) {
+                            foreach ($modification->changes as $change) {
+
+                                // Если не указали комментарий, добавим название модуля
+                                if (empty($change->comment)) {
+                                    $change->comment = $vendorModule;
+                                }
+                                
+                                foreach ($allowedModifiers as $modifier) {
+                                    // Если в занчении модификатора указано имя файла, значение считаем с самого файла
+                                    if (property_exists($change, $modifier)) {
+                                        if (is_file($moduleDir . 'Backend/design/html/' . $change->{$modifier})) {
+                                            $change->{$modifier} = file_get_contents($moduleDir . 'Backend/design/html/' . $change->{$modifier});
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $backendModifications = array_merge($backendModifications, $params->modifications->backend);
+                }
+            }
+        }
+        
+        $this->modulesModifications['front'] = $frontModifications;
+        $this->modulesModifications['backend'] = $backendModifications;
+        
+        $this->modificationsInit = true;
+    }
+    
     /**
      * Возвращаем массив запущенных модулей в формате указанном ниже
      *
@@ -257,7 +368,8 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
             if (!empty($defaultProperties['tag'])) {
                 $pluginName = $defaultProperties['tag'];
             } else {
-                $pluginName = strtolower(end(explode('\\', $plugin['class'])));
+                $classParts = explode('\\', $plugin['class']);
+                $pluginName = strtolower(end($classParts));
             }
 
             $this->smarty->registerPlugin('function', $pluginName, function() {

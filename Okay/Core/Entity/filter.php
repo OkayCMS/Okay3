@@ -47,9 +47,6 @@ trait filter
             } elseif ($entityClass->hasMethod($filterMethod)) {
                 // Применяем фильтр
                 $this->$filterMethod($value, $filter);
-
-                // Удаляем фильтр, чтобы он повторно не применился
-                unset($filter[$filterName]);
             } else {
                 $this->autoFilter($filterName, $value);
             }

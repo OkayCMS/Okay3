@@ -4,6 +4,7 @@
 namespace Okay\Core;
 
 
+use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Entities\BlogEntity;
 use Okay\Entities\CallbacksEntity;
 use Okay\Entities\CommentsEntity;
@@ -15,6 +16,7 @@ use Okay\Entities\OrderStatusEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\TranslationsEntity;
 use Okay\Entities\UsersEntity;
+use Okay\Helpers\NotifyHelper;
 use Okay\Helpers\OrdersHelper;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Log\LoggerInterface;
@@ -31,6 +33,7 @@ class Notify
     private $design;
     private $backendTranslations;
     private $frontTranslations;
+    private $notifyHelper;
     private $rootDir;
     private $logger;
     
@@ -45,6 +48,7 @@ class Notify
         FrontTranslations $frontTranslations,
         PHPMailer $PHPMailer,
         LoggerInterface $logger,
+        NotifyHelper $notifyHelper,
         $rootDir
     ) {
         $this->PHPMailer = $PHPMailer;
@@ -57,6 +61,7 @@ class Notify
         $this->backendTranslations = $backendTranslations;
         $this->frontTranslations = $frontTranslations;
         $this->logger = $logger;
+        $this->notifyHelper = $notifyHelper;
         $this->rootDir = $rootDir;
     }
 
@@ -113,7 +118,9 @@ class Notify
         } else {
             $this->PHPMailer->AddAddress($to);
         }
-
+        
+        $this->PHPMailer = ExtenderFacade::execute(__FUNCTION__, $this->PHPMailer, func_get_args());
+        
         $success = $this->PHPMailer->Send();
 
         $this->PHPMailer->clearAddresses();
@@ -298,6 +305,8 @@ class Notify
         // Перевод админки
         $this->backendTranslations->initTranslations($this->settings->get('email_lang'));
         $this->design->assign('btr', $this->backendTranslations);
+
+        $this->notifyHelper->finalEmailOrderAdmin($order);
 
         // Отправляем письмо
         $emailTemplate = $this->design->fetch($this->rootDir.'backend/design/html/email/email_order_admin.tpl');

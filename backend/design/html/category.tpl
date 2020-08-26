@@ -141,8 +141,8 @@
                                     </label>
                                 </div>
                             </div>
+                            {get_design_block block="category_switch_checkboxes"}
                         </div>
-                        {get_design_block block="category_switch_checkboxes"}
                     </div>
                 </div>
             </div>

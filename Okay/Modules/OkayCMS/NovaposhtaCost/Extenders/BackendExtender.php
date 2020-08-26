@@ -87,6 +87,30 @@ class BackendExtender implements ExtensionInterface
                     $npDeliveryData->warehouse_id = $this->request->post('novaposhta_warehouse_id');
                     $npDeliveryData->delivery_term = $this->request->post('novaposhta_delivery_term');
                     $npDeliveryData->redelivery = $this->request->post('novaposhta_redelivery');
+                    
+                    if ($this->request->post('novaposhta_door_delivery')) {
+                        $npDeliveryData->warehouse_id = '';
+                        if (!$npDeliveryData->city_name = $this->request->post('novaposhta_city_name')) {
+                            // Если API заглючило, запомнить хоть что пользователь писал
+                            $npDeliveryData->city_name = $this->request->post('novaposhta_city');
+                        }
+                        $npDeliveryData->area_name = $this->request->post('novaposhta_area_name');
+                        $npDeliveryData->region_name = $this->request->post('novaposhta_region_name');
+                        if (!$npDeliveryData->street = $this->request->post('novaposhta_street_name')) {
+                            $npDeliveryData->street = $this->request->post('novaposhta_street');
+                        }
+                        $npDeliveryData->house = $this->request->post('novaposhta_house');
+                        $npDeliveryData->apartment = $this->request->post('novaposhta_apartment');
+                    } else {
+                        $npDeliveryData->city_name = '';
+                        $npDeliveryData->area_name = '';
+                        $npDeliveryData->region_name = '';
+                        $npDeliveryData->street = '';
+                        $npDeliveryData->house = '';
+                        $npDeliveryData->apartment = '';
+                        $npDeliveryData->warehouse_id = $this->request->post('novaposhta_warehouse_id');
+                    }
+                    
                     if (!empty($npDeliveryData->id)) {
                         $npDdEntity->update($npDeliveryData->id, $npDeliveryData);
                     } else {

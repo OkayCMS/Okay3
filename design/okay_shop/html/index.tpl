@@ -52,7 +52,11 @@
                     <div class="header__logo logo">
                         {if !empty({$settings->site_logo})}
                         <a class="logo__link " href="{if $controller=='MainController'}javascript:;{else}{url_generator route='main'}{/if}">
-                            <img src="{$rootUrl}/{$config->design_images|escape}{$settings->site_logo|escape}?v={$settings->site_logo_version|escape}" alt="{$settings->site_name|escape}"/>
+                            {if strtolower(pathinfo($settings->site_logo, $smarty.const.PATHINFO_EXTENSION)) == 'svg'}
+                                {$settings->site_logo|read_svg:$config->design_images}
+                            {else}
+                                <img src="{$rootUrl}/{$config->design_images|escape}{$settings->site_logo|escape}?v={$settings->site_logo_version|escape}" alt="{$settings->site_name|escape}"/>
+                            {/if}
                         </a>
                         {/if}
                     </div>
@@ -323,17 +327,24 @@
                             {foreach $payment_methods as $payment_method}
                                 {if !$payment_method->image}{continue}{/if}
                                 <li class="d-flex justify-content-center align-items-center payments__item" title="{$payment_method->name|escape}">
-                                    <img src="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" alt="{$payment_method->name|escape}" />
+                                    <picture>
+                                        {if $settings->support_webp}
+                                            <source class="lazy" type="image/webp" data-srcset="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                        {/if}
+                                        <source class="lazy" data-srcset="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                        <img class="lazy" data-src="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$payment_method->name|escape}" title="{$payment_method->name|escape}"/>
+                                    </picture>
                                 </li>
                             {/foreach}
                         </ul>
                     </div>
                     {* Copyright *}
-                    <div class="f_col-md flex-md-first copyright">
-                        <span>© {$smarty.now|date_format:"%Y"}</span>
-                        <a href="https://okay-cms.com" rel="noreferrer" target="_blank">
-                        <span data-language="index_copyright">{$lang->index_copyright}</span>
-                        </a>
+                    <div class="f_col-md flex-md-first d-flex align-items-center copyright">
+                        <div class="d-flex align-items-center" href="https://okay-cms.com" rel="noreferrer" target="_blank">
+                            <span>© {$smarty.now|date_format:"%Y"}</span>
+                            <span data-language="index_copyright">{$lang->index_copyright}</span>
+                        </div>
+                        <a href="https://okay-cms.com" rel="noreferrer" target="_blank" title="OkayCms">{include file="svg.tpl" svgId="okaycms"}</a>
                     </div>
                 </div>
             </div>
@@ -347,7 +358,13 @@
     {/if}
     {* Форма обратного звонка *}
     {include file='callback.tpl'}
-
+    
+    {if $route_name != 'cart'}
+    <div id="fn_pop_up_cart" class="hidden">
+        {include file='pop_up_cart.tpl'}
+    </div>
+    {/if}
+    
     <script>ut_tracker.start('parsing:body_bottom:scripts');</script>
 
     {if $controller == 'ProductController' || $controller == "BlogController"}

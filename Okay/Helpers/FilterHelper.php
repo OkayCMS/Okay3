@@ -28,7 +28,7 @@ class FilterHelper
     private $settings;
     private $money;
     
-    private $categoryFeatures = null;
+    private $categoryFeatures = [];
     private $categoryFeaturesByUrl;
     private $featuresUrls;
 
@@ -116,6 +116,7 @@ class FilterHelper
     public function setFiltersUrl($filtersUrl)
     {
         $this->filtersUrl = $filtersUrl;
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     public function getFiltersUrl()

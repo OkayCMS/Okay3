@@ -39,6 +39,8 @@ class UsersEntity extends Entity
     protected static $table = '__users';
     protected static $tableAlias = 'u';
     protected static $alternativeIdField = 'email';
+    protected static $langTable;
+    protected static $langObject;
 
     // осторожно, при изменении соли испортятся текущие пароли пользователей
     private $salt = '8e86a279d6e182b3c811c559e6b15484';

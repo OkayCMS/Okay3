@@ -44,7 +44,7 @@ class UserController extends AbstractController
         }
 
         /*Выборка истории заказов клиента*/
-        $orders = $ordersEntity->find(['user_id'=>$this->user->id]);
+        $orders = $ordersEntity->mappedBy('id')->find(['user_id'=>$this->user->id]);
         $allStatuses = $orderStatusEntity->mappedBy('id')->find();
 
         $this->design->assign('orders_status', $allStatuses);
@@ -60,7 +60,7 @@ class UserController extends AbstractController
             $this->response->redirectTo(Router::generateUrl('user', [], true));
         }
 
-        if ($user = $userRequest->postRegisterUser()) {
+        if ($this->request->method('post') && ($user = $userRequest->postRegisterUser())) {
             /*Валидация данных клиента*/
             if ($error = $validateHelper->getUserRegisterError($user)) {
                 $this->design->assign('error', $error);
@@ -74,7 +74,7 @@ class UserController extends AbstractController
         $this->response->setContent('register.tpl');
     }
 
-    public function login(UserHelper $userHelper)
+    public function login(UserHelper $userHelper, ValidateHelper $validateHelper)
     {
         if (!empty($this->user->id)) {
             $this->response->redirectTo(Router::generateUrl('user', [], true));
@@ -83,13 +83,14 @@ class UserController extends AbstractController
         if ($this->request->method('post')) {
             $email    = $this->request->post('email');
             $password = $this->request->post('password');
-            $this->design->assign('email', $email);
+            $this->design->assign('email', $email);// todo читать из реквеста
 
-            if ($userId = $userHelper->login($email, $password)) {
-                // Перенаправляем пользователя в личный кабинет
+            if ($error = $validateHelper->getUserLoginError($email, $password)) {
+                $this->design->assign('error', $error);
+            } elseif ($userId = $userHelper->login($email, $password)) {
                 $this->response->redirectTo(Router::generateUrl('user', [], true));
             } else {
-                $this->design->assign('error', 'login_incorrect');
+                $this->design->assign('error', 'unknown error');
             }
         }
 

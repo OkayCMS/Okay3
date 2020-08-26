@@ -18,6 +18,42 @@
         }
     </script>
     {/strip}
+
+    {* Schema Website *}
+    {literal}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org/",
+        "@type": "WebSite",
+        "name": "{/literal}{$settings->site_name}{literal}",
+        "url": "{/literal}{url_generator route='main' absolute=1}{literal}",
+        "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{/literal}{url_generator route='search' absolute=1}{literal}?keyword={search_term_string}",
+        "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    {/literal}
+
+    {* Schema Organization *}
+    {literal}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "{/literal}{$settings->site_name}{literal}",
+        "url": "{/literal}{url_generator route='main' absolute=1}{literal}",
+        "logo": "{/literal}{$rootUrl}/{$config->design_images}{$settings->site_logo}{literal}"{/literal}{if $site_social}{literal},
+        "sameAs": [
+        {/literal}{foreach $site_social as $social}{literal}
+            "{/literal}{if !preg_match('~^https?://.*$~', $social.url)}{literal}https://{/literal}{/if}{$social.url|escape}{literal}"{/literal}{if !$social@last}{literal},{/literal}{/if}{literal}
+        {/literal}{/foreach}{literal}
+        ]
+        {/literal}{/if}{literal}
+    }
+    </script>
+    {/literal}
     
     {* Title *}
     <title>{$meta_title|escape}</title>
@@ -203,23 +239,16 @@
         <script>ut_tracker.end('render:recaptcha');</script>
     {/if}
 
-    <link rel="search" type="application/opensearchdescription+xml" title="{$rootUrl} Search" href="{url_generator route="opensearch" absolute=1}" />
+    <link rel="search" type="application/opensearchdescription+xml" title="{$rootUrl} Search" href="{url_generator route='opensearch' absolute=1}" />
 
     {* Favicon *}
     <link href="{$rootUrl}/{$config->design_images|escape}{$settings->site_favicon|escape}?v={$settings->site_favicon_version|escape}" type="image/x-icon" rel="icon">
     <link href="{$rootUrl}/{$config->design_images|escape}{$settings->site_favicon|escape}?v={$settings->site_favicon_version|escape}" type="image/x-icon" rel="shortcut icon">
 
-    {*<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap&subset=cyrillic" rel="stylesheet">
-    <link href="https://cdn.materialdesignicons.com/3.8.95/css/materialdesignicons.min.css" rel="stylesheet">*}
-
     {* JQuery *}
     <script>ut_tracker.start('parsing:page');</script>
 
-    <script>ut_tracker.start('parsing:head:scripts');</script>
-    {if ($is_mobile === true || $is_tablet === true) && ($controller == "CategoryController" || $controller == "BrandController" || $controller == "ProductsController")}
-        {js file='jquery.ui.touch-punch.js' defer=true}
-    {/if}
-    <script>ut_tracker.end('parsing:head:scripts');</script>
+    <!-- <script src="https://unpkg.com/swiper/swiper-bundle.js"></script> -->
 
     {if !empty($counters['head'])}
     <script>ut_tracker.start('parsing:head:counters');</script>

@@ -186,19 +186,20 @@ class OrderAdmin extends IndexAdmin
         if (!empty($order->id)) {
             $orderHistory = $backendOrderHistoryHelper->getHistory($order->id);
             $this->design->assign('order_history', $orderHistory);
+            
+            $page             = $ordersRequest->getPage();
+            $currentPage      = $backendOrdersHelper->determineCurrentPage($page);
+            $perPage          = $backendOrdersHelper->getPaginationPerPage();
+            $otherOrders      = $backendOrdersHelper->findOtherOrdersOfClient($order, $currentPage, $perPage);
+            $otherOrdersCount = $backendOrdersHelper->countOtherOrdersOfClient($order);
+            $this->design->assign('match_orders', $otherOrders);
+            $this->design->assign('current_page', $currentPage);
+            $this->design->assign('pages_count',  ceil($otherOrdersCount / $perPage));
         }
 
         if ($this->request->get('match_orders_tab_active')) {
             $this->design->assign('match_orders_tab_active', true);
         }
-        $page             = $ordersRequest->getPage();
-        $currentPage      = $backendOrdersHelper->determineCurrentPage($page);
-        $perPage          = $backendOrdersHelper->getPaginationPerPage();
-        $otherOrders      = $backendOrdersHelper->findOtherOrdersOfClient($order, $currentPage, $perPage);
-        $otherOrdersCount = $backendOrdersHelper->countOtherOrdersOfClient($order);
-        $this->design->assign('match_orders', $otherOrders);
-        $this->design->assign('current_page', $currentPage);
-        $this->design->assign('pages_count',  ceil($otherOrdersCount / $perPage));
 
         if ($this->request->get('view') == 'print') {
             $this->response->setContent($this->design->fetch('order_print.tpl'));

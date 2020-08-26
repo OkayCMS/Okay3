@@ -86,6 +86,10 @@ class ProductsAdmin extends IndexAdmin
                         $backendProductsHelper->moveToPage($ids, $filter);
                         break;
                     }
+                    case 'add_second_category': {
+                        $backendProductsHelper->actionAddSecondCategories($ids);
+                        break;
+                    }
                     case 'move_to_category': {
                         $backendProductsHelper->actionMoveToCategory($ids);
                         break;

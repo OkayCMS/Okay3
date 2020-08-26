@@ -92,7 +92,7 @@ class CategoryController extends AbstractController
             $_SESSION['sort'] = $currentSort;
         }
         if (!empty($_SESSION['sort'])) {
-            $sortProducts = $_SESSION['sort'];
+            $currentSort = $sortProducts = $_SESSION['sort'];
         } else {
             $sortProducts = 'position';
         }
@@ -165,17 +165,18 @@ class CategoryController extends AbstractController
                 }
             }
         }
-        
-        // Достаём значения свойств текущей категории
-        $featuresValuesFilter = $filterHelper->prepareFilterGetFeaturesValues($category, $this->settings->get('missing_products'), $filter);
-        foreach ($filterHelper->getCategoryFeaturesValues($featuresValuesFilter) as $featureValue) {
-            if (isset($this->categoryFeatures[$featureValue->feature_id])) {
-                $filterHelper->setCategoryFeatureValue($featureValue);
-                $this->categoryFeatures[$featureValue->feature_id]->features_values[$featureValue->id] = $featureValue;
-            }
-        }
-        
+
         if (!empty($this->categoryFeatures)) {
+            
+            // Достаём значения свойств текущей категории
+            $featuresValuesFilter = $filterHelper->prepareFilterGetFeaturesValues($category, $this->settings->get('missing_products'), $filter);
+            foreach ($filterHelper->getCategoryFeaturesValues($featuresValuesFilter) as $featureValue) {
+                if (isset($this->categoryFeatures[$featureValue->feature_id])) {
+                    $filterHelper->setCategoryFeatureValue($featureValue);
+                    $this->categoryFeatures[$featureValue->feature_id]->features_values[$featureValue->id] = $featureValue;
+                }
+            }
+            
             foreach ($this->categoryFeatures as $i => $feature) {
                 // Если хоть одно значение свойства выбрано, его убирать нельзя
                 if (empty($currentFeatures[$feature->id])) {

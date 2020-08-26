@@ -20,7 +20,7 @@ use Okay\Entities\ProductsEntity;
 use Okay\Entities\RouterCacheEntity;
 use Okay\Entities\VariantsEntity;
 use Okay\Helpers\XmlFeedHelper;
-use Okay\Modules\OkayCMS\YandexXMLVendorModel\Init\Init;
+use Okay\Modules\OkayCMS\YandexXMLVendorModel\Entities\YandexXMLVendorModelRelationsEntity;
 
 class YandexXMLHelper
 {
@@ -47,25 +47,25 @@ class YandexXMLHelper
     private $allCurrencies;
     
     public function __construct(
-        Image $image,
-        Money $money,
-        Settings $settings,
-        QueryFactory $queryFactory,
-        Languages $languages,
+        Image         $image,
+        Money         $money,
+        Settings      $settings,
+        QueryFactory  $queryFactory,
+        Languages     $languages,
         EntityFactory $entityFactory,
         XmlFeedHelper $feedHelper
     ) {
-        $this->image = $image;
-        $this->money = $money;
-        $this->settings = $settings;
+        $this->image        = $image;
+        $this->money        = $money;
+        $this->settings     = $settings;
         $this->queryFactory = $queryFactory;
-        $this->languages = $languages;
-        $this->feedHelper = $feedHelper;
+        $this->languages    = $languages;
+        $this->feedHelper   = $feedHelper;
         
         /** @var CurrenciesEntity $currenciesEntity */
         $currenciesEntity = $entityFactory->get(CurrenciesEntity::class);
         
-        $this->mainCurrency = $currenciesEntity->getMainCurrency();
+        $this->mainCurrency  = $currenciesEntity->getMainCurrency();
         $this->allCurrencies = $currenciesEntity->mappedBy('id')->find();
     }
 
@@ -75,13 +75,14 @@ class YandexXMLHelper
      * после фильтрации.
      * Фильтрация результатов и группировка свойств с изображениями вынесена в подзапрос, 
      * который формируется методом getSubSelect()
-     * 
+     *
+     * @param string|integer $feedId
      * @param array $uploadCategories
      * @return Select
      */
-    public function getQuery($uploadCategories = [])
+    public function getQuery($feedId, $uploadCategories = [])
     {
-        $subSelect = $this->getSubSelect($uploadCategories);
+        $subSelect = $this->getSubSelect($feedId, $uploadCategories);
         if ($this->settings->get('okaycms__yandex_xml_vendor_model__use_full_description_to_yandex')) {
             $descriptionField = 'lp.description';
         } else {
@@ -106,11 +107,12 @@ class YandexXMLHelper
     /**
      * Метод возвращает подзапрос, который фильтрует и сортирует результаты, здесь достаются только не мультиязычные 
      * данные, кроме свойств. Свойства нужно доставать здесь, т.к. их группируем через GROUP_CONCAT()
-     * 
+     *
+     * @param string|integer $feedId
      * @param array $uploadCategories
      * @return Select
      */
-    private function getSubSelect($uploadCategories = [])
+    private function getSubSelect($feedId, $uploadCategories = [])
     {
         $sql = $this->queryFactory->newSelect();
 
@@ -137,12 +139,11 @@ class YandexXMLHelper
             ->leftJoin(ProductsEntity::getTable().' AS  p', 'v.product_id=p.id')
             ->leftJoin(RouterCacheEntity::getTable().' AS r', 'r.url = p.url AND r.type="product"')
             ->where('p.visible')
-            ->where("(p.".Init::NOT_TO_FEED_FIELD." != 1 OR p.".Init::NOT_TO_FEED_FIELD." IS NULL)")
-            ->where("(
-                p.".Init::TO_FEED_FIELD."=1 
-                OR p.brand_id IN (SELECT id FROM ". BrandsEntity::getTable() . " WHERE ".Init::TO_FEED_FIELD." = 1)
-                {$categoryFilter}
-            )")
+            ->where("p.id NOT IN (SELECT entity_id FROM " . YandexXMLVendorModelRelationsEntity::getTable() . " WHERE feed_id = :feed_id AND entity_type = 'product' AND include = 0)")
+            ->where("(p.id IN (SELECT entity_id FROM " . YandexXMLVendorModelRelationsEntity::getTable() . " WHERE feed_id = :feed_id AND entity_type = 'product' AND include = 1) OR
+                           p.brand_id IN (SELECT entity_id FROM " . YandexXMLVendorModelRelationsEntity::getTable() . " WHERE feed_id = :feed_id AND entity_type = 'brand')
+                           {$categoryFilter})")
+            ->bindValue('feed_id', $feedId)
             ->groupBy(['v.id'])
             ->orderBy(['p.position DESC']);
 

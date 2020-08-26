@@ -5,6 +5,7 @@ namespace Okay\Core;
 
 use Okay\Core\Entity\Entity;
 use Bramus\Router\Router as BRouter;
+use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Core\Modules\Modules;
 use Okay\Core\Routes\RouteFactory;
 use Okay\Entities\LanguagesEntity;
@@ -149,7 +150,7 @@ class Router {
                 continue;
             }
             
-            $pattern = $baseRoute . $this->getPattern($route);
+            $pattern = $baseRoute . $this->getPattern($route, $routeName);
             
             $router->all($pattern, function(...$params) use ($router, $route, $request, $language, $baseRoute, $routeName) {
 
@@ -408,10 +409,10 @@ class Router {
         
         // TODO здесь есть скрытая связь с FilterHelper. Это может привести к багам, подумать над тем, чтобы решить это
         if (is_object($route) && method_exists($route, 'hasSlashAtEnd') && $route->hasSlashAtEnd()) {
-            return rtrim($result, '/').'/';
+            return ExtenderFacade::execute(__METHOD__, rtrim($result, '/').'/', func_get_args());
         }
 
-        return $result;
+        return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
     }
     
     /**
@@ -426,14 +427,15 @@ class Router {
 
     /**
      * Метод на основании поля slug роута генерирует регулярное выражение
-     * @param $route
+     * @param array $route
+     * @param string $routeName
      * @return string pattern
      */
-    public function getPattern($route)
+    public function getPattern($route, $routeName)
     {
         $pattern = !empty($route['patterns']) ? strtr($route['slug'], $route['patterns']) : $route['slug'];
         $pattern = trim(preg_replace('~{\$.+?}~', '([^/]+)', $pattern), '/');
-        return !empty($pattern) ? '/' . $pattern : $pattern;
+        return ExtenderFacade::execute(__METHOD__, !empty($pattern) ? '/' . $pattern : $pattern, func_get_args());
     }
 
     /**
@@ -447,11 +449,15 @@ class Router {
         self::initializeRoutes();
         foreach($routes as $routeName => $route) {
             if (array_key_exists($routeName, self::$routes)) {
-                throw new \Exception('Route name "'.$routeName.'" already uses');
+                if ($route['overwrite'] == true) {
+                    $routes[$routeName] = $route;
+                } else {
+                    throw new \Exception('Route name "'.$routeName.'" already uses');
+                }
             }
         }
 
-        self::$routes = array_merge($routes, self::$routes);
+        self::$routes = $routes + self::$routes;
     }
 
     /**

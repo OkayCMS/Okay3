@@ -17,7 +17,13 @@
                                         <div class="filter__catalog_item has_child">
                                             <{if $c->id == $category->id}b{else}a{/if} class="filter__catalog_link{if $c->subcategories} sub_cat{/if}{if $category->id == $c->id} selected{/if}" href="{url_generator route="category" url=$c->url}" data-category="{$c->id}">
                                                 {if $c->image}
-                                                    <img class="lazy" src="{$c->image|resize:20:20:false:$config->resized_categories_dir}" alt="{$c->name|escape}"/>
+                                                    <picture>
+                                                        {if $settings->support_webp}
+                                                            <source class="lazy" type="image/webp" data-srcset="{$c->image|resize:20:20:false:$config->resized_categories_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                                        {/if}
+                                                        <source class="lazy" data-srcset="{$c->image|resize:20:20:false:$config->resized_categories_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                                        <img class="lazy" data-src="{$c->image|resize:20:20:false:$config->resized_categories_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$c->name|escape}" title="{$c->name|escape}"/>
+                                                    </picture>
                                                 {else}
                                                     <div class="filter_catalog__no_image d-flex align-items-center justify-content-center" title="{$c->name|escape}">
                                                         {include file="svg.tpl" svgId="no_image"}
@@ -54,7 +60,7 @@
                     <div class="level_1 filter__catalog_menu">
                         {foreach $brand->categories as $c}
                             <div class="filter__catalog_item has_child">
-                                <a class="filter__catalog_link" href="{url_generator route="category" url=$c->url filtersUrl='/brand-'|cat:$brand->url}" data-category="{$c->id}">
+                                <a class="filter__catalog_link" href="{url_generator route='category' url=$c->url filtersUrl='/brand-'|cat:$brand->url}" data-category="{$c->id}">
                                     <span>{$c->name|escape}</span>
                                     {include file="svg.tpl" svgId="arrow_right2"}
                                 </a>

@@ -92,6 +92,12 @@ class CartHelper
                 $this->logger->error('File "design/' . $this->templateConfig->getTheme() . '/html/cart_purchases.tpl" not found');
             }
 
+            if (is_file('design/' . $this->templateConfig->getTheme() . '/html/pop_up_cart.tpl')) {
+                $result['pop_up_cart'] = $this->design->fetch('pop_up_cart.tpl');
+            } else {
+                $this->logger->error('File "design/' . $this->templateConfig->getTheme() . '/html/pop_up_cart.tpl" not found');
+            }
+
             $result['cart_deliveries'] = 'DEPRECATED DATA';
             $result['currency_sign']   = $currency->sign;
             $result['total_price']     = $this->moneyCore->convert($cart->total_price, $currency->id);

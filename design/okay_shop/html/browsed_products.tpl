@@ -12,7 +12,13 @@
                 <div class="browsed__item f_col-4">
                     <a class="d-flex align-items-center justify-content-center browsed__link" href="{url_generator route='product' url=$browsed_product->url}">
                         {if $browsed_product->image->filename}
-                            <img class="lazy" data-src="{$browsed_product->image->filename|resize:70:70}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$browsed_product->name|escape}" title="{$browsed_product->name|escape}">
+                            <picture>
+                                {if $settings->support_webp}
+                                    <source class="lazy" type="image/webp" data-srcset="{$browsed_product->image->filename|resize:70:70}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                {/if}
+                                <source class="lazy" data-srcset="{$browsed_product->image->filename|resize:70:70}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                <img class="lazy" data-src="{$browsed_product->image->filename|resize:70:70}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$browsed_product->name|escape}" title="{$browsed_product->name|escape}"/>
+                            </picture>
                         {else}
                             <div class="browsed__no_image d-flex align-items-center justify-content-center" title="{$browsed_product->name|escape}">
                                 {include file="svg.tpl" svgId="no_image"}

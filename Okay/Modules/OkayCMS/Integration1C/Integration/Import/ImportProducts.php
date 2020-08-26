@@ -336,6 +336,15 @@ class ImportProducts extends AbstractImport
 
             $url = $this->integration1C->translit->translit((string)$xmlProduct->Наименование);
             $url = str_replace('.', '', $url);
+
+            // Делаем урлы уникальными
+            while ($url = $productsEntity->col('url')->findOne(['url' => $url])) {
+                if (preg_match('/(.+)?_([0-9]+)$/', $url, $parts)) {
+                    $url = $parts[1].'_'.($parts[2]+1);
+                } else {
+                    $url .= '_1';
+                }
+            }
             
             $productId = $productsEntity->add([
                 'external_id' => $product1cId,
@@ -370,7 +379,7 @@ class ImportProducts extends AbstractImport
                     $p->description = $description;
                 }
                 $p->external_id = $product1cId;
-                $p->url = $this->integration1C->translit->translit((string)$xmlProduct->Наименование);
+                //$p->url = $this->integration1C->translit->translit((string)$xmlProduct->Наименование);
                 $p->name = (string)$xmlProduct->Наименование;
                 $p->meta_title = (string)$xmlProduct->Наименование;
                 $p->meta_keywords = (string)$xmlProduct->Наименование;
@@ -430,13 +439,26 @@ class ImportProducts extends AbstractImport
                 ->bindValue('name', $brandName);
             $this->integration1C->db->query($select);
             if (!$brandId = $this->integration1C->db->result('id')) {
+
+                $url = $this->integration1C->translit->translitAlpha($brandName);
+                $url = str_replace('.', '', $url);
+
+                // Делаем урлы уникальными
+                while ($url = $brandsEntity->col('url')->findOne(['url' => $url])) {
+                    if (preg_match('/(.+)?_([0-9]+)$/', $url, $parts)) {
+                        $url = $parts[1].'_'.($parts[2]+1);
+                    } else {
+                        $url .= '_1';
+                    }
+                }
+                
                 // Создадим, если не найден
                 $brandId = $brandsEntity->add([
                     'name' => $brandName,
                     'meta_title' => $brandName,
                     'meta_keywords' => $brandName,
                     'meta_description' => $brandName,
-                    'url' => $this->integration1C->translit->translitAlpha($brandName),
+                    'url' => $url,
                     'visible' => 1,
                 ]);
             }
@@ -513,13 +535,26 @@ class ImportProducts extends AbstractImport
                         ->bindValue('name', $brandName);
                     $this->integration1C->db->query($select);
                     if (!$brandId = $this->integration1C->db->result('id')) {
+
+                        $url = $this->integration1C->translit->translitAlpha($brandName);
+                        $url = str_replace('.', '', $url);
+
+                        // Делаем урлы уникальными
+                        while ($url = $brandsEntity->col('url')->findOne(['url' => $url])) {
+                            if (preg_match('/(.+)?_([0-9]+)$/', $url, $parts)) {
+                                $url = $parts[1].'_'.($parts[2]+1);
+                            } else {
+                                $url .= '_1';
+                            }
+                        }
+                        
                         // Создадим, если не найден
                         $brandId = $brandsEntity->add([
                             'name' => $brandName,
                             'meta_title' => $brandName,
                             'meta_keywords' => $brandName,
                             'meta_description' => $brandName,
-                            'url' => $this->integration1C->translit->translitAlpha($brandName),
+                            'url' => $url,
                             'visible' => 1,
                         ]);
                     }

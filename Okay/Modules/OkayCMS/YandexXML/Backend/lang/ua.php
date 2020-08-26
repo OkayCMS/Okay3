@@ -29,3 +29,9 @@ $lang['okaycms__yandex_xml__country_of_origin_notify'] = "Вкажіть ім'я
 $lang['okaycms__yandex_xml__upload_products'] = 'Вибір товарів для вивантаження';
 $lang['okaycms__yandex_xml__add_to_yandex_feed'] = 'Додати товар до вивантяження Yandex';
 $lang['okaycms__yandex_xml__import_field'] = 'Yandex XML';
+$lang['okaycms__yandex_xml__edit_and_add_feeds'] = 'Редагування та створення вивантажень';
+$lang['okaycms__yandex_xml__add_feed'] = 'Додати вивантаження';
+$lang['okaycms__yandex_xml__remove_feed'] = 'Видалити вивантаження';
+$lang['okaycms__yandex_xml__error_url_exist'] = 'Вивантаження з таким URL вже існує';
+$lang['okaycms__yandex_xml__error_url_cyrillic'] = 'В URL повинні бути тільки латинські букви і цифри';
+

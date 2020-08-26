@@ -59,7 +59,8 @@ class TopicAdmin extends IndexAdmin {
                         $result = $support->addComment([
                             'topic_id'=>$topic->id,
                             'manager'=>$comment->manager,
-                            'text'=>$comment->text
+                            'text'=>$comment->text,
+                            'accesses'=>$accesses,
                         ]);
                     }
 

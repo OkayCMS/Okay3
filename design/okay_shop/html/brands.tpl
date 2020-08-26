@@ -18,7 +18,13 @@
 								<a class="d-flex align-items-center justify-content-center brand__link" data-brand="{$b->id}" href="{url_generator route='brand' url=$b->url}">
 									{if $b->image}
 										<div class="brand__image">
-											<img class="brand_img lazy" data-src="{$b->image|resize:120:100:false:$config->resized_brands_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$b->name|escape}" title="{$b->name|escape}">
+											<picture>
+												{if $settings->support_webp}
+													<source class="lazy" type="image/webp" data-srcset="{$b->image|resize:120:100:false:$config->resized_brands_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+												{/if}
+												<source class="lazy" data-srcset="{$b->image|resize:120:100:false:$config->resized_brands_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+												<img class="brand_img lazy" data-src="{$b->image|resize:120:100:false:$config->resized_brands_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$b->name|escape}" title="{$b->name|escape}"/>
+											</picture>
 										</div>
 									{else}
 										<div class="brand__name"><span>{$b->name|escape}</span></div>

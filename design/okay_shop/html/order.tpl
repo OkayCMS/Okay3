@@ -24,7 +24,13 @@
                                     <div class="purchase__image d-flex">
                                         <a href="{url_generator route='product' url=$purchase->product->url}">
                                             {if $purchase->product->image}
-                                                <img class="" alt="{$purchase->product->name|escape}" src="{$purchase->product->image->filename|resize:70:70}">
+                                            <picture>
+                                                {if $settings->support_webp}
+                                                    <source class="lazy" type="image/webp" data-srcset="{$purchase->product->image->filename|resize:70:70}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                                {/if}
+                                                <source class="lazy" data-srcset="{$purchase->product->image->filename|resize:70:70}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                                <img class="lazy" data-src="{$purchase->product->image->filename|resize:70:70}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$purchase->product->name|escape}" title="{$purchase->product->name|escape}"/>
+                                            </picture>
                                             {else}
                                                 <div class="purchase__no_image d-flex align-items-start">
                                                     {include file="svg.tpl" svgId="no_image"}

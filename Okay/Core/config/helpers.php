@@ -59,6 +59,7 @@ use Okay\Helpers\MetadataHelpers\OrderMetadataHelper;
 use Okay\Helpers\MetadataHelpers\PostMetadataHelper;
 use Okay\Helpers\MetadataHelpers\ProductMetadataHelper;
 use Okay\Helpers\MetadataHelpers\AuthorMetadataHelper;
+use Okay\Helpers\NotifyHelper;
 use Okay\Helpers\PaymentsHelper;
 use Okay\Helpers\RelatedProductsHelper;
 use Okay\Helpers\CommonHelper;
@@ -542,6 +543,11 @@ return [
         'class' => XmlFeedHelper::class,
         'arguments' => [
             new SR(Languages::class),
+        ]
+    ],
+    NotifyHelper::class => [
+        'class' => NotifyHelper::class,
+        'arguments' => [
         ]
     ],
 ];

@@ -92,22 +92,26 @@ class Phone
      */
     public static function format($phoneNumber, $numberFormat = null)
     {
+        if (substr($phoneNumber, 0, 2) == '+0') {
+            $phoneNumber = substr($phoneNumber, 1);
+        }
+
         if (!$phoneNumber = self::clear($phoneNumber)) {
             return '';
         }
-        
+
         $SL = ServiceLocator::getInstance();
         $phoneUtil = PhoneNumberUtil::getInstance();
 
         /** @var Settings $settings */
         $settings = $SL->getService(Settings::class);
-        
+
         $defaultRegion = $settings->get('phone_default_region');
         
         if ($numberFormat === null) {
             $numberFormat = $settings->get('phone_default_format');
         }
-        
+
         $phoneObject = $phoneUtil->parse($phoneNumber, $defaultRegion);
         return $phoneUtil->format($phoneObject, $numberFormat);
     }

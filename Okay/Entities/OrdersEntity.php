@@ -64,7 +64,13 @@ class OrdersEntity extends Entity
     {
         $this->select->join('LEFT', '__orders_labels AS ol', 'o.id=ol.order_id');
         $this->select->join('LEFT', '__orders_status AS os', 'o.status_id=os.id');
-        $this->select->groupBy(['id']);
+        
+        // Устанавливаем группировку по id только если эта колонка есть в запросе
+        $selectFields = $this->getAllFieldsKeyLabel();
+        if (in_array('id', $selectFields)) {
+            $this->select->groupBy(['id']);
+        }
+        
         return parent::find($filter);
     }
 
@@ -74,23 +80,37 @@ class OrdersEntity extends Entity
         return parent::count($filter);
     }
 
-    public function update($id, $order)
+    public function update($ids, $order)
     {
+        $ids = (array)$ids;
+        
         if (is_object($order)) {
             $order = (array)$order;
         }
 
-        if (!empty($order['paid'])) {
-            $currentPaid = $this->cols(['paid'])->findOne(['id' => $id]);
+        if (isset($order['paid'])) {
+            $currentPaid = $this->col('paid')->findOne(['id' => $ids]);
             if ($order['paid'] != $currentPaid) {
+                $this->markedPaid($ids, (bool)$order['paid']);
                 $order['payment_date'] = 'now()';
             }
         }
         
-        parent::update($id, $order);
-        return $id;
+        parent::update($ids, $order);
+        return $ids;
     }
 
+    /**
+     * Метод вызывается при отметке заказов как оплаченых.
+     * 
+     * @param array $ids
+     * @param bool $state
+     */
+    private function markedPaid(array $ids, $state)
+    {
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+    
     public function delete($ids)
     {
         $ids = (array)$ids;

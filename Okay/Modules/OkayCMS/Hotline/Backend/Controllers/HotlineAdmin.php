@@ -5,108 +5,79 @@ namespace Okay\Modules\OkayCMS\Hotline\Backend\Controllers;
 
 
 use Okay\Admin\Controllers\IndexAdmin;
-use Okay\Core\Database;
-use Okay\Core\QueryFactory;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\CategoriesEntity;
-use Okay\Entities\ProductsEntity;
 use Okay\Entities\FeaturesEntity;
-use Okay\Helpers\ProductsHelper;
-use Okay\Modules\OkayCMS\Hotline\Init\Init;
+use Okay\Modules\OkayCMS\Hotline\Entities\HotlineFeedsEntity;
+use Okay\Modules\OkayCMS\Hotline\Entities\HotlineRelationsEntity;
+use Okay\Modules\OkayCMS\Hotline\Helpers\BackendHotlineHelper;
 
 class HotlineAdmin extends IndexAdmin
 {
 
     public function fetch(
-        CategoriesEntity $categoriesEntity,
-        BrandsEntity $brandsEntity,
-        ProductsEntity $productsEntity,
-        ProductsHelper $productsHelper,
-        QueryFactory $queryFactory,
-        Database $database,
-        FeaturesEntity $featuresEntity
+        CategoriesEntity       $categoriesEntity,
+        BrandsEntity           $brandsEntity,
+        FeaturesEntity         $featuresEntity,
+        BackendHotlineHelper   $backendHotlineHelper,
+        HotlineRelationsEntity $relationsEntity,
+        HotlineFeedsEntity     $feedsEntity
     ) {
-        if ($this->request->post('add_all_categories')) {
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(CategoriesEntity::getTable())->set(Init::TO_FEED_FIELD, 1)
-            );
-            $categoriesEntity->initCategories();
-        } elseif($this->request->post('remove_all_categories')) {
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(CategoriesEntity::getTable())->set(Init::TO_FEED_FIELD, 0)
-            );
-            $categoriesEntity->initCategories();
-        } elseif ($this->request->post('add_all_brands')) {
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(BrandsEntity::getTable())->set(Init::TO_FEED_FIELD, 1)
-            );
-        } elseif($this->request->post('remove_all_brands')) {
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(BrandsEntity::getTable())->set(Init::TO_FEED_FIELD, 0)
-            );
-        } elseif ($this->request->method('post')) {
-            $categoriesToXml   = $this->request->post('categories');
-            $brandsToXml       = $this->request->post('brands');
-            $productsToXml     = $this->request->post('related_products');
-            $productsNotToXml  = $this->request->post('not_related_products');
+        if ($this->request->method('post')) {
+            $postFeeds = $this->request->post('feeds');
 
-            $this->settings->set('okaycms__hotline__company', $this->request->post('okaycms__hotline__company'));
-            $this->settings->set('okaycms__hotline__country_of_origin', $this->request->post('okaycms__hotline__country_of_origin'));
-            $this->settings->set('okaycms__hotline__guarantee_manufacturer', $this->request->post('okaycms__hotline__guarantee_manufacturer'));
-            $this->settings->set('okaycms__hotline__guarantee_shop', $this->request->post('okaycms__hotline__guarantee_shop'));
+            if ($errors = $backendHotlineHelper->validateFeeds($postFeeds)) {
+                $this->design->assign('errors', $errors);
+            } else {
+                $this->settings->set('okaycms__hotline__company', $this->request->post('okaycms__hotline__company'));
+                $this->settings->set('okaycms__hotline__country_of_origin', $this->request->post('okaycms__hotline__country_of_origin'));
+                $this->settings->set('okaycms__hotline__guarantee_manufacturer', $this->request->post('okaycms__hotline__guarantee_manufacturer'));
+                $this->settings->set('okaycms__hotline__guarantee_shop', $this->request->post('okaycms__hotline__guarantee_shop'));
 
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(CategoriesEntity::getTable())->set(Init::TO_FEED_FIELD, 0)
-            );
-            $categoriesEntity->initCategories();
-            
-            if (!empty($categoriesToXml)) {
-                $categoriesEntity->update($categoriesToXml, [Init::TO_FEED_FIELD => 1]);
+                $postRelatedCategories = $this->request->post('related_categories');
+                $postRelatedBrands = $this->request->post('related_brands');
+
+                $backendHotlineHelper->updateFeeds($postFeeds);
+                $backendHotlineHelper->updateRelatedCategories($postRelatedCategories);
+                $backendHotlineHelper->updateRelatedBrands($postRelatedBrands);
+                $backendHotlineHelper->updateRelatedProducts();
+                $backendHotlineHelper->updateNotRelatedProducts();
+
+                if ($this->request->post('add_feed')) {
+                    $backendHotlineHelper->addFeed();
+                } else if ($feedId = $this->request->post('remove_feed')) {
+                    $backendHotlineHelper->removeFeed($feedId);
+                } else if ($feedId = $this->request->post('add_all_categories')) {
+                    $backendHotlineHelper->addAllCategories($feedId);
+                } else if($feedId = $this->request->post('remove_all_categories')) {
+                    $relationsEntity->removeAllCategoriesByFeedId($feedId);
+                } else if ($feedId = $this->request->post('add_all_brands')) {
+                    $backendHotlineHelper->addAllBrands($feedId);
+                } else if($feedId = $this->request->post('remove_all_brands')) {
+                    $relationsEntity->removeAllBrandsByFeedId($feedId);
+                }
+
+                $this->updateCheckboxes();
             }
-
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(BrandsEntity::getTable())->set(Init::TO_FEED_FIELD, 0)
-            );
-            if (!empty($brandsToXml)) {
-                $brandsEntity->update($brandsToXml, [Init::TO_FEED_FIELD => 1]);
-            }
-
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(ProductsEntity::getTable())->set(Init::TO_FEED_FIELD, 0)
-            );
-            if (!empty($productsToXml)) {
-                $productsEntity->update($productsToXml, [Init::TO_FEED_FIELD => 1]);
-            }
-
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(ProductsEntity::getTable())->set(Init::NOT_TO_FEED_FIELD, 0)
-            );
-            if (!empty($productsNotToXml)) {
-                $productsEntity->update($productsNotToXml, [Init::NOT_TO_FEED_FIELD => 1]);
-            }
-
-            $this->updateCheckboxes();
         }
 
-        $allCategories       = $categoriesEntity->getCategoriesTree();
-        $allBrands           = $brandsEntity->find(['limit' => $brandsEntity->count()]);
-        $relatedProducts     = $productsHelper->getList([Init::TO_FEED_FIELD => 1]);
-        $notRelatedProducts  = $productsHelper->getList([Init::NOT_TO_FEED_FIELD => 1]);
-        $allFeatures         = $featuresEntity->find();
+        $allFeeds                = $feedsEntity->find();
+        $allCategories           = $categoriesEntity->getCategoriesTree();
+        $allBrands               = $brandsEntity->find(['limit' => $brandsEntity->count()]);
+        $allFeatures             = $featuresEntity->find();
+        $allRelatedCategoriesIds = $backendHotlineHelper->getAllRelatedCategoriesIds();
+        $allRelatedBrandsIds     = $backendHotlineHelper->getAllRelatedBrandsIds();
+        $allRelatedProducts      = $backendHotlineHelper->getAllRelatedProducts();
+        $allNotRelatedProducts   = $backendHotlineHelper->getAllNotRelatedProducts();
 
+        $this->design->assign('feeds', $allFeeds);
         $this->design->assign('categories', $allCategories);
         $this->design->assign('brands', $allBrands);
-        $this->design->assign('related_products', $relatedProducts);
-        $this->design->assign('not_related_products', $notRelatedProducts);
         $this->design->assign('features', $allFeatures);
+        $this->design->assign('allRelatedCategoriesIds', $allRelatedCategoriesIds);
+        $this->design->assign('allRelatedBrandsIds', $allRelatedBrandsIds);
+        $this->design->assign('related_products', $allRelatedProducts);
+        $this->design->assign('not_related_products', $allNotRelatedProducts);
 
         $this->response->setContent($this->design->fetch('hotline_xml.tpl'));
     }

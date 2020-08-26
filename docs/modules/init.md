@@ -311,7 +311,7 @@ class Init extends AbstractInit
 
 <a name="addBackendBlock"></a>
 ```php
-addBackendBlock( string $blockName, string $blockTplFile)
+addBackendBlock( string $blockName, string $blockTplFile, callable $callback = null)
 ```
 
 Добавление [шорт-блока](./../dev_mode.md#shortBLock)
@@ -321,11 +321,12 @@ addBackendBlock( string $blockName, string $blockTplFile)
 ---|---
 $blockName | Имя [шорт-блока](./../dev_mode.md#shortBLock) админ-панели.
 $blockTplFile | Путь к tpl файлу (относительно директории `Okay/Modules/Vendor/Module/Backend/design/html/`), в котором размещается верстка блока. В блоке работаем, как будто его добавят в основной файл через include (все переменные поддерживаются).
+$callback | Ф-ция которую нужно вызвать перед отрисовкой шортблока. Может использоваться для передачи в дизайн данных, нужных для отрисовки шортблока. Можно указывать как аргументы с указанием type hint Services, Entities etc.
 
 
 <a name="addFrontBlock"></a>
 ```php
-addFrontBlock( string $blockName, string $blockTplFile)
+addFrontBlock( string $blockName, string $blockTplFile, callable $callback = null)
 ```
 
 Добавление [шорт-блока](./../dev_mode.md#shortBLock)
@@ -335,3 +336,4 @@ addFrontBlock( string $blockName, string $blockTplFile)
 ---|---
 $blockName | Имя [шорт-блока](./../dev_mode.md#shortBLock) клиентской части сайта.
 $blockTplFile | Путь к tpl файлу (относительно директории `Okay/Modules/Vendor/Module/design/html/`), в котором размещается верстка блока. В блоке работаем, как будто его добавят в основной файл через include (все переменные поддерживаются).
+$callback | Ф-ция которую нужно вызвать перед отрисовкой шортблока. Может использоваться для передачи в дизайн данных, нужных для отрисовки шортблока. Можно указывать как аргументы с указанием type hint Services, Entities etc.

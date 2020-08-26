@@ -71,13 +71,24 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
     {
         $allCategories = $this->categoriesEntity->find();
 
-        $matchedRoute = null;
+        $categoriesPathUrls = [];
         foreach($allCategories as $category) {
-            if ($this->compareUrlStartsNoSuccess($category->path_url, $url)) {
+            $categoriesPathUrls[] = $category->path_url;
+        }
+        
+        // Сортируем урлы категорий по длине, от большей к меньшей
+        usort($categoriesPathUrls, function($a, $b) {
+            $difference =  strlen($b) - strlen($a);
+            return $difference ?: strcmp($a, $b);
+        });
+        
+        $matchedRoute = null;
+        foreach ($categoriesPathUrls as $categoryPathUrl) {
+            if ($this->compareUrlStartsNoSuccess($categoryPathUrl, $url)) {
                 continue;
             }
             
-            $urlPath = trim($category->path_url, '/');
+            $urlPath = trim($categoryPathUrl, '/');
 
             $urlParts = explode('/', $urlPath);
             $lastPart = array_pop($urlParts);
@@ -104,7 +115,7 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
 
     private function compareUrlStartsNoSuccess($categoryPathUrl, $url)
     {
-        $categoryPathUrl = substr($categoryPathUrl, 1);
+        $categoryPathUrl = ltrim($categoryPathUrl, '/');
         $compareAccessUri = substr($url, 0, strlen($categoryPathUrl));
         return $categoryPathUrl !== $compareAccessUri;
     }

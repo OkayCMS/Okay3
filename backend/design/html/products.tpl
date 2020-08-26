@@ -69,6 +69,7 @@
                                 <option value="{url keyword=null brand_id=null category_id=null page=null limit=null filter='hidden'}" {if $filter == 'hidden'}selected{/if}>{$btr->products_disable|escape}</option>
                                 <option value="{url keyword=null brand_id=null category_id=null page=null limit=null filter='outofstock'}" {if $filter == 'outofstock'}selected{/if}>{$btr->products_out_of_stock|escape}</option>
                                 <option value="{url keyword=null brand_id=null category_id=null page=null limit=null filter='without_images'}" {if $filter == 'without_images'}selected{/if}>{$btr->products_without_photos|escape}</option>
+                                {get_design_block block="products_filter_custom_option"}
                             </select>
                         </div>
                     </div>
@@ -368,6 +369,7 @@
                                             <option value="move_to_page">{$btr->products_move_to_page|escape}</option>
                                         {/if}
                                         {if $categories|count>1}
+                                            <option value="add_second_category">{$btr->products_add_second_category|escape}</option>
                                             <option value="move_to_category">{$btr->products_move_to_category|escape}</option>
                                         {/if}
                                         {if $all_brands|count>0}
@@ -394,6 +396,17 @@
                                                 {/foreach}
                                             {/function}
                                             {category_select_btn categories=$categories}
+                                        </select>
+                                    </div>
+                                    <div class="fn_add_second_category col-lg-12 col-md-12 col-sm-12 hidden fn_hide_block">
+                                        <select name="target_second_category" class="selectpicker form-control dropup" data-live-search="true" data-size="10">
+                                            {function name=second_category_select_btn level=0}
+                                                {foreach $categories as $category}
+                                                    <option value='{$category->id}'>{section sp $level}&nbsp;&nbsp;&nbsp;&nbsp;{/section}{$category->name|escape}</option>
+                                                    {second_category_select_btn categories=$category->subcategories selected_id=$selected_id level=$level+1}
+                                                {/foreach}
+                                            {/function}
+                                            {second_category_select_btn categories=$categories}
                                         </select>
                                     </div>
                                     <div class="fn_move_to_brand col-lg-12 col-md-12 col-sm-12 hidden fn_hide_block">

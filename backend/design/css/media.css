@@ -19,7 +19,7 @@
     #fix_logo:before {
         content: "";
         width: 30px;
-        height: 40px;
+        height: 42px;
         display: inline-block;
         background: url(../images/logo_img.png) no-repeat center center;
         background-size: cover;

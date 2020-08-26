@@ -18,7 +18,13 @@
 								<a class="d-flex align-items-center justify-content-center flex-column author_list__link" data-author="{$a->id}" href="{url_generator route='author' url=$a->url}">
 									<div class="author_list__image">
 									{if $a->image}
-										<img class="brand_img lazy" data-src="{$a->image|resize:320:500:false:$config->resized_authors_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$a->name|escape}" title="{$a->name|escape}">
+										<picture>
+											{if $settings->support_webp}
+												<source class="lazy" type="image/webp" data-srcset="{$a->image|resize:320:500:false:$config->resized_authors_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+											{/if}
+											<source class="lazy" data-srcset="{$a->image|resize:320:500:false:$config->resized_authors_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+											<img class="lazy" data-src="{$a->image|resize:320:500:false:$config->resized_authors_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$a->name|escape}" title="{$a->name|escape}"/>
+										</picture>
 									{else}
 										<div class="author_card__no_image d-flex align-items-start">
 											{include file="svg.tpl" svgId="comment-user_icon"}

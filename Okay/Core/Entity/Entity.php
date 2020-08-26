@@ -7,7 +7,7 @@ namespace Okay\Core\Entity;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Core\Modules\ModulesEntitiesFilters;
 use Okay\Core\QueryFactory;
-use Aura\SqlQuery\Common\Select;
+use Okay\Core\QueryFactory\Select;
 use Okay\Core\Config;
 use Okay\Core\Database;
 use Okay\Core\Languages;

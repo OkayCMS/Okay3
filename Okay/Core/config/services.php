@@ -13,8 +13,9 @@ use Okay\Core\OkayContainer\Reference\ParameterReference as PR;
 use Okay\Core\OkayContainer\Reference\ServiceReference as SR;
 
 use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 use Okay\Core\Routes\RouteFactory;
+use Okay\Helpers\NotifyHelper;
+use Okay\Core\TplMod\TplMod;
 use OkayLicense\License;
 use Psr\Log\LoggerInterface;
 use Bramus\Router\Router as BRouter;
@@ -37,6 +38,7 @@ use Okay\Core\Modules\Extender\QueueExtender;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Core\UserReferer\UserReferer;
 use Snowplow\RefererParser\Parser;
+use Okay\Core\TplMod\Parser as TplParser;
 
 $services = [
     BRouter::class => [
@@ -172,12 +174,15 @@ $services = [
             new SR(Mobile_Detect::class),
             new SR(TemplateConfig::class),
             new SR(Module::class),
+            new SR(Modules::class),
+            new SR(TplMod::class),
             new PR('design.smarty_cache_lifetime'),
             new PR('design.smarty_compile_check'),
             new PR('design.smarty_html_minify'),
             new PR('design.smarty_debugging'),
             new PR('design.smarty_security'),
             new PR('design.smarty_caching'),
+            new PR('design.smarty_force_compile'),
             new PR('root_dir'),
         ],
     ],
@@ -208,6 +213,7 @@ $services = [
             new SR(FrontTranslations::class),
             new SR(PHPMailer::class),
             new SR(LoggerInterface::class),
+            new SR(NotifyHelper::class),
             new PR('root_dir'),
         ],
     ],
@@ -411,6 +417,7 @@ $services = [
         'class' => DesignBlocks::class,
         'arguments' => [
             new SR(Design::class),
+            new SR(EntityFactory::class),
         ],
     ],
     UrlUniqueValidator::class => [
@@ -446,6 +453,15 @@ $services = [
         'class' => Phone::class,
         'arguments' => [
             new SR(Settings::class),
+        ],
+    ],
+    TplParser::class => [
+        'class' => TplParser::class,
+    ],
+    TplMod::class => [
+        'class' => TplMod::class,
+        'arguments' => [
+            new SR(TplParser::class),
         ],
     ],
 ];

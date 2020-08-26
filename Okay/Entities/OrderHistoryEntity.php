@@ -24,6 +24,8 @@ class OrderHistoryEntity extends Entity
 
     protected static $table = 'order_history';
     protected static $tableAlias = 'oh';
+    protected static $langTable;
+    protected static $langObject;
     
     public function getOrdersLastChanges($ordersIds)
     {

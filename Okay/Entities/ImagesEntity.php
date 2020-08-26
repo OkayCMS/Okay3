@@ -26,10 +26,11 @@ class ImagesEntity extends Entity
         'position',
     ];
 
-    protected static $table = '__images';
-    protected static $langObject = 'image';
+    protected static $table = 'images';
+    protected static $langTable;
+    protected static $langObject;
     protected static $tableAlias = 'i';
-    
+
     public function delete($ids)
     {
         foreach ((array)$ids as $id) {

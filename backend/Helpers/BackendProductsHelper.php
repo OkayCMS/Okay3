@@ -69,6 +69,13 @@ class BackendProductsHelper
     public function getProduct($id)
     {
         $product = $this->productsEntity->get((int) $id);
+
+        if (empty($product->id)) {
+            // Сразу активен
+            $product = new \stdClass();
+            $product->visible = 1;
+        }
+        
         return ExtenderFacade::execute(__METHOD__, $product, func_get_args());
     }
 
@@ -449,6 +456,29 @@ class BackendProductsHelper
             $this->productsEntity->update($id, ['position' => $targetPosition]);
         }
 
+        ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
+    public function actionAddSecondCategories($ids)
+    {
+        /* Добавить категорию */
+        $categoryId = $this->request->post('target_second_category');
+        
+        // Подсчитываем кол-во категорий каждого товара, чтобы знать какой position ставить новым категориям
+        $productsCategoriesNum = [];
+        foreach ($this->categoriesEntity->getProductCategories($ids) as $pc) {
+            if (!isset($productsCategoriesNum[$pc->product_id])) {
+                $productsCategoriesNum[$pc->product_id] = 0;
+            }
+            $productsCategoriesNum[$pc->product_id]++;
+        }
+        foreach ($ids as $id) {
+            if (!isset($productsCategoriesNum[$id])) {
+                $productsCategoriesNum[$id] = 0;
+            }
+            $this->categoriesEntity->addProductCategory($id, $categoryId, $productsCategoriesNum[$id]++);
+        }
+        
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 

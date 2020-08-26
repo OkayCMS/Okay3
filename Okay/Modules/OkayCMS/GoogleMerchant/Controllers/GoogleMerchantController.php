@@ -4,26 +4,36 @@
 namespace Okay\Modules\OkayCMS\GoogleMerchant\Controllers;
 
 
+use Aura\Sql\ExtendedPdo;
 use Okay\Controllers\AbstractController;
 use Okay\Core\Database;
 use Okay\Core\QueryFactory;
-use Okay\Entities\BrandsEntity;
+use Okay\Core\Router;
+use Okay\Core\Routes\ProductRoute;
 use Okay\Entities\CategoriesEntity;
-use Okay\Entities\ProductsEntity;
-use Okay\Helpers\ProductsHelper;
+use Okay\Helpers\XmlFeedHelper;
+use Okay\Modules\OkayCMS\GoogleMerchant\Entities\GoogleMerchantFeedsEntity;
+use Okay\Modules\OkayCMS\GoogleMerchant\Entities\GoogleMerchantRelationsEntity;
+use Okay\Modules\OkayCMS\GoogleMerchant\Helpers\GoogleMerchantHelper;
 use Okay\Modules\OkayCMS\GoogleMerchant\Init\Init;
+use PDO;
 
 class GoogleMerchantController extends AbstractController
 {
     
     public function render(
-        ProductsEntity $productsEntity,
-        ProductsHelper $productsHelper,
-        CategoriesEntity $categoriesEntity,
-        BrandsEntity $brandsEntity,
-        Database $db,
-        QueryFactory $queryFactory
+        ExtendedPdo               $pdo,
+        Database                  $db,
+        QueryFactory              $queryFactory,
+        GoogleMerchantHelper      $googleMerchantHelper,
+        XmlFeedHelper             $feedHelper,
+        CategoriesEntity          $categoriesEntity,
+        GoogleMerchantFeedsEntity $feedsEntity,
+        $url
     ) {
+        if (!($feed = $feedsEntity->findOne(['url' => $url])) || !$feed->enabled) {
+            return false;
+        }
 
         if (!empty($this->currencies)) {
             $this->design->assign('main_currency', reset($this->currencies));
@@ -32,152 +42,51 @@ class GoogleMerchantController extends AbstractController
         $sql = $queryFactory->newSqlQuery();
         $sql->setStatement('SET SQL_BIG_SELECTS=1');
         $db->query($sql);
-        
-        $sql = $queryFactory->newSqlQuery();
-        $sql->setStatement("SELECT id, parent_id, ".Init::TO_FEED_FIELD." FROM __categories WHERE ".Init::TO_FEED_FIELD."=1");
-        $db->query($sql);
-        $categoriesToGoogle = $db->results();
-        $uploadCategories = [];
 
-        $uploadCategories = $this->addAllChildrenToList($categoriesEntity, $categoriesToGoogle, $uploadCategories);
+        $select = $queryFactory->newSelect();
+        $select ->from(GoogleMerchantRelationsEntity::getTable())
+                ->cols(['entity_id'])
+                ->where("feed_id = :feed_id AND entity_type = 'category'")
+                ->bindValue('feed_id', $feed->id);
 
-        $filter['visible'] = 1;
-        $filter['okaycms__google_merchant__only'] = $uploadCategories;
-        
-        if ($this->settings->get('okaycms__google_merchant__upload_only_available_to_google')) {
-            $filter['in_stock'] = 1;
-        }
-
-        $productsIds = $productsEntity->cols(['id'])->find($filter);
-
-        if (!empty($productsIds)) {
-            $allBrands = $brandsEntity->mappedBy('id')->find(['product_id' => $productsIds]);
-            $this->design->assign('all_brands', $allBrands);
-        }
-
-        $this->design->assign('all_categories', $categoriesEntity->find());
+        $categoriesToFeed = $select->results('entity_id');
+        $uploadCategories = $feedHelper->addAllChildrenToList($categoriesToFeed);
 
         $this->response->setContentType(RESPONSE_XML);
-
         $this->response->sendHeaders();
-        $this->response->sendStream(pack('CCC', 0xef, 0xbb, 0xbf));
         $this->response->sendStream($this->design->fetch('feed_head.xml.tpl'));
 
-        // Выдаём товары пачками
-        $itemsPerPage = $this->settings->get('okaycms__google_merchant__products_per_page');
-        $itemsPerPage = !empty($itemsPerPage) ? $itemsPerPage : 1000;
-        $productsCount = $productsEntity->count($filter);
+        // На всякий случай наполним кеш роутов
+        Router::generateRouterCache();
 
-        $pages = ceil($productsCount/$itemsPerPage);
-        $pages = max(1, $pages);
+        // Запрещаем выполнять запросы в БД во время генерации урла т.к. мы работаем с небуферизированными запросами
+        ProductRoute::setNotUseSqlToGenerate();
 
-        $variantsFilter = $filter;
-        
-        // Проходимся пагинацией, выводим товары пачками
-        for ($page = 1; $page <= $pages; $page++) {
-            $filter['limit'] = $itemsPerPage;
-            $filter['page'] = $page;
+        // Увеличиваем лимит ф-ции GROUP_CONCAT()
+        $query = $queryFactory->newSqlQuery();
+        $query->setStatement('SET SESSION group_concat_max_len = 1000000;')->execute();
 
-            $products = $productsEntity->cols([
-                'description',
-                'name',
-                'id',
-                'brand_id',
-                'url',
-                'annotation',
-                'main_category_id',
-            ])
-                ->mappedBy('id')
-                ->find($filter);
-            
-            $products = $productsHelper->attachVariants($products, $variantsFilter);
-            $products = $productsHelper->attachImages($products);
-            $products = $this->sliceImagesByProduct($products, 10);
-            $products = $productsHelper->attachFeatures($products);
+        // Для экономии памяти работаем с небуферизированными запросами
+        $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+        $query = $googleMerchantHelper->getQuery($feed->id, $uploadCategories);
 
-            $allCategoriesMappedById = $categoriesEntity->mappedBy('id')->find();
-            $products = $this->attachProductType($products, $allCategoriesMappedById);
-            $products = $this->attachColorToProductsByFeatureId($products, $this->settings->get('okaycms__google_merchant__color'));
+        $allCategories = $categoriesEntity->mappedBy('id')->find();
 
-            $this->design->assign('products', $products);
-            $this->response->sendStream($this->design->fetch('feed_offers.xml.tpl'));
+        $prevProductId = null;
+        while ($product = $query->result()) {
+            $product = $feedHelper->attachFeatures($product);
+            $product = $feedHelper->attachProductImages($product);
+
+            $addVariantUrl = false;
+            if ($prevProductId === $product->product_id) {
+                $addVariantUrl = true;
+            }
+            $prevProductId = $product->product_id;
+            $item = $googleMerchantHelper->getItem($product, $allCategories, $addVariantUrl);
+            $xmlProduct = $feedHelper->compileItem($item, 'item');
+            $this->response->sendStream($xmlProduct);
         }
 
         $this->response->sendStream($this->design->fetch('feed_footer.xml.tpl'));
-        
-    }
-
-    private function attachProductType($products, $allCategoriesMappedById)
-    {
-        foreach($products as $id => $product) {
-            $mainCategoryId = $product->main_category_id;
-
-            if (empty($allCategoriesMappedById[$mainCategoryId])) {
-                continue;
-            }
-
-            $categoryPath = $allCategoriesMappedById[$mainCategoryId]->path;
-            $products[$id]->product_type = $this->buildProductType($categoryPath);
-        }
-
-        return $products;
-    }
-
-    private function buildProductType($categoryPath)
-    {
-        $productType = '';
-
-        foreach($categoryPath as $category) {
-            $productType .= $category->name.' > ';
-        }
-
-        return substr($productType, 0, -3);
-    }
-
-
-    private function addAllChildrenToList(CategoriesEntity $categoriesEntity, $categories, $uploadCategories)
-    {
-        foreach ($categories as $c) {
-            $category = $categoriesEntity->get((int)$c->id);
-            $uploadCategories[] = $category->id;
-            if (!empty($category->subcategories)) {
-                $uploadCategories = $this->addAllChildrenToList($categoriesEntity, $category->subcategories, $uploadCategories);
-            }
-        }
-        return $uploadCategories;
-    }
-
-    private function sliceImagesByProduct($products, $amountPhotosByProduct = 10)
-    {
-        foreach($products as $id => $product) {
-            if (empty($product->images)) {
-                continue;
-            }
-
-            if (count($product->images) > 10) {
-                $products[$id]->images = array_splice($product->images, 0, $amountPhotosByProduct);
-            }
-        }
-
-        return $products;
-    }
-
-    private function attachColorToProductsByFeatureId($products, $colorFeatureId)
-    {
-        foreach($products as $id => $product) {
-            if (empty($product->features)) {
-                continue;
-            }
-
-            foreach($product->features as $feature) {
-                if ($feature->id != $colorFeatureId) {
-                     continue;
-                }
-
-                $products[$id]->color = reset($feature->values)->value;
-            }
-        }
-
-        return $products;
     }
 }

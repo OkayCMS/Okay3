@@ -9,6 +9,8 @@ files/resized/*/*.gif
 files/resized/*/*.tif
 files/resized/*/*.bmp
 files/resized/*/*.ico
+files/resized/*/*.webp
+files/resized/*/*.svg
 files/thumbs/*
 cache/
 

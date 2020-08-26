@@ -42,11 +42,11 @@ class ImportOrders extends AbstractImport
             $order = new \stdClass();
             $order->status_id = 0;
             
-            $order->id     = (int)$xmlOrder->Номер;
+            $order->id    = (int)$xmlOrder->Номер;
             $existedOrder = $ordersEntity->get($order->id);
 
-            $order->date = $xmlOrder->Дата.' '.$xmlOrder->Время;
-            $order->name = $xmlOrder->Контрагенты->Контрагент->Наименование;
+            $order->date = (string)$xmlOrder->Дата.' '.$xmlOrder->Время;
+            $order->name = (string)$xmlOrder->Контрагенты->Контрагент->Наименование;
 
             $accepted = false;
             $toDelete = false;
@@ -119,9 +119,13 @@ class ImportOrders extends AbstractImport
                     $select->cols(['id'])
                         ->from('__variants')
                         ->where('sku=:sku')
-                        ->where('product_id=:product_id')
-                        ->bindValue('sku', $sku)
-                        ->bindValue('product_id', $productId);
+                        ->bindValue('sku', $sku);
+                    
+                    if (!empty($productId)) {
+                        $select->where('product_id=:product_id')
+                            ->bindValue('product_id', $productId);
+                    }
+                    
                     $this->integration1C->db->query($select);
                     $variantId = $this->integration1C->db->result('id');
                 // последняя попытка, это если у товара всего один вариант, вероятнее всего он нужен

@@ -38,6 +38,12 @@ class Init extends AbstractInit
             (new EntityField('warehouse_id'))->setTypeVarchar(255, true),
             (new EntityField('delivery_term'))->setTypeVarchar(8, true),
             (new EntityField('redelivery'))->setTypeTinyInt(1, true),
+            (new EntityField('city_name'))->setTypeVarchar(255, true),
+            (new EntityField('area_name'))->setTypeVarchar(255, true),
+            (new EntityField('region_name'))->setTypeVarchar(255, true),
+            (new EntityField('street'))->setTypeVarchar(255, true),
+            (new EntityField('house'))->setTypeVarchar(255, true),
+            (new EntityField('apartment'))->setTypeVarchar(255, true),
         ]);
         
         $this->migrateEntityTable(NPCitiesEntity::class, [

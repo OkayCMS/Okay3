@@ -50,12 +50,17 @@ smarty_cache_lifetime = 0
 smarty_debugging = false
 smarty_html_minify = false
 smarty_security = true
+; Данный параметр может быть полезным при отладке модификаторов tpl файлов
+smarty_force_compile = false
 
 [design]
 debug_translation = false
 scripts_defer = true
 ;Режим разработчика, пока только в админке подписывает блоки
 dev_mode = false
+
+;Пока TplMod находится в состоянии теста, оставим здесь возможность экстренного отключения
+;disable_tpl_mod = true
 
 [images]
 ;Указываем какую библиотеку использовать для нарезки изображений. Варианты: Gregwar, Imagick или GD. Это имя класса адаптера

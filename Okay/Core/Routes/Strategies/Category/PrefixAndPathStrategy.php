@@ -74,9 +74,20 @@ class PrefixAndPathStrategy extends AbstractRouteStrategy
         $prefix = $this->settings->get('category_routes_template__prefix_and_path') . '/';
         $allCategories = $this->categoriesEntity->find();
 
-        $matchedRoute = null;
+        $categoriesPathUrls = [];
         foreach($allCategories as $category) {
-            $urlPath = trim($category->path_url, '/');
+            $categoriesPathUrls[] = $category->path_url;
+        }
+
+        // Сортируем урлы категорий по длине, от большей к меньшей
+        usort($categoriesPathUrls, function($a, $b) {
+            $difference =  strlen($b) - strlen($a);
+            return $difference ?: strcmp($a, $b);
+        });
+        
+        $matchedRoute = null;
+        foreach ($categoriesPathUrls as $categoryPathUrl) {
+            $urlPath = trim($categoryPathUrl, '/');
             if ($this->compareUrlStartsNoSuccess($prefix.$urlPath, $url)) {
                 continue;
             }
@@ -96,6 +107,7 @@ class PrefixAndPathStrategy extends AbstractRouteStrategy
                 ],
                 []
             ];
+            break;
         }
 
         if (empty($matchedRoute)) {
@@ -112,6 +124,7 @@ class PrefixAndPathStrategy extends AbstractRouteStrategy
 
     private function compareUrlStartsNoSuccess($categoryPathUrl, $url)
     {
+        $categoryPathUrl = ltrim($categoryPathUrl, '/');
         $compareAccessUri = substr($url, 0, strlen($categoryPathUrl));
         return $categoryPathUrl !== $compareAccessUri;
     }

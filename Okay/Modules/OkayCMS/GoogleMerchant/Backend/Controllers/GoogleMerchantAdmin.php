@@ -5,107 +5,77 @@ namespace Okay\Modules\OkayCMS\GoogleMerchant\Backend\Controllers;
 
 
 use Okay\Admin\Controllers\IndexAdmin;
-use Okay\Core\Database;
-use Okay\Core\QueryFactory;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\CategoriesEntity;
-use Okay\Entities\ProductsEntity;
 use Okay\Entities\FeaturesEntity;
-use Okay\Helpers\ProductsHelper;
-use Okay\Modules\OkayCMS\GoogleMerchant\Init\Init;
+use Okay\Modules\OkayCMS\GoogleMerchant\Entities\GoogleMerchantFeedsEntity;
+use Okay\Modules\OkayCMS\GoogleMerchant\Entities\GoogleMerchantRelationsEntity;
+use Okay\Modules\OkayCMS\GoogleMerchant\Helpers\BackendGoogleMerchantHelper;
 
 class GoogleMerchantAdmin extends IndexAdmin
 {
 
     public function fetch(
-        CategoriesEntity $categoriesEntity,
-        BrandsEntity $brandsEntity,
-        ProductsEntity $productsEntity,
-        ProductsHelper $productsHelper,
-        QueryFactory $queryFactory,
-        Database $database,
-        FeaturesEntity $featuresEntity
+        CategoriesEntity              $categoriesEntity,
+        BrandsEntity                  $brandsEntity,
+        FeaturesEntity                $featuresEntity,
+        GoogleMerchantFeedsEntity     $feedsEntity,
+        GoogleMerchantRelationsEntity $relationsEntity,
+        BackendGoogleMerchantHelper   $backendGoogleMerchantHelper
     ) {
-        if ($this->request->post('add_all_categories')) {
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(CategoriesEntity::getTable())->set(Init::TO_FEED_FIELD, 1)
-            );
-            $categoriesEntity->initCategories();
-        } elseif($this->request->post('remove_all_categories')) {
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(CategoriesEntity::getTable())->set(Init::TO_FEED_FIELD, 0)
-            );
-            $categoriesEntity->initCategories();
-        } elseif ($this->request->post('add_all_brands')) {
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(BrandsEntity::getTable())->set(Init::TO_FEED_FIELD, 1)
-            );
-        } elseif($this->request->post('remove_all_brands')) {
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(BrandsEntity::getTable())->set(Init::TO_FEED_FIELD, 0)
-            );
-        } elseif ($this->request->method('post')) {
-            $categoriesToXml   = $this->request->post('categories');
-            $brandsToXml       = $this->request->post('brands');
-            $productsToXml     = $this->request->post('related_products');
-            $productsNotToXml  = $this->request->post('not_related_products');
+        if ($this->request->method('post')) {
+            $postFeeds = $this->request->post('feeds');
 
-            $this->settings->set('okaycms__google_merchant__products_per_page', $this->request->post('okaycms__google_merchant__products_per_page'));
-            $this->settings->set('okaycms__google_merchant__company', $this->request->post('okaycms__google_merchant__company'));
-            $this->settings->set('okaycms__google_merchant__color', $this->request->post('okaycms__google_merchant__color'));
+            if ($errors = $backendGoogleMerchantHelper->validateFeeds($postFeeds)) {
+                $this->design->assign('errors', $errors);
+            } else {
+                $this->settings->set('okaycms__google_merchant__company', $this->request->post('okaycms__google_merchant__company'));
+                $this->settings->set('okaycms__google_merchant__color', $this->request->post('okaycms__google_merchant__color'));
 
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(CategoriesEntity::getTable())->set(Init::TO_FEED_FIELD, 0)
-            );
-            $categoriesEntity->initCategories();
-            
-            if (!empty($categoriesToXml)) {
-                $categoriesEntity->update($categoriesToXml, [Init::TO_FEED_FIELD => 1]);
+                $postRelatedCategories = $this->request->post('related_categories');
+                $postRelatedBrands = $this->request->post('related_brands');
+
+                $backendGoogleMerchantHelper->updateFeeds($postFeeds);
+                $backendGoogleMerchantHelper->updateRelatedCategories($postRelatedCategories);
+                $backendGoogleMerchantHelper->updateRelatedBrands($postRelatedBrands);
+                $backendGoogleMerchantHelper->updateRelatedProducts();
+                $backendGoogleMerchantHelper->updateNotRelatedProducts();
+
+                if ($this->request->post('add_feed')) {
+                    $backendGoogleMerchantHelper->addFeed();
+                } else if ($feedId = $this->request->post('remove_feed')) {
+                    $backendGoogleMerchantHelper->removeFeed($feedId);
+                } else if ($feedId = $this->request->post('add_all_categories')) {
+                    $backendGoogleMerchantHelper->addAllCategories($feedId);
+                } else if($feedId = $this->request->post('remove_all_categories')) {
+                    $relationsEntity->removeAllCategoriesByFeedId($feedId);
+                } else if ($feedId = $this->request->post('add_all_brands')) {
+                    $backendGoogleMerchantHelper->addAllBrands($feedId);
+                } else if($feedId = $this->request->post('remove_all_brands')) {
+                    $relationsEntity->removeAllBrandsByFeedId($feedId);
+                }
+
+                $this->updateCheckboxes();
             }
-
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(BrandsEntity::getTable())->set(Init::TO_FEED_FIELD, 0)
-            );
-            if (!empty($brandsToXml)) {
-                $brandsEntity->update($brandsToXml, [Init::TO_FEED_FIELD => 1]);
-            }
-
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(ProductsEntity::getTable())->set(Init::TO_FEED_FIELD, 0)
-            );
-            if (!empty($productsToXml)) {
-                $productsEntity->update($productsToXml, [Init::TO_FEED_FIELD => 1]);
-            }
-
-            $update = $queryFactory->newUpdate();
-            $database->query(
-                $update->table(ProductsEntity::getTable())->set(Init::NOT_TO_FEED_FIELD, 0)
-            );
-            if (!empty($productsNotToXml)) {
-                $productsEntity->update($productsNotToXml, [Init::NOT_TO_FEED_FIELD => 1]);
-            }
-
-            $this->updateCheckboxes();
         }
 
-        $allCategories       = $categoriesEntity->getCategoriesTree();
-        $allBrands           = $brandsEntity->find(['limit' => $brandsEntity->count()]);
-        $relatedProducts     = $productsHelper->getList([Init::TO_FEED_FIELD => 1]);
-        $notRelatedProducts  = $productsHelper->getList([Init::NOT_TO_FEED_FIELD => 1]);
-        $allFeatures         = $featuresEntity->find();
+        $allFeeds                = $feedsEntity->find();
+        $allCategories           = $categoriesEntity->getCategoriesTree();
+        $allBrands               = $brandsEntity->find(['limit' => $brandsEntity->count()]);
+        $allFeatures             = $featuresEntity->find();
+        $allRelatedCategoriesIds = $backendGoogleMerchantHelper->getAllRelatedCategoriesIds();
+        $allRelatedBrandsIds     = $backendGoogleMerchantHelper->getAllRelatedBrandsIds();
+        $allRelatedProducts      = $backendGoogleMerchantHelper->getAllRelatedProducts();
+        $allNotRelatedProducts   = $backendGoogleMerchantHelper->getAllNotRelatedProducts();
 
+        $this->design->assign('feeds', $allFeeds);
         $this->design->assign('categories', $allCategories);
         $this->design->assign('brands', $allBrands);
-        $this->design->assign('related_products', $relatedProducts);
-        $this->design->assign('not_related_products', $notRelatedProducts);
         $this->design->assign('features', $allFeatures);
+        $this->design->assign('allRelatedCategoriesIds', $allRelatedCategoriesIds);
+        $this->design->assign('allRelatedBrandsIds', $allRelatedBrandsIds);
+        $this->design->assign('related_products', $allRelatedProducts);
+        $this->design->assign('not_related_products', $allNotRelatedProducts);
 
         $this->response->setContent($this->design->fetch('google_merchant.tpl'));
     }

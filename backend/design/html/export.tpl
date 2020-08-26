@@ -60,6 +60,7 @@
                                    <option value="all_products">{$btr->general_all_products|escape}</option>
                                    <option value="category_products">{$btr->general_from_category|escape}</option>
                                    <option value="brands_products">{$btr->general_from_brand|escape}</option>
+                                    {get_design_block block="export_entities_filter"}
                                 </select>
                             </div>
                         </div>
@@ -87,6 +88,7 @@
                             </select>
                         </div>
                         {/if}
+                        {get_design_block block="export_entity_select_block"}
                         <div class="col-md-3 col-sm-3 col-lg-3 col-sm-12 float-sm-right mt-2">
                             <button id="fn_start" type="submit" class="btn btn_small btn_blue float-md-right">
                                 {include file='svg_icon.tpl' svgId='magic'}

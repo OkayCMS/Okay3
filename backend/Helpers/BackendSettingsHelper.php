@@ -87,7 +87,7 @@ class BackendSettingsHelper
      */
     private $imageCore;
 
-    private $allowedImageExtensions = ['png', 'gif', 'jpg', 'jpeg', 'ico'];
+    private $allowedImageExtensions = ['png', 'gif', 'jpg', 'jpeg', 'ico', 'svg'];
 
     public function __construct(
         Settings $settings,
@@ -128,6 +128,7 @@ class BackendSettingsHelper
         $this->settings->set('posts_num', $this->request->post('posts_num', 'int', 8));
         $this->settings->set('missing_products', $this->request->post('missing_products', null, 'default'));
         $this->settings->set('hide_single_filters', $this->request->post('hide_single_filters', 'int'));
+        $this->settings->set('support_webp', $this->request->post('support_webp', 'int'));
         $this->settings->update('units', $this->request->post('units'));
 
         if ($this->request->post('is_preorder', 'integer')) {

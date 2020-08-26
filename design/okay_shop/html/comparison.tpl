@@ -37,31 +37,37 @@
                     {/if}
                 </div>
 
-                <div class="fn_comparison_products comparison_block__products owl-carousel">
-                    {foreach $comparison->products as $id=>$product}
-                        <div class="comparison_block__item">
-                            <div class="fn_resize product_item no_hover">
-                                {include file="product_list.tpl"}
+                <div class="fn_comparison_products comparison_block__products swiper-container">
+                    <div class="swiper-wrapper">
+                        {foreach $comparison->products as $id=>$product}
+                            <div class="comparison_block__item swiper-slide">
+                                <div class="fn_resize product_item no_hover">
+                                    {include file="product_list.tpl"}
+                                </div>
+
+                                {* Rating *}
+                                <div id="product_{$product->id}" class="cprs_rating">
+                                    <span class="rating_starOff">
+                                        <span class="rating_starOn" style="width:{$product->rating*90/5|string_format:'%.0f'}px;"></span>
+                                    </span>
+                                </div>
+
+                                {* Feature value *}
+                                {if $product->features}
+                                    {foreach $product->features as $id=>$value}
+                                        <div class="cprs_feature_{$id} cell{if $comparison->features.{$id}->not_unique} not_unique{/if}">
+                                            {$value|default:"&mdash;"}
+                                        </div>
+                                    {/foreach}
+                                {/if}
+
                             </div>
-
-                            {* Rating *}
-                            <div id="product_{$product->id}" class="cprs_rating">
-                                <span class="rating_starOff">
-                                    <span class="rating_starOn" style="width:{$product->rating*90/5|string_format:'%.0f'}px;"></span>
-                                </span>
-                            </div>
-
-                            {* Feature value *}
-                            {if $product->features}
-                                {foreach $product->features as $id=>$value}
-                                    <div class="cprs_feature_{$id} cell{if $comparison->features.{$id}->not_unique} not_unique{/if}">
-                                        {$value|default:"&mdash;"}
-                                    </div>
-                                {/foreach}
-                            {/if}
-
-                        </div>
-                    {/foreach}
+                        {/foreach}
+                    </div>
+                    {*if $comparison->products|count > 4*} 
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    {*/if*}
                 </div>
             </div>
         {else}

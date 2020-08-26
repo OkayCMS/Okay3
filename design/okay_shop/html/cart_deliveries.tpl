@@ -1,7 +1,6 @@
 {if $deliveries}
    	<div class="block form form_cart">
-                              
-		{* Delivery *}
+        {* Delivery *}
 		<div class="form__header">
 			<div class="form__title">
 				{include file="svg.tpl" svgId="delivery_icon"}
@@ -36,7 +35,13 @@
 						</span>
 						{if $delivery->image}
 							<span class="delivery__image">
-								<img src="{$delivery->image|resize:80:30:false:$config->resized_deliveries_dir}" alt="{$delivery->name|escape}"/>
+								<picture>
+									{if $settings->support_webp}
+										<source class="lazy" type="image/webp" data-srcset="{$delivery->image|resize:80:30:false:$config->resized_deliveries_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+									{/if}
+									<source class="lazy" data-srcset="{$delivery->image|resize:80:30:false:$config->resized_deliveries_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+									<img class="lazy" data-src="{$delivery->image|resize:80:30:false:$config->resized_deliveries_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$delivery->name|escape}" title="{$delivery->name|escape}"/>
+								</picture>
 							</span>
 						{/if}
 					</label>
@@ -82,14 +87,26 @@
 								</span>
 								{if $payment_method->image}
 									<span class="delivery__image">
-										<img src="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" alt="{$payment_method->name|escape}"/>
+										<picture>
+											{if $settings->support_webp}
+												<source class="lazy" type="image/webp" data-srcset="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+											{/if}
+											<source class="lazy" data-srcset="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+											<img class="lazy" data-src="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$payment_method->name|escape}" title="{$payment_method->name|escape}"/>
+										</picture>
 									</span>
 								{/if}
 							</label>
-							
-							{if $payment_method->description}
+
+							{$block = {get_design_block block='front_cart_payment' vars=['payment_method' => $payment_method]}}
+							{if $payment_method->description || $block}
 								<div class="delivery__description">
 									{$payment_method->description}
+									{if $block}
+										<div class="fn_payment_module_html">
+											{$block}
+										</div>
+									{/if}
 								</div>
 							{/if}
 						</div>

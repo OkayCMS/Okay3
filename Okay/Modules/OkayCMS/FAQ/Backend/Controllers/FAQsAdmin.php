@@ -15,10 +15,10 @@ class FAQsAdmin extends IndexAdmin
         /** @var FAQEntity $FAQEntity */
         $FAQEntity = $entityFactory->get(FAQEntity::class);
 
-        if($this->request->method('post')) {
+        if ($this->request->method('post')) {
             $ids = $this->request->post('check');
-            if(is_array($ids)) {
-                switch($this->request->post('action')) {
+            if (is_array($ids)) {
+                switch ($this->request->post('action')) {
                     case 'disable': {
                         $FAQEntity->update($ids, ['visible'=>0]);
                         break;
@@ -39,7 +39,6 @@ class FAQsAdmin extends IndexAdmin
             if (!empty($positions)) {
                 $ids = array_keys($positions);
                 sort($positions);
-                $positions = array_reverse($positions);
                 foreach($positions as $i=>$position) {
                     $FAQEntity->update($ids[$i], ['position'=>$position]);
                 }

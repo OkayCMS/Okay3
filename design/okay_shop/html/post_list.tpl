@@ -3,7 +3,16 @@
         <div class="article__image">
             <a class="article__image_link" aria-label="{$post->name|escape}" href="{url_generator route='post' url=$post->url}">
                 {if $post->image}
-                    <img class="lazy" data-src="{$post->image|resize:450:240:false:$config->resized_blog_dir:center:center}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$post->name|escape}" title="{$post->name|escape}"/>
+                    <picture>
+                        {if $settings->support_webp}
+                            <source class="lazy" type="image/webp" data-srcset="{$post->image|resize:340:240:false:$config->resized_blog_dir:center:center}.webp" media="(max-width: 440px)" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif"> 
+                            <source class="lazy" type="image/webp" data-srcset="{$post->image|resize:380:240:false:$config->resized_blog_dir:center:center}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                        {/if}
+                        <source class="lazy" data-srcset="{$post->image|resize:340:240:false:$config->resized_blog_dir:center:center}" media="(max-width: 440px)" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                        <source class="lazy" data-srcset="{$post->image|resize:380:240:false:$config->resized_blog_dir:center:center}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                            
+                        <img class="lazy" data-src="{$post->image|resize:380:240:false:$config->resized_blog_dir:center:center}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$post->name|escape}" title="{$post->name|escape}"/>
+                    </picture>
                 {else}
                     <div class="article__no_image d-flex align-items-start">
                         {include file="svg.tpl" svgId="no_image"}
@@ -49,7 +58,13 @@
             <div class="article__info_item article__info_item--author" title="{$lang->blog_author}">
                 <div class="article__avatar">
                     {if $post->author->image}
-                        <img src="{$post->author->image|resize:24:24:false:$config->resized_authors_dir:center:center}" alt="{$post->author->name|escape}">
+                    <picture>
+                        {if $settings->support_webp}
+                            <source class="lazy" type="image/webp" data-srcset="{$post->author->image|resize:24:24:false:$config->resized_authors_dir:center:center}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                        {/if}
+                        <source class="lazy" data-srcset="{$post->author->image|resize:24:24:false:$config->resized_authors_dir:center:center}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                        <img class="lazy" data-src="{$post->author->image|resize:24:24:false:$config->resized_authors_dir:center:center}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$post->author->name|escape}" title="{$post->author->name|escape}"/>
+                    </picture>
                     {else}
                         {include file="svg.tpl" svgId="avatar_icon"}
                     {/if}

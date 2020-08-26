@@ -30,6 +30,8 @@ class ReportStatEntity extends Entity
 
     protected static $table = '__purchases';
     protected static $tableAlias = 'p';
+    protected static $langTable;
+    protected static $langObject;
 
     public function find(array $filter = [])
     {

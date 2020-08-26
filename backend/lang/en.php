@@ -1447,3 +1447,6 @@ $lang['author_position_name'] = 'Position';
 $lang['author_add_codial'] = 'Add social network';
 $lang['author_socials'] =' Social author network ';
 $lang['settings_notify_disable_validate_cert'] = 'Disable certificate verification (not safe)';
+$lang['settings_enable_webp'] = 'Enable support webp';
+$lang['settings_enable_webp_notice'] = 'When this parameter is enabled, the images on the site will be displayed in the format in which they were uploaded, and in addition this image will be converted to the webp format. If the client browser supports webp it will load this image, older browsers will load jpeg or png. When this parameter is enabled, the directory for slicing images can significantly increase in volume.';
+$lang['products_add_second_category'] = 'Add additional category';

@@ -18,11 +18,13 @@ class ModulesAdmin extends IndexAdmin
         Module         $moduleCore,
         ManagersEntity $managersEntity,
         Managers       $managersCore
-    ){
+    ) {
         // Обработка действий
         if ($this->request->method('post')) {
             if (!empty($this->request->post('install_module'))) {
-                $modulesInstaller->install($this->request->post('install_module'));
+                if ($modulesInstaller->install($this->request->post('install_module'))) {
+                    $this->design->clearCompiled();
+                }
             }
 
             // Сортировка
@@ -39,14 +41,17 @@ class ModulesAdmin extends IndexAdmin
                 switch ($this->request->post('action')) {
                     case 'disable': {
                         $modulesEntity->disable($ids);
+                        $this->design->clearCompiled();
                         break;
                     }
                     case 'enable': {
                         $modulesEntity->enable($ids);
+                        $this->design->clearCompiled();
                         break;
                     }
                     case 'delete': {
                         $modulesEntity->delete($ids);
+                        $this->design->clearCompiled();
                         break;
                     }
                 }
@@ -63,7 +68,7 @@ class ModulesAdmin extends IndexAdmin
 
         $modules = array_merge($modulesEntity->findNotInstalled(), $modulesEntity->find($filter));
 
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             $preview = $moduleCore->findModulePreview($module->vendor, $module->module_name);
             if (!empty($preview)) {
                 $module->preview = $preview;

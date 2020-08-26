@@ -228,13 +228,35 @@ trait CRUD
 
         return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
-    
+
+    /**
+     * Метод регистрирует список колонок, которые нужно достать
+     * 
+     * @param array $cols
+     * @return $this
+     */
     final public function cols(array $cols)
     {
         $this->setSelectFields($cols);
         return $this;
     }
 
+    /**
+     * Метод регистрирует одну колонку, которую нужно достать
+     * 
+     * @param $colName
+     * @return $this
+     */
+    final public function col($colName)
+    {
+        $defaultFields = $this->getAllDefaultFields();
+        if (in_array($colName, $defaultFields)) {
+            $this->setSelectFields([$colName]);
+        }
+        
+        return $this;
+    }
+    
     public function getResult($field = null)
     {
         $results = $this->db->result($field);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
-    <ShortName>OkayCMS</ShortName>
+    <ShortName>{$settings->site_name}</ShortName>
     <Developer>OkayCMS {$config->version} {$config->version_type}</Developer>
     <Description>{$settings->site_name}</Description>
     <InputEncoding>UTF-8</InputEncoding>

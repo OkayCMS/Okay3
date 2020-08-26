@@ -75,7 +75,7 @@ class BrandController extends AbstractController
             $_SESSION['sort'] = $currentSort;
         }
         if (!empty($_SESSION['sort'])) {
-            $sortProducts = $_SESSION['sort'];
+            $currentSort = $sortProducts = $_SESSION['sort'];
         } else {
             $sortProducts = 'position';
         }

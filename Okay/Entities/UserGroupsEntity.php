@@ -20,6 +20,8 @@ class UserGroupsEntity extends Entity
 
     protected static $table = '__groups';
     protected static $tableAlias = 'g';
+    protected static $langTable;
+    protected static $langObject;
 
     
     public function delete($ids)

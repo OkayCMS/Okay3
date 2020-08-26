@@ -448,7 +448,7 @@
                                                     <select name="payment_method_id" class="selectpicker form-control">
                                                         <option value="0">{$btr->order_not_selected|escape}</option>
                                                         {foreach $payment_methods as $pm}
-                                                        <option value="{$pm->id}" {if $pm->id==$payment_method->id}selected{/if} data-module_id="{$pm->module_id}">{$pm->name|escape}</option>
+                                                        <option value="{$pm->id}" {if $pm->id==$payment_method->id}selected{/if} data-module="{$pm->module}">{$pm->name|escape}</option>
                                                         {/foreach}
                                                     </select>
                                                 </div>

@@ -21,6 +21,7 @@ class FastOrderPlugin extends Func
     public function run($vars)
     {
         $this->design->assign('fast_order_product_name', $vars['product']->name);
+        $this->design->assign('product', $vars['product']);
         return $this->design->fetch('fast_order_btn.tpl');
     }
 }

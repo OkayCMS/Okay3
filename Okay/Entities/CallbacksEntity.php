@@ -32,6 +32,8 @@ class CallbacksEntity extends Entity
 
     protected static $table = '__callbacks';
     protected static $tableAlias = 'c';
+    protected static $langTable;
+    protected static $langObject;
     
     public function add($callback)
     {

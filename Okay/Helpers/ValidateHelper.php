@@ -81,6 +81,25 @@ class ValidateHelper
         
         return ExtenderFacade::execute(__METHOD__, $error, func_get_args());
     }
+
+    public function getUserLoginError($email, $password)
+    {
+        $SL = ServiceLocator::getInstance();
+        $entityFactory = $SL->getService(EntityFactory::class);
+        /** @var UsersEntity $usersEntity */
+        $usersEntity = $entityFactory->get(UsersEntity::class);
+        
+        $error = null;
+        
+        $userId = $usersEntity->checkPassword($email, $password);
+
+        /*Валидация данных клиента*//*todo мож разделить проверку*/
+        if (!$this->validator->isEmail($email, true) || empty($password) || !$userId) {
+            $error = 'login_incorrect';
+        } 
+
+        return ExtenderFacade::execute(__METHOD__, $error, func_get_args());
+    }
     
     public function getFeedbackValidateError($feedback)
     {

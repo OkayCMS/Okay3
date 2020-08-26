@@ -104,6 +104,9 @@
                                             <div class="okay_list_text_inline mb-h">
                                                 <span class="text_grey text_bold">{$btr->general_phone|escape} </span>{$callback->phone|phone}
                                             </div>
+
+                                            {get_design_block block="callbacks_admin_extended" vars=['callback'=>$callback]}
+
                                             <div class="mb-h">
                                                 <span class="text_grey text_bold">{$btr->general_message|escape} </span>
                                                 {$callback->message|escape|nl2br}

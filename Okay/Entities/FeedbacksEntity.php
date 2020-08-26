@@ -35,6 +35,8 @@ class FeedbacksEntity extends Entity
 
     protected static $table = '__feedbacks';
     protected static $tableAlias = 'f';
+    protected static $langTable;
+    protected static $langObject;
 
     public function add($feedback)
     {

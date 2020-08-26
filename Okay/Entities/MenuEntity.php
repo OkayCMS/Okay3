@@ -27,6 +27,8 @@ class MenuEntity extends Entity
     protected static $table = '__menu';
     protected static $tableAlias = 'm';
     protected static $alternativeIdField = 'group_id';
+    protected static $langTable;
+    protected static $langObject;
 
     public function find(array $filter = [])
     {

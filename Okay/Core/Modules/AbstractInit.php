@@ -5,6 +5,8 @@ namespace Okay\Core\Modules;
 
 
 use Okay\Admin\Controllers\IndexAdmin;
+use Okay\Core\Config;
+use Okay\Core\Design;
 use Okay\Core\DesignBlocks;
 use Okay\Core\Database;
 use Okay\Core\Entity\Entity;
@@ -92,6 +94,16 @@ abstract class AbstractInit
     private $templateConfig;
 
     /**
+     * @var Design
+     */
+    private $design;
+
+    /**
+     * @var Config
+     */
+    private $config;
+
+    /**
      * @var int id модуля в базе
      */
     private $moduleId;
@@ -121,6 +133,8 @@ abstract class AbstractInit
         $this->managerMenu     = $serviceLocator->getService(ManagerMenu::class);
         $this->image           = $serviceLocator->getService(Image::class);
         $this->templateConfig  = $serviceLocator->getService(TemplateConfig::class);
+        $this->design          = $serviceLocator->getService(Design::class);
+        $this->config          = $serviceLocator->getService(Config::class);
         $this->moduleId        = $moduleId;
         $this->vendor          = $vendor;
         $this->moduleName      = $moduleName;
@@ -146,7 +160,7 @@ abstract class AbstractInit
         $modulesEntity = $this->entityFactory->get(ModulesEntity::class);
         $modulesEntity->update($this->moduleId, ['system' => 1]);
     }
-
+    
     /**
      * Регистрация блока в админке. Чтобы узнать имя блока, к которому хотите зацепиться,
      * нужно в конфиге включить директиву dev_mode = true,
@@ -156,13 +170,16 @@ abstract class AbstractInit
      *
      * @param string $blockName название блока
      * @param string $blockTplFile имя tpl файла блока из директории Backend/design/html модуля
+     * @param callable $callback ф-ция которую нужно вызвать перед отрисовкой шортблока. Может использоваться для 
+     * передачи в дизайн данных, нужных для отрисовки шортблока. Можно указывать как аргументы с указанием 
+     * type hint Services, Entities etc.
      * @throws \Exception
      */
-    protected function addBackendBlock($blockName, $blockTplFile)
+    protected function addBackendBlock($blockName, $blockTplFile, $callback = null)
     {
         $blockTplFile = pathinfo($blockTplFile, PATHINFO_BASENAME);
         $blockTplFile = $this->module->getModuleDirectory($this->vendor, $this->moduleName) . 'Backend/design/html/' . $blockTplFile;
-        $this->addDesignBlock($blockName, $blockTplFile);
+        $this->addDesignBlock($blockName, $blockTplFile, $callback);
     }
 
     /**
@@ -174,9 +191,12 @@ abstract class AbstractInit
      *
      * @param string $blockName название блока
      * @param string $blockTplFile имя tpl файла блока из директории Backend/design/html модуля
+     * @param callable $callback ф-ция которую нужно вызвать перед отрисовкой шортблока. Может использоваться для
+     * передачи в дизайн данных, нужных для отрисовки шортблока. Можно указывать как аргументы с указанием
+     * type hint Services, Entities etc.
      * @throws \Exception
      */
-    protected function addFrontBlock($blockName, $blockTplFile)
+    protected function addFrontBlock($blockName, $blockTplFile, $callback = null)
     {
         $blockTplFile = pathinfo($blockTplFile, PATHINFO_BASENAME);
         $themeModuleHtmlDir = __DIR__.'/../../../design/'.$this->templateConfig->getTheme().'/modules/'.$this->vendor.'/'.$this->moduleName.'/html/';
@@ -186,7 +206,7 @@ abstract class AbstractInit
             $blockTplFile = $this->module->getModuleDirectory($this->vendor, $this->moduleName) . 'design/html/' . $blockTplFile;
         }
 
-        $this->addDesignBlock($blockName, $blockTplFile);
+        $this->addDesignBlock($blockName, $blockTplFile, $callback);
     }
     
     /**
@@ -377,6 +397,21 @@ abstract class AbstractInit
     }
 
     /**
+     * Регистрация ленговой таблицы для указанного Entity. Нужно в случае, если стандартный Entity был не мультиязычна, 
+     * а нужно чтобы он стал мультиязычным.
+     * 
+     * @param $entityClassName
+     * @param $langTable
+     * @param $langObject
+     */
+    protected function registerEntityLangInfo($entityClassName, $langTable, $langObject)
+    {
+        /** @var Entity $entityClassName */
+        $entityClassName::setLangTable($langTable);
+        $entityClassName::setLangObject($langObject);
+    }
+
+    /**
      * Добавление дополнительных полей в БД к существующим сущностям
      * Вызывать метод стоит в методе install()
      *
@@ -528,14 +563,15 @@ abstract class AbstractInit
      *
      * @param $blockName
      * @param $blockTplFile
+     * @param $callback
      * @throws \Exception
      */
-    private function addDesignBlock($blockName, $blockTplFile)
+    private function addDesignBlock($blockName, $blockTplFile, $callback = null)
     {
         $serviceLocator = ServiceLocator::getInstance();
 
         /** @var DesignBlocks $designBlocks */
         $designBlocks = $serviceLocator->getService(DesignBlocks::class);
-        $designBlocks->registerBlock($blockName, $blockTplFile);
+        $designBlocks->registerBlock($blockName, $blockTplFile, $callback);
     }
 }
