@@ -20,9 +20,9 @@
 									{if $a->image}
 										<picture>
 											{if $settings->support_webp}
-												<source class="lazy" type="image/webp" data-srcset="{$a->image|resize:320:500:false:$config->resized_authors_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+												<source type="image/webp" data-srcset="{$a->image|resize:320:500:false:$config->resized_authors_dir}.webp">
 											{/if}
-											<source class="lazy" data-srcset="{$a->image|resize:320:500:false:$config->resized_authors_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+											<source data-srcset="{$a->image|resize:320:500:false:$config->resized_authors_dir}">
 											<img class="lazy" data-src="{$a->image|resize:320:500:false:$config->resized_authors_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$a->name|escape}" title="{$a->name|escape}"/>
 										</picture>
 									{else}

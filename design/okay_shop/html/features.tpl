@@ -19,9 +19,9 @@
                                                 {if $c->image}
                                                     <picture>
                                                         {if $settings->support_webp}
-                                                            <source class="lazy" type="image/webp" data-srcset="{$c->image|resize:20:20:false:$config->resized_categories_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                                            <source type="image/webp" data-srcset="{$c->image|resize:20:20:false:$config->resized_categories_dir}.webp">
                                                         {/if}
-                                                        <source class="lazy" data-srcset="{$c->image|resize:20:20:false:$config->resized_categories_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                                        <source data-srcset="{$c->image|resize:20:20:false:$config->resized_categories_dir}">
                                                         <img class="lazy" data-src="{$c->image|resize:20:20:false:$config->resized_categories_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$c->name|escape}" title="{$c->name|escape}"/>
                                                     </picture>
                                                 {else}

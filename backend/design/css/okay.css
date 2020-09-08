@@ -2826,6 +2826,7 @@ label.switch_label i{
 .okay_list .okay_list_head .okay_list_heading{
     float: left;
     padding: 10px;
+    word-break: break-word; 
 }
 .okay_list .okay_list_head .okay_list_heading {
     font-weight: 600;
@@ -3010,6 +3011,7 @@ label.switch_label i{
     color: #02bcf2;
     display: inline-block;
     text-decoration: underline;
+    word-break: break-all;
 }
 .okay_list .okay_list_boding a:hover{
     color:  #2b303b;

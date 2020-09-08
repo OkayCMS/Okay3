@@ -10,9 +10,9 @@
                 <a data-fancybox="author_image" href="{$author->image|resize:800:800:false:$config->resized_authors_dir}">
                     <picture>
                         {if $settings->support_webp}
-                            <source class="lazy" type="image/webp" data-srcset="{$author->image|resize:320:500:false:$config->resized_authors_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                            <source type="image/webp" data-srcset="{$author->image|resize:320:500:false:$config->resized_authors_dir}.webp">
                         {/if}
-                        <source class="lazy" data-srcset="{$author->image|resize:320:500:false:$config->resized_authors_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                        <source data-srcset="{$author->image|resize:320:500:false:$config->resized_authors_dir}">
                         <img class="lazy" data-src="{$author->image|resize:320:500:false:$config->resized_authors_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$author->name|escape}" title="{$author->name|escape}"/>
                     </picture>
                 </a>

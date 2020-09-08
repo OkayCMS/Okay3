@@ -1,10 +1,5 @@
 /***** #Main banner ****/
 
-.banner_group.owl-carousel .owl-dots {
-    position: absolute;
-    bottom: 5px;
-    width: 100%;
-}
 .banner_group{
     overflow: hidden;
     background-color: #ffffff;
@@ -16,19 +11,6 @@
 .banner_group.no_js{
     background-color: transparent;
     margin-bottom: 0;
-}
-.no_js.owl-carousel{
-    display: block!important;
-}
-.banner_group.owl-carousel .owl-stage-outer{
-    max-height: 100%;
-}
-.banner_group.owl-carousel .owl-stage{
-    height: 100%;
-}
-.banner_group.owl-carousel .owl-item {
-    position: relative;
-    height: 100%;
 }
 .banner_group__item{
     position: relative;
@@ -175,16 +157,6 @@
 }
 
 @media only screen and (max-width : 991px) {
-    .banner_group.owl-carousel .owl-stage-outer{
-        max-height: inherit;
-    }
-    .banner_group.owl-carousel .owl-stage{
-        height: auto;
-    }
-    .banner_group.owl-carousel .owl-item {
-        position: relative;
-        height: auto;
-    }
     .banner_group.no_js .banner_group__item{
         background-color: #ffffff;
         margin-bottom: 10px;
@@ -210,20 +182,6 @@
         font-weight: 500;
         text-transform: initial;
         margin-bottom: 0;
-    }
-    .banner_group.owl-carousel .owl-stage-outer {
-        max-height: 100%;
-    }
-    .banner_group.owl-carousel .owl-stage {
-        height: 100%;
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-align: center;
-        -webkit-align-items: center;
-        -ms-flex-align: center;
-        align-items: center;
     }
     .banner_group__description {
         font-size: 12px;

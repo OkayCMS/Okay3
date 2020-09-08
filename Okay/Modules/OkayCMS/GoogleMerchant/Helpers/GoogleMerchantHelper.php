@@ -170,7 +170,7 @@ class GoogleMerchantHelper
      */
     public function getItem($product, $allCategories, $addVariantUrl = false)
     {
-        if ($this->settings->okaycms__google_merchant__use_variant_name_like_size) {
+        if ($this->settings->get('okaycms__google_merchant__use_variant_name_like_size')) {
             $result['title']['data'] = $this->feedHelper->escape($product->product_name);
             if (!empty($product->variant_name)) {
                 $result['g:size']['data'] = $this->feedHelper->escape($product->variant_name);
@@ -216,7 +216,7 @@ class GoogleMerchantHelper
             $result['g:price']['data'] = $this->feedHelper->escape($price . ' ' . $this->mainCurrency->code);
         }
 
-        $result['g:availability']['data'] = ($product->stock !== 0 ? 'in stock' : 'not in stock');
+        $result['g:availability']['data'] = (!in_array($product->stock, [0, '0'], true) ? 'in stock' : 'not in stock');
 
         if (!empty($product->vendor)) {
             $result['g:brand']['data'] = $this->feedHelper->escape($product->vendor);

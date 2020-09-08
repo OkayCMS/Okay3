@@ -71,6 +71,22 @@ class Phone
      */
     public static function isValid($phoneNumber)
     {
+        if (substr($phoneNumber, 0, 2) == '+0') {
+            $phoneNumber = substr($phoneNumber, 1);
+        }
+        
+        if (empty($phoneNumber)) {
+            return false;
+        }
+        
+        if (!PhoneNumberUtil::isViablePhoneNumber($phoneNumber)) {
+            return false;
+        }
+        
+        if (($len = mb_strlen(trim($phoneNumber, '+'))) < 5 || $len > 20) {
+            return false;
+        }
+        
         $SL = ServiceLocator::getInstance();
         /** @var Settings $settings */
         $settings = $SL->getService(Settings::class);

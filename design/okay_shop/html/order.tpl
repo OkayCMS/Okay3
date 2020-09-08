@@ -26,9 +26,9 @@
                                             {if $purchase->product->image}
                                             <picture>
                                                 {if $settings->support_webp}
-                                                    <source class="lazy" type="image/webp" data-srcset="{$purchase->product->image->filename|resize:70:70}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                                    <source type="image/webp" data-srcset="{$purchase->product->image->filename|resize:70:70}.webp">
                                                 {/if}
-                                                <source class="lazy" data-srcset="{$purchase->product->image->filename|resize:70:70}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                                <source data-srcset="{$purchase->product->image->filename|resize:70:70}">
                                                 <img class="lazy" data-src="{$purchase->product->image->filename|resize:70:70}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$purchase->product->name|escape}" title="{$purchase->product->name|escape}"/>
                                             </picture>
                                             {else}
@@ -157,7 +157,13 @@
 
                                                             {if $payment_method->image}
                                                                 <div class="delivery__image">
-                                                                    <img src="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" />
+                                                                    <picture>
+                                                                        {if $settings->support_webp}
+                                                                            <source type="image/webp" srcset="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}.webp">
+                                                                        {/if}
+                                                                        <source srcset="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}">
+                                                                        <img class="lazy" data-src="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$purchase->product->name|escape}" title="{$purchase->product->name|escape}"/>
+                                                                    </picture>
                                                                 </div>
                                                             {/if}
                                                         </label>

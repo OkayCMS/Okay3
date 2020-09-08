@@ -20,9 +20,9 @@
 										<div class="brand__image">
 											<picture>
 												{if $settings->support_webp}
-													<source class="lazy" type="image/webp" data-srcset="{$b->image|resize:120:100:false:$config->resized_brands_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+													<source type="image/webp" data-srcset="{$b->image|resize:120:100:false:$config->resized_brands_dir}.webp">
 												{/if}
-												<source class="lazy" data-srcset="{$b->image|resize:120:100:false:$config->resized_brands_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+												<source data-srcset="{$b->image|resize:120:100:false:$config->resized_brands_dir}">
 												<img class="brand_img lazy" data-src="{$b->image|resize:120:100:false:$config->resized_brands_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$b->name|escape}" title="{$b->name|escape}"/>
 											</picture>
 										</div>

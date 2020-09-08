@@ -329,9 +329,9 @@
                                 <li class="d-flex justify-content-center align-items-center payments__item" title="{$payment_method->name|escape}">
                                     <picture>
                                         {if $settings->support_webp}
-                                            <source class="lazy" type="image/webp" data-srcset="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                            <source type="image/webp" data-srcset="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}.webp">
                                         {/if}
-                                        <source class="lazy" data-srcset="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                        <source data-srcset="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}">
                                         <img class="lazy" data-src="{$payment_method->image|resize:80:30:false:$config->resized_payments_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$payment_method->name|escape}" title="{$payment_method->name|escape}"/>
                                     </picture>
                                 </li>
@@ -340,7 +340,7 @@
                     </div>
                     {* Copyright *}
                     <div class="f_col-md flex-md-first d-flex align-items-center copyright">
-                        <div class="d-flex align-items-center" href="https://okay-cms.com" rel="noreferrer" target="_blank">
+                        <div class="d-flex align-items-center">
                             <span>© {$smarty.now|date_format:"%Y"}</span>
                             <span data-language="index_copyright">{$lang->index_copyright}</span>
                         </div>
@@ -359,11 +359,28 @@
     {* Форма обратного звонка *}
     {include file='callback.tpl'}
     
+    {* Всплывающая корзина *}
     {if $route_name != 'cart'}
-    <div id="fn_pop_up_cart" class="hidden">
-        {include file='pop_up_cart.tpl'}
+    <div id="fn_pop_up_cart_wrap" class="hidden">
+        <div id="fn_pop_up_cart">
+            {include file='pop_up_cart.tpl'}
+        </div>
     </div>
     {/if}
+
+    {* Уведомления о добавление в сравнение *}
+    <div id="fn_compare_confirm"  style="display: none;">
+        <div class="popup_confirm__title">
+            <span data-language="popup_add_to_compare">{$lang->popup_add_to_compare}</span>
+        </div>
+    </div>
+
+    {* Уведомления о добавление в избранное *}
+    <div id="fn_wishlist_confirm" style="display: none;">
+        <div class="popup_confirm__title">
+            <span data-language="popup_add_to_wishlist">{$lang->popup_add_to_wishlist}</span>
+        </div>
+    </div>
     
     <script>ut_tracker.start('parsing:body_bottom:scripts');</script>
 

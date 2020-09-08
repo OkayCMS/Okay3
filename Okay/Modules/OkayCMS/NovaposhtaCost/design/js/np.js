@@ -236,7 +236,7 @@ function calc_delivery_price(e) {
 
 function update_np_payments() {
     const payment_method_ids = get_np_payment_method_ids();
-    const redelivery_enabled = $('[name="novaposhta_redelivery"]').prop('checked');
+    const redelivery_enabled = $('input[name="delivery_id"]:checked').closest('.fn_delivery_item').find('[name="novaposhta_redelivery"]').prop('checked');
 
     if (redelivery_enabled) {
         for (const payment_id of payment_method_ids) {
@@ -269,7 +269,7 @@ function select_first_active_payment() {
 }
 
 function get_np_payment_method_ids() {
-    let deliveryInput = $('[name="novaposhta_redelivery"]')
+    let deliveryInput = $('input[name="delivery_id"]:checked').closest('.fn_delivery_item').find('[name="novaposhta_redelivery"]')
         .closest('.fn_delivery_item')
         .find('[name="delivery_id"]');
     

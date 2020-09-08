@@ -60,9 +60,9 @@
                     {if $post->author->image}
                     <picture>
                         {if $settings->support_webp}
-                            <source class="lazy" type="image/webp" data-srcset="{$post->author->image|resize:24:24:false:$config->resized_authors_dir:center:center}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                            <source type="image/webp" data-srcset="{$post->author->image|resize:24:24:false:$config->resized_authors_dir:center:center}.webp">
                         {/if}
-                        <source class="lazy" data-srcset="{$post->author->image|resize:24:24:false:$config->resized_authors_dir:center:center}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                        <source data-srcset="{$post->author->image|resize:24:24:false:$config->resized_authors_dir:center:center}">
                         <img class="lazy" data-src="{$post->author->image|resize:24:24:false:$config->resized_authors_dir:center:center}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$post->author->name|escape}" title="{$post->author->name|escape}"/>
                     </picture>
                     {else}

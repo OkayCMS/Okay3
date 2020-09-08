@@ -70,4 +70,11 @@
             </div>
         </div>
     </div>
+{else}
+    <div class="block">
+        {* The page heading *}
+        <h1 class="h1"><span data-language="cart_header">{$lang->cart_header}</span></h1>
+
+        <p class="block padding" data-language="cart_empty">{$lang->cart_empty}</p>
+    </div>
 {/if}

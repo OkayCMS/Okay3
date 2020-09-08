@@ -5,6 +5,7 @@ namespace Okay\Helpers;
 
 
 use Okay\Core\EntityFactory;
+use Okay\Core\Phone;
 use Okay\Core\UserReferer\UserReferer;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\PaymentsEntity;
@@ -93,6 +94,10 @@ class OrdersHelper
 
     public function prepareAdd($order)
     {
+        if (!empty($order->phone)) {
+            $order->phone = Phone::toSave($order->phone);
+        }
+        
         return ExtenderFacade::execute(__METHOD__, $order, func_get_args());
     }
 

@@ -53,7 +53,8 @@
 {if $banner_data->settings.as_slider}
 <script>
     document.addEventListener('DOMContentLoaded', function(){
-        var swiper = new Swiper('.fn_banner_{$banner_data->group_name}', {
+        $('.fn_banner_{$banner_data->group_name}').each(function(){
+            var swiper = new Swiper(this, {
             loop: {if isset($banner_data->settings.loop) && !empty($banner_data->settings.loop)}true{else}false{/if},
             {if isset($banner_data->settings.autoplay) && !empty($banner_data->settings.autoplay)}
                 autoplay: {
@@ -63,14 +64,14 @@
             autoplay: {if isset($banner_data->settings.autoplay) && !empty($banner_data->settings.autoplay)}true{else}false{/if},
             {if isset($banner_data->settings.nav) && !empty($banner_data->settings.nav)}
                 navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
+                    nextEl: this.querySelector('.swiper-button-next'),
+                    prevEl: this.querySelector('.swiper-button-prev'),
                 },
             {/if}
 
             {if isset($banner_data->settings.dots) && !empty($banner_data->settings.dots)}
             pagination: {
-                el: '.swiper-pagination',
+                el: this.querySelector('.swiper-pagination'),
                 clickable: true,
                 },
             {/if}
@@ -85,7 +86,7 @@
                 },
             }
           });
-
+        });
     });
 </script>
 {/if}

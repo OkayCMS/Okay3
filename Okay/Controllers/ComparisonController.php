@@ -5,6 +5,7 @@ namespace Okay\Controllers;
 
 
 use Okay\Core\Comparison;
+use Okay\Helpers\ComparisonHelper;
 
 class ComparisonController extends AbstractController
 {
@@ -14,7 +15,7 @@ class ComparisonController extends AbstractController
         $this->response->setContent('comparison.tpl');
     }
     
-    public function ajaxUpdate(Comparison $comparison)
+    public function ajaxUpdate(Comparison $comparison, ComparisonHelper $comparisonHelper)
     {
 
         $productId = $this->request->get('product', 'integer');
@@ -26,8 +27,8 @@ class ComparisonController extends AbstractController
         }
 
         $this->design->assign('comparison', $comparison->get());
-
-        $result = $this->design->fetch('comparison_informer.tpl');        
+        
+        $result = $comparisonHelper->getInformerTemplate();
         $this->response->setContent(json_encode($result), RESPONSE_JSON);
     }
     

@@ -191,7 +191,7 @@ class Design
         $fileModifications = [];
         if (!empty($modifications)) {
             foreach ($modifications as $modification) {
-                if ($modification->file == substr($currentFile, -strlen($modification->file))) {
+                if ('/'.ltrim($modification->file, '/') == substr($currentFile, -strlen('/'.$modification->file))) {
                     $fileModifications = array_merge($fileModifications, $modification->changes);
                 }
             }
@@ -206,7 +206,7 @@ class Design
 
     /**
      * Метод нужен для модулей, если в каком-то экстендере или еще где нужно обработать tpl файл
-     * нужно предватилельно вызвать этот метод, чтобы переключить директорию tpl файлов.
+     * нужно предварительно вызвать этот метод, чтобы переключить директорию tpl файлов.
      * После вызова fetch() нужно обязательно вернуть стандартную директорию методом rollbackTemplatesDir()
      * 
      * @param $moduleClassName

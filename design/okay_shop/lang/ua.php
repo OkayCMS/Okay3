@@ -321,3 +321,5 @@ $lang['author_posts'] = "Статті автора";
 $lang['post_rating_title'] = "Оцініть статтю:";
 $lang['cart_continue_shopping'] = "Продовжити покупки";
 $lang['cart_go_to_cart'] = "Оформити замовлення";
+$lang['popup_add_to_compare'] = "Товар доданий в порівняння";
+$lang['popup_add_to_wishlist'] = "Товар доданий в обране";

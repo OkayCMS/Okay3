@@ -9,9 +9,9 @@
                         <div class="advantages__icon advantages__icon--delivery d-flex align-items-center justify-content-center">
                             <picture>
                                 {if $settings->support_webp}
-                                    <source class="lazy" type="image/webp" data-srcset="{$advantage->filename|resize:50:50:false:$config->resized_advantages_dir}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                    <source type="image/webp" data-srcset="{$advantage->filename|resize:50:50:false:$config->resized_advantages_dir}.webp">
                                 {/if}
-                                <source class="lazy" data-srcset="{$advantage->filename|resize:50:50:false:$config->resized_advantages_dir}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                <source data-srcset="{$advantage->filename|resize:50:50:false:$config->resized_advantages_dir}">
                                 <img class="lazy" data-src="{$advantage->filename|resize:50:50:false:$config->resized_advantages_dir}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$advantage->text|escape}" title="{$advantage->text|escape}"/>
                             </picture>
                         </div>

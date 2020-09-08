@@ -61,7 +61,7 @@ class Parser
             || preg_match('~^\s*({(foreach)\s.*?(?:{.+?}.*?)*})+(.*)?~is', $string, $matchesSmartyForeach)
             || preg_match('~^\s*({(function)\s.*?(?:{.+?}.*?)*})+(.*)?~is', $string, $matchesSmartyFunction)
             || preg_match('~^\s*({(if)\s.*?(?:{.+?}.*?)*})+(.*)?~is', $string, $matchesSmartyIf)
-            || preg_match('~^\s*((?:<!DOCTYPE.*?>)?.*?)(<.*|{/?foreach[^e]*]|{/?function.*|{/?if.*)*$~is', $string, $matchesText)) {
+            || preg_match('~^\s*((?:<!DOCTYPE.*?>)?.*?)(<.*|{foreach\s.*|{function\s.*|{if\s.*|{/foreach}.*|{/function}.*|{/if}.*)*$~is', $string, $matchesText)) {
             return [
                 $matchesSmartyComment,
                 $matchesHtmlComment,

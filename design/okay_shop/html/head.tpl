@@ -248,8 +248,6 @@
     {* JQuery *}
     <script>ut_tracker.start('parsing:page');</script>
 
-    <!-- <script src="https://unpkg.com/swiper/swiper-bundle.js"></script> -->
-
     {if !empty($counters['head'])}
     <script>ut_tracker.start('parsing:head:counters');</script>
     {foreach $counters['head'] as $counter}

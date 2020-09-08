@@ -9,17 +9,23 @@
             </div>
 
             <div class="row">
-                <div class="form_group fn_search_street col-lg-6">
-                    <input class="form__input fn_street form__placeholder--focus fn_np_clear" name="novaposhta_street" id="search_np_street" type="text" value="{$request_data.novaposhta_street|escape}" autocomplete="off">
-                    <span class="form__placeholder">{$lang->np_cart_street}*</span>
+                <div class="col-lg-6">
+                    <div class="form__group fn_search_street"> 
+                        <input class="form__input fn_street form__placeholder--focus fn_np_clear" name="novaposhta_street" id="search_np_street" type="text" value="{$request_data.novaposhta_street|escape}" autocomplete="off">
+                        <span class="form__placeholder">{$lang->np_cart_street}*</span>
+                    </div>
                 </div>
-                <div class="form_group fn_house col-lg-3">
-                    <input class="form__input fn_address form__placeholder--focus fn_np_clear" name="novaposhta_house" type="text" value="{$request_data.novaposhta_house|escape}">
-                    <span class="form__placeholder">{$lang->np_cart_house}*</span>
+                <div class="col-lg-3">
+                    <div class="form__group fn_house">
+                        <input class="form__input fn_address form__placeholder--focus fn_np_clear" name="novaposhta_house" type="text" value="{$request_data.novaposhta_house|escape}">
+                        <span class="form__placeholder">{$lang->np_cart_house}*</span>
+                    </div>
                 </div>
-                <div class="form_group fn_apartment col-lg-3">
-                    <input class="form__input fn_address form__placeholder--focus fn_np_clear" name="novaposhta_apartment" type="text" value="{$request_data.novaposhta_apartment|escape}">
-                    <span class="form__placeholder">{$lang->np_cart_apartment}</span>
+                <div class="col-lg-3">
+                    <div class="form__group fn_apartment">
+                        <input class="form__input fn_address form__placeholder--focus fn_np_clear" name="novaposhta_apartment" type="text" value="{$request_data.novaposhta_apartment|escape}">
+                        <span class="form__placeholder">{$lang->np_cart_apartment}</span>
+                    </div>
                 </div>
             </div>
             <input name="novaposhta_door_delivery" type="hidden" value="1"/>
@@ -44,8 +50,10 @@
 
         {if $np_redelivery_payments_ids}
             <div class="form__group">
-                <label for="redelivery">{$lang->np_cart_cod} </label>
-                <input name="novaposhta_redelivery" id="redelivery" value="1" type="checkbox" {if $request_data.novaposhta_redelivery == true}checked{/if} />
+                <label for="redelivery_{$delivery->id}">
+                <input name="novaposhta_redelivery" id="redelivery_{$delivery->id}" value="1" type="checkbox" {if $request_data.novaposhta_redelivery == true}checked{/if} />
+                {$lang->np_cart_cod} 
+            </label>
             </div>
         {/if}
         

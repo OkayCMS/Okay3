@@ -190,7 +190,7 @@
                             <div class="fn_step-10">
                                 <div class="heading_label boxes_inline">
                                     {$btr->settings_enable_webp|escape}
-                                    <i class="fn_tooltips" title="{$btr->settings_enable_webp_notice|escape}">
+                                    <i class="fn_tooltips" title="{$btr->settings_enable_webp_notice|escape}"> 
                                         {include file='svg_icon.tpl' svgId='icon_tooltips'}
                                     </i>
                                 </div>
@@ -209,7 +209,7 @@
                         {get_design_block block="settings_catalog_general_row_2"}
                     </div>
 
-                    <div class="row">
+                    <div class="row mt-2">
                         <div class="col-lg-12 col-md-12 ">
                             <button type="submit" class="btn btn_small btn_blue float-md-right" type="submit" name="save" value="1">
                                 {include file='svg_icon.tpl' svgId='checked'}

@@ -7,11 +7,11 @@
                     {if $product->image->filename}
                         <picture>
                             {if $settings->support_webp}
-                                <source class="lazy" type="image/webp" data-srcset="{$product->image->filename|resize:180:150}.webp" media="(max-width: 440px)" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif"> 
-                                <source class="lazy" type="image/webp" data-srcset="{$product->image->filename|resize:300:150}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                <source type="image/webp" data-srcset="{$product->image->filename|resize:180:150}.webp" media="(max-width: 440px)" > 
+                                <source type="image/webp" data-srcset="{$product->image->filename|resize:300:150}.webp" >
                             {/if}
-                            <source class="lazy" data-srcset="{$product->image->filename|resize:180:150}" media="(max-width: 440px)" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
-                            <source class="lazy" data-srcset="{$product->image->filename|resize:300:150}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                            <source data-srcset="{$product->image->filename|resize:180:150}" media="(max-width: 440px)">
+                            <source data-srcset="{$product->image->filename|resize:300:150}">
                                 
                             <img class="fn_img preview_img lazy" data-src="{$product->image->filename|resize:300:150}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$product->name|escape}" title="{$product->name|escape}"/>
                         </picture>

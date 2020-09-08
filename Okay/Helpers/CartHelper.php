@@ -73,39 +73,40 @@ class CartHelper
     public function getAjaxCartResult($cart, $currency, $paymentMethods, $deliveries, $action, $variantId, $amount = 0)
     {
         $this->design->assign('cart', $cart);
-        
+
+        $result = [];
         if ($cart->isEmpty === false) {
-            $result = ['result' => 1];
-            
-            $result['deliveries_data'] = $deliveries;
-            $result['payment_methods_data'] = $paymentMethods;
-
-            if (is_file('design/' . $this->templateConfig->getTheme() . '/html/cart_coupon.tpl')) {
-                $result['cart_coupon'] = $this->design->fetch('cart_coupon.tpl');
-            } else {
-                $this->logger->error('File "design/' . $this->templateConfig->getTheme() . '/html/cart_coupon.tpl" not found');
-            }
-
-            if (is_file('design/' . $this->templateConfig->getTheme() . '/html/cart_purchases.tpl')) {
-                $result['cart_purchases'] = $this->design->fetch('cart_purchases.tpl');
-            } else {
-                $this->logger->error('File "design/' . $this->templateConfig->getTheme() . '/html/cart_purchases.tpl" not found');
-            }
-
-            if (is_file('design/' . $this->templateConfig->getTheme() . '/html/pop_up_cart.tpl')) {
-                $result['pop_up_cart'] = $this->design->fetch('pop_up_cart.tpl');
-            } else {
-                $this->logger->error('File "design/' . $this->templateConfig->getTheme() . '/html/pop_up_cart.tpl" not found');
-            }
-
-            $result['cart_deliveries'] = 'DEPRECATED DATA';
-            $result['currency_sign']   = $currency->sign;
-            $result['total_price']     = $this->moneyCore->convert($cart->total_price, $currency->id);
-            $result['total_products']  = $cart->total_products;
+            $result['result'] = 1;
         } else {
-            $result = ['result' => 0];
+            $result['result'] = 0;
             $result['content']       = $this->design->fetch('cart.tpl');
         }
+            
+        $result['deliveries_data'] = $deliveries;
+        $result['payment_methods_data'] = $paymentMethods;
+
+        if (is_file('design/' . $this->templateConfig->getTheme() . '/html/cart_coupon.tpl')) {
+            $result['cart_coupon'] = $this->design->fetch('cart_coupon.tpl');
+        } else {
+            $this->logger->error('File "design/' . $this->templateConfig->getTheme() . '/html/cart_coupon.tpl" not found');
+        }
+
+        if (is_file('design/' . $this->templateConfig->getTheme() . '/html/cart_purchases.tpl')) {
+            $result['cart_purchases'] = $this->design->fetch('cart_purchases.tpl');
+        } else {
+            $this->logger->error('File "design/' . $this->templateConfig->getTheme() . '/html/cart_purchases.tpl" not found');
+        }
+
+        if (is_file('design/' . $this->templateConfig->getTheme() . '/html/pop_up_cart.tpl')) {
+            $result['pop_up_cart'] = $this->design->fetch('pop_up_cart.tpl');
+        } else {
+            $this->logger->error('File "design/' . $this->templateConfig->getTheme() . '/html/pop_up_cart.tpl" not found');
+        }
+
+        $result['cart_deliveries'] = 'DEPRECATED DATA';
+        $result['currency_sign']   = $currency->sign;
+        $result['total_price']     = $this->moneyCore->convert($cart->total_price, $currency->id);
+        $result['total_products']  = $cart->total_products;
 
         if (is_file('design/' . $this->templateConfig->getTheme() . '/html/cart_informer.tpl')) {
             $result['cart_informer'] = $this->design->fetch('cart_informer.tpl');

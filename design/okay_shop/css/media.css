@@ -207,6 +207,7 @@
         box-shadow: 0 5px 15px #00000059;
         z-index: 3;
     }
+    .fn_products_slide .product_item{width: 264px;}
     .product_item:not(.no_hover):hover .product_preview {
         background: #fff;
         border-color: transparent;
@@ -562,9 +563,6 @@
         box-shadow: none;
         min-height: 300px;
         border-left: none !important;
-    }
-    .owl-carousel .product_item {
-        height: 300px;
     }
     .product_preview__top{
         display: none;
@@ -1355,12 +1353,6 @@
         font-size: 18px;
         font-weight: 600;
         margin-bottom: 10px;
-    }
-    .owl-carousel .owl-nav.disabled + .owl-dots {
-        margin-top: 20px;
-    }
-    .owl-carousel .owl-dots .owl-dot span {
-        width: 25px;
     }
     .product_preview__buttons .comparison_button,
     .product_preview__buttons .fast_order_button {

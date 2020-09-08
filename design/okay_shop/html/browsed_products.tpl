@@ -14,9 +14,9 @@
                         {if $browsed_product->image->filename}
                             <picture>
                                 {if $settings->support_webp}
-                                    <source class="lazy" type="image/webp" data-srcset="{$browsed_product->image->filename|resize:70:70}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                    <source type="image/webp" data-srcset="{$browsed_product->image->filename|resize:70:70}.webp">
                                 {/if}
-                                <source class="lazy" data-srcset="{$browsed_product->image->filename|resize:70:70}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                <source data-srcset="{$browsed_product->image->filename|resize:70:70}">
                                 <img class="lazy" data-src="{$browsed_product->image->filename|resize:70:70}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$browsed_product->name|escape}" title="{$browsed_product->name|escape}"/>
                             </picture>
                         {else}

@@ -43,6 +43,7 @@ use Okay\Helpers\AuthorsHelper;
 use Okay\Helpers\BlogHelper;
 use Okay\Helpers\BrandsHelper;
 use Okay\Helpers\CartHelper;
+use Okay\Helpers\ComparisonHelper;
 use Okay\Helpers\CouponHelper;
 use Okay\Helpers\CommentsHelper;
 use Okay\Helpers\DeliveriesHelper;
@@ -501,6 +502,13 @@ return [
             new SR(Response::class),
             new SR(MainHelper::class),
             new SR(Settings::class),
+        ]
+    ],
+    ComparisonHelper::class => [
+        'class' => ComparisonHelper::class,
+        'arguments' => [
+            new SR(EntityFactory::class),
+            new SR(Design::class),
         ]
     ],
     ProductMetadataHelper::class => [

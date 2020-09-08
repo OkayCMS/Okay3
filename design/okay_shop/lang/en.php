@@ -321,3 +321,5 @@ $lang['author_posts'] = "Author articles";
 $lang['post_rating_title'] = "Rate this article:";
 $lang['cart_continue_shopping'] = "Continue shopping";
 $lang['cart_go_to_cart'] = "Checkout";
+$lang['popup_add_to_compare'] = "Product added to comparison";
+$lang['popup_add_to_wishlist'] = "Product added to favorites";

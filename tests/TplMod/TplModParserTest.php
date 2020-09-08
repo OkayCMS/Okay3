@@ -93,6 +93,23 @@ class TplModParserTest extends \PHPUnit\Framework\TestCase
                     [],
                 ]
             ],
+            [// html тег со Smarty внутри
+                '<div class="some_class">{$foo}</div><div class="test">...</div>', 
+                [
+                    [],
+                    [],
+                    [
+                        '<div class="some_class">{$foo}</div><div class="test">...</div>',
+                        '<div class="some_class">',
+                        'div',
+                        '{$foo}</div><div class="test">...</div>',
+                    ],
+                    [],
+                    [],
+                    [],
+                    [],
+                ]
+            ],
             [// Html тег, в котором присутствует сложный синтаксис Smarty
                 '<a class="filter__link{if $smarty.get.{$f@key} && in_array($fv->translit,$smarty.get.{$f@key},true)} checked{/if}" href="{$furl}">...</a><div class="test">...</div>', 
                 [
@@ -156,6 +173,22 @@ class TplModParserTest extends \PHPUnit\Framework\TestCase
                         '{foreachelse}<div class="test2">...</div>{/foreach}',
                         '{foreachelse}',
                         '<div class="test2">...</div>{/foreach}',
+                    ],
+                ]
+            ],
+            [// текст smarty с Smarty блочными элементами
+                '{$f_count = 0}{foreach $f->features_values as $fv}{$f_count = $f_count+1}', 
+                [
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [
+                        '{$f_count = 0}{foreach $f->features_values as $fv}{$f_count = $f_count+1}',
+                        '{$f_count = 0}',
+                        '{foreach $f->features_values as $fv}{$f_count = $f_count+1}',
                     ],
                 ]
             ],

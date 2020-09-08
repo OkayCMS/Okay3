@@ -27,10 +27,10 @@
                                     <a href="{$image->filename|resize:1800:1800:w}" data-fancybox="we2" class="swiper-slide">
                                         <picture>
                                             {if $settings->support_webp}
-                                                <source class="lazy" type="image/webp" data-srcset="{$image->filename|resize:600:800}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                                <source type="image/webp" srcset="{$image->filename|resize:600:800}.webp">
                                             {/if}
-                                                <source class="lazy" data-srcset="{$image->filename|resize:600:800}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
-                                                <img class="lazy" data-src="{$image->filename|resize:600:800}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$product->name|escape}" title="{$product->name|escape}"/>
+                                                <source srcset="{$image->filename|resize:600:800}">
+                                                <img {if $image@first} itemprop="image" {/if} src="{$image->filename|resize:600:800}" alt="{$product->name|escape}" title="{$product->name|escape}"/>
                                         </picture>
                                     </a>
                                 {/foreach}
@@ -65,9 +65,9 @@
                             <div class="swiper-slide product-page__images-item">
                                 <picture>
                                     {if $settings->support_webp}
-                                        <source class="lazy" type="image/webp" data-srcset="{$image->filename|resize:60:60}.webp" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                        <source type="image/webp" data-srcset="{$image->filename|resize:60:60}.webp">
                                     {/if}
-                                        <source class="lazy" data-srcset="{$image->filename|resize:60:60}" srcset="{$rootUrl}/design/{get_theme}/images/xloading.gif">
+                                        <source data-srcset="{$image->filename|resize:60:60}">
                                         <img class="lazy" data-src="{$image->filename|resize:60:60}" src="{$rootUrl}/design/{get_theme}/images/xloading.gif" alt="{$product->name|escape}" title="{$product->name|escape}"/>
                                 </picture>
                             </div>

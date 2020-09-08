@@ -4,7 +4,6 @@
 namespace Okay\Requests;
 
 
-use Okay\Core\Phone;
 use Okay\Core\Request;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
@@ -25,7 +24,7 @@ class CartRequest
         $order->name        = $this->request->post('name');
         $order->email       = $this->request->post('email');
         $order->address     = $this->request->post('address');
-        $order->phone       = Phone::toSave($this->request->post('phone'));
+        $order->phone       = $this->request->post('phone');
         $order->comment     = $this->request->post('comment');
         $order->ip          = $_SERVER['REMOTE_ADDR'];
 
