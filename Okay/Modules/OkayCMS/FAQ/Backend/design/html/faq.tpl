@@ -17,7 +17,7 @@
             </div>
             {if $faq->id}
                 <div class="box_btn_heading">
-                    <a class="btn btn_small btn-info add" target="_blank" href="{url_generator route="OkayCMS_FAQ_main" absolute=1}">
+                    <a class="btn btn_small btn-info add" target="_blank" href="{url_generator route='OkayCMS_FAQ_main' absolute=1}">
                         {include file='svg_icon.tpl' svgId='icon_desktop'}
                         <span>{$btr->general_open|escape}</span>
                     </a>

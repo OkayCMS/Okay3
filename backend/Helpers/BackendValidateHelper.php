@@ -260,7 +260,7 @@ class BackendValidateHelper
         $error = '';
         if (!empty($_FILES['site_favicon']['name'])) {
             $ext = pathinfo($_FILES['site_favicon']['name'],PATHINFO_EXTENSION);
-            if (!in_array($ext, ['png', 'gif', 'jpg', 'jpeg', 'ico'])) {
+            if (!in_array($ext, ['png', 'gif', 'jpg', 'jpeg', 'ico', 'svg'])) {
                 $error = 'wrong_favicon_ext';
             }
         }
@@ -273,7 +273,7 @@ class BackendValidateHelper
         $error = '';
 
         $ext = pathinfo($_FILES['site_logo']['name'],PATHINFO_EXTENSION);
-        if (!in_array($ext, ['png', 'gif', 'jpg', 'jpeg', 'ico'])) {
+        if (!in_array($ext, ['png', 'gif', 'jpg', 'jpeg', 'ico', 'svg'])) {
             $error = 'wrong_favicon_ext';
         }
 

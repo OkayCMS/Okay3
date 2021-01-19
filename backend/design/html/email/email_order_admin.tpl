@@ -134,7 +134,7 @@
                                                             </tr>
                                                             <tr valign="top">
                                                                 <td class="es-p5t es-p5b" width="180px"><span>{$btr->email_order_name|escape}:</span></td>
-                                                                <td class="es-p5t es-p5b"><span>{$order->name|escape}</span></td>
+                                                                <td class="es-p5t es-p5b"><span>{$order->name|escape} {$order->last_name|escape}</span></td>
                                                             </tr>
                                                             <tr valign="top">
                                                                 <td class="es-p5t es-p5b" width="180px"><span>{$btr->email_order_email|escape}:</span></td>

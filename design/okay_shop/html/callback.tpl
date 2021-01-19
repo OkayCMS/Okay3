@@ -1,6 +1,6 @@
 {* Callback form *}
 <div class="hidden">
-    <form id="fn_callback" class="form form--boxed popup fn_validate_callback" method="post">
+    <form id="fn_callback" class="form form--boxed popup popup_animated fn_validate_callback" method="post">
 
         {if $settings->captcha_type == "v3"}
             <input type="hidden" class="fn_recaptcha_token fn_recaptchav3" name="recaptcha_token" />

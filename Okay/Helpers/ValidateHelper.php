@@ -5,6 +5,7 @@ namespace Okay\Helpers;
 
 
 use Okay\Core\EntityFactory;
+use Okay\Core\FrontTranslations;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Core\Request;
 use Okay\Core\ServiceLocator;
@@ -19,12 +20,18 @@ class ValidateHelper
     private $validator;
     private $settings;
     private $request;
+    private $frontTranslations;
 
-    public function __construct(Validator $validator, Settings $settings, Request $request)
-    {
+    public function __construct(
+        Validator $validator,
+        Settings $settings,
+        Request $request,
+        FrontTranslations $frontTranslations
+    ) {
         $this->validator = $validator;
         $this->settings = $settings;
         $this->request = $request;
+        $this->frontTranslations = $frontTranslations;
     }
 
     public function getUserError($user, $currentUserId)
@@ -186,9 +193,9 @@ class ValidateHelper
         
         $error = null;
         if (!$this->validator->isEmail($subscribe->email, true)) {
-            $error = 'empty_email';
+            $error = $this->frontTranslations->getTranslation('form_enter_email');
         } elseif ($subscribesEntity->count(['email' => $subscribe->email]) > 0) {
-            $error = 'email_exist';
+            $error = $this->frontTranslations->getTranslation('index_subscribe_already');
         }
 
         return ExtenderFacade::execute(__METHOD__, $error, func_get_args());

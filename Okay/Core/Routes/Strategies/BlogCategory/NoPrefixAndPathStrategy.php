@@ -104,6 +104,7 @@ class NoPrefixAndPathStrategy extends AbstractRouteStrategy
                 ],
                 []
             ];
+            break;
         }
 
         if (empty($matchedRoute)) {

@@ -5,21 +5,21 @@ namespace Okay\Core\SmartyPlugins\Plugins;
 
 
 use Okay\Core\SmartyPlugins\Func;
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 
 class GetTheme extends Func
 {
     protected $tag = 'get_theme';
 
-    private $templateConfig;
+    private $frontTemplateConfig;
     
-    public function __construct(TemplateConfig $templateConfig)
+    public function __construct(FrontTemplateConfig $frontTemplateConfig)
     {
-        $this->templateConfig = $templateConfig;
+        $this->frontTemplateConfig = $frontTemplateConfig;
     }
 
     public function run()
     {
-        return $this->templateConfig->getTheme();
+        return $this->frontTemplateConfig->getTheme();
     }
 }

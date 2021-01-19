@@ -146,6 +146,10 @@ class GoogleMerchantHelper
             $sql->where('(v.stock >0 OR v.stock is NULL)');
         }
 
+        if (!$this->settings->get('okaycms__google_merchant__upload_without_images')) {
+            $sql->where('p.main_image_id != \'\' AND p.main_image_id IS NOT NULL');
+        }
+        
         if ($this->settings->get('okaycms__google_merchant__no_export_without_price')) {
             $sql->where('v.price > 0');
         }
@@ -216,7 +220,7 @@ class GoogleMerchantHelper
             $result['g:price']['data'] = $this->feedHelper->escape($price . ' ' . $this->mainCurrency->code);
         }
 
-        $result['g:availability']['data'] = (!in_array($product->stock, [0, '0'], true) ? 'in stock' : 'not in stock');
+        $result['g:availability']['data'] = (!in_array($product->stock, [0, '0'], true) ? 'in_stock' : 'out_of_stock');
 
         if (!empty($product->vendor)) {
             $result['g:brand']['data'] = $this->feedHelper->escape($product->vendor);
@@ -240,7 +244,7 @@ class GoogleMerchantHelper
                 $productType .= $category->name.' > ';
             }
 
-            $result['g:product_type']['data'] = substr($productType, 0, -3);
+            $result['g:product_type']['data'] = mb_substr($productType, 0, -3);
         }
 
         if (!empty($product->images)) {

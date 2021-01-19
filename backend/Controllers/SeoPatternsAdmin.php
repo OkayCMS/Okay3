@@ -73,6 +73,7 @@ class SeoPatternsAdmin extends IndexAdmin
                         
                         $categoriesEntity->update($category->id, $categoryToUpdate);
                         $category = $categoriesEntity->get($categoryId);
+                        $this->design->assign('features', $featuresEntity->find(array('category_id' => $category->id)));
                         $this->design->assign("category", $category);
                         $result->success = true;
                     } else {

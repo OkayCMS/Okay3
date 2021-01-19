@@ -20,9 +20,15 @@ class Request
      */
     private $pageUrl;
     
+    private static $domain;
+    private static $protocol;
+    private static $subDir;
+    
     public function __construct()
     {
-        $this->setBasePath($_SERVER['REQUEST_URI']);
+        if (!empty($_SERVER['REQUEST_URI'])) {
+            $this->setBasePath($_SERVER['REQUEST_URI']);
+        }
 
         if ($this->get('lang_id', 'integer')) {
             $this->langId = $this->get('lang_id', 'integer');
@@ -62,6 +68,16 @@ class Request
     {
         return self::getDomainWithProtocol() . $_SERVER['REQUEST_URI'];
     }
+
+    /**
+     * Return the query url, without QUERY_STRING
+     * 
+     * @return string
+     */
+    public static function getCurrentQueryPath()
+    {
+        return self::getDomainWithProtocol() . rtrim(str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']), '?');
+    }
     
     public function getStartTime()
     {
@@ -73,7 +89,7 @@ class Request
     
     public function setStartTime($time)
     {
-        $this->startTime = (int)$time;
+        $this->startTime = (float)$time;
     }
     
     public function getBasePathWithDomain()
@@ -280,6 +296,10 @@ class Request
 
     public static function getSubDir()
     {
+        if (self::$subDir !== null) {
+            return self::$subDir;
+        }
+        
         $scriptDir1 = realpath(dirname(dirname(__DIR__)));
         $scriptDir2 = realpath($_SERVER['DOCUMENT_ROOT']);
         $subDir = trim(substr($scriptDir1, strlen($scriptDir2)), "/\\");
@@ -290,21 +310,43 @@ class Request
 
         return $subDir;
     }
+
+    public static function setSubDir($subDir)
+    {
+        self::$subDir = $subDir;
+    }
     
     public static function getDomain()
     {
-        return rtrim($_SERVER['HTTP_HOST']);
+        return !empty(self::$domain) ? self::$domain : rtrim($_SERVER['HTTP_HOST']);;
+    }
+    
+    public static function setDomain($domain)
+    {
+        self::$domain = $domain;
+    }
+    
+    public static function setProtocol($protocol)
+    {
+        self::$protocol = $protocol;
     }
 
     private static function getProtocol()
     {
+        
+        if (!empty(self::$protocol)) {
+            return self::$protocol;
+        }
+        
         $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,5)) == 'https' ? 'https' : 'http';
-        if($_SERVER["SERVER_PORT"] == 443)
+        if ($_SERVER["SERVER_PORT"] == 443) {
             $protocol = 'https';
-        elseif (isset($_SERVER['HTTPS']) && (($_SERVER['HTTPS'] == 'on') || ($_SERVER['HTTPS'] == '1')))
+        } elseif (isset($_SERVER['HTTPS']) && (($_SERVER['HTTPS'] == 'on') || ($_SERVER['HTTPS'] == '1'))){
             $protocol = 'https';
-        elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on')
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on'){
             $protocol = 'https';
+        }
+        
         return $protocol;
     }
     

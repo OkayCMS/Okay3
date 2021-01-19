@@ -1,13 +1,5 @@
-<form method="post" action="https://www.liqpay.ua/api/pay">
-    <input type="hidden" name="public_key"  value="{$public_key|escape}"/>
-    <input type="hidden" name="amount"      value="{$price|escape}"/>
-    <input type="hidden" name="currency"    value="{$payment_currency->code|escape}"/>
-    <input type="hidden" name="description" value="{$desc|escape}"/>
-    <input type="hidden" name="order_id"    value="{$liq_pay_order_id|escape}"/>
-    <input type="hidden" name="result_url"  value="{$result_url|escape}"/>
-    <input type="hidden" name="server_url"  value="{$server_url|escape}"/>
-    <input type="hidden" name="type"        value="buy"/>
-    <input type="hidden" name="signature"   value="{$sign|escape}"/>
-    <input type="hidden" name="language"    value="{if $language->label == 'ua'}uk{elseif $language->label == 'ru'}ru{else}en{/if}"/>
-    <input type="submit" class="button"     value="{$lang->form_to_pay}">
+<form method="POST" action="https://www.liqpay.ua/api/3/checkout" accept-charset="utf-8">
+    <input type="hidden" name="data" value="{$data|escape}"/>
+    <input type="hidden" name="signature" value="{$sign|escape}"/>
+    <input type="submit" class="button" value="{$lang->form_to_pay}">
 </form>

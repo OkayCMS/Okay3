@@ -156,6 +156,10 @@ class HotlineHelper
             ->groupBy(['v.id'])
             ->orderBy(['p.position DESC']);
 
+        if (!$this->settings->get('okaycms__hotline__upload_without_images')) {
+            $sql->where('p.main_image_id != \'\' AND p.main_image_id IS NOT NULL');
+        }
+        
         if ($this->settings->get('okaycms__hotline__upload_only_available_to_hotline')) {
             $sql->where('(v.stock >0 OR v.stock is NULL)');
         }

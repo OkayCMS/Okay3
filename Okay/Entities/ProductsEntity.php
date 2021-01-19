@@ -69,6 +69,13 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
         
         return parent::find($filter);
     }
+    
+    public function getSelect(array $filter = [])
+    {
+        $this->select->leftJoin(RouterCacheEntity::getTable() . ' AS r', 'r.url=p.url AND r.type="product"');
+        
+        return parent::getSelect($filter);
+    }
 
     public function update($ids, $object)
     {
@@ -154,7 +161,7 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
         return ExtenderFacade::execute([static::class, __FUNCTION__], true, func_get_args());
     }
 
-    private function unlinkImageFiles($productsIds, $imagesIds)
+    private function unlinkImageFiles($productsIds, $imagesIds) // todo нужно ли?
     {
         $select = $this->queryFactory->newSelect();
         $select->cols(['filename'])
@@ -439,6 +446,9 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
 
         $newProduct->id = null;
         $newProduct->url = '';
+        $newProduct->meta_title = '';
+        $newProduct->meta_keywords = '';
+        $newProduct->meta_description = '';
         $newProduct->external_id = '';
         unset($newProduct->created);
 
@@ -546,6 +556,9 @@ class ProductsEntity extends Entity implements RelatedProductsInterface
                         $sourceProduct = $this->get($productId);
                         $destinationProduct = new \stdClass();
                         foreach($productLangFields as $field) {
+                            if (in_array($field, ['meta_title', 'meta_keywords', 'meta_description'])) {
+                                continue;
+                            }
                             $destinationProduct->{$field} = $sourceProduct->{$field};
                         }
                         $this->update($newProductId, $destinationProduct);

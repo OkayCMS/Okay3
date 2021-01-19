@@ -23,3 +23,5 @@ $lang['okaycms__rozetka_xml__add_feed'] = 'Добавить выгрузку';
 $lang['okaycms__rozetka_xml__remove_feed'] = 'Удалить выгрузку';
 $lang['okaycms__rozetka_xml__error_url_exist'] = 'Выгрузка с таким URL уже существует';
 $lang['okaycms__rozetka_xml__error_url_cyrillic'] = 'В URL должны быть только латинские буквы и цифры';
+$lang['okaycms__rozetka_xml__company'] = 'Полное наименование компании, владеющей магазином';
+$lang['okaycms__rozetka_xml__upload_without_images'] = 'Выгружать товары без изображений';

@@ -66,3 +66,4 @@ $lang['admintooltip_edit_banner'] = 'შეცვალეთ ბანერი
 $lang['admintooltip_add_banner'] = 'დაამატე ბანერი';
 $lang['admintooltip_edit_slide'] = 'შეცვალეთ ბანერის სურათი';
 $lang['admintooltip_add_slide'] = 'დაამატე ბანერის სურათი';
+$lang['banner_image_is_lang_banner'] = 'მრავალენოვანი ბანერი';

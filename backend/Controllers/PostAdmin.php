@@ -6,13 +6,11 @@ namespace Okay\Admin\Controllers;
 
 use Okay\Admin\Helpers\BackendBlogCategoriesHelper;
 use Okay\Admin\Helpers\BackendBlogHelper;
-use Okay\Admin\Helpers\BackendMenuHelper;
 use Okay\Admin\Helpers\BackendValidateHelper;
 use Okay\Admin\Requests\BackendBlogRequest;
 use Okay\Entities\AuthorsEntity;
 use Okay\Entities\BlogEntity;
 use Okay\Entities\RouterCacheEntity;
-use Okay\Helpers\RelatedProductsHelper;
 
 class PostAdmin extends IndexAdmin
 {
@@ -22,24 +20,20 @@ class PostAdmin extends IndexAdmin
         BackendBlogRequest    $backendBlogRequest,
         BackendBlogHelper     $backendBlogHelper,
         BackendValidateHelper $backendValidateHelper,
-        RelatedProductsHelper $relatedProductsHelper,
         BackendBlogCategoriesHelper $blogCategoriesHelper,
         RouterCacheEntity $routerCacheEntity,
-        AuthorsEntity $authorsEntity,
-        BackendMenuHelper $backendMenuHelper
+        AuthorsEntity $authorsEntity
     ) {
 
         /*Прием информации о записи*/
         if ($this->request->method('post')) {
             $post = $backendBlogRequest->postArticle();
             $postCategories = $backendBlogRequest->postCategories();
-            $menuItems = $backendBlogRequest->postMenuItems();
 
             $relatedProducts = $backendBlogRequest->postRelatedProducts();
 
             if ($error = $backendValidateHelper->getBlogValidateError($post)) {
                 $this->design->assign('message_error', $error);
-                $menuItems = $backendMenuHelper->buildTree($menuItems);
             } else {
                 /*Добавление/Обновление записи*/
                 if (empty($post->id)) {
@@ -52,7 +46,7 @@ class PostAdmin extends IndexAdmin
                     $preparedPost = $backendBlogHelper->prepareUpdate($post);
                     $backendBlogHelper->update($preparedPost->id, $post);
 
-                    $routerCacheEntity->deleteByUrl('post', $post->url);
+                    $routerCacheEntity->deleteByUrl(RouterCacheEntity::TYPE_POST, $post->url);
                     
                     $this->postRedirectGet->storeMessageSuccess('updated');
                 }
@@ -84,7 +78,7 @@ class PostAdmin extends IndexAdmin
         
         $relatedProducts = [];
         if (!empty($post->id)) {
-            $relatedProducts = $relatedProductsHelper->getRelatedProductsList($blogEntity, ['post_id' => $post->id]);
+            $relatedProducts = $backendBlogHelper->getRelatedProductsList(['post_id' => $post->id]);
         }
 
         $categoriesTree = $blogCategoriesHelper->getCategoriesTree();
@@ -96,7 +90,7 @@ class PostAdmin extends IndexAdmin
         $this->design->assign('categories', $categoriesTree);
         $this->design->assign('post_categories',  $postCategories);
         $this->design->assign('related_products', $relatedProducts);
-        $this->design->assign('post',           $post);
+        $this->design->assign('post', $post);
         $this->response->setContent($this->design->fetch('post.tpl'));
     }
     

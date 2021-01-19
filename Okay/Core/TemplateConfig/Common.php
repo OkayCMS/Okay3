@@ -11,6 +11,7 @@ class Common
     protected $position = 'head';
     protected $dir;
     protected $individual = false;
+    protected $preload = false;
 
     /**
      * Т.к. параметр $filename является единственным обязательным, мы его принимаем в конструктор,
@@ -39,7 +40,7 @@ class Common
             throw new \Exception("Dir \"{$dir}\" not exists");
         }
 
-        $this->dir = $dir;
+        $this->dir = rtrim($dir, '/') . '/';
         return $this;
     }
     
@@ -55,6 +56,16 @@ class Common
         }
 
         $this->position = $position;
+        return $this;
+    }
+
+    /**
+     * Установка флага что нужно добавить link rel="preload"
+     * @return $this
+     */
+    public function preload()
+    {
+        $this->preload = true;
         return $this;
     }
     
@@ -84,6 +95,14 @@ class Common
     public function getPosition()
     {
         return $this->position;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getPreload()
+    {
+        return $this->preload;
     }
 
     /**

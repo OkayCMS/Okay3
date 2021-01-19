@@ -24,6 +24,8 @@
  *                                                                                 контроллера, которые должны совпадать
  *     ],
  *     'to_front' => true|false, - нужен ли будет этот роут как JS переменная на фронте. В JS его можно будет видеть как okay.router['<route_name>']
+ *     'overwrite' => true|false, - может ли этот роут переопределять роут, расположенный выше, при совпадающих названиях
+ *     'always_active' => true|false, - всегда активен. Когда установлено в true, даже при выключении сайта данный роут будет активен
  * ],
  *
  */
@@ -93,6 +95,14 @@ return [
         'params' => [
             'controller' => 'CartController',
             'method' => 'cartAjax',
+        ],
+        'to_front' => true,
+    ],
+    'ajax_subscribe' => [
+        'slug' => '/ajax/subscribe',
+        'params' => [
+            'controller' => 'SubscribeController',
+            'method' => 'ajaxSubscribe',
         ],
         'to_front' => true,
     ],
@@ -213,6 +223,41 @@ return [
             'method' => 'render',
         ],
     ],
+    'user_orders' => [
+        'slug' => 'user/orders',
+        'params' => [
+            'controller' => 'UserController',
+            'method' => 'render',
+        ],
+    ],
+    'user_comments' => [
+        'slug' => 'user/comments',
+        'params' => [
+            'controller' => 'UserController',
+            'method' => 'render',
+        ],
+    ],
+    'user_favorites' => [
+        'slug' => 'user/favorites',
+        'params' => [
+            'controller' => 'UserController',
+            'method' => 'render',
+        ],
+    ],
+    'user_browsed' => [
+        'slug' => 'user/browsed',
+        'params' => [
+            'controller' => 'UserController',
+            'method' => 'render',
+        ],
+    ],
+    'well_known_change_password' => [
+        'slug' => '.well-known/change-password',
+        'params' => [
+            'controller' => 'UserController',
+            'method' => 'wellKnownChangePassword',
+        ],
+    ],
     'login' => [
         'slug' => '/user/login',
         'params' => [
@@ -294,6 +339,15 @@ return [
         ],
         'defaults' => $productRouteParams->getDefaults(),
     ],
+    'category_features' => [
+        'slug' => 'category_features/' . $categoryRouteParams->getSlug(),
+        'patterns' => $categoryRouteParams->getPatterns(),
+        'params' => [
+            'controller' => 'CategoryController',
+            'method' => 'getFilter',
+        ],
+        'defaults' => $categoryRouteParams->getDefaults()
+    ],
     'category' => [
         'slug' => $categoryRouteParams->getSlug(),
         'patterns' => $categoryRouteParams->getPatterns(),
@@ -326,6 +380,15 @@ return [
             'method' => 'authorsList',
         ],
     ],
+    'blog_category' => [ // Блог с фильтром по категории
+        'slug' => $blogCategoryRouteParams->getSlug(),
+        'patterns' => $blogCategoryRouteParams->getPatterns(),
+        'params' => [
+            'controller' => 'BlogController',
+            'method' => 'fetchBlog',
+        ],
+        'defaults' => $blogCategoryRouteParams->getDefaults()
+    ],
     'blog' => [ // общий раздел блога, без выбранной категории
         'slug' => $allBlogRouteParams->getSlug(),
         'patterns' => $allBlogRouteParams->getPatterns(),
@@ -343,15 +406,6 @@ return [
             'method' => 'fetchPost',
         ],
         'defaults' => $postRouteParams->getDefaults()
-    ],
-    'blog_category' => [ // Блог с фильтром по категории
-        'slug' => $blogCategoryRouteParams->getSlug(),
-        'patterns' => $blogCategoryRouteParams->getPatterns(),
-        'params' => [
-            'controller' => 'BlogController',
-            'method' => 'fetchBlog',
-        ],
-        'defaults' => $blogCategoryRouteParams->getDefaults()
     ],
     'page' => [
         'slug' => $pageRouteParams->getSlug(),

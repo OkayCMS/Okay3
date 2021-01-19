@@ -8,7 +8,9 @@ use Okay\Core\EntityFactory;
 use Okay\Core\Languages;
 use Okay\Core\QueryFactory\Select;
 use Okay\Core\ServiceLocator;
+use Okay\Core\Settings;
 use Okay\Entities\CategoriesEntity;
+use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\FeaturesEntity;
 use Okay\Entities\FeaturesValuesEntity;
 use Okay\Entities\ImagesEntity;
@@ -26,10 +28,32 @@ class XmlFeedHelper
     /** @var Languages */
     private $languages;
     
+    private $siteName;
+    private $defaultProductsSeoPattern;
+    private $allCategories;
+    private $mainCurrency;
+    private $allCurrencies;
+    
     public function __construct(
-        Languages $languages
+        Languages $languages,
+        Settings $settings,
+        EntityFactory $entityFactory
     ) {
         $this->languages = $languages;
+        $this->siteName = $settings->get('site_name');
+        $this->defaultProductsSeoPattern = (object)$settings->get('default_products_seo_pattern');
+        
+        /** @var CategoriesEntity $categoriesEntity */
+        $categoriesEntity = $entityFactory->get(CategoriesEntity::class);
+        
+        $this->allCategories = $categoriesEntity->find();
+
+        /** @var CurrenciesEntity $currenciesEntity */
+        $currenciesEntity = $entityFactory->get(CurrenciesEntity::class);
+
+        $this->mainCurrency  = $currenciesEntity->getMainCurrency();
+        $this->allCurrencies = $currenciesEntity->mappedBy('id')->find();
+        
     }
     
     /**
@@ -103,13 +127,16 @@ class XmlFeedHelper
     public function joinFeatures(Select $select)
     {
         $select->cols([
-            'GROUP_CONCAT(DISTINCT f.feature_id, "!-", f.name SEPARATOR "@|@") AS features_string',
+            'GROUP_CONCAT(DISTINCT lf.feature_id, "!-", lf.name SEPARATOR "@|@") AS features_string',
             'GROUP_CONCAT(DISTINCT fv.feature_id, "!-", fv.value SEPARATOR "@|@") AS values_string',
+            'GROUP_CONCAT(DISTINCT f.id, "!-", f.auto_name_id SEPARATOR "@|@") AS auto_name_id_string',
+            'GROUP_CONCAT(DISTINCT f.id, "!-", f.auto_value_id SEPARATOR "@|@") AS auto_value_id_string',
         ])
             ->leftJoin('__products_features_values pv', 'pv.product_id = p.id')
             ->leftJoin(FeaturesValuesEntity::getTable().' AS  fv', 'pv.value_id = fv.id')
             ->leftJoin(FeaturesValuesEntity::getLangTable().' AS  lfv', 'fv.id = lfv.feature_value_id and lfv.lang_id=' . $this->languages->getLangId())
-            ->leftJoin(FeaturesEntity::getLangTable().' AS  f', 'fv.feature_id = f.feature_id and f.lang_id=' . $this->languages->getLangId());
+            ->leftJoin(FeaturesEntity::getTable().' AS  f', 'fv.feature_id = f.id')
+            ->leftJoin(FeaturesEntity::getLangTable().' AS  lf', 'fv.feature_id = lf.feature_id and lf.lang_id=' . $this->languages->getLangId());
         
         return $select;// No ExtenderFacade
     }
@@ -160,6 +187,22 @@ class XmlFeedHelper
                 list($featureId, $val) = explode('!-', $value, 2);
                 $values[$featureId][] = $val;
             }
+            $autoNameIds = [];
+            foreach (explode('@|@', $product->auto_name_id_string) as $autoNameId) {
+                list($featureId, $val) = explode('!-', $autoNameId, 2);
+                if (!empty($val)) {
+                    $autoNameIds[$featureId] = $val;
+                }
+            }
+            
+            $autoValueIds = [];
+            foreach (explode('@|@', $product->auto_value_id_string) as $autoValueId) {
+                list($featureId, $val) = explode('!-', $autoValueId, 2);
+                if (!empty($val)) {
+                    $autoValueIds[$featureId] = $val;
+                }
+            }
+            
             foreach ($features as $feature) {
                 list($featureId, $featureName) = explode('!-', $feature, 2);
                 
@@ -171,12 +214,92 @@ class XmlFeedHelper
                         'values_string' => implode(', ', $values[$featureId]),
                     ];
                 }
+
+                if (isset($autoNameIds[$featureId])) {
+                    $product->features[$featureId]['auto_name_id'] = $autoNameIds[$featureId];
+                }
+
+                if (isset($autoValueIds[$featureId])) {
+                    $product->features[$featureId]['auto_value_id'] = $autoValueIds[$featureId];
+                }
             }
         }
 
         return $product; // No ExtenderFacade
     }
 
+    public function attachDescriptionByTemplate($product)
+    {
+        
+        if (empty($product->description)) {
+
+            
+            if (!empty($product->main_category_id)) {
+
+                $category = $this->allCategories[$product->main_category_id];
+                
+                if (!empty($category) && !empty($category->auto_description)) {
+                    $descriptionTemplate = $category->auto_description;
+                } elseif (!empty($defaultProductsSeoPattern->auto_description)) {
+                    $descriptionTemplate = $defaultProductsSeoPattern->auto_description;
+                }
+
+                if (!empty($descriptionTemplate)) {
+                    $metaData = strtr($descriptionTemplate, $this->getMetadataParts($product));
+                    $product->description = trim(preg_replace('/{\$[^$]*}/', '', $metaData));
+                }
+            }
+        }
+        
+        return $product; // No ExtenderFacade
+    }
+    
+    private function getMetadataParts($product)
+    {
+
+        $price = round($product->price, 2);
+        $comparePrice = null;
+        if (isset($this->allCurrencies[$product->currency_id])) {
+            // Переводим в основную валюту сайта
+            $variantCurrency = $this->allCurrencies[$product->currency_id];
+            if (!empty($product->currency_id) && $variantCurrency->rate_from != $variantCurrency->rate_to) {
+                $price = round($product->price * $variantCurrency->rate_to / $variantCurrency->rate_from, 2);
+                if (!empty($product->compare_price)) {
+                    $comparePrice = round($product->compare_price * $variantCurrency->rate_to / $variantCurrency->rate_from, 2);
+                }
+            }
+        }
+        
+        $mataDataParts = [
+            '{$brand}'         => $product->vendor,
+            '{$product}'       => $product->product_name,
+            '{$price}'         => $price . ' ' . $this->mainCurrency->sign,
+            '{$compare_price}' => ($comparePrice != null ? $comparePrice . ' ' . $this->mainCurrency->sign : ''),
+            '{$sku}'           => $product->sku,
+            '{$sitename}'      => $this->siteName,
+        ];
+
+        if (!empty($product->main_category_id) && isset($this->allCategories[$product->main_category_id])) {
+            $category = $this->allCategories[$product->main_category_id];
+            $mataDataParts['{$category}'] = ($category->name ? $category->name : '');
+            $mataDataParts['{$category_h1}'] = ($category->name_h1 ? $category->name_h1 : '');
+        }
+        
+        if (!empty($product->features)) {
+            foreach ($product->features as $feature) {
+                
+                if (!empty($feature['auto_name_id'])) {
+                    $mataDataParts['{$' . $feature['auto_name_id'] . '}'] = $feature['name'];
+                }
+                if (!empty($feature['auto_value_id'])) {
+                    $mataDataParts['{$' . $feature['auto_value_id'] . '}'] = $feature['values_string'];
+                }
+            }
+        }
+        
+        return $mataDataParts; // No ExtenderFacade
+    }
+    
     /**
      * Метод парсит строку с изображениями, и складывает их в виде массива filename в свойстве images.
      * Чтобы для данного метода были валидные данные нужно обязательно расширить sql запрос методом self::joinImages()

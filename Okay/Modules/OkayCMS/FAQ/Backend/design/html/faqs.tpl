@@ -11,7 +11,7 @@
                 {$btr->faq_title|escape}
             </div>
             <div class="box_btn_heading">
-                <a class="btn btn_small btn-info" href="{url controller='OkayCMS.FAQ.FAQAdmin'}">
+                <a class="btn btn_small btn-info" href="{url controller='OkayCMS.FAQ.FAQAdmin' return=$smarty.server.REQUEST_URI}">
                     {include file='svg_icon.tpl' svgId='plus'}
                     <span>{$btr->faq_add|escape}</span>
                 </a>

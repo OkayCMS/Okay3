@@ -4,9 +4,11 @@
 namespace Okay\Core;
 
 
+use Okay\Entities\UserWishlistItemsEntity;
 use Okay\Entities\VariantsEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\ImagesEntity;
+use Okay\Helpers\MainHelper;
 use Okay\Helpers\MoneyHelper;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
@@ -24,18 +26,25 @@ class WishList
     /** @var MoneyHelper */
     private $moneyHelper;
 
+    private $entityFactory;
+
     private $settings;
+    
+    private $mainHelper;
 
     public function __construct(
         EntityFactory $entityFactory,
         Settings $settings,
-        MoneyHelper $moneyHelper
-    ){
+        MoneyHelper $moneyHelper,
+        MainHelper $mainHelper
+    ) {
         $this->productsEntity = $entityFactory->get(ProductsEntity::class);
         $this->variantsEntity = $entityFactory->get(VariantsEntity::class);
         $this->imagesEntity   = $entityFactory->get(ImagesEntity::class);
+        $this->entityFactory  = $entityFactory;
         $this->settings       = $settings;
-        $this->moneyHelper     = $moneyHelper;
+        $this->moneyHelper    = $moneyHelper;
+        $this->mainHelper     = $mainHelper;
     }
 
     public function get()
@@ -90,7 +99,7 @@ class WishList
         return ExtenderFacade::execute(__METHOD__, $wishList, func_get_args());
     }
 
-    public function addItem($productId)
+    public function addItem($productId, $onlyLocal = false, $delayedDispatch = false)
     {
         $items = !empty($_COOKIE['wishlist']) ? json_decode($_COOKIE['wishlist']) : [];
         $items = $items && is_array($items) ? $items : [];
@@ -98,13 +107,27 @@ class WishList
             $items[] = $productId;
         }
         $_COOKIE['wishlist'] = json_encode($items);
-        setcookie('wishlist', $_COOKIE['wishlist'], time()+30*24*3600, '/');
+        if ($delayedDispatch === false) {
+            $this->save();
+        }
 
+        if ($onlyLocal === false && ($user = $this->mainHelper->getCurrentUser())) {
+            /** @var UserWishlistItemsEntity $userWishlistItemsEntity */
+            $userWishlistItemsEntity = $this->entityFactory->get(UserWishlistItemsEntity::class);
+
+            if (!$userWishlistItemsEntity->findOne(['user_id' => $user->id, 'product_id' => $productId])) {
+                $userWishlistItemsEntity->add([
+                    'user_id' => $user->id,
+                    'product_id' => $productId,
+                ]);
+            }
+        }
+        
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     /*Удаление товара из корзины*/
-    public function deleteItem($productId)
+    public function deleteItem($productId, $onlyLocal = false, $delayedDispatch = false)
     {
         $items = !empty($_COOKIE['wishlist']) ? json_decode($_COOKIE['wishlist']) : [];
         if (!is_array($items)) {
@@ -116,14 +139,41 @@ class WishList
         }
         $items = array_values($items);
         $_COOKIE['wishlist'] = json_encode($items);
-        setcookie('wishlist', $_COOKIE['wishlist'], time()+30*24*3600, '/');
+        
+        if ($delayedDispatch === false) {
+            $this->save();
+        }
 
+        if ($onlyLocal === false && ($user = $this->mainHelper->getCurrentUser())) {
+            /** @var UserWishlistItemsEntity $userWishlistItemsEntity */
+            $userWishlistItemsEntity = $this->entityFactory->get(UserWishlistItemsEntity::class);
+
+            $userWishlistItemsEntity->deleteByProductId($user->id, $productId);
+        }
+        
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
     
-    /*Очистка списка сравнения*/
-    public function emptyWishList()
+    public function save()
     {
+        if (!empty($_COOKIE['wishlist'])) {
+            setcookie('wishlist', $_COOKIE['wishlist'], time() + 30 * 24 * 3600, '/');
+        }
+    }
+    
+    /*Очистка списка сравнения*/
+    public function emptyWishList($onlyLocal = false)
+    {
+
+        if ($onlyLocal === false) {
+            if ($user = $this->mainHelper->getCurrentUser()) {
+                /** @var UserWishlistItemsEntity $userWishlistItemsEntity */
+                $userWishlistItemsEntity = $this->entityFactory->get(UserWishlistItemsEntity::class);
+
+                $userWishlistItemsEntity->deleteByProductId($user->id, array_keys(json_decode($_COOKIE['wishlist'])));
+            }
+        }
+        
         unset($_COOKIE['wishlist']);
         setcookie('wishlist', '', time()-3600, '/');
 

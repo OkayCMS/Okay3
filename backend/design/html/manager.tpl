@@ -79,7 +79,7 @@
                 </div>
                 <div class="toggle_body_wrap on fn_card">
                     <div class="mb-1">
-                        <div class="heading_label" >{$btr->manager_login|escape}
+                        <div class="heading_label">{$btr->manager_login|escape}
                             <i class="fn_tooltips" title="{$btr->tooltip_manager_login|escape}">
                                 {include file='svg_icon.tpl' svgId='icon_tooltips'}
                             </i>
@@ -89,16 +89,27 @@
                             <input name="id" type="hidden" value="{$m->id|escape}"/>
                         </div>
                     </div>
+                    
+                    <div class="mb-1">
+                        <div class="heading_label">{$btr->manager_email|escape}
+                            <i class="fn_tooltips" title="{$btr->tooltip_manager_email|escape}">
+                                {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                            </i>
+                        </div>
+                        <div class="">
+                            <input class="form-control" name="email" autocomplete="off" type="text" value="{$m->email|escape}"/>
+                        </div>
+                    </div>
 
                     <div class="mb-1">
-                        <div class="heading_label" >{$btr->last_activity|escape}</div>
+                        <div class="heading_label">{$btr->last_activity|escape}</div>
                         <div class="">
                             <input class="form-control" autocomplete="off" disabled type="text" value="{$m->last_activity|date}|{$m->last_activity|time}"/>
                         </div>
                     </div>
 
                     <div class="mb-1">
-                        <div class="heading_label" >{$btr->manager_pass|escape}
+                        <div class="heading_label">{$btr->manager_pass|escape}
                             <i class="fn_tooltips" title="{$btr->tooltip_manager_pass|escape}">
                                 {include file='svg_icon.tpl' svgId='icon_tooltips'}
                             </i>

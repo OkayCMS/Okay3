@@ -92,16 +92,6 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="heading_label">{$btr->settings_general_email|escape}
-                                <i class="fn_tooltips" title="{$btr->tooltip_settings_general_email|escape}">
-                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
-                                </i>
-                            </div>
-                            <div class="mb-1">
-                                <input name="admin_email" class="form-control" type="text" value="{$settings->admin_email|escape}" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
                             <div class="heading_label">{$btr->settings_general_shutdown|escape}</div>
                             <div class="mb-1">
                                 <select name="site_work" class="selectpicker form-control">

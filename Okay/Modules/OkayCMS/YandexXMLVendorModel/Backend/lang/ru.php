@@ -33,3 +33,4 @@ $lang['okaycms__yandex_xml_vendor_model__add_feed'] = 'Добавить выгр
 $lang['okaycms__yandex_xml_vendor_model__remove_feed'] = 'Удалить выгрузку';
 $lang['okaycms__yandex_xml_vendor_model__error_url_exist'] = 'Выгрузка с таким URL уже существует';
 $lang['okaycms__yandex_xml_vendor_model__error_url_cyrillic'] = 'В URL должны быть только латинские буквы и цифры';
+$lang['okaycms__yandex_xml_vendor_model__upload_without_images'] = 'Выгружать товары без изображений';

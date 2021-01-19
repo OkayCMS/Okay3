@@ -7,25 +7,45 @@ namespace Okay\Helpers;
 use Okay\Core\EntityFactory;
 use Okay\Core\Phone;
 use Okay\Core\UserReferer\UserReferer;
+use Okay\Entities\DiscountsEntity;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\PaymentsEntity;
 use Okay\Entities\PurchasesEntity;
 use Okay\Entities\ProductsEntity;
+use Okay\Entities\UsersEntity;
 use Okay\Entities\VariantsEntity;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
 class OrdersHelper
 {
-
+    /** @var EntityFactory */
     private $entityFactory;
+
+    /** @var ProductsHelper */
     private $productsHelper;
+
+    /** @var MoneyHelper */
     private $moneyHelper;
 
-    public function __construct(EntityFactory $entityFactory, ProductsHelper $productsHelper, MoneyHelper $moneyHelper)
-    {
-        $this->entityFactory = $entityFactory;
-        $this->productsHelper = $productsHelper;
-        $this->moneyHelper = $moneyHelper;
+
+    /** @var DiscountsEntity */
+    private $discountsEntity;
+
+    /** @var DiscountsHelper */
+    private $discountsHelper;
+
+    public function __construct(
+        EntityFactory   $entityFactory,
+        ProductsHelper  $productsHelper,
+        MoneyHelper     $moneyHelper,
+        DiscountsHelper $discountsHelper
+    ) {
+        $this->entityFactory   = $entityFactory;
+        $this->productsHelper  = $productsHelper;
+        $this->moneyHelper     = $moneyHelper;
+        $this->discountsHelper = $discountsHelper;
+
+        $this->discountsEntity = $entityFactory->get(DiscountsEntity::class);
     }
 
     /**
@@ -62,7 +82,7 @@ class OrdersHelper
         /** @var VariantsEntity $variantsEntity */
         $variantsEntity = $this->entityFactory->get(VariantsEntity::class);
         
-        $purchases = $purchasesEntity->find(['order_id'=>intval($orderId)]);
+        $purchases = $purchasesEntity->mappedBy('id')->find(['order_id'=>intval($orderId)]);
         if (!$purchases) {
             return ExtenderFacade::execute(__METHOD__, false, func_get_args());
         }
@@ -79,13 +99,28 @@ class OrdersHelper
         $products = $this->productsHelper->attachMainImages($products);
         $variants = $variantsEntity->mappedBy('id')->find(['id'=>$variantsIds]);
         $variants = $this->moneyHelper->convertVariantsPriceToMainCurrency($variants);
-        
+
+        $discounts = $this->discountsEntity->find([
+            'entity' => 'purchase',
+            'entity_id' => array_keys($purchases)
+        ]);
+
+        $sortedDiscounts = [];
+        if (!empty($discounts)) {
+            foreach ($discounts as $discount) {
+                $sortedDiscounts[$discount->entity_id][] = $discount;
+            }
+        }
+
         foreach ($purchases as $purchase) {
             if (!empty($products[$purchase->product_id])) {
                 $purchase->product = $products[$purchase->product_id];
             }
             if (!empty($variants[$purchase->variant_id])) {
                 $purchase->variant = $variants[$purchase->variant_id];
+            }
+            if (isset($sortedDiscounts[$purchase->id])) {
+                list($purchase->discounts) = $this->discountsHelper->calculateDiscounts($this->discountsHelper->buildFromDB($sortedDiscounts[$purchase->id]), $purchase->undiscounted_price);
             }
         }
 
@@ -115,30 +150,34 @@ class OrdersHelper
         return ExtenderFacade::execute(__METHOD__, $result, func_get_args());
     }
 
-    public function attachDiscountIfExists($order, $cart)
-    {
-        $order->discount = $cart->discount;
-        return ExtenderFacade::execute(__METHOD__, $order, func_get_args());
-    }
-
-    public function attachCouponIfExists($order, $cart)
-    {
-        $order->discount = $cart->discount;
-
-        if ($cart->coupon) {
-            $order->coupon_discount = $cart->coupon_discount;
-            $order->coupon_code     = $cart->coupon->code;
-        }
-
-        return ExtenderFacade::execute(__METHOD__, $order, func_get_args());
-    }
-
     public function attachUserIfLogin($order, $user)
     {
         if (!empty($user->id)) {
             $order->user_id = $user->id;
+            
+            // Если у пользователя телефон пустой, но в заказе указан, добавим этот телефон пользователю
+            if (empty($user->phone && !empty($order->phone))) {
+                /** @var UsersEntity $usersEntity */
+                $usersEntity = $this->entityFactory->get(UsersEntity::class);
+                $usersEntity->update($user->id, ['phone' => $order->phone]);
+            }
+            
         }
 
         return ExtenderFacade::execute(__METHOD__, $order, func_get_args());
+    }
+
+    public function getDiscounts($orderId)
+    {
+        /** @var OrdersEntity $ordersEntity */
+        $ordersEntity = $this->entityFactory->get(OrdersEntity::class);
+        $discountsDB = $this->discountsEntity->order('position')->find([
+            'entity' => 'order',
+            'entity_id' => $orderId
+        ]);
+        $order = $ordersEntity->findOne(['id' => $orderId]);
+        list($discounts) = $this->discountsHelper->calculateDiscounts($this->discountsHelper->buildFromDB($discountsDB), $order->undiscounted_total_price);
+
+        return ExtenderFacade::execute(__METHOD__, $discounts, func_get_args());
     }
 }

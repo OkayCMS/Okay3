@@ -4,9 +4,7 @@
 namespace Okay\Core\SmartyPlugins\Plugins;
 
 
-use Okay\Core\EntityFactory;
-use Okay\Entities\ProductsEntity;
-use Okay\Helpers\ProductsHelper;
+use Okay\Core\BrowsedProducts;
 use Okay\Core\SmartyPlugins\Func;
 
 class GetBrowsedProducts extends Func
@@ -15,40 +13,18 @@ class GetBrowsedProducts extends Func
     protected $tag = 'get_browsed_products';
     
     /**
-     * @var ProductsEntity
+     * @var BrowsedProducts
      */
-    private $productsEntity;
-    
-    /**
-     * @var ProductsHelper
-     */
-    private $productsHelper;
+    private $browsedProducts;
 
     
-    public function __construct(EntityFactory $entityFactory, ProductsHelper $productsHelper)
+    public function __construct(BrowsedProducts $browsedProducts)
     {
-        $this->productsEntity = $entityFactory->get(ProductsEntity::class);
-        $this->productsHelper = $productsHelper;
+        $this->browsedProducts = $browsedProducts;
     }
 
     public function run($params, \Smarty_Internal_Template $smarty)
     {
-        $browsedProductsIds = explode(',', $_COOKIE['browsed_products']);
-        $browsedProductsIds = array_reverse($browsedProductsIds);
-
-        if(isset($params['limit'])) {
-            $browsedProductsIds = array_slice($browsedProductsIds, 0, $params['limit']);
-        }
-
-        $products = $this->productsHelper->getList(['id' => $browsedProductsIds]);
-
-        $browsedProducts = [];
-        foreach($browsedProductsIds as  $browsedProductId) {
-            if (!empty($products[$browsedProductId])) {
-                $browsedProducts[$browsedProductId] = $products[$browsedProductId];
-            }
-        }
-
-        $smarty->assign($params['var'], $browsedProducts);
+        $smarty->assign($params['var'], $this->browsedProducts->get($params['limit']));
     }
 }

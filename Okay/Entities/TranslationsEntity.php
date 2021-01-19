@@ -6,7 +6,7 @@ namespace Okay\Entities;
 
 use Okay\Core\EntityFactory;
 use Okay\Core\Entity\Entity;
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Core\ServiceLocator;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 
@@ -14,9 +14,9 @@ class TranslationsEntity extends Entity
 {
 
     /**
-     * @var TemplateConfig
+     * @var FrontTemplateConfig
      */
-    private $templateConfig;
+    private $frontTemplateConfig;
 
     /**
      * @var LanguagesEntity
@@ -30,7 +30,7 @@ class TranslationsEntity extends Entity
     {
         parent::__construct();
         $serviceLocator = ServiceLocator::getInstance();
-        $this->templateConfig = $serviceLocator->getService(TemplateConfig::class);
+        $this->frontTemplateConfig = $serviceLocator->getService(FrontTemplateConfig::class);
         $this->languages      = $serviceLocator->getService(EntityFactory::class)->get(LanguagesEntity::class);
     }
     
@@ -231,7 +231,7 @@ class TranslationsEntity extends Entity
         
         if (!isset($this->vars[$label])) {
             
-            $langFile = $this->getReadLangFile($label, $this->templateConfig->getTheme());
+            $langFile = $this->getReadLangFile($label, $this->frontTemplateConfig->getTheme());
             
             if (file_exists($langFile)) {
                 $lang = array();
@@ -270,7 +270,7 @@ class TranslationsEntity extends Entity
             return false;
         }
 
-        $langFile = $this->getWriteLangFile($langLabel, $this->templateConfig->getTheme());
+        $langFile = $this->getWriteLangFile($langLabel, $this->frontTemplateConfig->getTheme());
         
         $content = "<?php\n\n";
         $content .= "\$lang = array();\n";

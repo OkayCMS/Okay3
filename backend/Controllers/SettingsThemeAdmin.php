@@ -28,6 +28,7 @@ class SettingsThemeAdmin extends IndexAdmin
             if ($error = $backendValidateHelper->getFaviconValidateError()) {
                 $this->design->assign('message_error', $error);
             } else {
+                
                 $backendSettingsHelper->uploadFavicon();
             }
 

@@ -39,7 +39,7 @@ Html блочная нода `<div class="some-class">` её дочерняя sm
 <a name="registerModifications"></a>
 #### Регистрация изменений шаблона
 
-Все регистрации изменений шаблона производятся в блоке modifications файла module.json вашего модуля 
+Все регистрации изменений шаблона производятся в блоке modifications файла [module.json](./modules/module_json.md) вашего модуля 
 (файл должен располагаться в директории Init модуля).
 
 Общая структура блока modifications:

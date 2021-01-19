@@ -159,10 +159,7 @@ class BackendCommentsHelper
             if ($comment->type == 'product') {
                 $productsIds[] = $comment->object_id;
             }
-            if ($comment->type == 'blog') {
-                $postsIds[] = $comment->object_id;
-            }
-            if ($comment->type == 'news') {
+            if ($comment->type == 'post') {
                 $postsIds[] = $comment->object_id;
             }
         }
@@ -185,10 +182,7 @@ class BackendCommentsHelper
             if ($comment->type == 'product' && isset($products[$comment->object_id])) {
                 $comment->product = $products[$comment->object_id];
             }
-            if ($comment->type == 'blog' && isset($posts[$comment->object_id])) {
-                $comment->post = $posts[$comment->object_id];
-            }
-            if ($comment->type == 'news' && isset($posts[$comment->object_id])) {
+            if ($comment->type == 'post' && isset($posts[$comment->object_id])) {
                 $comment->post = $posts[$comment->object_id];
             }
         }

@@ -78,9 +78,13 @@
     {$name}_compact_product_list_item_add.removeAttr('id');
     $("input#{$name}_compact_product_list").devbridgeAutocomplete({
         serviceUrl:'ajax/search_products.php',
+        type: 'POST',
         minChars:0,
         orientation:'auto',
         noCache: false,
+        params: {
+            filter: {json_encode($filter)}
+        },
         onSelect:
             function(suggestion){
                 $("input#{$name}_compact_product_list").val('').focus().blur();

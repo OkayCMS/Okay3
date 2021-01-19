@@ -22,12 +22,13 @@ class BackendPaymentsRequest
     public function postPayment()
     {
         $paymentMethod = new \stdClass();
-        $paymentMethod->id              = $this->request->post('id', 'integer');
-        $paymentMethod->enabled         = $this->request->post('enabled', 'boolean');
-        $paymentMethod->name            = $this->request->post('name');
-        $paymentMethod->currency_id     = $this->request->post('currency_id');
-        $paymentMethod->description     = $this->request->post('description');
-        $paymentMethod->module          = $this->request->post('module');
+        $paymentMethod->id          = $this->request->post('id', 'integer');
+        $paymentMethod->enabled     = $this->request->post('enabled', 'boolean');
+        $paymentMethod->auto_submit = $this->request->post('auto_submit', 'boolean');
+        $paymentMethod->name        = $this->request->post('name');
+        $paymentMethod->currency_id = $this->request->post('currency_id');
+        $paymentMethod->description = $this->request->post('description');
+        $paymentMethod->module      = $this->request->post('module');
 
         return ExtenderFacade::execute(__METHOD__, $paymentMethod, func_get_args());
     }

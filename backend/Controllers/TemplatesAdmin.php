@@ -4,15 +4,15 @@
 namespace Okay\Admin\Controllers;
 
 
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 
 class TemplatesAdmin extends IndexAdmin
 {
 
     /*Чтение файлов шаблона*/
-    public function fetch(TemplateConfig $templateConfig)
+    public function fetch(FrontTemplateConfig $frontTemplateConfig)
     {
-        $currentTheme = $templateConfig->getTheme();
+        $currentTheme = $frontTemplateConfig->getTheme();
 
         if ($this->request->get("email")){
             $templatesDir = 'design/'.$currentTheme.'/html/email/';

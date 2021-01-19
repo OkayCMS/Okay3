@@ -61,8 +61,10 @@ $( ".fn_delivery_novaposhta input.city_novaposhta" ).devbridgeAutocomplete({
     onSelect: function(suggestion) {
         let active_delivery = $('input[name="delivery_id"]:checked');
         let delivery_block = active_delivery.closest('.delivery__item');
-        delivery_block.find('input[name="novaposhta_delivery_city_id"]').val(suggestion.data.ref).trigger('change');
+
         delivery_block.find('input[name="novaposhta_delivery_warehouse_id"]').val('');
+        delivery_block.find('select.fn_select_warehouses_novaposhta option:selected').prop('selected', false);
+        delivery_block.find('input[name="novaposhta_delivery_city_id"]').val(suggestion.data.ref).trigger('change');
     },
     formatResult: function(suggestion, currentValue) {
         var reEscape = new RegExp( '(\\' + ['/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\'].join( '|\\' ) + ')', 'g' );
@@ -78,10 +80,12 @@ $( ".fn_delivery_novaposhta input.city_novaposhta_for_door" ).devbridgeAutocompl
     minChars:1,
     noCache: false,
     onSelect: function(suggestion) {
-        $('input[name="novaposhta_delivery_city_id"]').val(suggestion.ref).trigger('change');
-        $('input[name=novaposhta_city_name]').val(suggestion.city);
-        $('input[name=novaposhta_area_name]').val(suggestion.area);
-        $('input[name=novaposhta_region_name]').val(suggestion.region);
+        let active_delivery = $('input[name="delivery_id"]:checked');
+        let delivery_block = active_delivery.closest('.delivery__item');
+        delivery_block.find('input[name="novaposhta_delivery_city_id"]').val(suggestion.ref).trigger('change');
+        delivery_block.find('input[name=novaposhta_city_name]').val(suggestion.city);
+        delivery_block.find('input[name=novaposhta_area_name]').val(suggestion.area);
+        delivery_block.find('input[name=novaposhta_region_name]').val(suggestion.region);
         setDoorAddress();
         if (suggestion.streets_availability) {
             $(".fn_delivery_novaposhta input.fn_street").devbridgeAutocomplete({
@@ -92,7 +96,7 @@ $( ".fn_delivery_novaposhta input.city_novaposhta_for_door" ).devbridgeAutocompl
                     streetAutocomplete = true;
                 },
                 onSelect: function(suggestion){
-                    $('input[name=novaposhta_street_name]').val(suggestion.street);
+                    delivery_block.find('input[name=novaposhta_street_name]').val(suggestion.street);
                     setDoorAddress();
                 },
                 formatResult: function(suggestion, currentValue) {

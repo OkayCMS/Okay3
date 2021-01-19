@@ -254,6 +254,11 @@ class BackendBrandsHelper
             $filter['limit'] = 25;
         }
 
+        $keyword = $this->request->get('keyword', 'string');
+        if (!empty($keyword)) {
+            $filter['keyword'] = $keyword;
+        }
+
         return ExtenderFacade::execute(__METHOD__, $filter, func_get_args());
     }
 

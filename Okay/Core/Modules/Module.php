@@ -7,7 +7,6 @@ namespace Okay\Core\Modules;
 use Monolog\Logger;
 use Okay\Core\EntityFactory;
 use Okay\Core\ServiceLocator;
-use Okay\Core\TemplateConfig;
 use Okay\Entities\ModulesEntity;
 
 /**
@@ -34,6 +33,23 @@ class Module
     }
 
     private static $modulesIds;
+
+    /**
+     * Метод возвращает параметры модуля описанные в module.json
+     * 
+     * @param $vendor
+     * @param $moduleName
+     * @return object|null
+     */
+    public function getModuleParams($vendor, $moduleName)
+    {
+        $moduleJsonFileFile = __DIR__ . '/../../Modules/' . $vendor . '/' . $moduleName . '/Init/module.json';
+
+        if (file_exists($moduleJsonFileFile)) {
+            return json_decode(file_get_contents($moduleJsonFileFile));
+        }
+        return null;
+    }
     
     /**
      * Получить базовую область видимости для указанного модуля

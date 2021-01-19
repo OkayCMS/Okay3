@@ -6,6 +6,7 @@ namespace Okay\Core;
 
 use Okay\Core\Modules\Module;
 use Okay\Core\Modules\Modules;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Core\TplMod\TplMod;
 use OkayLicense\License;
 use Smarty;
@@ -25,8 +26,8 @@ class Design
     /** @var Mobile_Detect */
     public $detect;
 
-    /** @var TemplateConfig */
-    private $templateConfig;
+    /** @var FrontTemplateConfig */
+    private $frontTemplateConfig;
 
     /** @var Module */
     private $module;
@@ -48,17 +49,15 @@ class Design
 
     /** @var string */
     private $defaultTemplateDir;
-    
-    private $moduleChangeDir = null;
-    
-    private $prevModuleDir;
-    
-    private $isUseModuleDirBeforeChange;
-    
+
+    private $moduleChangeDir = [];
+
     private $rootDir;
 
     /** @var string */
     private $useTemplateDir = self::TEMPLATES_DEFAULT;
+    
+    private $smartyHtmlMinify;
     
     /**
      * @var array
@@ -115,7 +114,7 @@ class Design
     public function __construct(
         Smarty $smarty,
         Mobile_Detect $mobileDetect,
-        TemplateConfig $templateConfig,
+        FrontTemplateConfig $frontTemplateConfig,
         Module $module,
         Modules $modules,
         TplMod $tplMod,
@@ -128,7 +127,7 @@ class Design
         $smartyForceCompile,
         $rootDir
     ) {
-        $this->templateConfig = $templateConfig;
+        $this->frontTemplateConfig = $frontTemplateConfig;
         $this->detect         = $mobileDetect;
         $this->module         = $module;
         $this->modules        = $modules;
@@ -142,7 +141,7 @@ class Design
         $this->smarty->debugging       = $smartyDebugging;
         $this->smarty->error_reporting = E_ALL & ~E_NOTICE;
 
-        $theme = $this->templateConfig->getTheme();
+        $theme = $this->frontTemplateConfig->getTheme();
 
         if ($smartySecurity == true) {
             $this->smarty->enableSecurity();
@@ -166,6 +165,7 @@ class Design
         
         $this->smarty->setCacheDir('cache');
         
+        $this->smartyHtmlMinify = $smartyHtmlMinify;
         if ($smartyHtmlMinify) {
             $this->smarty->loadFilter('output', 'trimwhitespace');
         }
@@ -183,7 +183,7 @@ class Design
         $currentFile = $s->_current_file;
         
         // Определяем модификации чего сейчас нам нужны, фронта или бека
-        if (strpos($currentFile, $this->rootDir.'backend/design/html') !== false) {
+        if (strpos($currentFile, $this->rootDir.'backend'.DIRECTORY_SEPARATOR.'design'.DIRECTORY_SEPARATOR.'html') !== false) {
             $modifications = $this->modules->getBackendModulesTplModifications();
         } else {
             $modifications = $this->modules->getFrontModulesTplModifications();
@@ -191,7 +191,7 @@ class Design
         $fileModifications = [];
         if (!empty($modifications)) {
             foreach ($modifications as $modification) {
-                if ('/'.ltrim($modification->file, '/') == substr($currentFile, -strlen('/'.$modification->file))) {
+                if (DIRECTORY_SEPARATOR.ltrim($modification->file, DIRECTORY_SEPARATOR) == substr($currentFile, -strlen(DIRECTORY_SEPARATOR.$modification->file))) {
                     $fileModifications = array_merge($fileModifications, $modification->changes);
                 }
             }
@@ -215,10 +215,6 @@ class Design
     public function setModuleDir($moduleClassName)
     {
         
-        if ($this->moduleChangeDir !== null) {
-            throw new \Exception("Module \"{$this->moduleChangeDir}\" is changed dir and not rollback from Design::rollbackTemplatesDir()");
-        }
-        
         $vendor = $this->module->getVendorName($moduleClassName);
         $name = $this->module->getModuleName($moduleClassName);
 
@@ -227,11 +223,13 @@ class Design
             $name
         );
 
-        $this->prevModuleDir = $this->getModuleTemplatesDir();
-        $this->isUseModuleDirBeforeChange = $this->isUseModuleDir();
+        $this->moduleChangeDir[] = [
+            'prev_module_dir' => $this->getModuleTemplatesDir(),
+            'is_use_prev_module_dir' => $this->isUseModuleDir(),
+        ];
+        
         $this->setModuleTemplatesDir($moduleTemplateDir);
         $this->useModuleDir();
-        $this->moduleChangeDir = "{$vendor}\{$name}";
     }
 
     /**
@@ -240,13 +238,17 @@ class Design
      */
     public function rollbackTemplatesDir()
     {
-        if (!empty($this->prevModuleDir)) {
-            $this->setModuleTemplatesDir($this->prevModuleDir);
-        }
-        if (!$this->isUseModuleDirBeforeChange) {
+        
+        if ($moduleChangeDir = array_pop($this->moduleChangeDir)) {
+            if (!empty($moduleChangeDir['prev_module_dir'])) {
+                $this->setModuleTemplatesDir($moduleChangeDir['prev_module_dir']);
+            }
+            if (!$moduleChangeDir['is_use_prev_module_dir']) {
+                $this->useDefaultDir();
+            }
+        } else {
             $this->useDefaultDir();
         }
-        $this->moduleChangeDir = null;
     }
     
     /**
@@ -258,6 +260,7 @@ class Design
      */
     public function templateExists($tplFile)
     {
+        $tplFile = mb_substr($tplFile, 0, 500);
         if ($this->isUseModuleDir() === false) {
             $this->setSmartyTemplatesDir($this->getDefaultTemplatesDir());
         } else {
@@ -325,10 +328,18 @@ class Design
     }
 
     /*Отображение конкретного шаблона*/
-    public function fetch($template)
+    public function fetch($template, $forceMinify = false)
     {
+        if (!$this->smartyHtmlMinify && $forceMinify === true) {
+            $this->smarty->loadFilter('output', 'trimwhitespace');
+        }
+        
         $this->registerSmartyPlugins();
-        return License::getHtml($this, $template);
+        $html = License::getHtml($this, $template);
+        if (!$this->smartyHtmlMinify && $forceMinify === true) {
+            $this->smarty->unloadFilter('output', 'trimwhitespace');
+        }
+        return $html;
     }
 
     public function useDefaultDir()
@@ -445,7 +456,7 @@ class Design
     
     public function clearCompiled()
     {
-        $theme = $this->templateConfig->getTheme();
+        $theme = $this->frontTemplateConfig->getTheme();
         $dir = $this->rootDir.'compiled/'.$theme;
         if ($handle = opendir($dir)) {
             while (false !== ($file = readdir($handle))) {

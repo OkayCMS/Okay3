@@ -17,13 +17,13 @@ class OrderController extends AbstractController
 {
     
     public function render(
-        OrdersEntity $ordersEntity,
-        CouponsEntity $couponsEntity,
-        PaymentsEntity $paymentsEntity,
-        DeliveriesEntity $deliveriesEntity,
-        OrderStatusEntity $orderStatusEntity,
-        CurrenciesEntity $currenciesEntity,
-        OrdersHelper $ordersHelper,
+        OrdersEntity        $ordersEntity,
+        CouponsEntity       $couponsEntity,
+        PaymentsEntity      $paymentsEntity,
+        DeliveriesEntity    $deliveriesEntity,
+        OrderStatusEntity   $orderStatusEntity,
+        CurrenciesEntity    $currenciesEntity,
+        OrdersHelper        $ordersHelper,
         OrderMetadataHelper $orderMetadataHelper,
         $url
     ) {
@@ -83,6 +83,10 @@ class OrderController extends AbstractController
         
         // Все валюты
         $this->design->assign('all_currencies', $currenciesEntity->mappedBy('id')->find());
+
+        // Скидки
+        $discounts = $ordersHelper->getDiscounts($order->id);
+        $this->design->assign('discounts', $discounts);
         
         // Выводим заказ
         $this->response->setContent('order.tpl');

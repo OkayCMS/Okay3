@@ -71,6 +71,16 @@
                         <div class="permission_boxes row">
                             <div class="col-xl-12 col-lg-12 col-md-12">
                                 <div class="permission_box permission_box--long">
+                                    <span>{$btr->okaycms__yandex_xml__upload_without_images|escape}</span>
+                                    <label class="switch switch-default">
+                                        <input class="switch-input" name="okaycms__yandex_xml__upload_without_images" value='1' type="checkbox" {if $settings->okaycms__yandex_xml__upload_without_images}checked=""{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                <div class="permission_box permission_box--long">
                                     <span>{$btr->okaycms__yandex_xml__upload_non_exists_products_to_yandex|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__yandex_xml__upload_only_available_to_yandex" value='1' type="checkbox" {if $settings->okaycms__yandex_xml__upload_only_available_to_yandex}checked=""{/if}/>

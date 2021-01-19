@@ -9,7 +9,7 @@ use Okay\Core\Design;
 use Okay\Core\Database;
 use Okay\Core\QueryFactory;
 use Okay\Core\Config;
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Entities\ModulesEntity;
 use Okay\Core\EntityFactory;
 use OkayLicense\License;
@@ -123,6 +123,15 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
         $this->db->query($select);
         $modules = $this->db->results();
 
+        foreach ($modules as $module) {
+            // Запоминаем какие модули мы запустили, они понадобятся чтобы активировать их js и css
+            $this->runningModules[$module->vendor . '/' . $module->module_name] = [
+                'vendor' => $module->vendor,
+                'module_name' => $module->module_name,
+                'is_active' => $module->enabled,
+            ];
+        }
+
         $SL = ServiceLocator::getInstance();
         /** @var Design $design */
         $design = $SL->getService(Design::class);
@@ -161,22 +170,13 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
                 continue;
             }
 
-            // Запоминаем какие модули мы запустили, они понадобятся чтобы активировать их js и css
-            $this->runningModules[$module->vendor . '/' . $module->module_name] = [
-                'vendor' => $module->vendor,
-                'module_name' => $module->module_name,
-                'is_active' => $module->enabled,
-            ];
-
             $moduleConfigFile = __DIR__ . '/../../Modules/' . $module->vendor . '/' . $module->module_name . '/config/config.php';
             if (is_file($moduleConfigFile)) {
                 $this->config->loadConfigsFrom($moduleConfigFile);
             }
 
-            $moduleJsonFileFile = __DIR__ . '/../../Modules/' . $module->vendor . '/' . $module->module_name . '/Init/module.json';
-
-            if (file_exists($moduleJsonFileFile)) {
-                $this->modulesParams[$module->vendor . '/' . $module->module_name] = json_decode(file_get_contents($moduleJsonFileFile));
+            if ($moduleParams = $this->module->getModuleParams($module->vendor, $module->module_name)) {
+                $this->modulesParams[$module->vendor . '/' . $module->module_name] = $moduleParams;
             }
             
             $this->backendControllersList = array_merge($this->backendControllersList, $this->license->startModule($module->id, $module->vendor, $module->module_name));
@@ -472,8 +472,10 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
 
         // TODO: подумать что делать с локатором и циклической зависимостью из-за которой нельзя заинжектить сервис
         $serviceLocator = ServiceLocator::getInstance();
-        $templateConfig = $serviceLocator->getService(TemplateConfig::class);
-        $themeDir  = 'design/'.$templateConfig->getTheme().'/';
+        
+        /** @var FrontTemplateConfig $frontTemplateConfig */
+        $frontTemplateConfig = $serviceLocator->getService(FrontTemplateConfig::class);
+        $themeDir  = 'design/'.$frontTemplateConfig->getTheme().'/';
 
         $lang = [];
         if (is_file($themeDir .'modules/'.$vendor.'/'.$moduleName.'/lang/'. $langLabel.'.php')) {

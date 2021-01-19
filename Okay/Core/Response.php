@@ -78,6 +78,11 @@ class Response
     {
         return $this->type;
     }
+    
+    public function getContent()
+    {
+        return $this->content;
+    }
 
     /**
      * В отличии от метода sendContent(), этот метод непосредственно сейчас отправляет данные.

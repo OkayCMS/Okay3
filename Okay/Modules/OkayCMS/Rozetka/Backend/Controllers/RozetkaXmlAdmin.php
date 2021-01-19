@@ -27,6 +27,9 @@ class RozetkaXmlAdmin extends IndexAdmin
             if ($errors = $backendRozetkaHelper->validateFeeds($postFeeds)) {
                 $this->design->assign('errors', $errors);
             } else {
+
+                $this->settings->update('okaycms__rozetka_xml__company', $this->request->post('okaycms__rozetka_xml__company'));
+                
                 $postRelatedCategories = $this->request->post('related_categories');
                 $postRelatedBrands = $this->request->post('related_brands');
 
@@ -75,17 +78,11 @@ class RozetkaXmlAdmin extends IndexAdmin
 
     private function updateCheckboxes()
     {
-        if ($this->request->post('upload_non_available', 'integer')) {
-            $this->settings->set('upload_only_available_to_rozetka', 1);
-        } else {
-            $this->settings->set('upload_only_available_to_rozetka', 0);
-        }
 
-        if ($this->request->post('full_description', 'integer')) {
-            $this->settings->set('use_full_description_in_upload_rozetka', 1);
-        } else {
-            $this->settings->set('use_full_description_in_upload_rozetka', 0);
-        }
+        $this->settings->set('upload_only_available_to_rozetka', $this->request->post('upload_non_available', 'integer'));
+        $this->settings->set('use_full_description_in_upload_rozetka', $this->request->post('full_description', 'integer'));
+        $this->settings->set('okaycms__rozetka_xml__upload_without_images', $this->request->post('okaycms__rozetka_xml__upload_without_images', 'integer'));
+        
     }
     
 }

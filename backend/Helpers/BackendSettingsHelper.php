@@ -15,7 +15,7 @@ use Okay\Core\QueryFactory;
 use Okay\Core\Request;
 use Okay\Core\Settings;
 use Okay\Core\Modules\Extender\ExtenderFacade;
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Entities\LanguagesEntity;
 use Okay\Entities\ManagersEntity;
 use Okay\Entities\AdvantagesEntity;
@@ -63,9 +63,9 @@ class BackendSettingsHelper
     private $managers;
 
     /**
-     * @var TemplateConfig
+     * @var FrontTemplateConfig
      */
-    private $templateConfig;
+    private $frontTemplateConfig;
 
     /**
      * @var QueryFactory
@@ -96,7 +96,7 @@ class BackendSettingsHelper
         EntityFactory $entityFactory,
         DataCleaner $dataCleaner,
         Managers $managers,
-        TemplateConfig $templateConfig,
+        FrontTemplateConfig $frontTemplateConfig,
         QueryFactory $queryFactory,
         Languages $languages,
         JsSocial $jsSocial,
@@ -110,7 +110,7 @@ class BackendSettingsHelper
         $this->request = $request;
         $this->config = $config;
         $this->managers = $managers;
-        $this->templateConfig = $templateConfig;
+        $this->frontTemplateConfig = $frontTemplateConfig;
         $this->queryFactory = $queryFactory;
         $this->languages = $languages;
         $this->jsSocial = $jsSocial;
@@ -121,7 +121,7 @@ class BackendSettingsHelper
     public function updateSettings()
     {
         $this->settings->set('decimals_point', $this->request->post('decimals_point', null, ','));
-        $this->settings->set('thousands_separator', $this->request->post('thousands_separator', null, ' '));
+        $this->settings->set('thousands_separator', $this->request->post('thousands_separator'));
         $this->settings->set('products_num', $this->request->post('products_num', 'int', 24));
         $this->settings->set('max_order_amount', $this->request->post('max_order_amount', 'int', 50));
         $this->settings->set('comparison_count', $this->request->post('comparison_count', 'int', 5));
@@ -129,6 +129,8 @@ class BackendSettingsHelper
         $this->settings->set('missing_products', $this->request->post('missing_products', null, 'default'));
         $this->settings->set('hide_single_filters', $this->request->post('hide_single_filters', 'int'));
         $this->settings->set('support_webp', $this->request->post('support_webp', 'int'));
+        $this->settings->set('features_cache_ttl', $this->request->post('features_cache_ttl', 'int'));
+        $this->settings->set('deferred_load_features', $this->request->post('deferred_load_features', 'int'));
         $this->settings->update('units', $this->request->post('units'));
 
         if ($this->request->post('is_preorder', 'integer')) {
@@ -216,7 +218,6 @@ class BackendSettingsHelper
         $this->settings->set('phone_default_region', $this->request->post('phone_default_region'));
         $this->settings->set('phone_default_format', $this->request->post('phone_default_format'));
         $this->settings->set('date_format', $this->request->post('date_format'));
-        $this->settings->set('admin_email', $this->request->post('admin_email'));
         $this->settings->set('site_work', $this->request->post('site_work'));
         $this->settings->set('captcha_comment', $this->request->post('captcha_comment', 'boolean'));
         $this->settings->set('captcha_cart', $this->request->post('captcha_cart', 'boolean'));
@@ -303,11 +304,11 @@ class BackendSettingsHelper
     public function updateThemeSettings()
     {
         if ($cssColors = $this->request->post('css_colors')) {
-            $this->templateConfig->updateCssVariables($cssColors);
+            $this->frontTemplateConfig->updateCssVariables($cssColors);
         }
 
         if ($this->settings->get('social_share_theme') != $this->request->post('social_share_theme')) {
-            $this->templateConfig->clearCompiled();
+            $this->frontTemplateConfig->clearCompiled();
         }
 
         $this->settings->set('social_share_theme', $this->request->post('social_share_theme'));
@@ -423,7 +424,7 @@ class BackendSettingsHelper
 
     public function getCssVariables()
     {
-        return ExtenderFacade::execute(__METHOD__, $this->templateConfig->getCssVariables(), func_get_args());
+        return ExtenderFacade::execute(__METHOD__, $this->frontTemplateConfig->getCssVariables(), func_get_args());
     }
 
     public function uploadSiteLogo()

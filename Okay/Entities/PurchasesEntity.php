@@ -17,6 +17,7 @@ class PurchasesEntity extends Entity
         'variant_id',
         'product_name',
         'variant_name',
+        'undiscounted_price',
         'price',
         'amount',
         'sku',

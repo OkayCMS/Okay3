@@ -48,30 +48,16 @@ class DeliveriesHelper
             return ExtenderFacade::execute(__METHOD__, [], func_get_args());
         }
 
-        if ($this->isSeparateDelivery($delivery)) {
-            if ($delivery->free_from > $order->total_price) {
-                $deliveryPriceInfo = [
-                    'delivery_price'    => $delivery->price,
-                    'separate_delivery' => $delivery->separate_payment,
-                ];
-            } else {
-                $deliveryPriceInfo = [
-                    'delivery_price'    => 0,
-                    'separate_delivery' => $delivery->separate_payment,
-                ];
-            }
+        if ($delivery->free_from > $order->total_price) {
+            $deliveryPriceInfo = [
+                'delivery_price'    => $delivery->price,
+                'separate_delivery' => $delivery->separate_payment,
+            ];
         } else {
-            if ($delivery->free_from > $order->total_price) {
-                $deliveryPriceInfo = [
-                    'delivery_price'    => $delivery->price,
-                    'separate_delivery' => $delivery->separate_payment,
-                ];
-            } else {
-                $deliveryPriceInfo = [
-                    'delivery_price'    => 0,
-                    'separate_delivery' => $delivery->separate_payment,
-                ];
-            }
+            $deliveryPriceInfo = [
+                'delivery_price'    => 0,
+                'separate_delivery' => $delivery->separate_payment,
+            ];
         }
 
         return ExtenderFacade::execute(__METHOD__, $deliveryPriceInfo, func_get_args());
@@ -140,7 +126,7 @@ class DeliveriesHelper
         return ExtenderFacade::execute(__METHOD__, $deliveries, func_get_args());
     }
     
-    public function getActiveDeliveryMethod($deliveries)
+    public function getActiveDeliveryMethod($deliveries, $user)
     {
         $SL = ServiceLocator::getInstance();
 
@@ -148,7 +134,9 @@ class DeliveriesHelper
         $request = $SL->getService(Request::class);
         
         // Передаём на фронт активный способ доставки
-        if (($deliveryId = $request->post('delivery_id', 'integer')) && isset($deliveries[$deliveryId])) {
+        if (!empty($user->preferred_delivery_id) && isset($deliveries[$user->preferred_delivery_id])) {
+            $activeDelivery = $deliveries[$user->preferred_delivery_id];
+        } elseif (($deliveryId = $request->post('delivery_id', 'integer')) && isset($deliveries[$deliveryId])) {
             $activeDelivery = $deliveries[$deliveryId];
         } else {
             $activeDelivery = reset($deliveries);

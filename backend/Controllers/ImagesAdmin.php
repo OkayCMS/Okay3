@@ -4,15 +4,15 @@
 namespace Okay\Admin\Controllers;
 
 
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Core\Response;
 
 class ImagesAdmin extends IndexAdmin
 {
     
-    public function fetch(TemplateConfig $templateConfig, Response $response)
+    public function fetch(FrontTemplateConfig $frontTemplateConfig, Response $response)
     {
-        $currentTheme = $templateConfig->getTheme();
+        $currentTheme = $frontTemplateConfig->getTheme();
 
         $images_dir = 'design/'.$currentTheme.'/images/';
         $allowed_extentions = array('png', 'gif', 'jpg', 'jpeg', 'ico');

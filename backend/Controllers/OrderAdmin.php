@@ -11,6 +11,7 @@ use Okay\Core\Image;
 use Okay\Core\Notify;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\DeliveriesEntity;
+use Okay\Entities\DiscountsEntity;
 use Okay\Entities\OrderLabelsEntity;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\OrderStatusEntity;
@@ -21,17 +22,18 @@ class OrderAdmin extends IndexAdmin
 {
     
     public function fetch(
-        OrdersEntity         $ordersEntity,
-        PurchasesEntity      $purchasesEntity,
-        OrderLabelsEntity    $orderLabelsEntity,
-        OrderStatusEntity    $orderStatusEntity,
-        DeliveriesEntity     $deliveriesEntity,
-        PaymentsEntity       $paymentsEntity,
-        CurrenciesEntity     $currenciesEntity,
-        Notify               $notify,
-        BackendOrdersRequest $ordersRequest,
-        BackendOrdersHelper  $backendOrdersHelper,
-        BackendOrderHistoryHelper $backendOrderHistoryHelper
+        OrdersEntity              $ordersEntity,
+        PurchasesEntity           $purchasesEntity,
+        OrderLabelsEntity         $orderLabelsEntity,
+        OrderStatusEntity         $orderStatusEntity,
+        DeliveriesEntity          $deliveriesEntity,
+        PaymentsEntity            $paymentsEntity,
+        CurrenciesEntity          $currenciesEntity,
+        Notify                    $notify,
+        BackendOrdersRequest      $ordersRequest,
+        BackendOrdersHelper       $backendOrdersHelper,
+        BackendOrderHistoryHelper $backendOrderHistoryHelper,
+        DiscountsEntity           $discountsEntity
     ) {
         
         /*Прием информации о заказе*/
@@ -40,11 +42,13 @@ class OrderAdmin extends IndexAdmin
             $order = $ordersRequest->postOrder();
             $purchases = $ordersRequest->postPurchases();
 
-            $orderBeforeUpdate = null;
-            $purchasesBeforeUpdate = null;
+            $orderBeforeUpdate = [];
+            $purchasesBeforeUpdate = [];
+            $discountsBeforeUpdate = [];
             if (!empty($order->id)) {
                 $orderBeforeUpdate = $ordersEntity->get((int)$order->id);
                 $purchasesBeforeUpdate = $purchasesEntity->find(['order_id' => $order->id]);
+                $discountsBeforeUpdate = $backendOrdersHelper->getDiscountsBeforeUpdate($order->id);
             }
             
             if (!$orderLabels = $this->request->post('order_labels')) {
@@ -93,6 +97,14 @@ class OrderAdmin extends IndexAdmin
                     // Удалить непереданные товары
                     $backendOrdersHelper->deletePurchases($order, $postedPurchasesIds);
 
+                    // Обновим скидки
+                    $discounts = $ordersRequest->postDiscounts();
+                    $backendOrdersHelper->deleteDiscounts($discounts, $order->id);
+                    $backendOrdersHelper->updateDiscounts($discounts, $order->id);
+                    $positions = $ordersRequest->postDiscountPositions();
+                    list($discountIds, $discountPositions) = $backendOrdersHelper->sortDiscountPositions($positions);
+                    $backendOrdersHelper->updateDiscountPositions($discountIds, $discountPositions);
+
                     // Обновим статус заказа
                     $newStatusId = $this->request->post('status_id', 'integer');
                     if (!$backendOrdersHelper->updateOrderStatus($order, $newStatusId)) {
@@ -109,7 +121,7 @@ class OrderAdmin extends IndexAdmin
                     }
                 }
 
-                $backendOrderHistoryHelper->updateHistory($orderBeforeUpdate, $order, $purchasesBeforeUpdate);
+                $backendOrderHistoryHelper->updateHistory($orderBeforeUpdate, $order, $purchasesBeforeUpdate, $discountsBeforeUpdate);
 
                 // По умолчанию метод ничего не делает, но через него можно зацепиться модулем
                 $backendOrdersHelper->executeCustomPost($order);
@@ -149,6 +161,8 @@ class OrderAdmin extends IndexAdmin
                 $this->design->assign('payment_currency', $paymentCurrency);
             }
 
+            $discounts = $backendOrdersHelper->getOrderDiscounts($order->id);
+
             $user = $backendOrdersHelper->findOrderUser($order);
             $neighborsOrders = $backendOrdersHelper->findNeighborsOrders(
                 $order,
@@ -164,11 +178,13 @@ class OrderAdmin extends IndexAdmin
             $this->design->assign('order', $order);
             $this->design->assign('hasVariantNotInStock', $hasVariantNotInStock);
             $this->design->assign('neighbors_orders', $neighborsOrders);
+            $this->design->assign('discounts', $discounts);
         }
 
-        //все статусы
+        // все статусы
         $allStatuses = $orderStatusEntity->mappedBy('id')->find();
         $this->design->assign('all_status', $allStatuses);
+
         // Все способы доставки
         $deliveries = $deliveriesEntity->find();
         $this->design->assign('deliveries', $deliveries);

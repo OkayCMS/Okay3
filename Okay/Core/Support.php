@@ -91,7 +91,7 @@ class Support
         return $this->supportRequest($params);
     }
 
-    public function getNewKeys() {
+    public function getNewKeys($email = '') {
         $supportInfoEntity = $this->entityFactory->get(SupportInfoEntity::class);        
         $info = $supportInfoEntity->getInfo();
         $info->temp_time = strtotime($info->temp_time);
@@ -119,8 +119,8 @@ class Support
             'temp_key'     => $info->temp_key,
             'version'      => $this->config->version,
             'version_type' => (!empty($this->config->version_type) ? $this->config->version_type : null),
-            'owner_email'  => $this->settings->admin_email,
-            'owner_phone'  => $this->settings->admin_phone ? $this->settings->admin_phone : ''
+            'owner_email'  => $email,
+            'owner_phone'  => $this->settings->get('admin_phone') ? $this->settings->get('admin_phone') : ''
         ];
         
         return $this->supportRequest($params);

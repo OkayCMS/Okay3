@@ -35,3 +35,4 @@ $lang['okaycms__hotline__add_feed'] = 'Add upload';
 $lang['okaycms__hotline__remove_feed'] = 'Remove upload';
 $lang['okaycms__hotline__error_url_exist'] = 'An upload with the same URL already exists';
 $lang['okaycms__hotline__error_url_cyrillic'] = 'The URL should contain only Latin letters and numbers';
+$lang['okaycms__hotline__upload_without_images'] = 'Unload goods without images';

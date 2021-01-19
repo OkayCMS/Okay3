@@ -50,12 +50,24 @@ class BannersEntity extends Entity
     
     protected function filter__show_on($showOnEntitiesIds)
     {
-        foreach($showOnEntitiesIds as $k=>$values) {
+        foreach($showOnEntitiesIds as $entityField=>$values) {
             if(empty($values)) {
-                unset($showOnEntitiesIds[$k]);
+                unset($showOnEntitiesIds[$entityField]);
                 continue;
             }
-            $showFilterArray[$k] = $k." regexp '[[:<:]]({$showOnEntitiesIds[$k]})[[:>:]]'";
+            
+            $showFilterArray[$entityField] = "
+            {$entityField} = :{$entityField}_full
+            OR {$entityField} LIKE :{$entityField}_prefix
+            OR {$entityField} LIKE :{$entityField}_inner
+            OR {$entityField} LIKE :{$entityField}_suffix
+            ";
+            $this->select->bindValues([
+                "{$entityField}_full" => $values,
+                "{$entityField}_prefix" => $values . ',%',
+                "{$entityField}_inner" => '%,' . $values . ',%',
+                "{$entityField}_suffix" => '%,' . $values,
+            ]);
         }
         $showFilterArray[] = "show_all_pages=1";
         $this->select->where('(' . implode(' OR ',$showFilterArray) . ')');

@@ -6,10 +6,12 @@ namespace Okay\Core;
 
 use Okay\Entities\FeaturesValuesEntity;
 use Okay\Entities\FeaturesEntity;
+use Okay\Entities\UserComparisonItemsEntity;
 use Okay\Entities\VariantsEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\ImagesEntity;
 use Okay\Core\Modules\Extender\ExtenderFacade;
+use Okay\Helpers\MainHelper;
 use Okay\Helpers\MoneyHelper;
 use Okay\Helpers\ProductsHelper;
 
@@ -36,19 +38,24 @@ class Comparison
      * @var MoneyHelper
      */
     private $moneyHelper;
+    private $entityFactory;
+    private $mainHelper;
 
     public function __construct(
         EntityFactory $entityFactory,
         Settings      $settings,
-        MoneyHelper   $moneyHelper
+        MoneyHelper   $moneyHelper,
+        MainHelper    $mainHelper
     ){
         $this->productsEntity         = $entityFactory->get(ProductsEntity::class);
         $this->variantsEntity         = $entityFactory->get(VariantsEntity::class);
         $this->imagesEntity           = $entityFactory->get(ImagesEntity::class);
         $this->featuresEntity         = $entityFactory->get(FeaturesEntity::class);
         $this->featuresValuesEntity   = $entityFactory->get(FeaturesValuesEntity::class);
+        $this->entityFactory          = $entityFactory;
         $this->settings               = $settings;
         $this->moneyHelper            = $moneyHelper;
+        $this->mainHelper             = $mainHelper;
     }
 
     public function get()
@@ -159,24 +166,38 @@ class Comparison
         return ExtenderFacade::execute(__METHOD__, $comparison,func_get_args());
     }
 
-    public function addItem($productId)
+    public function addItem($productId, $onlyLocal = false, $delayedDispatch = false)
     {
         $items = !empty($_COOKIE['comparison']) ? json_decode($_COOKIE['comparison']) : [];
         $items = $items && is_array($items) ? $items : [];
         if (!in_array($productId, $items)) {
             $items[] = $productId;
-            if ($this->settings->comparison_count && $this->settings->comparison_count < count($items)) {
+            if ($this->settings->get('comparison_count') && $this->settings->get('comparison_count') < count($items)) {
                 array_shift($items);
             }
         }
         $_COOKIE['comparison'] = json_encode($items);
-        setcookie('comparison', $_COOKIE['comparison'], time()+30*24*3600, '/');
+        if ($delayedDispatch === false) {
+            $this->save();
+        }
 
+        if ($onlyLocal === false && ($user = $this->mainHelper->getCurrentUser())) {
+            /** @var UserComparisonItemsEntity $userComparisonItemsEntity */
+            $userComparisonItemsEntity = $this->entityFactory->get(UserComparisonItemsEntity::class);
+
+            if (!$userComparisonItemsEntity->findOne(['user_id' => $user->id, 'product_id' => $productId])) {
+                $userComparisonItemsEntity->add([
+                    'user_id' => $user->id,
+                    'product_id' => $productId,
+                ]);
+            }
+        }
+        
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     /*Удаление товара из корзины*/
-    public function deleteItem($productId)
+    public function deleteItem($productId, $onlyLocal = false, $delayedDispatch = false)
     {
         $items = !empty($_COOKIE['comparison']) ? json_decode($_COOKIE['comparison']) : [];
         if (!is_array($items)) {
@@ -189,14 +210,40 @@ class Comparison
         }
         $items = array_values($items);
         $_COOKIE['comparison'] = json_encode($items);
-        setcookie('comparison', $_COOKIE['comparison'], time()+30*24*3600, '/');
+        if ($delayedDispatch === false) {
+            $this->save();
+        }
 
+        if ($onlyLocal === false && ($user = $this->mainHelper->getCurrentUser())) {
+            /** @var UserComparisonItemsEntity $userComparisonItemsEntity */
+            $userComparisonItemsEntity = $this->entityFactory->get(UserComparisonItemsEntity::class);
+
+            $userComparisonItemsEntity->deleteByProductId($user->id, $productId);
+        }
+        
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
+    }
+
+    public function save()
+    {
+        if (!empty($_COOKIE['comparison'])) {
+            setcookie('comparison', $_COOKIE['comparison'], time() + 30 * 24 * 3600, '/');
+        }
     }
     
     /*Очистка списка сравнения*/
-    public function emptyComparison()
+    public function emptyComparison($onlyLocal = false)
     {
+
+        if ($onlyLocal === false) {
+            if ($user = $this->mainHelper->getCurrentUser()) {
+                /** @var UserComparisonItemsEntity $userComparisonItemsEntity */
+                $userComparisonItemsEntity = $this->entityFactory->get(UserComparisonItemsEntity::class);
+
+                $userComparisonItemsEntity->deleteByProductId($user->id, array_keys(json_decode($_COOKIE['comparison'])));
+            }
+        }
+        
         unset($_COOKIE['comparison']);
         setcookie('comparison', '', time()-3600, '/');
 

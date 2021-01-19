@@ -16,6 +16,7 @@ class PaymentsEntity extends Entity
         'module',
         'currency_id',
         'settings',
+        'auto_submit',
         'enabled',
         'position',
         'image',

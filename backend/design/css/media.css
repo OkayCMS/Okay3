@@ -211,6 +211,8 @@
     .okay_list .subcategories_level_2 .okay_list_categories_name{width: calc(100% - 420px);}
     .okay_list .okay_list_categories_name {width: calc(100% - 360px);}
     .okay_list .okay_list_name {width: calc(100% - 320px);}
+    .okay_list .okay_list_order_discounted_name{ width: calc(100% - 220px);}
+    .okay_list .okay_list_marketplace_name{width: calc(100% - 360px);}
 
     .min_height_335px,
     .min_height_250px,
@@ -270,6 +272,13 @@
         flex: 0 0 50%;
         max-width: 50%;
         min-height: 50%;
+    }
+    .activity_of_switch--box_settings .activity_of_switch_item{
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 50%;
+        -ms-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 50%;
     }
 
 }
@@ -521,7 +530,9 @@
     .okay_list .okay_list_order_stg_sts_name {
         width: calc(100% - 310px);
     }
-
+    .okay_list .okay_list_discounted_stg_sts_name{
+        width: calc(100% - 50px);
+    }
     .okay_list .okay_list_order_stg_sts_status2{
         max-width: 150px;
     }
@@ -613,6 +624,9 @@
     .okay_list .okay_list_menu_name {
         width: calc(100% - 40px);
     }
+    .okay_list .okay_list_marketplace_name{width: calc(100% - 220px);}
+
+    .okay_list .okay_list_order_discounted_name{ width: calc(100% - 180px);}
     
     .activity_of_switch {
         flex-direction: row;
@@ -831,6 +845,13 @@
         max-width: 100%;
         min-height: 100%;
     }
+    .activity_of_switch--box_settings .activity_of_switch_item{
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 100%;
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
 }
 /* Extra Small Devices, Phones */
 @media (min-width : 576px) {
@@ -855,6 +876,8 @@
         padding: 0px;
         margin: 0px auto;
     }
+    .modules_add_new_modules {display: block;}
+    .modules_add_new_modules  .input-group {margin: 0;}
     .filter_date__item {
         -webkit-box-pack: center;
         -webkit-justify-content: center;
@@ -868,6 +891,10 @@
         -ms-flex-positive: 1;
         flex-grow: 1;
         max-width: 100%;
+    }
+    .modules_add_new_modules button {
+        margin: 10px 0 0px;
+        justify-content: center;
     }
     .page-link, .pagination-datatables li a, .pagination li a {padding: 3px 12px;margin: 4px 1px;}
     .okay_list .okay_list_delivery_photo {width: 80px;}
@@ -897,12 +924,13 @@
     .modal-body .btn + .btn {
         margin-top: 10px;
     }
+    .boxed_marketplace--bg .heading_box{display: none;}
     .modal-body .mx-h {
         margin-right: 0 !important;
         margin-left: 0 !important;
     }
     .translations_scrolls{min-width: 570px;}
-    .delivery_type{display: block;margin-bottom: 10px;}
+    .delivery_type{display: block;margin-bottom: 10px;} 
     .delivery_inline_block {display: block;margin-right: 0px;}
 
     /* Переопределение размеров списков */
@@ -915,6 +943,8 @@
     .okay_list .okay_list_page_name {width: calc(100% - 0px);}
     .okay_list .okay_list_users_name {width: calc(100% - 0px);}
     .okay_list .okay_list_order_name {width: calc(100% - 80px);}
+    .okay_list .okay_list_order_discounted_name{ width: calc(100% - 40px);}
+    .okay_list .okay_list_marketplace_name{width: calc(100% - 80px);}
     .okay_list .okay_list_order_stg_sts_name_1c {
         width: 100%;
         padding-left: 10px !important;

@@ -198,8 +198,8 @@ class BlogCategoriesEntity extends Entity
                     $cId,
                     'image',
                     self::class,
-                    $this->config->original_categories_dir,
-                    $this->config->resized_categories_dir
+                    $this->config->get('original_blog_categories_dir'),
+                    $this->config->get('resized_blog_categories_dir')
                 );
             }
 
@@ -221,11 +221,6 @@ class BlogCategoriesEntity extends Entity
             $this->db->query($delete);
             //Обновим информацию о главной категории
             $this->updateMainPostsCategory($postIds);
-
-            $SEOFilterPatternsEntity = $this->entity->get(SEOFilterPatternsEntity::class);
-
-            $patternsIds = $SEOFilterPatternsEntity->cols(['id'])->find(['category_id' => $category->children]);
-            $SEOFilterPatternsEntity->delete($patternsIds);
 
             parent::delete($category->children);
         }
@@ -428,7 +423,10 @@ class BlogCategoriesEntity extends Entity
 
         $categoriesIdsWithPosts = [];
         $select = $this->queryFactory->newSelect();
-        $select->cols(['category_id'])->from('__blog_categories_relation')->groupBy(['category_id']);
+        $select->cols(['category_id'])
+            ->from('__blog_categories_relation bc')
+            ->innerJoin(BlogCategoriesEntity::getTable() . ' AS c', 'c.id=bc.category_id AND c.visible=1')
+            ->groupBy(['bc.category_id']);
         
         foreach ($select->results('category_id') as $result) {
             $categoriesIdsWithPosts[$result] = $result;
@@ -469,7 +467,7 @@ class BlogCategoriesEntity extends Entity
             $this->select->join('LEFT', $langQuery['join'], $langQuery['cond']);
         }
 
-        $this->select->leftJoin(RouterCacheEntity::getTable() . ' AS r', 'r.url=c.url AND r.type="category"');
+        $this->select->leftJoin(RouterCacheEntity::getTable() . ' AS r', 'r.url=c.url AND r.type="blog_category"');
 
         $this->select->cols($this->getAllFields());
         $this->db->query($this->select);
@@ -529,14 +527,14 @@ class BlogCategoriesEntity extends Entity
 
         // Сдвигаем категории вперед и вставляем копию на соседнюю позицию
         $update = $this->queryFactory->newUpdate();
-        $update->table('__categories')
+        $update->table('__blog_categories')
             ->set('position', 'position+1')
             ->where('position>=:position')
             ->bindValue('position', $category->position);
         $this->db->query($update);
 
         $update = $this->queryFactory->newUpdate();
-        $update->table('__categories')
+        $update->table('__blog_categories')
             ->set('position', ':position')
             ->where('id=:id')
             ->bindValues([

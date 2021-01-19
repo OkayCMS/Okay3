@@ -3,7 +3,11 @@
 <yml_catalog date="{date('Y-m-d H:i')}">
     <shop>
         <name>{$settings->site_name}</name>
-        <company>{$settings->site_name}</company>
+        {if $settings->okaycms__rozetka_xml__company}
+            <company>{$settings->okaycms__rozetka_xml__company|escape}</company>
+        {else}
+            <company>{$settings->site_name}</company>
+        {/if}
         <url>{$rootUrl}</url>
         <platform>OkayCMS</platform>
         <version>{$config->version} {$config->version_type}</version>

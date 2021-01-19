@@ -76,7 +76,7 @@
 					{foreach $payment_methods as $payment_method}
 						<div class="payment_method__item fn_payment_method__item fn_payment_method__item_{$payment_method->id}"{if !in_array($payment_method->id, $active_delivery->payment_methods_ids)} style="display: none;" {/if}>
 							<label class="checkbox delivery__label{if $active_payment->id==$payment_method->id} active{/if}" for="payment_{$payment_method->id}">
-								<input class="checkbox__input delivery__input" id="payment_{$payment_method->id}" type="radio" name="payment_method_id" data-currency_id="{$payment_method->currency_id}" value="{$payment_method->id}"{if $active_payment->id==$payment_method->id} checked{/if} />
+								<input class="checkbox__input delivery__input" id="payment_{$payment_method->id}" type="radio" name="payment_method_id" data-currency_id="{$payment_method->currency_id}" data-auto_submit="{$payment_method->auto_submit}" value="{$payment_method->id}"{if $active_payment->id==$payment_method->id} checked{/if} />
 								<svg class="checkbox__icon" viewBox="0 0 20 20">
 									<path class="checkbox__mark" fill="none" d="M4 10 l5 4 8-8.5"></path>
 								</svg>

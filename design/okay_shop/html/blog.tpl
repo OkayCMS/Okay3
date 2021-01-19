@@ -6,7 +6,7 @@
 {else}
     {$canonical="{url_generator route=$route_name absolute=1}" scope=global}
 {/if}
-<div class="clearfix">
+<div class="d-lg-flex align-items-lg-start justify-content-lg-between flex-lg-row-reverse clearfix">
     {* Sidebar with blog *}
     <div class="fn_mobile_toogle sidebar sidebar--right d-lg-flex flex-lg-column">
         {include 'blog_sidebar.tpl'}

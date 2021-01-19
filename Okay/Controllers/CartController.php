@@ -4,13 +4,14 @@
 namespace Okay\Controllers;
 
 
+use Okay\Core\SmartyPlugins\Plugins\CheckoutPaymentForm;
+use Okay\Entities\PaymentsEntity;
 use Okay\Helpers\CartHelper;
 use Okay\Helpers\CouponHelper;
 use Okay\Helpers\MetadataHelpers\CartMetadataHelper;
 use Okay\Requests\CartRequest;
 use Okay\Core\Notify;
 use Okay\Core\Router;
-use Okay\Core\TemplateConfig;
 use Okay\Entities\DeliveriesEntity;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Entities\CouponsEntity;
@@ -18,12 +19,10 @@ use Okay\Entities\OrdersEntity;
 use Okay\Core\Request;
 use Okay\Core\Cart;
 use Okay\Core\Languages;
-use Okay\Core\Money;
 use Okay\Helpers\DeliveriesHelper;
 use Okay\Helpers\PaymentsHelper;
 use Okay\Helpers\ValidateHelper;
 use Okay\Helpers\OrdersHelper;
-use Psr\Log\LoggerInterface;
 
 class CartController extends AbstractController
 {
@@ -36,7 +35,7 @@ class CartController extends AbstractController
         Languages          $languages,
         Request            $request,
         Notify             $notify,
-        Cart               $cartCore,
+        Cart               $cart,
         DeliveriesHelper   $deliveriesHelper,
         PaymentsHelper     $paymentsHelper,
         OrdersHelper       $ordersHelper,
@@ -49,25 +48,23 @@ class CartController extends AbstractController
 
         // Если передан id варианта, добавим его в корзину
         if ($variantId = $request->get('variant', 'integer')) {
-            $cartCore->addItem($variantId, $request->get('amount', 'integer'));
+            $cart->addItem($variantId, $request->get('amount', 'integer'));
             $this->response->redirectTo(Router::generateUrl('cart', [], true), 301);
         }
 
         // Если нам запостили amounts, обновляем их
         if ($amounts = $request->post('amounts')) {
             foreach ($amounts as $variantId => $amount) {
-                $cartCore->updateItem($variantId, $amount);
+                $cart->updateItem($variantId, $amount);
             }
         }
         
         $this->setMetadataHelper($cartMetadataHelper);
         
-        $cart = $cartCore->get();
+        $cart = $cart->get();
         /*Оформление заказа*/
         if (isset($_POST['checkout'])) {
             $order = $cartRequest->postOrder();
-            $order = $ordersHelper->attachDiscountIfExists($order, $cart);
-            $order = $ordersHelper->attachCouponIfExists($order, $cart);
             $order = $ordersHelper->attachUserIfLogin($order, $this->user);
 
             if ($error = $validateHelper->getCartValidateError($order)) {
@@ -79,10 +76,14 @@ class CartController extends AbstractController
                 $orderId        = $ordersHelper->add($preparedOrder);
                 $_SESSION['order_id'] = $orderId;
 
-                $couponHelper->registerUseIfExists($cart->coupon);
+                if (isset($_SESSION['coupon_code'])){
+                    $couponHelper->registerUseIfExists($_SESSION['coupon_code']);
+                }
 
                 $preparedCart = $cartHelper->prepareCart($cart, $orderId);
-                $cartHelper->cartToOrder($preparedCart, $orderId);
+                $preparedCart = $cartHelper->cartToOrder($preparedCart, $orderId);
+                $preparedCart = $cartHelper->prepareDiscounts($preparedCart);
+                $cartHelper->discountsToDB($preparedCart);
 
                 $order = $ordersEntity->get((int) $orderId);
                 if (!empty($order->delivery_id)) {
@@ -100,24 +101,30 @@ class CartController extends AbstractController
                 // Отправляем письмо администратору
                 $notify->emailOrderAdmin($order->id);
 
-                $cartCore->clear();
-                // Перенаправляем на страницу заказа
-                $this->response->redirectTo(Router::generateUrl('order', ['url' => $order->url], true));
+                $cart->clear();
+
+                // Перенаправляем на страницу заказа или отправляем форму для автосабмита или урл заказа
+                if ($this->request->post('ajax')) {
+                    $content = $cartHelper->getAjaxOrderContent($order);
+                    return $this->response->setContent(json_encode($content, JSON_UNESCAPED_SLASHES), RESPONSE_JSON);
+                } else {
+                    $this->response->redirectTo(Router::generateUrl('order', ['url' => $order->url], true));
+                }
             }
         } else {
             
             if ($request->post('amounts')) {
                 $couponCode = $cartRequest->postCoupon();
                 if (empty($couponCode)) {
-                    $cartCore->applyCoupon('');
+                    $cart->applyCoupon('');
                     $this->response->redirectTo(Router::generateUrl('cart', [], true));
                 } else {
                     $coupon = $couponsEntity->get((string)$couponCode);
                     if (empty($coupon) || !$coupon->valid) {
-                        $cartCore->applyCoupon($couponCode);
+                        $cart->applyCoupon($couponCode);
                         $this->design->assign('coupon_error', 'invalid');
                     } else {
-                        $cartCore->applyCoupon($couponCode);
+                        $cart->applyCoupon($couponCode);
                         $this->response->redirectTo(Router::generateUrl('cart', [], true));
                     }
                 }
@@ -130,8 +137,8 @@ class CartController extends AbstractController
         // Способы доставки и оплаты
         $paymentMethods = $paymentsHelper->getCartPaymentsList($cart);
         $deliveries     = $deliveriesHelper->getCartDeliveriesList($cart, $paymentMethods);
-        $activeDelivery = $deliveriesHelper->getActiveDeliveryMethod($deliveries);
-        $activePayment  = $paymentsHelper->getActivePaymentMethod($paymentMethods, $activeDelivery);
+        $activeDelivery = $deliveriesHelper->getActiveDeliveryMethod($deliveries, $this->user);
+        $activePayment  = $paymentsHelper->getActivePaymentMethod($paymentMethods, $activeDelivery, $this->user);
 
         $this->design->assign('all_currencies', $currenciesEntity->mappedBy('id')->find());
         $this->design->assign('deliveries', $deliveries);
@@ -150,7 +157,7 @@ class CartController extends AbstractController
         CouponsEntity    $couponsEntity,
         CurrenciesEntity $currenciesEntity,
         Request          $request,
-        Cart             $cartCore,
+        Cart             $cart,
         DeliveriesHelper $deliveriesHelper,
         PaymentsHelper   $paymentsHelper,
         CartHelper       $cartHelper
@@ -161,19 +168,19 @@ class CartController extends AbstractController
         
         switch ($action) {
             case 'update_citem':
-                $cartCore->updateItem($variantId, $amount);
+                $cart->updateItem($variantId, $amount);
                 break;
             case 'remove_citem':
-                $cartCore->deleteItem($variantId);
+                $cart->deleteItem($variantId);
                 break;
             case 'add_citem':
-                $cartCore->addItem($variantId, $amount);
+                $cart->addItem($variantId, $amount);
                 break;
             default:
                 break;
         }
 
-        $cart = $cartCore->get();
+        $cart = $cart->get();
         $this->design->assign('cart', $cart);
 
         $this->design->assign('all_currencies', $currenciesEntity->mappedBy('id')->find());
@@ -183,17 +190,17 @@ class CartController extends AbstractController
             if (isset($_GET['coupon_code'])) {
                 $couponCode = trim($request->get('coupon_code', 'string'));
                 if (empty($couponCode)) {
-                    $cartCore->applyCoupon('');
+                    $cart->applyCoupon('');
                     if ($this->request->get('action') == 'coupon_apply') {
                         $this->design->assign('coupon_error', 'empty');
                     }
                 } else {
                     $coupon = $couponsEntity->get((string)$couponCode);
                     if (empty($coupon) || !$coupon->valid) {
-                        $cartCore->applyCoupon($couponCode);
+                        $cart->applyCoupon($couponCode);
                         $this->design->assign('coupon_error', 'invalid');
                     } else {
-                        $cartCore->applyCoupon($couponCode);
+                        $cart->applyCoupon($couponCode);
                     }
                 }
             }
@@ -202,7 +209,7 @@ class CartController extends AbstractController
                 $this->design->assign('coupon_request', true);
             }
 
-            $cart = $cartCore->get();
+            $cart = $cart->get();
         }
 
         $paymentMethods = $paymentsHelper->getCartPaymentsList($cart);
@@ -213,15 +220,15 @@ class CartController extends AbstractController
         $this->response->setContent(json_encode($result), RESPONSE_JSON);
     }
 
-    public function removeItem(Cart $cartCore, $variantId)
+    public function removeItem(Cart $cart, $variantId)
     {
-        $cartCore->deleteItem($variantId);
+        $cart->deleteItem($variantId);
         $this->response->redirectTo(Router::generateUrl('cart', [], true));
     }
 
-    public function addItem(Cart $cartCore, $variantId)
+    public function addItem(Cart $cart, $variantId)
     {
-        $cartCore->addItem($variantId);
+        $cart->addItem($variantId);
         $this->response->redirectTo(Router::generateUrl('cart', [], true));
     }
     

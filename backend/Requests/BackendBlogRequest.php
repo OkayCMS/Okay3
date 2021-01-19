@@ -70,41 +70,6 @@ class BackendBlogRequest
         return ExtenderFacade::execute(__METHOD__, $post, func_get_args());
     }
 
-    public function postMenuItems()
-    {
-        $postFields = $this->request->post('menu_items');
-
-        if (empty($postFields)) {
-            return ExtenderFacade::execute(__METHOD__, false, func_get_args());
-        }
-
-        foreach ($this->request->post('menu_items') as $field => $values) {
-            foreach ($values as $i => $v) {
-                if (empty($menuItems[$i])) {
-                    $menuItems[$i] = new \stdClass();
-                    $menuItems[$i]->i_tm = $i;
-                }
-                $menuItems[$i]->$field = $v;
-            }
-        }
-
-        // сортируем по родителю
-        usort($menuItems, function ($item1, $item2) {
-            if ($item1->parent_index == $item2->parent_index) {
-                return $item1->i_tm - $item2->i_tm;
-            }
-            return strcmp($item1->parent_index, $item2->parent_index);
-        });
-        $tm = [];
-        foreach ($menuItems as $key => $item) {
-            
-            $tm[$item->index] = $item;
-        }
-        $menuItems = $tm;
-
-        return ExtenderFacade::execute(__METHOD__, $menuItems, func_get_args());
-    }
-
     public function postDeleteImage()
     {
         $deleteImage = $this->request->post('delete_image');

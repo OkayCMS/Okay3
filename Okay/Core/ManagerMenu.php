@@ -33,8 +33,8 @@ class ManagerMenu
             'left_features_title'        => ['FeaturesAdmin', 'FeatureAdmin'],
         ],
         'left_orders' => [
-            'left_orders_title'          => ['OrdersAdmin', 'OrderAdmin'],
-            'left_orders_settings_title' => ['OrderSettingsAdmin'],
+            'left_orders_title'                    => ['OrdersAdmin', 'OrderAdmin'],
+            'left_orders_settings_title'           => ['OrderSettingsAdmin'],
         ],
         'left_users' => [
             'left_users_title'           => ['UsersAdmin', 'UserAdmin'],
@@ -94,9 +94,11 @@ class ManagerMenu
             'left_languages_title'       => ['LanguagesAdmin', 'LanguageAdmin'],
             'learning_title'             => ['LearningAdmin'],
             'left_system_title'          => ['SystemAdmin'],
+            'left_orders_discounts_settings_title' => ['DiscountsSettingsAdmin'],
         ],
         'left_modules' => [
             'left_modules_list'          => ['ModulesAdmin'],
+            'left_modules_marketplace'   => ['ModulesAdmin@marketplace'],
         ],
     ];
 
@@ -372,17 +374,26 @@ class ManagerMenu
 
             foreach ($items as $title => $controllers) {
                 $mainController = reset($controllers);
-
-                if (!isset($manager->menu[$section][$title])) {
-                    $manager->menu[$section][$title] = $mainController;
+                $controllerMethod = null;
+                
+                if (strpos($mainController, '@') !== false) {
+                    list($mainController, $controllerMethod) = explode('@', $mainController, 2);
                 }
+                
+                /*if (!isset($manager->menu[$section][$title])) {
+                    $manager->menu[$section][$title] = $mainController;
+                }*/
 
                 if (!isset($controllersPermissions[$mainController])) {
                     continue;
                 }
 
                 if ($this->managers->hasPermission($manager, $mainController)) {
-                    $manager->menu[$section][$title] = $mainController;
+                    $manager->menu[$section][$title] = [
+                        'controller' => $mainController,
+                        'controllers_block' => $controllers,
+                        'method' => $controllerMethod,
+                    ];
                     continue;
                 }
 
@@ -402,19 +413,19 @@ class ManagerMenu
         }
 
         foreach($manager->menu as $section => $items) {
-            if (!isset($this->leftMenu[$section])) {
+            if (empty($this->leftMenu[$section])) {
                 unset($manager->menu[$section]);
                 continue;
             }
 
             foreach($items as $title => $controllers) {
-                if (!isset($this->leftMenu[$section][$title])) {
+                if (empty($this->leftMenu[$section][$title])) {
                     unset($manager->menu[$section][$title]);
                 }
             }
         }
 
-        return $manager->menu;
+        return array_filter($manager->menu);
     }
 
     public function removeMenuItem($section, $title)
@@ -483,32 +494,28 @@ class ManagerMenu
     
     public function getActiveControllerName($manager, $controller)
     {
-        $controllersPermissions = $this->managers->getControllersPermissions();
         $activeControllerName = null;
         // Если не запросили модуль - используем модуль первый из разрешенных
         if (empty($controller)
             || (!is_file('backend/Controllers/'.$controller.'.php') && !$this->module->getBackendControllerParams($controller))) {
-            foreach ($this->getMenu($manager) as $section => $items) {
-                foreach ($items as $title => $controllers) {
-                    if ($this->managers->access($controllersPermissions[$controllers], $manager)) {
-                        //$controller = $controllers;
-                        $activeControllerName = $title;
-                        break 2;
-                    }
-                }
-            }
-            unset($controllers);
+            $menu = $this->getMenu($manager);
+            $firstBlock = reset($menu);
+            $activeControllerName = key(reset($firstBlock));
         } else {
             foreach ($this->leftMenu as $section => $items) {
                 foreach ($items as $title => $controllers) {
-                    if (in_array($controller, $controllers)) {
-                        $activeControllerName = $title;
-                        break 2;
+                    foreach ($controllers as $c) {
+                        if (strpos($c, '@') !== false) {
+                            list($c, $controllerMethod) = explode('@', $c, 2);
+                        }
+                        if ($controller == $c) {
+                            $activeControllerName = $title;
+                            break 3;
+                        }
                     }
                 }
             }
         }
-        
         return $activeControllerName;
     }
 
@@ -572,6 +579,9 @@ class ManagerMenu
         $permissionBlockMenu = [];
 
         foreach($blockMenu as $itemName => $controllers) {
+            if (strpos($controllers[0], '@') !== false) {
+                list($controllers[0], $controllerMethod) = explode('@', $controllers[0], 2);
+            }
             $permission = $this->managers->getPermissionByController($controllers[0]);
             // Берем первый попавшийся пункт как основной для одинаковых пермишинов, иначе array_flip будет брать последний
             if (!in_array($permission, $permissionBlockMenu)) {

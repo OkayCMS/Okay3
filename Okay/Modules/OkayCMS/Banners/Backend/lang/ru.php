@@ -70,3 +70,4 @@ $lang['admintooltip_edit_banner'] = 'Изменить баннер';
 $lang['admintooltip_add_banner'] = 'Добавить баннер';
 $lang['admintooltip_edit_slide'] = 'Изменить изображение баннера';
 $lang['admintooltip_add_slide'] = 'Добавить изображение баннера';
+$lang['banner_image_is_lang_banner'] = 'Мультиязычный баннер';

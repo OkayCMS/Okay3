@@ -233,7 +233,8 @@ class BackendFeaturesValuesHelper
                 $fv->to_index = 0;
             }
             // TODO Обработка ошибок не уникального тринслита или генерить уникальный
-            if ($fv->value) {
+            if ($fv->value !== '' && $fv->value !== null) {
+                
                 $fv->feature_id = $feature->id;
                 if (!empty($fv->id)) {
                     $this->featuresValuesEntity->update($fv->id, $fv);

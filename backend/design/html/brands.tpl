@@ -2,9 +2,9 @@
 {$meta_title=$btr->brands_brands scope=global}
 
 {*Название страницы*}
-<div class="row">
-    <div class="col-lg-12 col-md-12">
-        <div class="wrap_heading">
+<div class="main_header">
+    <div class="main_header__item">
+        <div class="main_header__inner">
             <div class="box_heading heading_page">
                 {$btr->brands_brands|escape} - {$brands_count}
             </div>
@@ -14,6 +14,19 @@
                     <span>{$btr->brands_add_brand|escape}</span>
                 </a>
             </div>
+        </div>
+    </div>
+    <div class="main_header__item">
+        <div class="main_header__inner">
+            <form class="search" method="get">
+                <input type="hidden" name="controller" value="BrandsAdmin">
+                <div class="input-group input-group--search">
+                    <input name="keyword" class="form-control" placeholder="{$btr->brands_search|escape}" type="text" value="{$keyword|escape}" >
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn_blue"><i class="fa fa-search"></i> <span class="hidden-md-down"></span></button>
+                    </span>
+                </div>
+            </form>
         </div>
     </div>
 </div>

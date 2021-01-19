@@ -14,6 +14,7 @@ class ManagersEntity extends Entity
         'id',
         'lang',
         'login',
+        'email',
         'password',
         'permissions',
         'cnt_try',

@@ -8,16 +8,17 @@
 </head>
 
 <body class="d-flex flex-column {if $controller == 'MainController'}main_page{else}other_page{/if}">
-    <div>
-        {get_design_block block="front_start_body_content"}
-    </div>
 
     {if !empty($counters['body_top'])}
-        <script>ut_tracker.start('parsing:body_top:counters');</script>
         {foreach $counters['body_top'] as $counter}
         {$counter->code}
         {/foreach}
-        <script>ut_tracker.end('parsing:body_top:counters');</script>
+    {/if}
+
+    {if $block = {get_design_block block="front_start_body_content"} }
+    <div>
+        {$block}
+    </div>
     {/if}
 
     <header class="header">
@@ -98,7 +99,7 @@
         </div>
         {/if}
         <div class="header__bottom">
-            <div class="{if $controller != 'MainController'}fn_header__sticky {/if}" data-margin-top="0" data-sticky-for="1024" data-sticky-class="is-sticky">
+            <div class="{if $controller != 'MainController'}fn_header__sticky {/if}" data-margin-top="0" data-sticky-for="991" data-sticky-class="is-sticky">
                 <div class="container">
                     <div class="header__bottom_panel f_row no_gutters flex-nowrap align-content-stretch justify-content-between">
                         {* Mobile menu button*}
@@ -267,37 +268,23 @@
                         <div class="subscribe__title">
                             <span data-language="subscribe_promotext">{$lang->subscribe_promotext}</span>
                         </div>
-                        <form class="subscribe_form fn_validate_subscribe" method="post">
-                            <div class="d-flex align-items-center subscribe_form__group">
-                                <div class="form__group form__group--subscribe">
-                                    <input type="hidden" name="subscribe" value="1"/>
-                                    <input class="form__input form__input_subscribe" aria-label="subscribe" type="email" name="subscribe_email" value="" data-format="email" placeholder="{$lang->form_email}"/>
+                        <form class="fn_subscribe_form fn_validate_subscribe" method="post">
+                            <div class="subscribe_form__group">
+                                 <div class="d-flex align-items-center ">
+                                    <div class="form__group form__group--subscribe">
+                                        <input type="hidden" name="subscribe" value="1"/>
+                                        <input class="form__input form__input_subscribe" aria-label="subscribe" type="email" name="subscribe_email" value="" data-format="email" placeholder="{$lang->form_email}"/>
+                                    </div>
+                                    <button class="form__button form__button--subscribe" type="submit"><span data-language="subscribe_button">{$lang->subscribe_button}</span></button>
                                 </div>
-                                <button class="form__button form__button--subscribe" type="submit"><span data-language="subscribe_button">{$lang->subscribe_button}</span></button>
+                                <div class="fn_subscribe_success subscribe_success hidden">
+                                    <span data-language="subscribe_sent">{$lang->index_subscribe_sent}</span>
+                                </div>
+                                
+                                <div class="fn_subscribe_error subscribe_error hidden">
+                                     <span class="fn_error_text"></span>
+                                </div>
                             </div>
-                            {if !empty($subscribe_error)}
-                                <div id="subscribe_error" class="popup">
-                                    <div class="popup__heading">
-                                        {include file="svg.tpl" svgId="success_icon"}
-                                        {if $subscribe_error == 'email_exist'}
-                                            <span data-language="subscribe_already">{$lang->index_subscribe_already}</span>
-                                        {elseif $subscribe_error == 'empty_email'}
-                                            <span data-language="form_enter_email">{$lang->form_enter_email}</span>
-                                        {else}
-                                            <span>{$subscribe_error|escape}</span>
-                                        {/if}
-                                    </div>
-                                </div>
-                            {/if}
-                            {if !empty($subscribe_success)}
-                                <div id="fn_subscribe_sent" class="popup">
-                                    <div class="popup__heading">
-                                        {include file="svg.tpl" svgId="success_icon"}
-                                        <span data-language="subscribe_sent">{$lang->index_subscribe_sent}</span>
-                                    </div>
-
-                                </div>
-                            {/if}
                         </form>
                     </div>
                     {* Social buttons *}
@@ -361,23 +348,25 @@
     
     {* Всплывающая корзина *}
     {if $route_name != 'cart'}
-    <div id="fn_pop_up_cart_wrap" class="hidden">
-        <div id="fn_pop_up_cart">
+    <div id="fn_pop_up_cart_wrap" class="popup_animated" style="display: none;">
+        <div id="fn_pop_up_cart" class="popup_animated">
             {include file='pop_up_cart.tpl'}
         </div>
     </div>
     {/if}
 
     {* Уведомления о добавление в сравнение *}
-    <div id="fn_compare_confirm"  style="display: none;">
+    <div id="fn_compare_confirm" class="popup_bg popup_animated"  style="display: none;">
         <div class="popup_confirm__title">
+            {include file="svg.tpl" svgId="success_icon"}
             <span data-language="popup_add_to_compare">{$lang->popup_add_to_compare}</span>
         </div>
     </div>
 
     {* Уведомления о добавление в избранное *}
-    <div id="fn_wishlist_confirm" style="display: none;">
+    <div id="fn_wishlist_confirm" class="popup_bg popup_animated" style="display: none;">
         <div class="popup_confirm__title">
+            {include file="svg.tpl" svgId="success_icon"}
             <span data-language="popup_add_to_wishlist">{$lang->popup_add_to_wishlist}</span>
         </div>
     </div>

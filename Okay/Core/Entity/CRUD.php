@@ -10,6 +10,10 @@ use Okay\Core\Modules\Extender\ExtenderFacade;
 trait CRUD
 {
 
+    /**
+     * @param array $filter
+     * @return false|string|object
+     */
     public function findOne(array $filter = [])
     {
         $filter['limit'] = 1;
@@ -47,7 +51,7 @@ trait CRUD
         $this->buildFilter($filter);
         $this->select->cols($this->getAllFields());
         
-        $this->db->query($this->select);
+        $this->db->query($this->select, $this->debug);
 
         $result = $this->getResult();
         return ExtenderFacade::execute([static::class, __FUNCTION__], $result, func_get_args());
@@ -60,27 +64,34 @@ trait CRUD
     public function getSelect(array $filter = [])
     {
         $this->setUp();
-        $this->buildPagination($filter);
+        if ($this->noLimit === false) {
+            $this->buildPagination($filter);
+        }
         $this->buildFilter($filter);
+        $this->select->cols($this->getAllFields());
         $this->select->distinct(true);
-        
-        $this->select->cache();
         
         $select = clone $this->select;
         $this->flush();
         return $select; // No ExtenderFacade
     }
-    
+
+    /**
+     * @param array $filter
+     * @return false|array
+     */
     public function find(array $filter = [])
     {
         $this->setUp();
-        $this->buildPagination($filter);
+        if ($this->noLimit === false) {
+            $this->buildPagination($filter);
+        }
+        
         $this->buildFilter($filter);
         $this->select->distinct(true);
         $this->select->cols($this->getAllFields());
-        $this->select->cache();
         
-        $this->db->query($this->select);
+        $this->db->query($this->select, $this->debug);
         
         // Получаем результирующие поля сущности
         $resultFields = $this->getAllFieldsWithoutAlias();
@@ -94,6 +105,10 @@ trait CRUD
         return ExtenderFacade::execute([static::class, __FUNCTION__], $results, func_get_args());
     }
 
+    /**
+     * @param array $filter
+     * @return false|string
+     */
     public function count(array $filter = [])
     {
         $this->setUp();
@@ -105,7 +120,7 @@ trait CRUD
         $this->select->resetGroupBy();
         $this->select->resetOrderBy();
 
-        $this->db->query($this->select);
+        $this->db->query($this->select, $this->debug);
 
         $count = $this->getResult('count');
         return ExtenderFacade::execute([static::class, __FUNCTION__], $count, func_get_args());

@@ -12,6 +12,175 @@
             var date = new Date(0);
             document.cookie = "price_filter=; path=/; expires=" + date.toUTCString();
         });
+
+        {if $controller == 'CategoryController' && $settings->deferred_load_features}
+    
+            {if $settings->features_cache_ttl > 0}
+            {literal}
+            window.featuresCache = {
+                /**
+                 * timeout for cache in millis
+                 * @type {number}
+                 */
+                timeout: {/literal}{($settings->features_cache_ttl*1000)|intval}{literal},
+                DBVersion: 4,
+        
+                init: function () {
+                    let openRequest = indexedDB.open("features_cache", this.DBVersion);
+        
+                    // создаем хранилище
+                    openRequest.onupgradeneeded = function() {
+                        let db = openRequest.result;
+                        if (!db.objectStoreNames.contains('features_cache_store')) {
+                            db.createObjectStore('features_cache_store', {keyPath: 'key'});
+                        }
+                    }
+                    return openRequest;
+                },
+                remove: function (key) {
+        
+                    let openRequest = this.init();
+                    openRequest.onsuccess = function() {
+                        let db = openRequest.result;
+                        let transaction = db.transaction("features_cache_store", "readwrite");
+                        let cacheObject = transaction.objectStore("features_cache_store");
+                        let request = cacheObject.delete(key);
+                        
+                        request.onsuccess = function () {
+                            
+                            if (request.result !== undefined) {
+                                console.log('Remove cache for key: ' + key);
+                                return true;
+                            }
+                        }
+                    }
+                },
+                get: function (key) {
+        
+                    const timeout = this.timeout
+        
+                    return new Promise(function(resolve, reject) {
+                        let openRequest = featuresCache.init();
+                        openRequest.onsuccess = function() {
+                            let db = openRequest.result;
+                            let transaction = db.transaction("features_cache_store", "readonly");
+                            // получить хранилище объектов для работы с ним
+                            let cacheObject = transaction.objectStore("features_cache_store");
+                            let request = cacheObject.get(key);
+                            request.onsuccess = function () {
+        
+                                if (request.result !== undefined) {
+        
+                                    let currDate = new Date().getTime();
+                                    if ((currDate - request.result.expires) > featuresCache.timeout) {
+                                        featuresCache.remove(request.result.key);
+                                        reject();
+                                        return;
+                                    }
+                                    console.log('Getting in cache for key: ' + key + ' TTL:' + Math.ceil((timeout - (currDate - request.result.expires)) / 1000));
+                                    resolve(request.result.data);
+                                } else {
+                                    reject();
+                                }
+                            }
+                        }
+        
+                        openRequest.onerror = function(event) {
+                            reject();
+                        };
+                        
+                    });
+                },
+                set: function (key, cachedData) {
+                    let openRequest = this.init();
+                    openRequest.onsuccess = function() {
+                        let db = openRequest.result;
+                        let transaction = db.transaction("features_cache_store", "readwrite");
+                        // получить хранилище объектов для работы с ним
+                        let cacheObject = transaction.objectStore("features_cache_store");
+        
+                        let request = cacheObject.put({
+                            key: key,
+                            expires: new Date().getTime(),
+                            data: cachedData
+                        });
+        
+                        request.onsuccess = function() {
+                            console.log("Setting in cache for key: ", key);
+                        };
+        
+                    }
+                },
+                clearWrong: function () {
+                    let currDate = new Date().getTime();
+                    let openRequest = this.init();
+                    
+                    openRequest.onsuccess = function() {
+                        let db = openRequest.result;
+                        let transaction = db.transaction("features_cache_store", "readonly");
+                        let cacheObject = transaction.objectStore("features_cache_store");
+                        let request = cacheObject.getAll();
+                        
+                        request.onsuccess = function () {
+                            if (request.result !== undefined) {
+                                if (request.result.length) {
+                                    for (let i = 0; i < request.result.length; i++) {
+                                        if ((currDate - request.result[i].expires) > featuresCache.timeout) {
+                                            featuresCache.remove(request.result[i].key);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            {/literal}
+        
+            $(function() {
+                console.log('Init script');
+                window.featuresCache.clearWrong();
+        
+                if (window.featuresCache.timeout > 0) {
+                    if (window.indexedDB) {
+                        window.featuresCache.get('{$filterCacheKey|escape}').then(setFeaturesBlock).then(null, getAjaxFeatures);
+                    } else {
+                        console.warn('indexedDB not supported');
+                        getAjaxFeatures();
+                    }
+                }
+            });
+            {else}
+                $(function() {
+                    getAjaxFeatures();
+                });
+            {/if}
+        
+            function getAjaxFeatures() {
+                $.ajax({
+                    url: '{url_generator route="category_features" url=$url filtersUrl=$filtersUrl absolute=true}',
+                    dataType: 'json',
+                    cache: true,
+                    success: function (data) {
+                        setFeaturesBlock(data);
+                        {if $settings->features_cache_ttl > 0}
+                            featuresCache.set('{$filterCacheKey|escape}', data);
+                        {/if}
+                    },
+                });
+            }
+            
+            function setFeaturesBlock(data) {
+                $('.fn_features').html(data.features);
+                $('.fn_selected_features').html(data.selected_features);
+                price_slider_init();
+                $(".lazy").each(function(){
+                    let myLazyLoad = new LazyLoad({
+                        elements_selector: ".lazy"
+                    });
+                });
+            }
+        {/if}
     {/if}
 
     /* Mobile menu */
@@ -90,23 +259,6 @@
                 $( 'a[href="#comments"]' ).addClass( 'selected' );
                  $( '#comments').show();
             }
-        } );
-    {/if}
-
-    {if $subscribe_success}
-        $( function() {
-            $.fancybox.open( {
-                src: '#fn_subscribe_sent',
-                type : 'inline',
-            } );
-        } );
-    {elseif $subscribe_error}
-        $( window ).on( 'load', function() {
-            location.href = location.href + '#subscribe_error';
-            $.fancybox.open( {
-                src: '#subscribe_error',
-                type : 'inline',
-            } );
         } );
     {/if}
 

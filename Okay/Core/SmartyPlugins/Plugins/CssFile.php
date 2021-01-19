@@ -5,20 +5,24 @@ namespace Okay\Core\SmartyPlugins\Plugins;
 
 
 use Okay\Core\SmartyPlugins\Func;
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\BackendTemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 
 class CssFile extends Func
 {
     protected $tag = 'css';
 
-    private $templateConfig;
+    private $frontTemplateConfig;
+    private $backendTemplateConfig;
     
-    public function __construct(TemplateConfig $templateConfig)
+    public function __construct(FrontTemplateConfig $frontTemplateConfig, BackendTemplateConfig $backendTemplateConfig)
     {
-        $this->templateConfig = $templateConfig;
+        $this->frontTemplateConfig = $frontTemplateConfig;
+        $this->backendTemplateConfig = $backendTemplateConfig;
     }
 
-    public function run($params) {
+    public function run($params)
+    {
         $filename = '';
         $dir = null;
         
@@ -31,7 +35,11 @@ class CssFile extends Func
         if (!empty($params['dir'])) {
             $dir = $params['dir'];
         }
+
+        if (!empty($params['backend']) || !empty($params['admin'])) {
+            return $this->backendTemplateConfig->compileIndividualCss($filename, $dir);
+        }
         
-        return $this->templateConfig->compileIndividualCss($filename, $dir);
+        return $this->frontTemplateConfig->compileIndividualCss($filename, $dir);
     }
 }

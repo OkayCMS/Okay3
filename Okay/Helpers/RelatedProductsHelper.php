@@ -35,6 +35,7 @@ class RelatedProductsHelper
             $relatedFilter = [
                 'id' => $relatedIds,
                 'limit' => count($relatedIds),
+                'in_stock' => true,
                 'visible' => 1,
             ];
             foreach ($this->productsHelper->getList($relatedFilter) as $p) {

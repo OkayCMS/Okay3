@@ -34,7 +34,7 @@ class YandexXmlAdmin extends IndexAdmin
                 $this->settings->set('okaycms__yandex_xml_vendor_model__company', $this->request->post('okaycms__yandex_xml_vendor_model__company'));
                 $this->settings->set('okaycms__yandex_xml_vendor_model__country_of_origin', $this->request->post('okaycms__yandex_xml_vendor_model__country_of_origin'));
                 $salesNotes = $this->request->post('okaycms__yandex_xml_vendor_model__sales_notes');
-                $this->settings->set('okaycms__yandex_xml_vendor_model__sales_notes', substr($salesNotes, 0, 50));
+                $this->settings->set('okaycms__yandex_xml_vendor_model__sales_notes', mb_substr($salesNotes, 0, 50));
 
                 $postRelatedCategories = $this->request->post('related_categories');
                 $postRelatedBrands = $this->request->post('related_brands');
@@ -86,58 +86,16 @@ class YandexXmlAdmin extends IndexAdmin
 
     private function updateCheckboxes()
     {
-        if ($this->request->post('okaycms__yandex_xml_vendor_model__upload_only_available_to_yandex', 'integer')) {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__upload_only_available_to_yandex', 1);
-        } else {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__upload_only_available_to_yandex', 0);
-        }
 
-        if ($this->request->post('okaycms__yandex_xml_vendor_model__use_full_description_to_yandex', 'integer')) {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__use_full_description_to_yandex', 1);
-        } else {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__use_full_description_to_yandex', 0);
-        }
+        $this->settings->set('okaycms__yandex_xml_vendor_model__upload_only_available_to_yandex', $this->request->post('okaycms__yandex_xml_vendor_model__upload_only_available_to_yandex', 'integer'));
+        $this->settings->set('okaycms__yandex_xml_vendor_model__use_full_description_to_yandex', $this->request->post('okaycms__yandex_xml_vendor_model__use_full_description_to_yandex', 'integer'));
+        $this->settings->set('okaycms__yandex_xml_vendor_model__has_manufacturer_warranty', $this->request->post('okaycms__yandex_xml_vendor_model__has_manufacturer_warranty', 'integer'));
+        $this->settings->set('okaycms__yandex_xml_vendor_model__no_export_without_price', $this->request->post('okaycms__yandex_xml_vendor_model__no_export_without_price', 'integer'));
+        $this->settings->set('okaycms__yandex_xml_vendor_model__pickup', $this->request->post('okaycms__yandex_xml_vendor_model__pickup', 'integer'));
+        $this->settings->set('okaycms__yandex_xml_vendor_model__store', $this->request->post('okaycms__yandex_xml_vendor_model__store', 'integer'));
+        $this->settings->set('okaycms__yandex_xml_vendor_model__delivery_disallow', $this->request->post('okaycms__yandex_xml_vendor_model__delivery_disallow', 'integer'));
+        $this->settings->set('okaycms__yandex_xml_vendor_model__adult', $this->request->post('okaycms__yandex_xml_vendor_model__adult', 'integer'));
+        $this->settings->set('okaycms__yandex_xml_vendor_model__upload_without_images', $this->request->post('okaycms__yandex_xml_vendor_model__upload_without_images', 'integer'));
 
-        if ($this->request->post('okaycms__yandex_xml_vendor_model__has_manufacturer_warranty', 'integer')) {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__has_manufacturer_warranty', 1);
-        } else {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__has_manufacturer_warranty', 0);
-        }
-
-        if ($this->request->post('okaycms__yandex_xml_vendor_model__has_manufacturer_warranty', 'integer')) {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__has_manufacturer_warranty', 1);
-        } else {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__has_manufacturer_warranty', 0);
-        }
-
-        if ($this->request->post('okaycms__yandex_xml_vendor_model__no_export_without_price', 'integer')) {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__no_export_without_price', 1);
-        } else {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__no_export_without_price', 0);
-        }
-
-        if ($this->request->post('okaycms__yandex_xml_vendor_model__pickup', 'integer')) {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__pickup', 1);
-        } else {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__pickup', 0);
-        }
-
-        if ($this->request->post('okaycms__yandex_xml_vendor_model__store', 'integer')) {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__store', 1);
-        } else {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__store', 0);
-        }
-
-        if ($this->request->post('okaycms__yandex_xml_vendor_model__delivery_disallow', 'integer')) {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__delivery_disallow', 1);
-        } else {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__delivery_disallow', 0);
-        }
-
-        if ($this->request->post('okaycms__yandex_xml_vendor_model__adult', 'integer')) {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__adult', 1);
-        } else {
-            $this->settings->set('okaycms__yandex_xml_vendor_model__adult', 0);
-        }
     }
 }

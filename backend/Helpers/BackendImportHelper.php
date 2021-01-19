@@ -69,23 +69,8 @@ class BackendImportHelper
         if (!empty($item['brand'])) {
             $item['brand'] = trim($item['brand']);
             // Найдем его по имени
-            if ($this->languages->getLangId()) {
-                $select = $this->queryFactory->newSelect();
-                $brandId = $select->cols(['brand_id as id'])
-                    ->from('__lang_brands')
-                    ->where('name=:name')
-                    ->where('lang_id=:lang_id')
-                    ->bindValue('name', $item['brand'])
-                    ->bindValue('lang_id', $this->languages->getLangId())
-                    ->result('id');
-            } else {
-                $select = $this->queryFactory->newSelect();
-                $brandId = $select->cols(['id'])
-                    ->from('__brands')
-                    ->where('name=:name')
-                    ->bindValue('name', $item['brand'])
-                    ->result('id');
-            }
+            $brandId = $this->searchBrand($item['brand']);
+
             if (!$product['brand_id'] = $brandId) {
 
                 /** @var BrandsEntity $brandsEntity */
@@ -114,77 +99,35 @@ class BackendImportHelper
 
         // Подготовим вариант товара
         $variant = $this->parseVariantData($item);
+        
+        // Сразу позволим модулям определить товар по своей логике
+        $importItemData = $this->preSearchImportProductData($product, $variant);
+        
+        // Если же товар не был найден модулями, ищем по стандартной логике. Так же этот метод можно расширить экстендером
+        $importItemData = $this->searchImportProductData($product, $variant, $importItemData);
 
-        // Если задан артикул варианта, найдем этот вариант и соответствующий товар
-        if (!empty($variant['sku'])) {
-            $select = $this->queryFactory->newSelect();
-            $select->cols(['v.id as variant_id', 'v.product_id'])
-                ->from('__variants v')
-                ->where('v.sku=:sku')
-                ->bindValue('sku', $variant['sku']);
-
-            if (!empty($variant['name'])) {
-                $select->where('v.name=:name')
-                    ->bindValue('name', $variant['name']);
-            }
-
-            $result = $select->result();
-
-            if ($result) {
-                $productId = (int)$result->product_id;
-                $variantId = (int)$result->variant_id;
-                $importedItem->status = 'updated';
-            }
-
-            elseif (!empty($product['name'])) {
-                $select = $this->queryFactory->newSelect();
-                $result = $select->cols(['p.id as product_id'])
-                    ->from('__products p')
-                    ->where('p.name=:name')
-                    ->limit(1)
-                    ->bindValue('name', $product['name'])
-                    ->result();
-                if ($result) {
-                    $productId = (int)$result->product_id;
-                    $importedItem->status = 'added';
-                }
-                else {
-                    $importedItem->status = 'added';
-                }
-            }
-        } else {
-            // если нет артикула попробуем по названию
-            $select = $this->queryFactory->newSelect();
-            $select->cols(['v.id as variant_id', 'p.id as product_id'])
-                ->from('__products p')
-                ->join('LEFT', '__variants v', 'v.product_id=p.id')
-                ->where('p.name=:p_name')
-                ->bindValue('p_name', $product['name']);
-            
-            if (!empty($variant['name'])) {
-                $select->where('v.name=:v_name')
-                    ->bindValue('v_name', $variant['name']);
-            }
-            
-            $result = $select->result();
-
-            if ($result) {
-                $productId = (int)$result->product_id;
-                $variantId = (int)$result->variant_id;
-                if (empty($variantId)) {
-                    $importedItem->status = 'added';
-                } else {
-                    $importedItem->status = 'updated';
-                    unset($variant['sku']);
-                }
-            } else {
-                $importedItem->status = 'added';
-            }
+        if ($importItemData['productId']) {
+            $productId = (int)$importItemData['productId'];
         }
+        if ($importItemData['variantId']) {
+            $variantId = (int)$importItemData['variantId'];
+        }
+
+        $importedItem->status = $importItemData['status'];
 
         if (isset($importedItem->status)) {
             if (!empty($product)) {
-                if (!isset($product['url']) && !empty($product['name']) && empty($result->url)) {
+                $current_url = '';
+                if (!empty($productId)){
+                    $select = $this->queryFactory->newSelect();
+                    $current_url = $select->cols(['url'])
+                        ->from('__products')
+                        ->where('id=:id')
+                        ->limit(1)
+                        ->bindValue('id', $productId)
+                        ->result('url');
+                }
+                if (!isset($product['url']) && !empty($product['name']) && empty($current_url)) {
                     $product['url'] = Translit::translit($product['name']);
                 }
                 
@@ -628,6 +571,165 @@ class BackendImportHelper
     private function prepareAddBrand($brand)
     {
         return ExtenderFacade::execute(__METHOD__, $brand, func_get_args());
+    }
+
+    private function searchBrand($brandName)
+    {
+        if ($this->languages->getLangId()) {
+            $select = $this->queryFactory->newSelect();
+            $brandId = $select->cols(['brand_id as id'])
+                ->from('__lang_brands')
+                ->where('name=:name')
+                ->where('lang_id=:lang_id')
+                ->bindValue('name', $brandName)
+                ->bindValue('lang_id', $this->languages->getLangId())
+                ->result('id');
+        } else {
+            $select = $this->queryFactory->newSelect();
+            $brandId = $select->cols(['id'])
+                ->from('__brands')
+                ->where('name=:name')
+                ->bindValue('name', $brandName)
+                ->result('id');
+        }
+        return ExtenderFacade::execute(__METHOD__, $brandId, func_get_args());
+    }
+
+    /**
+     * Данный метод может использоваться для определения товара ПЕРЕД стандартной логикой определения товара.
+     * Может быть полезно, если нужно изменить принцип определения товара при импорте.
+     * Чтобы определить товар, нужно вернуть результат в виде массива $itemData. См. описание параметров массива
+     * в методе self::searchImportProductData().
+     * 
+     * @param $product
+     * @param $variant
+     * @return array
+     */
+    private function preSearchImportProductData($product, $variant)
+    {
+        $itemData = [
+            'productId' => null,
+            'variantId' => null,
+            'status' => 'added',
+            'determinedBy' => null,
+        ];
+        
+        return ExtenderFacade::execute(__METHOD__, $itemData, func_get_args());
+    }
+
+    /**
+     * Метод определяет ищет товар по входящим данным. По умолчанию это sku, productName или variantName 
+     * (могут быть в сочетаниях). Если метод определил товар, он возвращает массив результата.
+     * 
+     * Параметры результата:
+     * productId - id товара, который будем обновлять
+     * variantId - id варианта, который будем обновлять. Если не указан, а есть только productId, вариант добавится этому товару
+     * status - статус поиска (added|updated)
+     * determinedBy - описание, по каким критериям найден товар. Данный параметр может использоваться модулями,
+     * которые расширяют импорт, и им важно знать по каким критериям был найден товар/вариант.
+     * Возможные значения по умолчанию: skuAndVariantName, sku, productName, productNameAndVariantName
+     * 
+     * @param $product
+     * @param $variant
+     * @param array $itemData
+     * @return array
+     */
+    private function searchImportProductData($product, $variant, $itemData = [])
+    {
+        
+        if (!empty($itemData['productId']) || !empty($itemData['variantId'])) {
+            return ExtenderFacade::execute(__METHOD__, $itemData, func_get_args());
+        }
+
+        $status = 'added';
+        $determinedBy = null;
+        
+        // Если задан артикул варианта, найдем этот вариант и соответствующий товар
+        if (!empty($variant['sku'])) {
+            $select = $this->queryFactory->newSelect();
+            $select->cols(['v.id as variant_id', 'v.product_id'])
+                ->from('__variants v')
+                ->where('v.sku=:sku')
+                ->bindValue('sku', $variant['sku']);
+
+            if (!empty($variant['name'])) {
+                $select->where('v.name=:name')
+                    ->bindValue('name', $variant['name']);
+            }
+
+            if ($result = $select->result()) {
+                $productId = (int)$result->product_id;
+                $variantId = (int)$result->variant_id;
+
+                if (!empty($variant['name'])) {
+                    $determinedBy = 'skuAndVariantName';
+                } else {
+                    $determinedBy = 'sku';
+                }
+                
+                $status = 'updated';
+            } elseif (!empty($product['name'])) {
+                $select = $this->queryFactory->newSelect();
+                $select->cols(['p.id as product_id'])
+                    ->from('__products p')
+                    ->where('p.name=:name')
+                    ->limit(1)
+                    ->bindValue('name', $product['name']);
+                
+                if ($result = $select->result()) {
+                    $productId = (int)$result->product_id;
+                    $status = 'added';
+                    $determinedBy = 'productName';
+                } else {
+                    $status = 'added';
+                }
+            }
+        } else {
+            // если нет артикула попробуем по названию
+            $select = $this->queryFactory->newSelect();
+            $select->cols(['v.id as variant_id', 'p.id as product_id'])
+                ->from('__products p')
+                ->join('LEFT', '__variants v', 'v.product_id=p.id')
+                ->where('p.name=:p_name')
+                ->bindValue('p_name', $product['name']);
+
+            if (!empty($variant['name'])) {
+                $select->where('v.name=:v_name')
+                    ->bindValue('v_name', $variant['name']);
+            }
+
+            $result = $select->result();
+
+            if ($result) {
+                $productId = (int)$result->product_id;
+                $variantId = (int)$result->variant_id;
+                if (empty($variantId)) {
+                    $status = 'added';
+                } else {
+                    $status = 'updated';
+                    if (!empty($variant['name'])) {
+                        $determinedBy = 'productNameAndVariantName';
+                    } else {
+                        $determinedBy = 'productName';
+                    }
+                    
+                    //unset($variant['sku']);
+                }
+            } else {
+                $status = 'added';
+            }
+        }
+        $itemData = [];
+        if (isset($productId)){
+            $itemData['productId'] =  $productId;
+        }
+        if (isset($variantId)){
+            $itemData['variantId'] =  $variantId;
+        }
+        $itemData['status'] =  $status;
+        $itemData['determinedBy'] =  $determinedBy;
+        
+        return ExtenderFacade::execute(__METHOD__, $itemData, func_get_args());
     }
     
     private function prepareAddCategory($category)

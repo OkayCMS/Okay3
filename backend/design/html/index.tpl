@@ -62,31 +62,17 @@
     </script>
     {/literal}
 
-
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300i,700|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&subset=cyrillic,cyrillic-ext,latin-ext" rel="stylesheet" type="text/css">
+    
+    {$ok_head}
+    
     <link rel="icon" href="design/images/favicon.png" type="image/x-icon" />
-    <script src="design/js/jquery/jquery.js"></script>
-    <script src="design/js/jquery.scrollbar.min.js"></script>
-    <script src="design/js/bootstrap.min.js"></script>
-    <script src="design/js/bootstrap-select.js"></script>
-    <script src="design/js/jquery/jquery-ui.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="design/js/jquery/jquery-ui.min.css" />
-    <link href="design/css/okay.css" rel="stylesheet" type="text/css" />
-    <link href="design/css/media.css" rel="stylesheet" type="text/css" />
-    <script src="design/js/jquery.dd.min.js"></script>
-    <link href="design/js//fancybox/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
-    <script src="design/js/fancybox/jquery.fancybox.min.js"></script>
-
-    <link href="design/js/intro_js/introjs.css" rel="stylesheet" type="text/css" />
-    <script src="design/js/intro_js/intro.js"></script>
-    <script src="design/js/intro_js/intro_okay.js"></script>
-
 
     {if in_array($smarty.get.controller, array("OrdersAdmin", "PostAdmin", "ReportStatsAdmin", "CouponsAdmin", "CategoryStatsAdmin"))}
-        <script src="design/js/jquery/datepicker/jquery.ui.datepicker-{$manager->lang}.js"></script>
-        <script src="design/js/jquery/datepicker/jquery.datepicker.extension.range.min.js"></script>
+        {js file="jquery/datepicker/jquery.ui.datepicker-{$manager->lang}.js" admin=true}
+        {js file="jquery/datepicker/jquery.datepicker.extension.range.min.js" admin=true}
     {/if}
-    <script src="design/js/toastr.min.js"></script>
-    <script src="design/js/Sortable.js"></script>
+    
     <!-- Google Tag Manager -->
     {if $settings->gather_enabled}
         {literal}
@@ -114,7 +100,7 @@
             </div>
             <div class="admin_switches">
                 <div class="box_adswitch">
-                    <a class="btn_admin" href="{url_generator route="main" absolute=1}">
+                    <a class="btn_admin" target="_blank" href="{url_generator route="main" absolute=1}">
                     {include file='svg_icon.tpl' svgId='icon_desktop'}
                     <span class="">{$btr->index_go_to_site|escape}</span>
                     </a>
@@ -266,7 +252,6 @@
                         <input type="hidden" name="id" value="{$manager->id}" />
                         <ul id="fn_sort_menu_section" class="menu_items">
                             {foreach $left_menu as $section=>$items}
-                                {if empty($items)}{continue}{/if}
                                 <li class="{if isset($items.$menu_selected)}open active{/if} {if $items|count > 1} fn_item_sub_switch nav-dropdown{/if}">
                                     {if $items|count == 1}
                                         <input type="hidden" value="{$items|reset}" name="manager_menu[{$section|escape}][{$items|key}]" />
@@ -276,7 +261,7 @@
                                         <div class="fn_backend_menu_section" data-section_name="{$section}">{$section}</div>
                                     {/if}
 
-                                    <a class="fn_learning_{$section} nav-link {if $items|count > 1}fn_item_switch nav-dropdown-toggle{/if}" href="{if $items|count > 1}javascript:;{else}index.php?controller={$items|reset}{/if}">
+                                    <a class="fn_learning_{$section} nav-link {if $items|count > 1}fn_item_switch nav-dropdown-toggle{/if}" href="{if $items|count > 1}javascript:;{else}index.php?controller={$items|reset|reset}{/if}">
                                         <span class="{$section} title">{$btr->getTranslation({$section})}</span>
                                         <span class="icon-thumbnail">
                                             {if !empty($additional_section_icons[$section])}
@@ -306,10 +291,10 @@
                                     </a>
                                     {if $items|count > 1}
                                         <ul class="fn_submenu_toggle submenu fn_sort_menu_item">
-                                            {foreach $items as $title=>$mod}
-                                                <li class="{if $title == $menu_selected}active{/if}">
-                                                    <input type="hidden" name="manager_menu[{$section|escape}][{$title|escape}]" value="{$mod|escape}" />
-                                                    <a class="fn_learning_{$mod} nav-link" href="index.php?controller={$mod}">
+                                            {foreach $items as $title=>$item}
+                                                <li class="{if in_array($controller_selected, $item.controllers_block)}active{/if}">
+                                                    <input type="hidden" name="manager_menu[{$section|escape}][{$title|escape}]" value="{$item.controller|escape}" />
+                                                    <a class="fn_learning_{$item.controller} nav-link" href="index.php?controller={$item.controller}{if !empty($item.method)}@{$item.method}{/if}">
                                                         <span class="icon-thumbnail">
                                                             {if (isset($menu_counters[$title]) && !empty($menu_counters[$title])) || $config->dev_mode}
                                                                 <span class="menu_counter">
@@ -424,6 +409,8 @@
         {$block}
     </div>
 {/if}
+
+{$ok_footer}
 
 <script>
     $(function(){
@@ -1121,6 +1108,21 @@
         $(document).on("click", ".fn_toggle_card", function () {
             $(this).closest(".fn_toggle_wrap").find('.fn_icon_arrow').toggleClass('rotate_180');
             $(this).closest(".fn_toggle_wrap").find(".fn_card").slideToggle(500);
+        });
+
+        /*
+        * скрипт отображения загрузки модуля
+        * */
+        $(document).on("click", ".fn_switch_add_module", function () {
+            if ($(this).hasClass('active')) {
+                $(this).removeClass('active');
+            }
+            else {
+                $(this).addClass('active');
+            }
+
+            $(".fn_hide_add_module").slideToggle(500);
+        return false;
         });
 
         /*

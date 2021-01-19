@@ -151,6 +151,10 @@ class YandexXMLHelper
             $sql->where('(v.stock >0 OR v.stock is NULL)');
         }
 
+        if (!$this->settings->get('okaycms__yandex_xml__upload_without_images')) {
+            $sql->where('p.main_image_id != \'\' AND p.main_image_id IS NOT NULL');
+        }
+
         if ($this->settings->get('okaycms__yandex_xml__no_export_without_price')) {
             $sql->where('v.price > 0');
         }

@@ -50,6 +50,7 @@
     {/if}
 </div>
 
+
 {if $banner_data->settings.as_slider}
 <script>
     document.addEventListener('DOMContentLoaded', function(){
@@ -61,7 +62,6 @@
                     delay: {if isset($banner_data->settings.rotation_speed) && !empty($banner_data->settings.rotation_speed)}{$banner_data->settings.rotation_speed|intval}{else}2500{/if},
                 },
             {/if}
-            autoplay: {if isset($banner_data->settings.autoplay) && !empty($banner_data->settings.autoplay)}true{else}false{/if},
             {if isset($banner_data->settings.nav) && !empty($banner_data->settings.nav)}
                 navigation: {
                     nextEl: this.querySelector('.swiper-button-next'),

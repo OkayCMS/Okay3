@@ -8,6 +8,7 @@ use Okay\Core\Config;
 use Okay\Core\Database;
 use Okay\Core\EntityFactory;
 use Okay\Core\Image;
+use Okay\Core\Languages;
 use Okay\Core\Modules\Extender\ExtenderFacade;
 use Okay\Core\QueryFactory;
 use Okay\Core\Request;
@@ -51,13 +52,19 @@ class BannersImagesHelper
      */
     private $request;
 
+    /**
+     * @var Languages
+     */
+    private $languages;
+
     public function __construct(
         EntityFactory $entityFactory,
         Config        $config,
         Image         $imageCore,
         QueryFactory  $queryFactory,
         Database      $db,
-        Request       $request
+        Request       $request,
+        Languages     $languages
     ) {
         $this->bannersEntity = $entityFactory->get(BannersEntity::class);
         $this->bannersImagesEntity = $entityFactory->get(BannersImagesEntity::class);
@@ -66,6 +73,7 @@ class BannersImagesHelper
         $this->queryFactory = $queryFactory;
         $this->db           = $db;
         $this->request      = $request;
+        $this->languages    = $languages;
     }
 
     public function findBannersImages($filter)
@@ -121,13 +129,15 @@ class BannersImagesHelper
             'image',
             BannersImagesEntity::class,
             $this->config->get('banners_images_dir'),
-            $this->config->get('resized_banners_images_dir')
+            $this->config->get('resized_banners_images_dir'),
+            $this->languages->getLangId(),
+            BannersImagesEntity::getLangObject().'_id'
         );
 
         return ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
-    public function uploadImage($image, $bannerImage)
+    public function uploadImage($image, $bannerImage, $isNewBannersImage = false)
     {
         if (!empty($image['name']) && ($filename = $this->imageCore->uploadImage($image['tmp_name'], $image['name'], $this->config->get('banners_images_dir')))) {
             $this->imageCore->deleteImage(
@@ -135,10 +145,21 @@ class BannersImagesHelper
                 'image',
                 BannersImagesEntity::class,
                 $this->config->get('banners_images_dir'),
-                $this->config->get('resized_banners_images_dir')
+                $this->config->get('resized_banners_images_dir'),
+                $this->languages->getLangId(),
+                BannersImagesEntity::getLangObject().'_id'
             );
-
-            $this->bannersImagesEntity->update($bannerImage->id, ['image'=>$filename]);
+            
+            if ($isNewBannersImage || !$bannerImage->is_lang_banner) {
+                $currentLangId = $this->languages->getLangId();
+                foreach ($this->languages->getAllLanguages() as $lang) {
+                    $this->languages->setLangId($lang->id);
+                    $this->bannersImagesEntity->update($bannerImage->id, ['image'=>$filename]);
+                }
+                $this->languages->setLangId($currentLangId);
+            } else {
+                $this->bannersImagesEntity->update($bannerImage->id, ['image' => $filename]);
+            }
         }
 
         return ExtenderFacade::execute(__METHOD__, null, func_get_args());

@@ -725,6 +725,7 @@ header{
     background-size: contain;
     background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNTEyIDUxMjsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIj48ZyB0cmFuc2Zvcm09Im1hdHJpeCgtMSAwIDAgMSA1MTIgMCkiPjxnPgoJPGc+CgkJPHBhdGggZD0iTTUwNi45NTUsMS4zMTRjLTMuMTE5LTEuNzgtNi45NTUtMS43NS0xMC4wNDUsMC4wNzhMMzEzLjY1NiwxMDkuNzU2Yy00Ljc1NCwyLjgxMS02LjMyOSw4Ljk0My0zLjUxOCwxMy42OTcgICAgYzIuODEsNC43NTMsOC45NDIsNi4zMjgsMTMuNjk3LDMuNTE4bDEzMS40ODItNzcuNzQ5TDIxMC40MTEsMzAzLjMzNUw4OC42MDMsMjY2LjA2OWwxNTguOTY1LTk0ICAgIGM0Ljc1NC0yLjgxMiw2LjMyOS04Ljk0NCwzLjUxOC0xMy42OThjLTIuODEtNC43NTMtOC45NDMtNi4zMy0xMy42OTctMy41MThMNTguOTEsMjYwLjM5MmMtMy40MSwyLjAxNy01LjMwOSw1Ljg1Ni00Ljg0LDkuNzkxICAgIHMzLjIxNiw3LjIyMSw3LjAwNCw4LjM4bDE0NS40NjksNDQuNTA0TDI3MC43Miw0MzkuODhjMC4wNjcsMC4xMjEsMC4xMzYsMC4yMjMsMC4yMDcsMC4zMTRjMS4wNzEsMS43ODYsMi42NzYsMy4yNDUsNC42NzgsNC4wODcgICAgYzEuMjUzLDAuNTI3LDIuNTcsMC43ODQsMy44NzgsMC43ODRjMi41NjMsMCw1LjA4Ni0wLjk4Niw2Ljk5MS0yLjg0OWw3My43OTQtNzIuMTJsMTM4LjgwNiw0Mi40NjYgICAgYzAuOTYsMC4yOTMsMS45NDUsMC40MzgsMi45MjUsMC40MzhjMi4xMTYsMCw0LjIwNi0wLjY3Miw1Ljk0OC0xLjk2MUM1MTAuNDk2LDQwOS4xNTMsNTEyLDQwNi4xNyw1MTIsNDAzVjEwICAgIEM1MTIsNi40MDksNTEwLjA3NCwzLjA5Myw1MDYuOTU1LDEuMzE0eiBNMjcxLjI2NSwzMjkuMjNjLTEuMTU4LDEuNjczLTEuNzc5LDMuNjU5LTEuNzc5LDUuNjk0djYxLjE3MWwtNDMuODIzLTc5Ljc2NSAgICBsMTkzLjkyMS0yMDEuMjFMMjcxLjI2NSwzMjkuMjN6IE0yODkuNDg2LDQxMS4zMDl2LTYyLjg2N2w0OC45OSwxNC45ODhMMjg5LjQ4Niw0MTEuMzA5eiBNNDkyLDM4OS40ODNsLTE5Ni40OTktNjAuMTE2ICAgIEw0OTIsNDUuNzA0VjM4OS40ODN6IiBkYXRhLW9yaWdpbmFsPSIjMDAwMDAwIiBjbGFzcz0iYWN0aXZlLXBhdGgiIHN0eWxlPSJmaWxsOiNGRkZGRkYiIGRhdGEtb2xkX2NvbG9yPSIjMDAwMDAwIj48L3BhdGg+Cgk8L2c+CjwvZz48Zz4KCTxnPgoJCTxwYXRoIGQ9Ik0xNjQuNDIzLDM0Ny41NzdjLTMuOTA2LTMuOTA1LTEwLjIzNi0zLjkwNS0xNC4xNDMsMGwtOTMuMzUyLDkzLjM1MmMtMy45MDUsMy45MDUtMy45MDUsMTAuMjM3LDAsMTQuMTQzICAgIEM1OC44ODIsNDU3LjAyNCw2MS40NDEsNDU4LDY0LDQ1OHM1LjExOC0wLjk3Niw3LjA3MS0yLjkyOWw5My4zNTItOTMuMzUyQzE2OC4zMjgsMzU3LjgxNSwxNjguMzI4LDM1MS40ODMsMTY0LjQyMywzNDcuNTc3eiIgZGF0YS1vcmlnaW5hbD0iIzAwMDAwMCIgY2xhc3M9ImFjdGl2ZS1wYXRoIiBzdHlsZT0iZmlsbDojRkZGRkZGIiBkYXRhLW9sZF9jb2xvcj0iIzAwMDAwMCI+PC9wYXRoPgoJPC9nPgo8L2c+PGc+Cgk8Zz4KCQk8cGF0aCBkPSJNNDAuMDcxLDQ3MS45MjhjLTMuOTA2LTMuOTAzLTEwLjIzNi0zLjkwMy0xNC4xNDIsMC4wMDFsLTIzLDIzYy0zLjkwNSwzLjkwNS0zLjkwNSwxMC4yMzcsMCwxNC4xNDMgICAgQzQuODgyLDUxMS4wMjQsNy40NDEsNTEyLDEwLDUxMnM1LjExOC0wLjk3Nyw3LjA3MS0yLjkyOWwyMy0yM0M0My45NzYsNDgyLjE2Niw0My45NzYsNDc1LjgzNCw0MC4wNzEsNDcxLjkyOHoiIGRhdGEtb3JpZ2luYWw9IiMwMDAwMDAiIGNsYXNzPSJhY3RpdmUtcGF0aCIgc3R5bGU9ImZpbGw6I0ZGRkZGRiIgZGF0YS1vbGRfY29sb3I9IiMwMDAwMDAiPjwvcGF0aD4KCTwvZz4KPC9nPjxnPgoJPGc+CgkJPHBhdGggZD0iTTE0Mi42NDksNDk0LjM0Yy0xLjg1OS0xLjg2LTQuNDM5LTIuOTMtNy4wNjktMi45M2MtMi42NDEsMC01LjIxLDEuMDctNy4wNywyLjkzYy0xLjg2LDEuODYtMi45Myw0LjQzLTIuOTMsNy4wNyAgICBjMCwyLjYzLDEuMDY5LDUuMjEsMi45Myw3LjA3YzEuODYsMS44Niw0LjQ0LDIuOTMsNy4wNywyLjkzczUuMjEtMS4wNyw3LjA2OS0yLjkzYzEuODYtMS44NiwyLjkzMS00LjQ0LDIuOTMxLTcuMDcgICAgQzE0NS41OCw0OTguNzcsMTQ0LjUxLDQ5Ni4yLDE0Mi42NDksNDk0LjM0eiIgZGF0YS1vcmlnaW5hbD0iIzAwMDAwMCIgY2xhc3M9ImFjdGl2ZS1wYXRoIiBzdHlsZT0iZmlsbDojRkZGRkZGIiBkYXRhLW9sZF9jb2xvcj0iIzAwMDAwMCI+PC9wYXRoPgoJPC9nPgo8L2c+PGc+Cgk8Zz4KCQk8cGF0aCBkPSJNMjE3LjA1MSw0MTkuOTM1Yy0zLjkwMy0zLjkwNS0xMC4yMzMtMy45MDUtMTQuMTQyLDBsLTQ5LjQ0Niw0OS40NDVjLTMuOTA1LDMuOTA1LTMuOTA1LDEwLjIzNywwLDE0LjE0MiAgICBjMS45NTMsMS45NTMsNC41MTIsMi45MjksNy4wNzEsMi45MjlzNS4xMTgtMC45NzcsNy4wNzEtMi45MjlsNDkuNDQ2LTQ5LjQ0NUMyMjAuOTU2LDQzMC4xNzIsMjIwLjk1Niw0MjMuODQsMjE3LjA1MSw0MTkuOTM1eiIgZGF0YS1vcmlnaW5hbD0iIzAwMDAwMCIgY2xhc3M9ImFjdGl2ZS1wYXRoIiBzdHlsZT0iZmlsbDojRkZGRkZGIiBkYXRhLW9sZF9jb2xvcj0iIzAwMDAwMCI+PC9wYXRoPgoJPC9nPgo8L2c+PGc+Cgk8Zz4KCQk8cGF0aCBkPSJNMzg3LjcwNCw0MTYuMTM5Yy0zLjkwNi0zLjkwNC0xMC4yMzYtMy45MDQtMTQuMTQyLDBsLTQ5LjU4LDQ5LjU4Yy0zLjkwNSwzLjkwNS0zLjkwNSwxMC4yMzcsMCwxNC4xNDMgICAgYzEuOTUzLDEuOTUyLDQuNTEyLDIuOTI5LDcuMDcxLDIuOTI5czUuMTE4LTAuOTc3LDcuMDcxLTIuOTI5bDQ5LjU4LTQ5LjU4QzM5MS42MDksNDI2LjM3NywzOTEuNjA5LDQyMC4wNDUsMzg3LjcwNCw0MTYuMTM5eiIgZGF0YS1vcmlnaW5hbD0iIzAwMDAwMCIgY2xhc3M9ImFjdGl2ZS1wYXRoIiBzdHlsZT0iZmlsbDojRkZGRkZGIiBkYXRhLW9sZF9jb2xvcj0iIzAwMDAwMCI+PC9wYXRoPgoJPC9nPgo8L2c+PGc+Cgk8Zz4KCQk8cGF0aCBkPSJNMjgzLjUsMTM2LjMxYy0xLjg2LTEuODYtNC40NC0yLjkzLTcuMDctMi45M3MtNS4yMSwxLjA3LTcuMDcsMi45M2MtMS44NTksMS44Ni0yLjkzLDQuNDQtMi45Myw3LjA4ICAgIGMwLDIuNjMsMS4wNyw1LjIsMi45Myw3LjA2YzEuODYsMS44Nyw0LjQ0LDIuOTMsNy4wNywyLjkzczUuMjEtMS4wNiw3LjA3LTIuOTNjMS44NTktMS44NiwyLjkzLTQuNDMsMi45My03LjA2ICAgIEMyODYuNDMsMTQwLjc1LDI4NS4zNiwxMzguMTcsMjgzLjUsMTM2LjMxeiIgZGF0YS1vcmlnaW5hbD0iIzAwMDAwMCIgY2xhc3M9ImFjdGl2ZS1wYXRoIiBzdHlsZT0iZmlsbDojRkZGRkZGIiBkYXRhLW9sZF9jb2xvcj0iIzAwMDAwMCI+PC9wYXRoPgoJPC9nPgo8L2c+PC9nPiA8L3N2Zz4=)
 }
+.user_container,
 .post_container,
 .blog_container,
 .products_container{
@@ -733,7 +734,7 @@ header{
 }
 .blog_container--left,
 .post_container--left{
-    margin-right: 300px;
+    /* margin-right: 300px; */
     margin-left: 0;
 }
 .blog_container__boxed,
@@ -743,6 +744,13 @@ header{
     border-radius: 3px;
     padding: 15px;
     margin-bottom: 25px;
+}
+.user_container__boxed{
+    background: transparent;
+    padding: 0;
+}
+.user_container .tab{
+    padding: 0;
 }
 .sidebar_subscribe__title{
     font-size: 16px;
@@ -792,11 +800,6 @@ header{
 .button--aside_subscribe svg{
     width: 16px;
     height: 16px;
-}
-
-.position_sticky{
-    position: sticky;
-    top: 70px;
 }
 .post_container__wrapper{
     background: var(--okay-boxed-color);
@@ -3511,6 +3514,7 @@ footer {
     border-top: 1px solid #dbdbdb;
     font-size: 13px;
     font-weight: 500;
+    height: 40px;
 }
 .cell:nth-child(odd) {background: #dbdbdb;}
 .compare_controls {position: relative;}
@@ -3581,7 +3585,6 @@ footer {
 .purchase__name{margin-bottom: 10px;padding-right: 30px;}
 .purchase__name .purchase__name_link{
     color: var(--okay-body-text);
-    background: #fff;
     line-height: 1.2;
     font-size: 14px;
     transition: .3s;
@@ -3738,6 +3741,7 @@ footer {
     line-height: 1.2;
     font-weight: 500;
     color: var(--okay-body-text);
+    text-align: left;
 }
 .purchase_detail__name--total{
     font-size: 24px;
@@ -3792,6 +3796,10 @@ footer {
 .block__popup_cart{
     width: 500px;
     max-width: 100%;
+}
+.purchase_detail,
+.purchases--user{
+    padding-left: 40px;
 }
 
 /***** #Delivery & Payment ************************************************************/
@@ -3926,33 +3934,33 @@ table.order_details {min-width: auto;}
 
 /***** #Profile user *****/
 .profile{
-    padding-bottom: 10px;
+    padding: 20px 0;
     border-bottom: 1px solid #dbdbdb;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
 }
 .profile__image{
     -webkit-box-flex: 0;
-    -webkit-flex: 0 0 80px;
-    -ms-flex: 0 0 80px;
-    flex: 0 0 80px;
-    max-width: 80px;
+    -webkit-flex: 0 0 60px;
+    -ms-flex: 0 0 60px;
+    flex: 0 0 60px;
+    max-width: 60px;
 }
 .profile__icon svg{
-    width: 75px;
-    height: 75px;
+    width: 60px;
+    height: 60px;
 }
 .profile__information{
-    padding-left: 10px;
+    padding-left: 15px;
     -webkit-box-flex: 0;
-    -webkit-flex: 0 0 calc(100% - 80px);
-    -ms-flex: 0 0 calc(100% - 80px);
-    flex: 0 0 calc(100% - 80px);
-    max-width: calc(100% - 80px);
+    -webkit-flex: 0 0 calc(100% - 60px);
+    -ms-flex: 0 0 calc(100% - 60px);
+    flex: 0 0 calc(100% - 60px);
+    max-width: calc(100% - 60px);
 }
 .profile__name{
-    font-size: 20px;
-    font-weight: 600;
-    color: #222;
+    font-size: 18px;
+    font-weight: 500;
+    color: rgb(34, 34, 34);
     line-height: 1.2;
 }
 .profile__logout{margin: 10px 0 5px;}
@@ -3962,12 +3970,96 @@ table.order_details {min-width: auto;}
     font-weight: 500;
     text-decoration: none;
 }
-.button__logout svg{
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
+.profile__logout a svg{
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
 }
-.button__logout:hover{opacity: 0.8;}
+.user_tab__switch{
+    position: relative;
+    cursor: pointer;
+}
+.tabs--user .table_wrapper{
+    max-height: inherit;
+}
+.user_tab__switch:after {
+    width: 8px; 
+    height: 8px;
+    border-right: 2px solid;
+    border-bottom: 2px solid;
+    border-color: rgb(34, 34, 34);
+    position: absolute;
+    content: " ";
+    top: calc(50% - 2px);
+    right: 20px;
+    left: inherit;
+    margin-left: 10px;
+    transform: rotate(-45deg);
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+.user_tab__switch.active::after {
+    top: calc(50% - 3px);
+    transform: rotate(45deg);
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+.button__logout {
+    position: relative;
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    text-decoration: none;
+    position: relative;
+    margin: 0px;
+    border-bottom:none;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 18px 0px;
+    color: rgb(34, 34, 34);
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 40px;
+    height: inherit;
+    width: 100%;
+    -webkit-transition: all 0.3s ease 0s;
+    -moz-transition: all 0.3s ease 0s;
+    -o-transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s;
+}
+.button__logout svg{
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+}
+.button__logout:hover{color: rgb(0, 175, 238);}
+.user_orders_hidden{
+    display: none;
+}
+.user_orders_hidden.fn_user_orders_show{
+    display: table-row;
+}
+.fn_user_orders_switch{
+    margin: auto;
+    display: block;
+    width: 10px;
+    padding: 5px;
+    height: 10px;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M5.75 0C5.33582 0 5 0.335815 5 0.75V5.25H0.75C0.335815 5.25 0 5.58582 0 6C0 6.41418 0.335815 6.75 0.75 6.75H5V11.25C5 11.6642 5.33582 12 5.75 12C6.16418 12 6.5 11.6642 6.5 11.25V6.75H11.25C11.6642 6.75 12 6.41418 12 6C12 5.58582 11.6642 5.25 11.25 5.25H6.5V0.75C6.5 0.335815 6.16418 0 5.75 0Z' fill='%23030F4B'/%3E%3C/svg%3E%0A");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+.fn_user_orders_active .fn_user_orders_switch{
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='2' viewBox='0 0 12 2' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect y='1.75' width='1.5' height='12' rx='0.75' transform='rotate(-90 0 1.75)' fill='%23030F4B'/%3E%3C/svg%3E%0A");
+}
 
 /***** #Mobile navigation ************************************************************/
 .menu_switcher{
@@ -4111,4 +4203,89 @@ table.order_details {min-width: auto;}
 
 .swiper-button-prev.swiper-button-disabled, .swiper-button-next.swiper-button-disabled {
     display: none;
+}
+
+
+
+
+.purchase_discount__item{
+    position: relative;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    text-align: left;
+    border-bottom: 1px solid rgb(219, 219, 219);
+}
+.purchase_discount__item:last-child{
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.purchase_discount__name {
+    margin-bottom: 10px;
+    color: rgb(34, 34, 34);
+    line-height: 1.2;
+    font-size: 14px;
+    display: block;
+    position: relative;
+    font-weight: 600;
+}
+.purchase_discount__group {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.purchase_discount__title {
+    font-size: 11px;
+    font-weight: 400;
+    color: rgb(128, 128, 128);
+    margin-bottom: 5px;
+}
+.purchase_discount__group_content {
+    min-height: 25px;
+}
+.purchase_discount__price_before {
+    color: rgb(34, 34, 34);
+    font-size: 16px;
+    font-weight: 600;
+    padding-right: 25px;
+}
+.purchase_discount__discount {
+    padding-right: 25px;
+}
+.purchase_discount__price_after {
+    color: rgb(0, 175, 238);
+    font-size: 16px;
+    font-weight: 600;
+}
+.purchase_discount__price_before .currency,
+.purchase_discount__price_after .currency {
+    font-size: 11px;
+    font-weight: 600;
+    position: relative;
+    top: -10px;
+}
+.purchase__price .price--red{
+    color: #B10707;
+}
+.discount_tooltip{
+    width: 16px;
+    height: 16px;
+    margin-left: 3px;
+    position:relative;
+    top:-3px;
+    color:rgb(246, 80, 80);
+    transition: all 0.3s;
+}
+.discount_tooltip svg{
+    width: 16px;
+    height: 16px;
+}
+.discount_tooltip:focus,
+.discount_tooltip:hover{
+    color: #B10707;
 }

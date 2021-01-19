@@ -4,15 +4,15 @@
 namespace Okay\Admin\Controllers;
 
 
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 
 class StylesAdmin extends IndexAdmin
 {
 
     /*Файл стилей шаблона*/
-    public function fetch(TemplateConfig $templateConfig)
+    public function fetch(FrontTemplateConfig $frontTemplateConfig)
     {
-        $currentTheme = $templateConfig->getTheme();
+        $currentTheme = $frontTemplateConfig->getTheme();
 
         $styles_dir = 'design/'.$currentTheme.'/css/';
         $styles = [];

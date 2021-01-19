@@ -31,13 +31,13 @@
 
 <div class="row">
     {*Блок статусов заказов*}
-    <div class="col-lg-12 col-md-12 pr-0">
-        <div class="boxed fn_toggle_wrap">
+    <div class="col-lg-12 col-md-12">
+        <div class="fn_toggle_wrap">
             <div class="toggle_body_wrap on fn_card">
                 <form class="fn_form_list" method="post">
                     <input type="hidden" value="status" name="status">
                     <input type="hidden" name="session_id" value="{$smarty.session.id}">
-                    <div class="okay_list">
+                    <div class="okay_list boxed">
                         {*Шапка таблицы*}
                         <div class="okay_list_head">
                             <div class="okay_list_heading okay_list_order_stg_sts_name_1c">{$btr->general_name|escape}</div>
@@ -138,6 +138,98 @@
                             </button>
                         </div>
                     </div>
+
+                    <div class="row mt-1">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="boxed fn_toggle_wrap ">
+                                <div class="heading_box">
+                                    {$btr->okaycms__integration_ic__settings|escape}
+                                    <div class="toggle_arrow_wrap fn_toggle_card text-primary">
+                                        <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
+                                    </div>
+                                </div>
+                                {*Параметры элемента*}
+                                <div class="toggle_body_wrap on fn_card">
+                                    <div class="row">
+                                        <div class="fn_step-1 col-lg-4 col-md-6">
+                                            <div class="heading_label">{$btr->okaycms__integration_ic__settings_brandOptionName|escape}</div>
+                                            <div class="mb-1">
+                                                <input name="integration1cBrandOptionName" placeholder="Производитель" class="form-control" type="text" value="{$settings->integration1cBrandOptionName|escape}" />
+                                            </div>
+                                        </div>
+                                        <div class="fn_step-2 col-lg-4 col-md-6">
+                                            <div class="heading_label">{$btr->okaycms__integration_ic__settings_guidPriceFrom1C|escape}</div>
+                                            <div class="mb-1">
+                                                <input name="integration1cGuidPriceFrom1C" class="form-control" type="text" value="{$settings->integration1cGuidPriceFrom1C|escape}" />
+                                            </div>
+                                        </div>
+                                        <div class="fn_step-3 col-lg-4 col-md-6">
+                                            <div class="heading_label">{$btr->okaycms__integration_ic__settings_guidComparePriceFrom1C|escape}</div>
+                                            <div class="mb-1">
+                                                <input name="integration1cGuidComparePriceFrom1C" class="form-control" type="text" value="{$settings->integration1cGuidComparePriceFrom1C|escape}" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="permission_block">
+                                        <div class="permission_boxes row">
+                                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                                <div class="permission_box permission_box--long">
+                                                    <span>{$btr->okaycms__integration_ic__settings_fullUpdate|escape}</span>
+                                                    <label class="switch switch-default">
+                                                        <input class="switch-input" name="integration1cFullUpdate" value='1' type="checkbox" {if $settings->integration1cFullUpdate || !$settings->has('integration1cFullUpdate')}checked=""{/if}/>
+                                                        <span class="switch-label"></span>
+                                                        <span class="switch-handle"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                                <div class="permission_box permission_box--long">
+                                                    <span>{$btr->okaycms__integration_ic__settings_onlyEnabledCurrencies|escape}</span>
+                                                    <label class="switch switch-default">
+                                                        <input class="switch-input" name="integration1cOnlyEnabledCurrencies" value='1' type="checkbox" {if $settings->integration1cOnlyEnabledCurrencies}checked=""{/if}/>
+                                                        <span class="switch-label"></span>
+                                                        <span class="switch-handle"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                                <div class="permission_box permission_box--long">
+                                                    <span>{$btr->okaycms__integration_ic__settings_stockFrom1c|escape}</span>
+                                                    <label class="switch switch-default">
+                                                        <input class="switch-input" name="integration1cStockFrom1c" value='1' type="checkbox" {if $settings->integration1cStockFrom1c || !$settings->has('integration1cStockFrom1c')}checked=""{/if}/>
+                                                        <span class="switch-label"></span>
+                                                        <span class="switch-handle"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                                <div class="permission_box permission_box--long">
+                                                    <span>{$btr->okaycms__integration_ic__settings_importProductsOnly|escape}</span>
+                                                    <label class="switch switch-default">
+                                                        <input class="switch-input" name="integration1cImportProductsOnly" value='1' type="checkbox" {if $settings->integration1cImportProductsOnly}checked=""{/if}/>
+                                                        <span class="switch-label"></span>
+                                                        <span class="switch-handle"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-2">
+                                        <div class="col-lg-12 col-md-12 ">
+                                            <button type="submit" class="btn btn_small btn_blue float-md-right" type="submit" name="save" value="1">
+                                                {include file='svg_icon.tpl' svgId='checked'}
+                                                <span>{$btr->general_apply|escape}</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </form>
             </div>
         </div>

@@ -19,17 +19,12 @@ use Okay\Core\Request;
 use Okay\Core\Response;
 use Okay\Core\Settings;
 use Okay\Core\ManagerMenu;
-use Okay\Core\BackendTranslations;
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\BackendTemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Core\Translit;
 use Okay\Entities\ManagersEntity;
 use Okay\Entities\LanguagesEntity;
-use Okay\Entities\CallbacksEntity;
-use Okay\Entities\CommentsEntity;
 use Okay\Entities\CurrenciesEntity;
-use Okay\Entities\FeedbacksEntity;
-use Okay\Entities\OrdersEntity;
-use Okay\Entities\OrderStatusEntity;
 use OkayLicense\License;
 use Okay\Entities\SupportInfoEntity;
 
@@ -38,6 +33,7 @@ class IndexAdmin
 
     protected $manager;
     protected $backendController;
+    protected $controllerMethod;
     
     /**
      * @var EntityFactory
@@ -124,7 +120,8 @@ class IndexAdmin
         BackendMainHelper $backendMainHelper,
         Module $module,
         BackendPostRedirectGet $postRedirectGet,
-        TemplateConfig $templateConfig
+        FrontTemplateConfig $frontTemplateConfig,
+        BackendTemplateConfig $backendTemplateConfig
     ) {
         $this->design        = $design;
         $this->request       = $request;
@@ -143,13 +140,16 @@ class IndexAdmin
         $design->assign('is_tablet', $design->isTablet());
         $design->assign('is_module', $module->isBackendControllerName($this->backendController));
 
+        $design->assign('ok_head', $backendTemplateConfig->head());
+        $design->assign('ok_footer', $backendTemplateConfig->footer());
+        
         $design->assign('settings',  $this->settings);
         $design->assign('config',    $this->config);
 
         $this->design->assign('rootUrl', $this->request->getRootUrl());
         
         $design->assign('manager', $this->manager);
-        $design->assign('registered_front_css', $templateConfig->getRegisteredCss());
+        $design->assign('registered_front_css', $frontTemplateConfig->getRegisteredCss());
 
         $supportInfo = $supportInfoEntity->getInfo();
         $this->design->assign('support_info', $supportInfo);
@@ -159,7 +159,7 @@ class IndexAdmin
         $isNotLocalServer = !in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '0:0:0:0:0:0:0:1']);
         if (empty($supportInfo->public_key) && !empty($supportInfo->is_auto) && $isNotLocalServer) {
             $supportInfoEntity->updateInfo(['is_auto' => 0]);
-            if ($support->getNewKeys() !== false) {
+            if ($support->getNewKeys($this->manager->email) !== false) {
                 $this->response->addHeader("Refresh:0");
                 $this->response->sendHeaders();
                 exit();
@@ -171,6 +171,13 @@ class IndexAdmin
             $activeControllerName = $managerMenu->getActiveControllerName($this->manager, $this->backendController);
             $design->assign('left_menu', $menu);
             $design->assign('menu_selected', $activeControllerName);
+
+            $activeController = $this->backendController;
+            
+            if ($this->controllerMethod != 'fetch') {
+                $activeController = $this->backendController . '@' . $this->controllerMethod;
+            }
+            $design->assign('controller_selected', $activeController);
         }
 
         $design->assign('translit_pairs', $translit->getTranslitPairs());
@@ -232,9 +239,10 @@ class IndexAdmin
         return false;
     }
 
-    public function __construct($manager, $backendController)
+    public function __construct($manager, $backendController, $controllerMethod)
     {
         $this->manager = $manager;
         $this->backendController  = $backendController;
+        $this->controllerMethod  = $controllerMethod;
     }
 }

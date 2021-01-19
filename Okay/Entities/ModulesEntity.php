@@ -5,6 +5,8 @@ namespace Okay\Entities;
 
 
 use Okay\Core\Entity\Entity;
+use Okay\Core\Modules\Module;
+use Okay\Core\ServiceLocator;
 
 class ModulesEntity extends Entity
 {
@@ -12,6 +14,7 @@ class ModulesEntity extends Entity
         'id',
         'vendor',
         'module_name',
+        'version',
         'type',
         'enabled',
         'position',
@@ -67,8 +70,14 @@ class ModulesEntity extends Entity
     }
 
     // TODO подумать над тем, чтоб модули автоматически индексировались в базу при заходе в вдминку, тогда этот метод будет не нужен
-    public function findNotInstalled()
+    public function findNotInstalled($filterVendor = null, $filterModuleName = null)
     {
+        
+        $SL = ServiceLocator::getInstance();
+        
+        /** @var Module $moduleCore */
+        $moduleCore = $SL->getService(Module::class);
+        
         $modulesDir = __DIR__.'/../Modules/';
         $modulesDirContains = scandir($modulesDir);
 
@@ -81,6 +90,14 @@ class ModulesEntity extends Entity
 
             $modulesByVendor = scandir($modulesDir.$vendorName);
             foreach($modulesByVendor as $moduleName) {
+                
+                if ($filterVendor !== null && $filterVendor != $vendorName) {
+                    continue;
+                }
+                if ($filterModuleName !== null && $filterModuleName != $moduleName) {
+                    continue;
+                }
+                
                 if ($this->isNotDir($modulesDir.$vendorName.'/'.$moduleName)) {
                     continue;
                 }
@@ -99,6 +116,11 @@ class ModulesEntity extends Entity
                 $module->enabled  = 0;
                 $module->status   = 'Not Installed';
 
+                $module->params = $moduleCore->getModuleParams($vendorName, $moduleName);
+                if (!empty($module->params->version)) {
+                    $module->version = $module->params->version;
+                }
+                
                 $notInstalledModules[] = $module;
             }
         }

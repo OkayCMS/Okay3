@@ -43,7 +43,7 @@ class FeaturesValuesEntity extends Entity
 
         $featureValue = (object)$featureValue;
 
-        if (empty($featureValue->value) || empty($featureValue->feature_id)) {
+        if ($featureValue->value === null || $featureValue->value === '' || empty($featureValue->feature_id)) {
             return false;
         }
 
@@ -95,8 +95,8 @@ class FeaturesValuesEntity extends Entity
         }
         
         $this->select->join('LEFT', '__features AS f', 'f.id=fv.feature_id');
-        $this->select->groupBy(['l.value']);
-        $this->select->groupBy(['l.translit']);
+        //$this->select->groupBy(['l.value']); // TODO: разобраться, вроде не нужная группировка
+        //$this->select->groupBy(['l.translit']);
 
         if (isset($filter['visible']) || isset($filter['in_stock']) || isset($filter['price'])) {
             $this->select->join('LEFT', '__products AS p', 'p.id=pf.product_id');

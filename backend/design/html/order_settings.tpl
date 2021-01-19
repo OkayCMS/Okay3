@@ -276,13 +276,39 @@
 
         $(document).on("click", ".fn_add_Label", function () {
            clone_label = new_label.clone(true);
+           clone_label_classes = clone_label.addClass("fn_ancor_label");
            $(".fn_labels_list").append(clone_label);
+
+           setTimeout(function () {
+            setChanges2();
+            }, 100);
+
+            function setChanges2() {
+                $(clone_label_classes).each(function () {
+                    $('html, body').animate({
+                        scrollTop: clone_label_classes.offset().top - 70
+                    }, 2000);
+                });
+            }
         });
 
         $(document).on("click", ".fn_add_status", function () {
             clone_status = new_status.clone(true);
+            clone_status_classes = clone_status.addClass("fn_ancor_status");
             clone_status.find("select").selectpicker();
             $(".fn_status_list").append(clone_status);
+
+            setTimeout(function () {
+            setChanges();
+            }, 100);
+
+            function setChanges() {
+                $(clone_status_classes).each(function () {
+                    $('html, body').animate({
+                        scrollTop: clone_status_classes.offset().top - 70
+                    }, 2000);
+                });
+            }
         });
 
         $(document).on("mouseenter click", ".fn_color", function () {

@@ -13,6 +13,7 @@ use Okay\Core\Settings;
 use Okay\Entities\BlogCategoriesEntity;
 use Okay\Entities\BlogEntity;
 use Okay\Core\Modules\Extender\ExtenderFacade;
+use Okay\Helpers\ProductsHelper;
 
 class BackendBlogHelper
 {
@@ -50,6 +51,8 @@ class BackendBlogHelper
      * @var QueryFactory
      */
     private $queryFactory;
+    
+    private $productsHelper;
 
     public function __construct(
         EntityFactory $entityFactory,
@@ -57,7 +60,8 @@ class BackendBlogHelper
         Config $config,
         Image $imageCore,
         Settings $settings,
-        QueryFactory $queryFactory
+        QueryFactory $queryFactory,
+        ProductsHelper $productsHelper
     ) {
         $this->blogEntity = $entityFactory->get(BlogEntity::class);
         $this->categoriesEntity = $entityFactory->get(BlogCategoriesEntity::class);
@@ -66,6 +70,7 @@ class BackendBlogHelper
         $this->imageCore  = $imageCore;
         $this->settings   = $settings;
         $this->queryFactory = $queryFactory;
+        $this->productsHelper = $productsHelper;
     }
 
     public function disable($ids)
@@ -222,6 +227,37 @@ class BackendBlogHelper
         ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
+    /**
+     * @param array $filter аргумент метода getRelatedProducts()
+     * @return mixed|void|null
+     * @throws \Exception
+     */
+    public function getRelatedProductsList(array $filter)
+    {
+
+        $relatedProducts = [];
+        foreach ($this->blogEntity->getRelatedProducts($filter) as $p) {
+            $relatedProducts[$p->related_id] = null;
+        }
+
+        if (!empty($relatedProducts)) {
+            $relatedIds = array_keys($relatedProducts);
+            $relatedFilter = [
+                'id' => $relatedIds,
+                'limit' => count($relatedIds),
+            ];
+            foreach ($this->productsHelper->getList($relatedFilter) as $p) {
+                $relatedProducts[$p->id] = $p;
+            }
+            foreach ($relatedProducts as $id=>$r) {
+                if ($r === null) {
+                    unset($relatedProducts[$id]);
+                }
+            }
+        }
+        return ExtenderFacade::execute(__METHOD__, $relatedProducts, func_get_args());
+    }
+    
     public function findPostCategories($post)
     {
         $postCategories = [];

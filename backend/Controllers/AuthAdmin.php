@@ -28,12 +28,12 @@ class AuthAdmin extends IndexAdmin
             $result = new \stdClass();
             if (!$validator->isEmail($recoveryEmail, true)) {
                 $result->error = 'wrong_email';
-            } elseif ($recoveryEmail != $this->settings->admin_email) {
+            } elseif (!($managerToRecovery = $managersEntity->findOne(['email' => $recoveryEmail]))) {
                 $result->error = 'not_admin_email';
             } else {
                 $code = $this->config->token(mt_rand(1, mt_getrandmax()) . mt_rand(1, mt_getrandmax()) . mt_rand(1, mt_getrandmax()));
                 $_SESSION['admin_password_recovery_code'] = $code;
-                $notify->passwordRecoveryAdmin($this->settings->admin_email, $code);
+                $notify->passwordRecoveryAdmin($managerToRecovery->email, $code);
                 
                 $result->send = true;
             }

@@ -43,7 +43,7 @@ class SettingsNotifyAdmin extends IndexAdmin
         $from = ($this->settings->get('notify_from_name') ? $this->settings->get('notify_from_name')." <".$this->settings->get('notify_from_email').">" : $this->settings->get('notify_from_email'));
 
         $trace = $notify->SMTP(
-            $this->settings->get('admin_email'),
+            $this->manager->email,
             'Test SMTP connection',
             'Test SMTP connection',
             $from,

@@ -23,6 +23,7 @@ class ManagerAdmin extends IndexAdmin
             
             $manager->id = $this->request->post('id', 'integer');
             $manager->lang = $this->request->post('manager_lang');
+            $manager->email = $this->request->post('email');
             $manager->comment = $this->request->post('comment');
             $manager->menu_status = $this->request->post('menu_status','integer');
             

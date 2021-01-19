@@ -16,16 +16,10 @@
         
         <div class="block__body">
             <form id="captcha_id" method="post" name="cart" class="fn_validate_cart">
-
-                {if $settings->captcha_type == "v3"}
-                    <input type="hidden" class="fn_recaptcha_token fn_recaptchav3" name="recaptcha_token" />
-                {/if}
-
-                <div class="f_row flex-column flex-lg-row" data-sticky-container>
-                    <div class="sticky f_col f_col-lg-6 f_col-xl-5">
-
+                <div class="f_row flex-column align-items-start flex-lg-row">
+                    <div class="position_sticky f_col f_col-lg-6 f_col-xl-5">
                         {* The list of products in the cart *}
-                        <div class="fn_cart_sticky block--cart_purchases block--boxed block--border" data-margin-top="75" data-sticky-for="1024" data-sticky-class="is-sticky">
+                        <div class="block--cart_purchases block--boxed block--border">
                             <div class="block__inner">
                                 <div class="h6" data-language="cart_purchase_title">{$lang->cart_purchase_title}</div>
 
@@ -39,19 +33,6 @@
                                         {include file="cart_coupon.tpl"}
                                     </div>
 
-                                    {* Discount *}
-                                    {if $user->discount}
-                                        <div class="purchase_detail__item">
-                                            <div class="purchase_detail__column_name">
-                                                <div class="purchase_detail__name" data-language="cart_discount">{$lang->cart_discount}:</div>
-                                            </div>
-                                            <div class="purchase_detail__column_value">
-                                                <div class="purchase_detail__price">{$user->discount|escape}%</div>
-                                            </div>
-                                        </div>
-                                    {/if}
-
-                                    {* Discount *}
                                     <div class="purchase_detail__item">
                                         <div class="purchase_detail__column_name">
                                             <div class="purchase_detail__name" data-language="cart_order_price">{$lang->cart_order_price}:</div>
@@ -94,8 +75,11 @@
                         </div>
 
                     </div>
-                    <div class="sticky f_col f_col-lg-6 f_col-xl-7 flex-lg-first">
-                        <div class="fn_cart_sticky block--boxed block--border d-flex justify-content-center" data-margin-top="75" data-sticky-for="1024" data-sticky-class="is-sticky">
+                    <div class="position_sticky f_col f_col-lg-6 f_col-xl-7 flex-lg-first">
+                        <div class="block--boxed block--border d-flex justify-content-center">
+                            {if $settings->captcha_type == "v3"}
+                                <input type="hidden" class="fn_recaptcha_token fn_recaptchav3" name="recaptcha_token" />
+                            {/if}
                             <div class="block__inner">
                                 <div class="h6" data-language="cart_title">{$lang->cart_title}</div>
 
@@ -131,6 +115,14 @@
                                                 <div class="form__group ">
                                                     <input class="form__input form__placeholder--focus" name="name" type="text" value="{$request_data.name|escape}" data-language="form_name" >
                                                     <span class="form__placeholder">{$lang->form_name}*</span>
+                                                </div>
+                                            </div>
+
+                                            {* User's name *}
+                                            <div class="f_col-md-6 f_col-lg-12 f_col-xl-6">
+                                                <div class="form__group ">
+                                                    <input class="form__input form__placeholder--focus" name="last_name" type="text" value="{$request_data.last_name|escape}" data-language="form_name" >
+                                                    <span class="form__placeholder">{$lang->form_last_name}</span>
                                                 </div>
                                             </div>
 

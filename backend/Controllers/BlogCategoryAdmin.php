@@ -7,6 +7,9 @@ namespace Okay\Admin\Controllers;
 use Okay\Admin\Helpers\BackendValidateHelper;
 use Okay\Admin\Requests\BackendBlogCategoriesRequest;
 use Okay\Admin\Helpers\BackendBlogCategoriesHelper;
+use Okay\Core\Routes\BlogCategoryRoute;
+use Okay\Core\Routes\PostRoute;
+use Okay\Entities\RouterCacheEntity;
 
 class BlogCategoryAdmin extends IndexAdmin
 {
@@ -14,7 +17,8 @@ class BlogCategoryAdmin extends IndexAdmin
     public function fetch(
         BackendBlogCategoriesRequest $blogCategoriesRequest,
         BackendBlogCategoriesHelper  $backendBlogCategoriesHelper,
-        BackendValidateHelper    $backendValidateHelper
+        BackendValidateHelper    $backendValidateHelper,
+        RouterCacheEntity        $routerCacheEntity
     ) {
         if ($this->request->method('post')) {
             $category = $blogCategoriesRequest->postCategory();
@@ -30,10 +34,22 @@ class BlogCategoryAdmin extends IndexAdmin
                     $this->postRedirectGet->storeMessageSuccess('added');
                     $this->postRedirectGet->storeNewEntityId($category->id);
                 } else {
+
+                    $categoryBeforeUpdate   = $backendBlogCategoriesHelper->getCategory($category->id);
+                    
                     // Обновление категории
                     $category     = $backendBlogCategoriesHelper->prepareUpdate($category->id, $category);
                     $backendBlogCategoriesHelper->update($category->id, $category);
 
+                    if ($categoryBeforeUpdate->url != $category->url || $categoryBeforeUpdate->parent_id != $category->parent_id) {
+                        if (in_array($this->settings->get('blog_category_routes_template'), [BlogCategoryRoute::TYPE_NO_PREFIX_AND_PATH, BlogCategoryRoute::TYPE_PREFIX_AND_PATH])) {
+                            $routerCacheEntity->deleteBlogCategoriesCache();
+                        }
+                        if (in_array($this->settings->get('post_routes_template'), [PostRoute::TYPE_NO_PREFIX_AND_PATH, PostRoute::TYPE_PREFIX_AND_PATH, PostRoute::TYPE_NO_PREFIX_AND_CATEGORY])) {
+                            $routerCacheEntity->deleteBlogCache();
+                        }
+                    }
+                    
                     $this->postRedirectGet->storeMessageSuccess('updated');
                 }
 

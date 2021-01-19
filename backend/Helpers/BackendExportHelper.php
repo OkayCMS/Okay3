@@ -282,10 +282,10 @@ class BackendExportHelper
         $f = fopen($exportFilesDir.$filename, 'ab');
 
         foreach($products as &$product) {
-            $variants = $product['variants'];
-            unset($product['variants']);
+            if(isset($product['variants'])) {
+                $variants = $product['variants'];
+                unset($product['variants']);
 
-            if(isset($variants)) {
                 foreach($variants as $variant) {
                     $res = [];
                     $result =  $product;

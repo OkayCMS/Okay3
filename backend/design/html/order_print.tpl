@@ -39,7 +39,7 @@
     }
     div#customer{
         margin-right: 50px;
-        height: 200px;
+        min-height: 200px;
         width: 300px;
         float: right;
     }

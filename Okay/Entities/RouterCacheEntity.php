@@ -9,6 +9,11 @@ use Okay\Core\Entity\Entity;
 class RouterCacheEntity extends Entity
 {
     
+    const TYPE_PRODUCT = 'product';
+    const TYPE_CATEGORY = 'category';
+    const TYPE_POST = 'post';
+    const TYPE_BLOG_CATEGORY = 'blog_category';
+    
     protected static $fields = [
         'url',
         'slug_url',
@@ -23,9 +28,9 @@ class RouterCacheEntity extends Entity
         
         $delete->from(self::getTable())
             ->where('type=:type')
-            ->where('url=:url')
+            ->where('url in (:url)')
             ->bindValue('type', $objectType)
-            ->bindValue('url', $url)
+            ->bindValue('url', (array)$url)
             ->execute();
         
         return true;

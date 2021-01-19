@@ -154,6 +154,16 @@ abstract class Entity implements EntityInterface, FilterPriorityInterface
      */
     protected $mappedBy = null;
 
+    /**
+     * @var bool
+     */
+    protected $debug = false;
+
+    /**
+     * @var bool
+     */
+    protected $noLimit = false;
+
     public function __construct()
     {
         $this->serviceLocator = ServiceLocator::getInstance();
@@ -192,6 +202,18 @@ abstract class Entity implements EntityInterface, FilterPriorityInterface
         return ExtenderFacade::execute([static::class, __FUNCTION__], $orderFields, func_get_args());
     }
 
+    public function debug()
+    {
+        $this->debug = true;
+        return $this;
+    }
+
+    public function noLimit()
+    {
+        $this->noLimit = true;
+        return $this;
+    }
+    
     public function flush()
     {
         $this->select = $this->queryFactory->newSelect();
@@ -199,6 +221,8 @@ abstract class Entity implements EntityInterface, FilterPriorityInterface
         $this->order();
         $this->resetPriority();
         $this->mappedBy = null;
+        $this->debug = false;
+        $this->noLimit = false;
         $this->selectFields = [];
     }
     

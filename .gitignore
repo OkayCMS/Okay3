@@ -13,6 +13,7 @@ files/resized/*/*.webp
 files/resized/*/*.svg
 files/thumbs/*
 cache/
+tmp/
 
 /Okay/log/*.log
 config/config.local.php

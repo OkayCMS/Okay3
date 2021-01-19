@@ -71,6 +71,16 @@
                         <div class="permission_boxes row">
                             <div class="col-xl-12 col-lg-12 col-md-12">
                                 <div class="permission_box permission_box--long">
+                                    <span>{$btr->okaycms__rozetka_xml__upload_without_images|escape}</span>
+                                    <label class="switch switch-default">
+                                        <input class="switch-input" name="okaycms__rozetka_xml__upload_without_images" value='1' type="checkbox" {if $settings->okaycms__rozetka_xml__upload_without_images}checked=""{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                <div class="permission_box permission_box--long">
                                     <span class="permission_box__label">{$btr->upload_non_exists_products_to_rozetka|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="upload_non_available" value='1' type="checkbox" id="visible_checkbox" {if $settings->upload_only_available_to_rozetka}checked=""{/if}/>
@@ -89,6 +99,17 @@
                                         <span class="switch-handle"></span>
                                     </label>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-1">
+                            <div class="heading_label">
+                                <strong>{$btr->okaycms__rozetka_xml__company}</strong>
+                            </div>
+                            <div class="mb-1">
+                                <input class="form-control" type="text" name="okaycms__rozetka_xml__company" value="{$settings->okaycms__rozetka_xml__company}" />
                             </div>
                         </div>
                     </div>

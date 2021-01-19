@@ -88,6 +88,13 @@
                                 </div>
                             </div>
                             <div class="mb-1">
+                                <div class="heading_label">{$btr->index_last_name|escape}</div>
+                                <div class="">
+                                    <input class="form-control mb-h" name="last_name" type="text" value="{$user->last_name|escape}"/>
+                                    <input name="id" type="hidden" value="{$user->id|escape}"/>
+                                </div>
+                            </div>
+                            <div class="mb-1">
                                 <div class="heading_label">{$btr->general_phone|escape}</div>
                                 <div class="">
                                     <input class="form-control mb-h" name="phone" type="text" value="{$user->phone|phone}"/>
@@ -176,7 +183,7 @@
                                                 <a href="{url controller=OrderAdmin id=$order->id return=$smarty.server.REQUEST_URI}">{$btr->general_order_number|escape} {$order->id}</a>
                                             </div>
                                             <div class="okay_list_boding okay_list_user_name">
-                                                <span>{$order->name|escape}</span>
+                                                <span>{$order->name|escape} {$order->last_name|escape}</span>
                                                 {if $order->note}
                                                     <div class="note">{$order->note|escape}</div>
                                                 {/if}

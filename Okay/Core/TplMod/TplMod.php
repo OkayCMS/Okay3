@@ -13,10 +13,12 @@ use Okay\Core\TplMod\Nodes\TextNode;
 class TplMod
 {
     private $parser;
+    private $debug;
     
-    public function __construct(Parser $parser)
+    public function __construct(Parser $parser, Config $config)
     {
         $this->parser = $parser;
+        $this->debug = (bool)$config->get('dev_mode');
     }
 
     public function buildFile($content, $mods)
@@ -93,44 +95,44 @@ class TplMod
         
         if (property_exists($mod, 'append')) {
             $userNode = new TextNode($mod->append);
-            if (!empty($mod->comment)) {
+            if ($this->debug === true && !empty($mod->comment)) {
                 $node->append(new HtmlCommentNode("<!--{$mod->comment}-->"));
             }
             $node->append($userNode);
-            if (!empty($mod->comment)) {
+            if ($this->debug === true && !empty($mod->comment)) {
                 $node->append(new HtmlCommentNode("<!--/{$mod->comment}-->"));
             }
         }
 
         if (property_exists($mod, 'appendBefore')) {
             $userNode = new TextNode($mod->appendBefore);
-            if (!empty($mod->comment)) {
+            if ($this->debug === true && !empty($mod->comment)) {
                 $node->appendBefore(new HtmlCommentNode("<!--{$mod->comment}-->"));
             }
             $node->appendBefore($userNode);
-            if (!empty($mod->comment)) {
+            if ($this->debug === true && !empty($mod->comment)) {
                 $node->appendBefore(new HtmlCommentNode("<!--/{$mod->comment}-->"));
             }
         }
         
         if (property_exists($mod, 'prepend')) {
             $userNode = new TextNode($mod->prepend);
-            if (!empty($mod->comment)) {
+            if ($this->debug === true && !empty($mod->comment)) {
                 $node->prepend(new HtmlCommentNode("<!--/{$mod->comment}-->"));
             }
             $node->prepend($userNode);
-            if (!empty($mod->comment)) {
+            if ($this->debug === true && !empty($mod->comment)) {
                 $node->prepend(new HtmlCommentNode("<!--{$mod->comment}-->"));
             }
         }
 
         if (property_exists($mod, 'appendAfter')) {
             $userNode = new TextNode($mod->appendAfter);
-            if (!empty($mod->comment)) {
+            if ($this->debug === true && !empty($mod->comment)) {
                 $node->appendAfter(new HtmlCommentNode("<!--/{$mod->comment}-->"));
             }
             $node->appendAfter($userNode);
-            if (!empty($mod->comment)) {
+            if ($this->debug === true && !empty($mod->comment)) {
                 $node->appendAfter(new HtmlCommentNode("<!--{$mod->comment}-->"));
             }
         }
@@ -138,7 +140,7 @@ class TplMod
         if (property_exists($mod, 'html')) {
             $userNode = new TextNode($mod->html);
             $node->text($userNode);
-            if (!empty($mod->comment)) {
+            if ($this->debug === true && !empty($mod->comment)) {
                 $node->prepend(new HtmlCommentNode("<!--replaced by {$mod->comment}-->"));
             }
         }
@@ -146,7 +148,7 @@ class TplMod
         if (property_exists($mod, 'text')) {
             $userNode = new TextNode($mod->text);
             $node->text($userNode);
-            if (!empty($mod->comment)) {
+            if ($this->debug === true && !empty($mod->comment)) {
                 $node->prepend(new HtmlCommentNode("<!--replaced by {$mod->comment}-->"));
             }
         }
@@ -198,11 +200,13 @@ class TplMod
         $resultString = '';
         /** @var BaseNode $child */
         foreach ($node->children() as $child) {
-            $resultString .= PHP_EOL;
-
-            // Добавляем отступы для форматирования
-            for ($i=1; $i<=$level; $i++) {
-                $resultString .= '    ';
+            if (strpos($node->getOriginalElement(), '<textarea') === false) {
+                $resultString .= PHP_EOL;
+                
+                // Добавляем отступы для форматирования
+                for ($i=1; $i<=$level; $i++) {
+                    $resultString .= '    ';
+                }
             }
 
             $resultString .= $child->getElement();
@@ -213,7 +217,7 @@ class TplMod
 
             if (!empty($child->getCloseTag())) {
                 // Добавляем отступы для форматирования
-                if (!empty($child->children())) {
+                if (!empty($child->children()) && strpos($child->getOriginalElement(), '<textarea') === false) {
                     $resultString .= PHP_EOL;
                     for ($i = 1; $i <= $level; $i++) {
                         $resultString .= '    ';

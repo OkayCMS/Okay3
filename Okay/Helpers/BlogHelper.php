@@ -189,7 +189,7 @@ class BlogHelper implements GetListInterface
         
         // Получаем часть запроса с примененными фильтрами и немного его модифицируем
         $query = $commentsEntity->getSelect(['type' => 'post', 'object_id' => $postsIds]);
-        $query->groupBy(['object_id'])->cols(["COUNT( DISTINCT id) as count", "object_id"]);
+        $query->groupBy(['object_id'])->resetCols()->cols(["COUNT( DISTINCT id) as count", "object_id"]);
 
         foreach ($query->results() as $result) {
             if (isset($posts[$result->object_id])) {

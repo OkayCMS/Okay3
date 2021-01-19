@@ -35,6 +35,100 @@ class CatalogHelper
         $this->request = $request;
     }
     
+    public function assignCategoryFilterProcedure(
+        $category,
+        array $filter,
+        array $currentBrandsIds,
+        array $categoryBrands,
+        array $categoryFeatures,
+        array $currentFeatures,
+        $isFilterPage,
+        $catalogType
+    ) {
+        
+        $SL = ServiceLocator::getInstance();
+
+        /** @var FilterHelper $filterHelper */
+        $filterHelper = $SL->getService(FilterHelper::class);
+
+        /** @var Design $design */
+        $design = $SL->getService(Design::class);
+        
+        $brandsFilter = $filterHelper->prepareFilterGetCategoryBrands($category, $filter);
+        if ($brands = $filterHelper->getCategoryBrands($brandsFilter, $currentBrandsIds)) {
+            $category->brands = $brands;
+        }
+
+        // Дополняем список брендов, теми, которые выбраны в данный момент, но их фильтрация отсекла
+        if ($isFilterPage === true && !empty($this->categoryBrands) && !empty($currentBrandsIds)) {
+            foreach ($currentBrandsIds as $brandId) {
+                if (isset($categoryBrands[$brandId]) && !isset($category->brands[$brandId])) {
+                    $category->brands[$brandId] = $this->categoryBrands[$brandId];
+                }
+            }
+        }
+
+        /**
+         * Получаем значения свойств для категории, чтобы на страницах фильтров убрать фильтры
+         * у которых изначально был только один вариант выбора
+         */
+        $baseFeaturesValues = [];
+        if ($isFilterPage === true) {
+            $baseFeaturesValues = $filterHelper->getCategoryBaseFeaturesValues($category, $this->settings->get('missing_products'));
+
+            // Дополняем массив categoryFeatures значениями, которые в данный момент выбраны
+            // и были изначально, но их фильтрация (по бренду или цене) отсекла.
+            if (!empty($baseFeaturesValues)) {
+                foreach ($baseFeaturesValues as $values) {
+                    foreach ($values as $value) {
+                        if (isset($currentFeatures[$value->feature_id][$value->id]) && isset($categoryFeatures[$value->feature_id])) {
+                            $categoryFeatures[$value->feature_id]->features_values[$value->id] = $value;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!empty($categoryFeatures)) {
+
+            // Достаём значения свойств текущей категории
+            $featuresValuesFilter = $filterHelper->prepareFilterGetFeaturesValues($category, $this->settings->get('missing_products'), $filter);
+            foreach ($filterHelper->getCategoryFeaturesValues($featuresValuesFilter) as $featureValue) {
+                if (isset($categoryFeatures[$featureValue->feature_id])) {
+                    $filterHelper->setCategoryFeatureValue($featureValue);
+                    $categoryFeatures[$featureValue->feature_id]->features_values[$featureValue->id] = $featureValue;
+                }
+            }
+
+            foreach ($categoryFeatures as $i => $feature) {
+                // Если хоть одно значение свойства выбрано, его убирать нельзя
+                if (empty($currentFeatures[$feature->id])) {
+                    // На странице фильтра убираем свойства у которых вообще нет значений (отфильтровались)
+                    // или они изначально имели только один вариант выбора
+                    if ($isFilterPage === true) {
+                        if (!isset($baseFeaturesValues[$feature->id])
+                            || ($this->settings->get('hide_single_filters') && (count($baseFeaturesValues[$feature->id]) <= 1)
+                                || !isset($feature->features_values)
+                                || count($feature->features_values) == 0)) {
+
+                            unset($categoryFeatures[$i]);
+                        }
+                        // Иначе убираем свойства у которых только один вариант выбора
+                    } elseif (!isset($feature->features_values) || ($this->settings->get('hide_single_filters') && count($feature->features_values) <= 1)) {
+                        unset($categoryFeatures[$i]);
+                    }
+                }
+            }
+        }
+        $design->assign('features', $categoryFeatures);
+
+        $otherFiltersFilter = $this->getOtherFiltersFilter($filter);
+        $design->assign('other_filters', $this->getOtherFilters($otherFiltersFilter));
+
+        $prices = $this->getPrices($filter, $catalogType, $category->id);
+        $design->assign('prices', $prices);
+    }
+    
     public function getPriceFilter($catalogType, $objectId = null)
     {
         $resultPrice = [];

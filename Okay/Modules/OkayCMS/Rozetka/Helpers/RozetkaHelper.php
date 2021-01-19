@@ -148,6 +148,10 @@ class RozetkaHelper
             ->groupBy(['v.id'])
             ->orderBy(['p.position DESC']);
 
+        if (!$this->settings->get('okaycms__rozetka_xml__upload_without_images')) {
+            $sql->where('p.main_image_id != \'\' AND p.main_image_id IS NOT NULL');
+        }
+        
         if ($this->settings->get('upload_only_available_to_rozetka')) {
             $sql->where('(v.stock >0 OR v.stock is NULL)');
         }

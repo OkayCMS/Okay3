@@ -4,14 +4,14 @@
 namespace Okay\Admin\Controllers;
 
 
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 
 class ScriptsAdmin extends IndexAdmin
 {
 
-    public function fetch(TemplateConfig $templateConfig)
+    public function fetch(FrontTemplateConfig $frontTemplateConfig)
     {
-        $currentTheme = $templateConfig->getTheme();
+        $currentTheme = $frontTemplateConfig->getTheme();
 
         $scripts_dir = 'design/'.$currentTheme.'/js/';
         $scripts = [];

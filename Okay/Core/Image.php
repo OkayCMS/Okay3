@@ -460,7 +460,7 @@ class Image
      * @param $originalDir
      * @param null $resizedDir
      * @param int $langId
-     * @param string $langField // todo это должен быть langObject и мож его вообще из entity тянуть
+     * @param string $langField поле в таблице ok_lang по которому происходит join
      * @return bool
      * @throws \Exception
      */

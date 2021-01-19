@@ -740,6 +740,7 @@ class FilterHelper
 
     /**
      * Метод предназначен для построения ЧПУ урла из модулей
+     *
      * @param $resultArray
      * @param $filterParamsCount
      * @param $seoHideFilter
@@ -749,7 +750,7 @@ class FilterHelper
     {
         return ExtenderFacade::execute(__METHOD__, '', [$resultArray, &$filterParamsCount, &$seoHideFilter]);
     }
-    
+
     // из-за особенностей смарти, при использовании этого метода из плагина, нужно отдельно передавать
     // экземпляр Smarty, чтобы отрабатывал assign
     public function filterChpuUrl($params, $featuresAltLang = [], $smarty = null)
@@ -759,15 +760,35 @@ class FilterHelper
         }
 
         $resultArray = ['brand'=>[],'features'=>[], 'filter'=>[], 'sort'=>null,'page'=>null];
-
+        $uriArray = $this->parseFilterUrl($this->filtersUrl);
         $currentFeaturesValues = $this->getCurrentCategoryFeatures($this->filtersUrl);
         $categoryFeatures = $this->getCategoryFeatures();
-        $uriArray = $this->parseFilterUrl($this->filtersUrl);
-        //Определяем, что у нас уже есть в строке
+
+        $resultArray = $this->getCurrentUrlParams($uriArray, $currentFeaturesValues, $resultArray);
+        $resultArray = $this->getNewUrlParams($categoryFeatures, $params, $resultArray);
+        $resultString = $this->filterChpuUrlBuild($resultArray, $smarty);
+
+        return ExtenderFacade::execute(__METHOD__, $resultString, func_get_args());
+    }
+
+    /**
+     * Определяем, что у нас уже есть в строке
+     *
+     * @param $uriArray
+     * @param $currentFeaturesValues
+     * @param $resultArray
+     * @return array|mixed
+     */
+    private function getCurrentUrlParams($uriArray, $currentFeaturesValues, $resultArray)
+    {
         if (!empty($this->filtersUrl)) {
             foreach ($uriArray as $k => $v) {
-                list($paramName, $paramValues) = explode('-', $v);
+                if (strpos('-', $v) === false) {
+                    continue;
+                }
                 
+                list($paramName, $paramValues) = explode('-', $v);
+
                 if ($parsedUrl = $this->filterChpuUrlParseUrl($paramName, $paramValues)) {
                     $resultArray = array_merge($resultArray, $parsedUrl);
                 } else {
@@ -815,7 +836,19 @@ class FilterHelper
             }
         }
 
-        //Определяем переданные параметры для ссылки
+        return ExtenderFacade::execute(__METHOD__, $resultArray, func_get_args());
+    }
+
+    /**
+     * Определяем переданные параметры для ссылки
+     *
+     * @param $categoryFeatures
+     * @param $params
+     * @param $resultArray
+     * @return array
+     */
+    private function getNewUrlParams($categoryFeatures, $params, $resultArray)
+    {
         foreach($params as $paramName=>$paramValues) {
             if ($parsedParams = $this->filterChpuUrlParseParams($paramName, $paramValues, $resultArray)) {
                 $resultArray = array_merge($resultArray, $parsedParams);
@@ -879,6 +912,16 @@ class FilterHelper
             }
         }
 
+        return ExtenderFacade::execute(__METHOD__, $resultArray, func_get_args());
+    }
+
+    /**
+     * @param $resultArray
+     * @param $smarty
+     * @return string
+     */
+    private function filterChpuUrlBuild($resultArray, $smarty)
+    {
         $resultString = '';
 
         $filter_params_count = 0;
@@ -907,7 +950,7 @@ class FilterHelper
         }
 
         $resultString .= $this->filterChpuUrlBuildUrl($resultArray, $filter_params_count, $seoHideFilter);
-        
+
         if (!empty($resultArray['features'])) {
             $filter_params_count ++;
             $resultString .= $this->sortFeatures($resultArray['features']);

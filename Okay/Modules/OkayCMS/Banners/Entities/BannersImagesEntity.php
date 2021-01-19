@@ -22,13 +22,14 @@ class BannersImagesEntity extends Entity
     protected static $fields = [
         'id',
         'banner_id',
-        'image',
         'position',
         'visible',
         'settings',
+        'is_lang_banner',
     ];
 
     protected static $langFields = [
+        'image',
         'name',
         'alt',
         'title',

@@ -10,10 +10,8 @@
                     {$btr->general_comments} - {$comments_count}
                 {elseif $type=='product'}
                     {$btr->general_comments} {$btr->comments_to_products|escape} - {$comments_count}
-                {elseif $type=='blog'}
+                {elseif $type=='post'}
                     {$btr->general_comments} {$btr->comments_to_articles|escape} - {$comments_count}
-                {elseif $type=='news'}
-                    {$btr->general_comments} {$btr->comments_to_news|escape} - {$comments_count}
                 {/if}
             </div>
         </div>
@@ -51,8 +49,7 @@
                         <select class="selectpicker form-control" onchange="location = this.value;">
                             <option value="{url keyword=null page=null type=null status=null}" {if !$type}selected{/if}>{$btr->comments_all|escape}</option>
                             <option value="{url keyword=null page=null type=product status=null}" {if $type == 'product'}selected{/if}>{$btr->comments_to_products|escape}</option>
-                            <option value="{url keyword=null page=null type=blog status=null}" {if $type == 'blog'}selected{/if}>{$btr->comments_to_articles|escape}</option>
-                            <option value="{url keyword=null page=null type=news status=null}" {if $type == 'news'}selected{/if}>{$btr->comments_to_news|escape}</option>
+                            <option value="{url keyword=null page=null type=post status=null}" {if $type == 'post'}selected{/if}>{$btr->comments_to_articles|escape}</option>
                             <option value="{url keyword=null page=null type=null status='approved'}" {if $status == 'approved'}selected{/if}>{$btr->comments_filter_approved|escape}</option>
                             <option value="{url keyword=null page=null type=null status='unapproved'}" {if $status == 'unapproved'}selected{/if}>{$btr->comments_filter_unapproved|escape}</option>
                         </select>
@@ -129,10 +126,8 @@
                                                     {$btr->comments_to_the|escape}
                                                     {if $comment->type == "product"}
                                                         {$btr->comments_product|escape}  <a href="{url_generator route="product" url=$comment->product->url absolute=1}" target="_blank">{$comment->product->name|escape}</a>
-                                                    {elseif $comment->type == "blog"}
-                                                        {$btr->comments_article|escape} <a href="{url_generator route="blog_item" url=$comment->post->url absolute=1}" target="_blank">{$comment->post->name|escape}</a>
-                                                    {elseif $comment->type == "news"}
-                                                        {$btr->comments_news|escape} <a href="{url_generator route="news_item" url=$comment->post->url absolute=1}" target="_blank">{$comment->post->name|escape}</a>
+                                                    {elseif $comment->type == "post"}
+                                                        {$btr->comments_article|escape} <a href="{url_generator route="post" url=$comment->post->url absolute=1}" target="_blank">{$comment->post->name|escape}</a>
                                                     {/if}
                                                 {/if}
                                             </div>

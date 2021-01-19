@@ -26,10 +26,30 @@ class BannersImageAdmin extends IndexAdmin
                 $preparedBannersImage = $bannersImagesHelper->prepareAdd($bannersImage);
                 $bannersImage->id     = $bannersImagesHelper->add($preparedBannersImage);
                 $this->design->assign('message_success', 'added');
+                $isNewBannersImage = true;
             } else {
+                
+                // если сняли галочку "Мультиязычный баннер", проставим изображение баннера с основного языка для всех
+                if (!$bannersImage->is_lang_banner) {
+                    $currentLangId = $this->languages->getLangId();
+                    $mainLang = $this->languages->getMainLanguage();
+                    $this->languages->setLangId($mainLang->id);
+                    $currentBannersImage = $bannersImagesHelper->getBannerImage((int)$bannersImage->id);
+                    if ($currentBannersImage->is_lang_banner != $bannersImage->is_lang_banner) {
+                        
+                        foreach ($this->languages->getAllLanguages() as $lang) {
+                            $this->languages->setLangId($lang->id);
+                            $bannersImagesHelper->update($bannersImage->id, ['image' => $currentBannersImage->image]);
+                        }
+                        
+                    }
+                    $this->languages->setLangId($currentLangId);
+                }
+                
                 $preparedBannersImage = $bannersImagesHelper->prepareUpdate($bannersImage);
                 $bannersImagesHelper->update($preparedBannersImage->id, $preparedBannersImage);
                 $this->design->assign('message_success', 'updated');
+                $isNewBannersImage = false;
             }
 
             // Картинка
@@ -38,7 +58,7 @@ class BannersImageAdmin extends IndexAdmin
             }
 
             if ($image = $bannersImagesRequest->fileImage()) {
-                $bannersImagesHelper->uploadImage($image, $bannersImage);
+                $bannersImagesHelper->uploadImage($image, $bannersImage, $isNewBannersImage);
             }
 
             $bannersImage = $bannersImagesHelper->getBannerImage((int)$bannersImage->id);

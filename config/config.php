@@ -32,6 +32,9 @@ db_sql_mode = "ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITU
 ;Смещение часового пояса
 ;db_timezone = +04:00
 
+[modules]
+marketplace_url = https://modules.okay-cms.com/
+
 [php]
 error_reporting = E_ALL
 php_charset = UTF8
@@ -42,6 +45,7 @@ php_locale_numeric = ru_RU
 php_locale_time = ru_RU
 ;php_timezone = Europe/Moscow
 debug_mode = false
+tmp_dir = tmp/
 
 [smarty]
 smarty_compile_check = true
@@ -58,6 +62,10 @@ debug_translation = false
 scripts_defer = true
 ;Режим разработчика, пока только в админке подписывает блоки
 dev_mode = false
+preload_head_css = false
+preload_head_js = false
+preload_footer_css = false
+preload_footer_js = false
 
 ;Пока TplMod находится в состоянии теста, оставим здесь возможность экстренного отключения
 ;disable_tpl_mod = true

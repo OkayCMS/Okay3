@@ -36,7 +36,7 @@ class BackendCategoriesHelper
 
     public function getCategory($id)
     {
-        $category = $this->categoriesEntity->get($id);
+        $category = $this->categoriesEntity->findOne(['id' => $id]);
         return ExtenderFacade::execute(__METHOD__, $category, func_get_args());
     }
 

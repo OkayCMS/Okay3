@@ -4,6 +4,7 @@
 namespace Okay\Core\SmartyPlugins;
 
 
+use Okay\Core\BrowsedProducts;
 use Okay\Core\Modules\Module;
 use Okay\Core\Modules\Modules;
 use Okay\Core\Money;
@@ -16,7 +17,8 @@ use Okay\Core\EntityFactory;
 use Okay\Core\Image;
 use Okay\Core\Settings;
 use Okay\Core\DesignBlocks;
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\BackendTemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Core\OkayContainer\Reference\ParameterReference as PR;
 use Okay\Core\OkayContainer\Reference\ServiceReference as SR;
 use Okay\Helpers\BlogHelper;
@@ -55,8 +57,7 @@ $plugins = [
     Plugins\GetBrowsedProducts::class => [
         'class' => Plugins\GetBrowsedProducts::class,
         'arguments' => [
-            new SR(EntityFactory::class),
-            new SR(ProductsHelper::class),
+            new SR(BrowsedProducts::class),
         ],
     ],
     Plugins\GetNewProducts::class => [
@@ -146,19 +147,21 @@ $plugins = [
     Plugins\GetTheme::class => [
         'class' => Plugins\GetTheme::class,
         'arguments' => [
-            new SR(TemplateConfig::class),
+            new SR(FrontTemplateConfig::class),
         ],
     ],
     Plugins\CssFile::class => [
         'class' => Plugins\CssFile::class,
         'arguments' => [
-            new SR(TemplateConfig::class),
+            new SR(FrontTemplateConfig::class),
+            new SR(BackendTemplateConfig::class),
         ],
     ],
     Plugins\JsFile::class => [
         'class' => Plugins\JsFile::class,
         'arguments' => [
-            new SR(TemplateConfig::class),
+            new SR(FrontTemplateConfig::class),
+            new SR(BackendTemplateConfig::class),
         ],
     ],
     Plugins\UrlGenerator::class => [

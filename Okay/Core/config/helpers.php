@@ -18,6 +18,7 @@ use Okay\Admin\Helpers\BackendImportHelper;
 use Okay\Admin\Helpers\BackendMainHelper;
 use Okay\Admin\Helpers\BackendManagersHelper;
 use Okay\Admin\Helpers\BackendMenuHelper;
+use Okay\Admin\Helpers\BackendModulesHelper;
 use Okay\Admin\Helpers\BackendNotifyHelper;
 use Okay\Admin\Helpers\BackendOrderHistoryHelper;
 use Okay\Admin\Helpers\BackendOrderSettingsHelper;
@@ -39,6 +40,8 @@ use Okay\Admin\Helpers\BackendBrandsHelper;
 use Okay\Admin\Helpers\BackendCategoriesHelper;
 use Okay\Admin\Helpers\BackendSpecialImagesHelper;
 use Okay\Admin\Helpers\BackendCurrenciesHelper;
+use Okay\Core\SmartyPlugins\Plugins\CheckoutPaymentForm;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Helpers\AuthorsHelper;
 use Okay\Helpers\BlogHelper;
 use Okay\Helpers\BrandsHelper;
@@ -47,6 +50,7 @@ use Okay\Helpers\ComparisonHelper;
 use Okay\Helpers\CouponHelper;
 use Okay\Helpers\CommentsHelper;
 use Okay\Helpers\DeliveriesHelper;
+use Okay\Helpers\DiscountsHelper;
 use Okay\Helpers\MainHelper;
 use Okay\Helpers\MetadataHelpers\AllProductsMetadataHelper;
 use Okay\Helpers\MetadataHelpers\BestsellersMetadataHelper;
@@ -145,6 +149,8 @@ return [
             new SR(MoneyHelper::class),
             new SR(Request::class),
             new SR(Settings::class),
+            new SR(QueryFactory::class),
+            new SR(DiscountsHelper::class),
         ]
     ],
     BackendOrderHistoryHelper::class => [
@@ -154,6 +160,7 @@ return [
             new SR(BackendOrdersRequest::class),
             new SR(Request::class),
             new SR(BackendTranslations::class),
+            new SR(QueryFactory::class),
         ]
     ],
     BackendCategoriesHelper::class => [
@@ -251,7 +258,7 @@ return [
             new SR(EntityFactory::class),
             new SR(DataCleaner::class),
             new SR(Managers::class),
-            new SR(TemplateConfig::class),
+            new SR(FrontTemplateConfig::class),
             new SR(QueryFactory::class),
             new SR(Languages::class),
             new SR(JsSocial::class),
@@ -277,6 +284,7 @@ return [
             new SR(Image::class),
             new SR(Settings::class),
             new SR(QueryFactory::class),
+            new SR(ProductsHelper::class),
         ]
     ],
     BackendCallbacksHelper::class => [
@@ -350,6 +358,12 @@ return [
             new SR(Image::class),
         ]
     ],
+    BackendModulesHelper::class => [
+        'class' => BackendModulesHelper::class,
+        'arguments' => [
+            new SR(Config::class),
+        ]
+    ],
     MainHelper::class => [
         'class' => MainHelper::class,
     ],
@@ -375,6 +389,7 @@ return [
             new SR(Validator::class),
             new SR(Settings::class),
             new SR(Request::class),
+            new SR(FrontTranslations::class),
         ]
     ],
     CartHelper::class => [
@@ -382,9 +397,23 @@ return [
         'arguments' => [
             new SR(EntityFactory::class),
             new SR(Money::class),
-            new SR(TemplateConfig::class),
+            new SR(FrontTemplateConfig::class),
             new SR(LoggerInterface::class),
             new SR(Design::class),
+            new SR(CheckoutPaymentForm::class),
+            new SR(Cart::class),
+            new SR(Languages::class),
+            new SR(DiscountsHelper::class),
+        ]
+    ],
+    DiscountsHelper::class => [
+        'class' => DiscountsHelper::class,
+        'arguments' => [
+            new SR(Discounts::class),
+            new SR(FrontTranslations::class),
+            new SR(Languages::class),
+            new SR(EntityFactory::class),
+            new SR(Settings::class),
         ]
     ],
     ProductsHelper::class => [
@@ -393,6 +422,7 @@ return [
             new SR(EntityFactory::class),
             new SR(MoneyHelper::class),
             new SR(Settings::class),
+            new SR(MainHelper::class),
         ],
     ],
     CatalogHelper::class => [
@@ -410,6 +440,7 @@ return [
             new SR(EntityFactory::class),
             new SR(ProductsHelper::class),
             new SR(MoneyHelper::class),
+            new SR(DiscountsHelper::class),
         ],
     ],
     FilterHelper::class => [
@@ -444,6 +475,7 @@ return [
             new SR(Design::class),
             new SR(CommonRequest::class),
             new SR(EntityFactory::class),
+            new SR(UserHelper::class),
         ]
     ],
     CommentsHelper::class => [
@@ -493,6 +525,10 @@ return [
         'class' => UserHelper::class,
         'arguments' => [
             new SR(EntityFactory::class),
+            new SR(Cart::class),
+            new SR(WishList::class),
+            new SR(Comparison::class),
+            new SR(BrowsedProducts::class),
         ]
     ],
     SiteMapHelper::class => [
@@ -551,6 +587,8 @@ return [
         'class' => XmlFeedHelper::class,
         'arguments' => [
             new SR(Languages::class),
+            new SR(Settings::class),
+            new SR(EntityFactory::class),
         ]
     ],
     NotifyHelper::class => [

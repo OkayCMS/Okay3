@@ -133,7 +133,7 @@ $someEntity->find([
 внимание на два символа подчёркивания) и самого названия фильтра (он же будет ключем массива фильтра при вызове find(), 
 count() ...). Внутри этого метода мы работаем с объёктом 
 [QueryBuilder](https://github.com/auraphp/Aura.SqlQuery/blob/3.x/docs/select.md), который лежит в свойстве $select.
-Метод может принимать два аргумента, первым будет значение, которое передали в этот фильтр при вызове find(), count(), 
+Метод может принимать два аргумента, первым будет значение которое передали в этот фильтр при вызове find() или count(), 
 вторым будет полностью весь массив $filter (который не обязательно принимать).
 
 Пример вызова:
@@ -208,7 +208,7 @@ class ProductsEntity extends AbstractModuleEntityFilter
     }
 }
 ```
-Внутри метода фильтра работа выполняется также как и в [обычном пользовательском фильтре](#usersFilters).
+Внутри метода фильтра работа выполняется так же как и в [обычном пользовательском фильтре](#usersFilters).
 Но данный метод хоть чуть более сложный, но он позволяет из модуля добавить пользовательский фильтр к существующему 
 Entity не правя файл, где описан их класс.
 
@@ -321,3 +321,83 @@ $products = $productsEntity->cols([
         'annotation',
     ])->find($filter);
 ```
+
+### Получить объект Select класса Entity
+
+Если нужно получить объект запроса, который строит Entity, его можно получить с помощью метода YourEntity::getSelect()
+(имеется ввиду метод getSelect() нужного Entity). Он вернет объект запроса, который бы метод find или findOne отправил
+в базу. Имейте в виду, если вы перегружаете метод find базового класса Entity, для корректной работы getSelect вам может
+понадобиться также перегрузить метод getSelect() в этом Entity. 
+
+Например: если у вас метод перед отработкой родительского метода добавляет к запросу еще какие-то данные, это может быть
+нужно повторить для метода getSelect()
+```php
+class ProductsEntity extends Entity
+
+    public function find(array $filter = [])
+    {
+        $this->select->leftJoin(RouterCacheEntity::getTable() . ' AS r', 'r.url=p.url AND r.type="product"');
+        
+        return parent::find($filter);
+    }
+    
+    public function getSelect(array $filter = [])
+    {
+        $this->select->leftJoin(RouterCacheEntity::getTable() . ' AS r', 'r.url=p.url AND r.type="product"');
+        
+        return parent::getSelect($filter);
+    }
+}
+```
+
+Метод getSelect() принимает массив фильтра так же как методы find() или findOne() и возвращает полноценный объект Select
+который можно в дальнейшем модифицировать и выполнить.
+
+Пример:
+```php
+$query = $commentsEntity->getSelect(['type' => 'post', 'object_id' => $postsIds]);
+$query->groupBy(['object_id'])->resetCols()->cols(["COUNT( DISTINCT id) as count", "object_id"]);
+
+foreach ($query->results() as $result) {
+    if (isset($posts[$result->object_id])) {
+        $posts[$result->object_id]->comments_count = $result->count;
+    }
+}
+```
+
+### Дебаг запросов в классе Entity
+
+Если необходимо увидеть текст запроса класса Entity, который летит в БД, можно перед вызовом метода find() или findOne() 
+вызвать метод debug() и текст запроса будет передан на вывод (осторожно на проде.).
+
+Пример:
+
+```php
+$productsEntity->debug()->find($filter);
+```
+
+Такой запрос будет выполнен и передан в вывод.
+Также у класса Select можно вызвать метод debugPrint() который сделает то же самое.
+
+Пример:
+```php
+$select = $productsEntity->getSelect($filter);
+$select->debugPrint();
+
+// тоже самое
+$productsEntity->getSelect($filter)->debugPrint();
+```
+
+### Лимит выборки результатов
+
+По умолчанию все SELECT запросы через классы Entity выполняются с SQL лимитом, даже если его явно не передали, он по умолчанию
+для безопасности устанавливается в 100. Но если вам нужно достать вообще все данные и не важно сколько это строк,
+на свой страх и риск можно вызвать метод noLimit() класса Entity перед вызовом find().
+
+Например:
+
+```php
+$productsEntity->noLimit()->find($filter);
+```
+
+Но будьте осторожны, при большом количестве данных запрос может существенно "тормозить".

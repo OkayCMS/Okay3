@@ -91,6 +91,7 @@ class GoogleMerchantAdmin extends IndexAdmin
         $this->updateSingleCheckbox('okaycms__google_merchant__delivery_disallow');
         $this->updateSingleCheckbox('okaycms__google_merchant__adult');
         $this->updateSingleCheckbox('okaycms__google_merchant__use_variant_name_like_size');
+        $this->updateSingleCheckbox('okaycms__google_merchant__upload_without_images');
     }
 
     private function updateSingleCheckbox($name)

@@ -25,6 +25,7 @@ class BannersImagesRequest
         $bannersImage->name = $this->request->post('name');
         $bannersImage->visible = $this->request->post('visible', 'boolean');
         $bannersImage->banner_id = $this->request->post('banner_id', 'integer');
+        $bannersImage->is_lang_banner = $this->request->post('is_lang_banner', 'integer');
 
         $bannersImage->url = $this->request->post('url');
         $bannersImage->title = $this->request->post('title');

@@ -33,10 +33,10 @@ abstract class Plugin
                     );
 
                     $design->setModuleTemplatesDir($moduleTemplateDir);
-                    $design->useModuleDir();
+                    $design->setModuleDir(static::class);
 
                     $result = call_user_func_array([$this, 'run'], $params);
-                    $design->useDefaultDir();
+                    $design->rollbackTemplatesDir();
                     return $result;
                 }
 
@@ -51,10 +51,10 @@ abstract class Plugin
                     );
 
                     $design->setModuleTemplatesDir($moduleTemplateDir);
-                    $design->useModuleDir();
+                    $design->setModuleDir(static::class);
 
                     $result = $this->run($params, $smarty);
-                    $design->useDefaultDir();
+                    $design->rollbackTemplatesDir();
                     return $result;
                 }
 

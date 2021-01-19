@@ -34,16 +34,13 @@ class BlogController extends AbstractController
         $this->setMetadataHelper($postMetadataHelper);
         
         $this->response->setHeaderLastModify($post->last_modify);
-        
-        // Автозаполнение имени для формы комментария
-        if (!empty($this->user)) {
-            $this->design->assign('comment_name', $this->user->name);
-            $this->design->assign('comment_email', $this->user->email);
-        }
 
         // Комментарии к посту
         $commentsHelper->addCommentProcedure('post', $post->id);
-        $comments = $commentsHelper->getCommentsList('post', $post->id);
+        $commentsFilter = $commentsHelper->getCommentsFilter('post', $post->id);
+        $commentsSort = $commentsHelper->getCurrentSort();
+        $comments = $commentsHelper->getList($commentsFilter, $commentsSort);
+        $comments = $commentsHelper->attachAnswers($comments);
         $this->design->assign('comments', $comments);
 
         // Связанные товары

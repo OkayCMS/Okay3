@@ -30,13 +30,14 @@ class BackendCompactProductList extends Func
         $isUseModuleDir = $this->design->isUseModuleDir();
         
         $this->design->useDefaultDir();
-        $this->design->assign('config',           $this->config);
-        $this->design->assign('settings',         $this->settings);
-        $this->design->assign('title',            $params['title']);
-        $this->design->assign('label',            $params['label']);
-        $this->design->assign('placeholder',      $params['placeholder']);
-        $this->design->assign('name',             $params['name']);
-        $this->design->assign('products',         $params['products']);
+        $this->design->assign('config',      $this->config);
+        $this->design->assign('settings',    $this->settings);
+        $this->design->assign('title',       $params['title']);
+        $this->design->assign('label',       $params['label']);
+        $this->design->assign('placeholder', $params['placeholder']);
+        $this->design->assign('name',        $params['name']);
+        $this->design->assign('products',    $params['products']);
+        $this->design->assign('filter',      $params['filter']);
         $html = $this->design->fetch('components/compact_product_list.tpl');
         
         if ($isUseModuleDir === true) {

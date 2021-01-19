@@ -32,6 +32,24 @@ abstract class AbstractQuery implements QueryInterface
         $this->queryObject = $queryObject;
     }
 
+    public function debug()
+    {
+        if (!$query = $this->db->prepare($this, $this->getBindValues())) {
+            return false;
+        }
+        
+        return $this->db->debug($query, $this->getBindValues());
+    }
+
+    public function debugPrint()
+    {
+        if ($queryString = $this->debug()) {
+            print "<pre>" . $queryString . "</pre>" . PHP_EOL . PHP_EOL;
+        } else {
+            print 'Error in query' . PHP_EOL . PHP_EOL;
+        }
+    }
+    
     public function result($column = null)
     {
         if ($this->executed) {

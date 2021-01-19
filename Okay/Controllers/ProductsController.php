@@ -115,7 +115,8 @@ class ProductsController extends AbstractController
                 break;
             case 'search':
                 // Если задано ключевое слово
-                $keyword = $this->request->get('keyword');
+                $keyword = $this->request->get('keyword', null, null, false);
+                $keyword = strip_tags($keyword);
                 $filter = $filterHelper->getSearchProductsFilter($filter, $keyword);
                 if (!empty($keyword)) {
                     $this->design->assign('keyword', $keyword);
@@ -187,7 +188,8 @@ class ProductsController extends AbstractController
     public function ajaxSearch(ProductsHelper $productsHelper, Image $image, Money $money, Router $router)
     {
 
-        $filter['keyword'] = $this->request->get('query', 'string');
+        $filter['keyword'] = $this->request->get('query', null, null, false);
+        $filter['keyword'] = strip_tags($filter['keyword']);
         $filter['visible'] = true;
         $filter['limit'] = 10;
 

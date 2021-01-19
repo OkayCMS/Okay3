@@ -36,3 +36,4 @@ $lang['okaycms__google_merchant__add_feed'] = 'Add upload';
 $lang['okaycms__google_merchant__remove_feed'] = 'Remove upload';
 $lang['okaycms__google_merchant__error_url_exist'] = 'An upload with the same URL already exists';
 $lang['okaycms__google_merchant__error_url_cyrillic'] = 'The URL should contain only Latin letters and numbers';
+$lang['okaycms__google_merchant__upload_without_images'] = 'Unload goods without images';

@@ -71,6 +71,16 @@
                         <div class="permission_boxes row">
                             <div class="col-xl-12 col-lg-12 col-md-12">
                                 <div class="permission_box permission_box--long">
+                                    <span>{$btr->okaycms__hotline__upload_without_images|escape}</span>
+                                    <label class="switch switch-default">
+                                        <input class="switch-input" name="okaycms__hotline__upload_without_images" value='1' type="checkbox" {if $settings->okaycms__hotline__upload_without_images}checked=""{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                <div class="permission_box permission_box--long">
                                     <span class="permission_box__label">{$btr->okaycms__hotline__upload_non_exists_products_to_hotline|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__hotline__upload_only_available_to_hotline" value='1' type="checkbox" {if $settings->okaycms__hotline__upload_only_available_to_hotline}checked=""{/if}/>
@@ -90,7 +100,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span class="permission_box__label">{$btr->okaycms__hotline__use_full_description_to_hotline|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__hotline__use_full_description_to_hotline" value='1' type="checkbox" {if $settings->okaycms__hotline__use_full_description_to_hotline}checked=""{/if}/>
@@ -100,7 +110,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12">
-                                <div class="permission_box">
+                                <div class="permission_box permission_box--long">
                                     <span class="permission_box__label">{$btr->okaycms__hotline__no_export_without_price|escape}</span>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="okaycms__hotline__no_export_without_price" value='1' type="checkbox" {if $settings->okaycms__hotline__no_export_without_price}checked=""{/if}/>

@@ -145,6 +145,40 @@
                         
                         {get_design_block block="settings_catalog_general"}
                     </div>
+
+                    <div class="row">
+                        <div class="fn_step-8 col-lg-4 col-md-6">
+                            <div class="heading_label">
+                                {$btr->settings_catalog_features_cache_ttl|escape} <span style="color: red">Beta</span>
+                                <i class="fn_tooltips" title="{$btr->tooltip_settings_catalog_features_cache_ttl|escape}">
+                                    {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                </i>
+                            </div>
+                            <div class="mb-1">
+                                <input name="features_cache_ttl" class="form-control" type="text" value="{$settings->features_cache_ttl|escape}" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mt-2">
+                            <div class="fn_step-9">
+                                <div class="heading_label boxes_inline">
+                                    {$btr->settings_catalog_features_cache_deferred|escape}
+                                    <i class="fn_tooltips" title="{$btr->tooltip_settings_catalog_features_cache_deferred|escape}">
+                                        {include file='svg_icon.tpl' svgId='icon_tooltips'}
+                                    </i>
+                                </div>
+                                <div class="boxes_inline">
+                                    <div class="okay_switch clearfix">
+                                        <label class="switch switch-default">
+                                            <input class="switch-input" name="deferred_load_features" value='1' type="checkbox" {if $settings->deferred_load_features}checked=""{/if}/>
+                                            <span class="switch-label"></span>
+                                            <span class="switch-handle"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="row">
                         <div class="col-lg-4 col-md-6 mt-2">
                             <div class="fn_step-10">

@@ -27,6 +27,10 @@ class FeaturesEntity extends Entity
         'description',
     ];
 
+    protected static $searchFields = [
+        'name',
+    ];
+
     protected static $defaultOrderFields = [
         'f.position ASC',
     ];

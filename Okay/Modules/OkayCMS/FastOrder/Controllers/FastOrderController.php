@@ -4,53 +4,62 @@
 namespace Okay\Modules\OkayCMS\FastOrder\Controllers;
 
 
+use Okay\Core\FrontTranslations;
 use Okay\Core\Notify;
+use Okay\Core\Phone;
 use Okay\Core\Router;
 use Okay\Core\Languages;
 use Okay\Core\EntityFactory;
+use Okay\Core\Validator;
 use Okay\Helpers\OrdersHelper;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\PurchasesEntity;
 use Okay\Controllers\AbstractController;
-use Okay\Modules\OkayCMS\FastOrder\FormSpecification;
 
 class FastOrderController extends AbstractController
 {
     public function createOrder(
-        FormSpecification $formSpecification,
         EntityFactory     $entityFactory,
         OrdersHelper      $ordersHelper,
         Languages         $languages,
-        Notify            $notify
+        Notify            $notify,
+        Validator         $validator,
+        FrontTranslations $frontTranslations
     ){
         if (!$this->request->method('post')) {
             return $this->response->setContent(json_encode(['errors' => ['Request must be post']]), RESPONSE_JSON);
         }
 
-        $errors = $formSpecification->validateFields(
-            [
-                'name'  => ['required'],
-                'phone' => ['required', 'phone'],
-            ],
-            [
-                'name'  => $this->request->post('name'),
-                'phone' => $this->request->post('phone'),
-            ]
-        );
-
-        if (!empty($errors)) {
-            return $this->response->setContent(json_encode(['errors' => $errors]), RESPONSE_JSON);
-        }
-
         $order = new \stdClass();
         $order->name    = $this->request->post('name');
-        $order->phone   = $this->request->post('phone');
+        $order->last_name = $this->request->post('last_name');
+        $order->phone   = Phone::toSave($this->request->post('phone'));
         $order->email   = '';
         $order->address = '';
         $order->comment = 'Быстрый заказ';
         $order->lang_id = $languages->getLangId();
         $order->ip      = $_SERVER['REMOTE_ADDR'];
 
+        $order = $ordersHelper->attachUserIfLogin($order, $this->user);
+
+        $errors = [];
+        if (!$validator->isName($order->name, true)) {
+            $errors[] = $frontTranslations->getTranslation('okay_cms__fast_order__form_name_error');
+        }
+        
+        if (!$validator->isPhone($order->phone, true)) {
+            $errors[] = $frontTranslations->getTranslation('okay_cms__fast_order__form_phone_error');
+        }
+
+        $captchaCode =  $this->request->post('captcha_code', 'string');
+        if ($this->settings->get('captcha_fast_order') && !$validator->verifyCaptcha('captcha_fast_order', $captchaCode)) {
+            $errors[] = $frontTranslations->getTranslation('okay_cms__fast_order__form_captcha_error');
+        }
+
+        if (!empty($errors)) {
+            return $this->response->setContent(json_encode(['errors' => $errors]), RESPONSE_JSON);
+        }
+        
         /** @var OrdersEntity $ordersEntity */
         $ordersEntity = $entityFactory->get(OrdersEntity::class);
         $orderId      = $ordersEntity->add($order);
@@ -70,8 +79,8 @@ class FastOrderController extends AbstractController
         ]);
 
         $order = $ordersEntity->findOne(['id' => $orderId]);
-        $ordersHelper->finalCreateOrderProcedure($order);
         $ordersEntity->updateTotalPrice($orderId);
+        $ordersHelper->finalCreateOrderProcedure($order);
 
         $notify->emailOrderUser($order->id);
         $notify->emailOrderAdmin($order->id);

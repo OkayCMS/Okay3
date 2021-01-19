@@ -11,6 +11,7 @@ use Okay\Admin\Requests\BackendCallbacksRequest;
 use Okay\Admin\Requests\BackendCouponsRequest;
 use Okay\Admin\Requests\BackendCurrenciesRequest;
 use Okay\Admin\Requests\BackendDeliveriesRequest;
+use Okay\Admin\Requests\BackendDiscountsRequest;
 use Okay\Admin\Requests\BackendFeaturesRequest;
 use Okay\Admin\Requests\BackendFeaturesValuesRequest;
 use Okay\Admin\Requests\BackendFeedbacksRequest;
@@ -165,6 +166,12 @@ return [
     ],
     BackendMenuRequest::class => [
         'class' => BackendMenuRequest::class,
+        'arguments' => [
+            new SR(Request::class),
+        ]
+    ],
+    BackendDiscountsRequest::class => [
+        'class' => BackendDiscountsRequest::class,
         'arguments' => [
             new SR(Request::class),
         ]

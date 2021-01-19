@@ -43,11 +43,22 @@
         </div>
 
         <div class="fn_selected_features">
-            {include 'selected_features.tpl'}
+            {if !($controller == 'CategoryController' && $settings->deferred_load_features)}
+                {include file='selected_features.tpl'}
+            {/if}
         </div>
 
         <div class="fn_features">
-            {include file='features.tpl'}
+            {if !($controller == 'CategoryController' && $settings->deferred_load_features)}
+                {include file='features.tpl'}
+            {else}
+                {* Deferred load features *}
+                <div class='fn_skeleton_load'>
+                    {section name=foo start=1 loop=7 step=1}
+                        <div class='skeleton_load__item skeleton_load__item--{$smarty.section.foo.index}'></div>
+                    {/section}
+                </div>
+            {/if}
         </div>
 
         {* Browsed products *}

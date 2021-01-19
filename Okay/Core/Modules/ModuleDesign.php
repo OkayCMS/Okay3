@@ -5,7 +5,7 @@ namespace Okay\Core\Modules;
 
 
 use Okay\Core\Config;
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 
 class ModuleDesign
 {
@@ -20,15 +20,15 @@ class ModuleDesign
     private $config;
 
     /**
-     * @var TemplateConfig
+     * @var FrontTemplateConfig
      */
-    private $templateConfig;
+    private $frontTemplateConfig;
 
-    public function __construct(Module $module, TemplateConfig $templateConfig, Config $config)
+    public function __construct(Module $module, FrontTemplateConfig $frontTemplateConfig, Config $config)
     {
         $this->module         = $module;
         $this->config         = $config;
-        $this->templateConfig = $templateConfig;
+        $this->frontTemplateConfig = $frontTemplateConfig;
     }
 
     public function getAllFiles($vendor, $moduleName)
@@ -134,7 +134,7 @@ class ModuleDesign
 
     private function createPathDirToFileIfNeeded($filePath)
     {
-        $themeRootDir          = $this->config->get('root_dir')."design/".$this->templateConfig->getTheme()."/";
+        $themeRootDir          = $this->config->get('root_dir')."design/".$this->frontTemplateConfig->getTheme()."/";
         $validateRootThemePath = substr($filePath, 0, strlen($themeRootDir));
 
         if ($themeRootDir !== $validateRootThemePath) {
@@ -200,7 +200,7 @@ class ModuleDesign
 
     private function getThemeModuleDir($vendor, $moduleName)
     {
-        $themeName = $this->templateConfig->getTheme();
+        $themeName = $this->frontTemplateConfig->getTheme();
         return "design/{$themeName}/modules/{$vendor}/{$moduleName}";
     }
 

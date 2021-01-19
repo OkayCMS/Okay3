@@ -212,7 +212,6 @@
     transition: left 0.5s ease 0s;
     width: 34px;
 }
-
 .tooltip {
     width: auto;
     min-width: 150px;
@@ -223,7 +222,7 @@
     line-height: 1.2;
     background-color: rgba(34, 34, 34,0.9);
     color: rgb(255, 255, 255);
-    z-index: 9999;
+    z-index: 999999; 
     border-radius: 4px;
     font-weight: 500;
 }

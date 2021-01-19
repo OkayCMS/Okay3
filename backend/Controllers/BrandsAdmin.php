@@ -53,10 +53,12 @@ class BrandsAdmin extends IndexAdmin
         $brandsCount               = $backendBrandsHelper->countBrands($filter);
         list($filter, $pagesCount) = $backendBrandsHelper->makePagination($brandsCount, $filter);
         $brands                    = $backendBrandsHelper->findBrands($filter);
+        $keyword                   = isset($filter['keyword']) ? $filter['keyword'] : '';
 
         $this->design->assign('brands_count', $brandsCount);
         $this->design->assign('pages_count',  $pagesCount);
         $this->design->assign('current_page', $filter['page']);
+        $this->design->assign('keyword',      $keyword);
         $this->design->assign('brands',       $brands);
         $this->response->setContent($this->design->fetch('brands.tpl'));
     }

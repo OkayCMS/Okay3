@@ -73,11 +73,6 @@ return [
         'decimals_point' => '{%decimals_point%}',
         'thousands_separator' => '{%thousands_separator%}',
     ],
-    'theme' => [
-        'name' => '{%theme%}',
-        'admin_theme_name' => '{%admin_theme%}',
-        'admin_theme_managers' => '{%admin_theme_managers%}',
-    ],
     'plugins' => [
         'date' => [
             'date_format' => '{%date_format%}',

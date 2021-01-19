@@ -9,13 +9,14 @@ use Okay\Core\Config;
 use Okay\Core\Design;
 use Okay\Core\DesignBlocks;
 use Okay\Core\Database;
+use Okay\Core\Discounts;
 use Okay\Core\Entity\Entity;
 use Okay\Core\EntityFactory;
 use Okay\Core\Image;
 use Okay\Core\Managers;
 use Okay\Core\QueryFactory;
 use Okay\Core\ServiceLocator;
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Entities\ModulesEntity;
 use Okay\Core\ManagerMenu;
 use Okay\Core\Modules\Extender\ExtenderFacade;
@@ -89,9 +90,9 @@ abstract class AbstractInit
     private $image;
 
     /**
-     * @var TemplateConfig
+     * @var FrontTemplateConfig
      */
-    private $templateConfig;
+    private $frontTemplateConfig;
 
     /**
      * @var Design
@@ -102,6 +103,11 @@ abstract class AbstractInit
      * @var Config
      */
     private $config;
+
+    /**
+     * @var Discounts
+     */
+    private $discounts;
 
     /**
      * @var int id модуля в базе
@@ -132,9 +138,10 @@ abstract class AbstractInit
         $this->extenderFacade  = $serviceLocator->getService(ExtenderFacade::class);
         $this->managerMenu     = $serviceLocator->getService(ManagerMenu::class);
         $this->image           = $serviceLocator->getService(Image::class);
-        $this->templateConfig  = $serviceLocator->getService(TemplateConfig::class);
+        $this->frontTemplateConfig = $serviceLocator->getService(FrontTemplateConfig::class);
         $this->design          = $serviceLocator->getService(Design::class);
         $this->config          = $serviceLocator->getService(Config::class);
+        $this->discounts       = $serviceLocator->getService(Discounts::class);
         $this->moduleId        = $moduleId;
         $this->vendor          = $vendor;
         $this->moduleName      = $moduleName;
@@ -199,7 +206,7 @@ abstract class AbstractInit
     protected function addFrontBlock($blockName, $blockTplFile, $callback = null)
     {
         $blockTplFile = pathinfo($blockTplFile, PATHINFO_BASENAME);
-        $themeModuleHtmlDir = __DIR__.'/../../../design/'.$this->templateConfig->getTheme().'/modules/'.$this->vendor.'/'.$this->moduleName.'/html/';
+        $themeModuleHtmlDir = __DIR__.'/../../../design/'.$this->frontTemplateConfig->getTheme().'/modules/'.$this->vendor.'/'.$this->moduleName.'/html/';
         if (file_exists($themeModuleHtmlDir.$blockTplFile)) {
             $blockTplFile = $themeModuleHtmlDir.$blockTplFile;
         } else {
@@ -573,5 +580,15 @@ abstract class AbstractInit
         /** @var DesignBlocks $designBlocks */
         $designBlocks = $serviceLocator->getService(DesignBlocks::class);
         $designBlocks->registerBlock($blockName, $blockTplFile, $callback);
+    }
+
+    public function registerPurchaseDiscountSign($sign, $name, $description)
+    {
+        $this->discounts->registerPurchaseSign($sign, $name, $description);
+    }
+
+    public function registerCartDiscountSign($sign, $name, $description)
+    {
+        $this->discounts->registerCartSign($sign, $name, $description);
     }
 }

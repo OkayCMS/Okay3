@@ -12,7 +12,7 @@ class Config
 {
 
     /*Версия системы*/
-    public $version = '3.8.1';
+    public $version = '3.9.0';
     /*Тип системы*/
     public $version_type = 'pro';
     
@@ -128,7 +128,7 @@ class Config
         $_SERVER['DOCUMENT_ROOT'] = substr($absolutePath,0, strpos($absolutePath, $localPath));
 
         // Определяем корневую директорию сайта
-        $this->vars['root_dir'] =  dirname(dirname(__DIR__)).'/';
+        $this->vars['root_dir'] =  dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR;
 
         // Максимальный размер загружаемых файлов
         $max_upload = (int)(ini_get('upload_max_filesize'));

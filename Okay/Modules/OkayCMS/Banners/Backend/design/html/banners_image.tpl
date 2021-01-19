@@ -54,7 +54,7 @@
             <div class="boxed">
                 <div class="row d_flex">
                     {*Название элемента сайта*}
-                    <div class="col-lg-10 col-md-9 col-sm-12">
+                    <div class="col-lg-9 col-md-8 col-sm-12">
                         <div class="heading_label heading_label--required">
                             <span>{$btr->general_name|escape}</span>
                             <i class="fn_tooltips" title="{$btr->tooltip_banner_name|escape}">
@@ -93,13 +93,23 @@
                         </div>
                         {get_design_block block="banner_image_brand_general"}
                     </div>
-                    <div class="col-lg-2 col-md-3 col-sm-12">
+                    <div class="col-lg-3 col-md-4 col-sm-12">
                         <div class="activity_of_switch">
                             <div class="activity_of_switch_item"> {* row block *}
                                 <div class="okay_switch clearfix">
                                     <label class="switch_label">{$btr->general_enable|escape}</label>
                                     <label class="switch switch-default">
                                         <input class="switch-input" name="visible" value='1' type="checkbox" id="visible_checkbox" {if $banners_image->visible || !$banners_image->id}checked=""{/if}/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="activity_of_switch_item"> {* row block *}
+                                <div class="okay_switch clearfix">
+                                    <label class="switch_label">{$btr->banner_image_is_lang_banner|escape}</label>
+                                    <label class="switch switch-default">
+                                        <input class="switch-input" name="is_lang_banner" value='1' type="checkbox" {if $banners_image->is_lang_banner || !$banners_image->id}checked=""{/if}/>
                                         <span class="switch-label"></span>
                                         <span class="switch-handle"></span>
                                     </label>

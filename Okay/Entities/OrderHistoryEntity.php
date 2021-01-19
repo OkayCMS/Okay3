@@ -32,7 +32,6 @@ class OrderHistoryEntity extends Entity
         $this->setUp();
         $this->select->distinct(true);
         $this->select->cols($this->getAllFields());
-        $this->select->cache();
         
         $this->select->where('order_id in (:order_id)')
             ->bindValues([

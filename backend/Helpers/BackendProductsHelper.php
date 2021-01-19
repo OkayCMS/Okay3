@@ -13,6 +13,7 @@ use Okay\Core\EntityFactory;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\ImagesEntity;
 use Okay\Entities\ProductsEntity;
+use Okay\Entities\RouterCacheEntity;
 use Okay\Entities\VariantsEntity;
 use Okay\Entities\CategoriesEntity;
 use Okay\Entities\SpecialImagesEntity;
@@ -44,6 +45,9 @@ class BackendProductsHelper
     /** @var SpecialImagesEntity */
     private $specialImagesEntity;
 
+    /** @var RouterCacheEntity */
+    private $routerCacheEntity;
+
 
     public function __construct(
         EntityFactory $entityFactory,
@@ -64,6 +68,7 @@ class BackendProductsHelper
         $this->variantsEntity      = $entityFactory->get(VariantsEntity::class);
         $this->categoriesEntity    = $entityFactory->get(CategoriesEntity::class);
         $this->specialImagesEntity = $entityFactory->get(SpecialImagesEntity::class);
+        $this->routerCacheEntity   = $entityFactory->get(RouterCacheEntity::class);
     }
 
     public function getProduct($id)
@@ -369,6 +374,8 @@ class BackendProductsHelper
                 $filter['visible'] = 0;
             } elseif($f == 'outofstock') {
                 $filter['not_in_stock'] = 1;
+            } elseif($f == 'instock') {
+                $filter['in_stock'] = 1;
             } elseif($f == 'without_images') {
                 $filter['has_no_images'] = 1;
             }
@@ -521,6 +528,13 @@ class BackendProductsHelper
                     ->set('product_id', $id);
                 $this->db->query($insert);
             }
+            
+        }
+
+        if (!empty($ids)) {
+            $this->productsEntity->update($ids, ['main_category_id' => $categoryId]);
+            $productsUrls = $this->productsEntity->col('url')->find(['id' => $ids]);
+            $this->routerCacheEntity->deleteByUrl(RouterCacheEntity::TYPE_PRODUCT, $productsUrls);
         }
 
         ExtenderFacade::execute(__METHOD__, null, func_get_args());

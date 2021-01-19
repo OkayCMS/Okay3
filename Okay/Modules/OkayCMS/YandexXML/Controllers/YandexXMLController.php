@@ -71,6 +71,7 @@ class YandexXMLController extends AbstractController
         $prevProductId = null;
         while ($product = $query->result()) {
             $product = $feedHelper->attachFeatures($product);
+            $product = $feedHelper->attachDescriptionByTemplate($product);
             $product = $feedHelper->attachProductImages($product);
 
             $addVariantUrl = false;

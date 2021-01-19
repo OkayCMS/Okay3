@@ -2,6 +2,52 @@
     {* Full base address *}
     <base href="{$base}/">
 
+    {* Include fonts *}
+
+    <link href="{$rootUrl}/design/{$settings->theme}/fonts/montserrat/Montserrat-SemiBold.woff2" rel="preload" as="font" crossorigin="anonymous" type="font/woff2">
+    <link href="{$rootUrl}/design/{$settings->theme}/fonts/montserrat/Montserrat-Bold.woff2" rel="preload" as="font" crossorigin="anonymous" type="font/woff2">
+    <link href="{$rootUrl}/design/{$settings->theme}/fonts/montserrat/Montserrat-Regular.woff2" rel="preload" as="font" crossorigin="anonymous" type="font/woff2">
+    <link href="{$rootUrl}/design/{$settings->theme}/fonts/montserrat/Montserrat-Medium.woff2" rel="preload" as="font" crossorigin="anonymous" type="font/woff2">
+
+    <style>
+        @font-face {
+            font-family: 'Montserrat';
+            font-display: swap;
+            src: local('Montserrat SemiBold'), local('Montserrat-SemiBold'),
+            url('{$rootUrl}/design/{$settings->theme}/fonts/montserrat/Montserrat-SemiBold.woff2') format('woff2'),
+            url('{$rootUrl}/design/{$settings->theme}/fonts/montserrat/Montserrat-SemiBold.woff') format('woff');
+            font-weight: 600;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Montserrat';
+            font-display: swap;
+            src: local('Montserrat Bold'), local('Montserrat-Bold'),
+            url('{$rootUrl}/design/{$settings->theme}/fonts/montserrat/Montserrat-Bold.woff2') format('woff2'),
+            url('{$rootUrl}/design/{$settings->theme}/fonts/montserrat/Montserrat-Bold.woff') format('woff');
+            font-weight: bold;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Montserrat';
+            font-display: swap;
+            src: local('Montserrat Regular'), local('Montserrat-Regular'),
+            url('{$rootUrl}/design/{$settings->theme}/fonts/montserrat/Montserrat-Regular.woff2') format('woff2'),
+            url('{$rootUrl}/design/{$settings->theme}/fonts/montserrat/Montserrat-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+        font-family: 'Montserrat';
+        font-display: swap;
+        src: local('Montserrat Medium'), local('Montserrat-Medium'),
+        url('{$rootUrl}/design/{$settings->theme}/fonts/montserrat/Montserrat-Medium.woff2') format('woff2'),
+        url('{$rootUrl}/design/{$settings->theme}/fonts/montserrat/Montserrat-Medium.woff') format('woff');
+        font-weight: 500;
+        font-style: normal;
+        }
+    </style>
+
     {$ok_head}
     
     {strip}
@@ -134,6 +180,20 @@
         <meta name="twitter:label1" content="{$product->variant->price|convert:null:false} {$currency->code|escape}">
         <meta name="twitter:data2" content="{$lang->meta_organization}">
         <meta name="twitter:label2" content="{$settings->site_name|escape}">
+    {elseif $controller == "CategoryController" || $controller == "ProductsController"} 
+        <meta property="og:title" content="{$h1|escape}">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{$canonical}">
+        <meta property="og:image" content="{$category->image|resize:330:300:false:$config->resized_categories_dir}">
+        <meta property="og:site_name" content="{$settings->site_name|escape}">
+        <meta property="og:description" content="{$description|strip_tags|escape}">
+        <link rel="image_src" href="{$category->image|resize:330:300:false:$config->resized_categories_dir}">
+        {*twitter*}
+        <meta name="twitter:url" content="{$canonical}">
+        <meta name="twitter:site" content="{$settings->site_name|escape}">
+        <meta name="twitter:title" content="{$h1|escape}">
+        <meta name="twitter:description" content="{$description|strip_tags|escape}">
+        <meta name="twitter:image" content="{$category->image|resize:330:300:false:$config->resized_categories_dir}">
     {elseif $controller == 'BlogController' && $post}
         <meta property="og:url" content="{$canonical}">
         <meta property="og:type" content="article">
@@ -193,10 +253,10 @@
                     var recaptcha_action = 'other';
                 {/if}
 
-                var all_captchеs = document.getElementsByClassName('fn_recaptchav3');
+                var allCaptchеs = document.getElementsByClassName('fn_recaptchav3');
                 grecaptcha.execute('{$settings->public_recaptcha_v3|escape}', { action: recaptcha_action })
                     .then(function (token) {
-                        for (capture of all_captchеs) {
+                        for (capture of allCaptchеs) {
                             capture.value = token;
                         }
                     });
@@ -235,7 +295,10 @@
                 document.getElementById("fn_blog_comment").submit();
             }
         </script>
-        <script src='https://www.google.com/recaptcha/api.js'></script>
+        <script>
+            var onloadReCaptchaInvisible = function() { };
+        </script>
+        <script src='https://www.google.com/recaptcha/api.js?onload=onloadReCaptchaInvisible'></script>
         <script>ut_tracker.end('render:recaptcha');</script>
     {/if}
 

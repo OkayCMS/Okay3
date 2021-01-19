@@ -14,8 +14,13 @@ use Okay\Core\OkayContainer\Reference\ServiceReference as SR;
 
 use Monolog\Logger;
 use Okay\Core\Routes\RouteFactory;
+use Okay\Core\TemplateConfig\BackendTemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
+use Okay\Helpers\MainHelper;
+use Okay\Helpers\DiscountsHelper;
 use Okay\Helpers\NotifyHelper;
 use Okay\Core\TplMod\TplMod;
+use Okay\Helpers\OrdersHelper;
 use OkayLicense\License;
 use Psr\Log\LoggerInterface;
 use Bramus\Router\Router as BRouter;
@@ -145,8 +150,22 @@ $services = [
             new SR(QueryFactory::class),
         ],
     ],
-    TemplateConfig::class => [
-        'class' => TemplateConfig::class,
+    FrontTemplateConfig::class => [
+        'class' => FrontTemplateConfig::class,
+        'arguments' => [
+            new SR(Modules::class),
+            new SR(Module::class),
+            new SR(Settings::class),
+            new SR(Config::class),
+            new PR('root_dir'),
+            new PR('template_config.scripts_defer'),
+            new PR('template_config.them_settings_filename'),
+            new PR('template_config.compile_css_dir'),
+            new PR('template_config.compile_js_dir'),
+        ],
+    ],
+    BackendTemplateConfig::class => [
+        'class' => BackendTemplateConfig::class,
         'arguments' => [
             new SR(Modules::class),
             new SR(Module::class),
@@ -156,23 +175,13 @@ $services = [
             new PR('template_config.compile_css_dir'),
             new PR('template_config.compile_js_dir'),
         ],
-        'calls' => [
-            [
-                'method' => 'configure',
-                'arguments' => [
-                    new PR('theme.name'),
-                    new PR('theme.admin_theme_name'),
-                    new PR('theme.admin_theme_managers'),
-                ]
-            ],
-        ]
     ],
     Design::class => [
         'class' => Design::class,
         'arguments' => [
             new SR(Smarty::class),
             new SR(Mobile_Detect::class),
-            new SR(TemplateConfig::class),
+            new SR(FrontTemplateConfig::class),
             new SR(Module::class),
             new SR(Modules::class),
             new SR(TplMod::class),
@@ -207,8 +216,8 @@ $services = [
             new SR(Languages::class),
             new SR(EntityFactory::class),
             new SR(Design::class),
-            new SR(TemplateConfig::class),
-            new SR(\Okay\Helpers\OrdersHelper::class),
+            new SR(FrontTemplateConfig::class),
+            new SR(OrdersHelper::class),
             new SR(BackendTranslations::class),
             new SR(FrontTranslations::class),
             new SR(PHPMailer::class),
@@ -322,7 +331,10 @@ $services = [
             new SR(EntityFactory::class),
             new SR(Settings::class),
             new SR(ProductsHelper::class),
-            new SR(\Okay\Helpers\MoneyHelper::class),
+            new SR(MoneyHelper::class),
+            new SR(MainHelper::class),
+            new SR(Discounts::class),
+            new SR(DiscountsHelper::class),
         ],
     ],
     Comparison::class => [
@@ -331,6 +343,7 @@ $services = [
             new SR(EntityFactory::class),
             new SR(Settings::class),
             new SR(MoneyHelper::class),
+            new SR(MainHelper::class),
         ],
     ],
     WishList::class => [
@@ -339,6 +352,15 @@ $services = [
             new SR(EntityFactory::class),
             new SR(Settings::class),
             new SR(MoneyHelper::class),
+            new SR(MainHelper::class),
+        ],
+    ],
+    BrowsedProducts::class => [
+        'class' => BrowsedProducts::class,
+        'arguments' => [
+            new SR(ProductsHelper::class),
+            new SR(MainHelper::class),
+            new SR(EntityFactory::class),
         ],
     ],
     ModulesEntitiesFilters::class => [
@@ -354,7 +376,7 @@ $services = [
         'class' => ModuleDesign::class,
         'arguments' => [
             new SR(Module::class),
-            new SR(TemplateConfig::class),
+            new SR(FrontTemplateConfig::class),
             new SR(Config::class),
         ],
     ],
@@ -462,7 +484,20 @@ $services = [
         'class' => TplMod::class,
         'arguments' => [
             new SR(TplParser::class),
+            new SR(Config::class),
         ],
+    ],
+    TemplateConfig::class => [
+        'class' => TemplateConfig::class,
+        'arguments' => [
+            new SR(FrontTemplateConfig::class),
+        ],
+    ],
+    Discounts::class => [
+        'class' => Discounts::class,
+        'arguments' => [
+            new SR(EntityFactory::class),
+        ]
     ],
 ];
 

@@ -14,7 +14,7 @@ class SupportAdmin extends IndexAdmin
     {
         $error = '';
         if ($this->request->method('post') && !empty($this->request->post('get_new_keys'))) {
-            $result = $support->getNewKeys();
+            $result = $support->getNewKeys($this->manager->email);
             if (is_null($result) || (empty($result) && $result!==false)) {
                 $error = 'unknown_error';
             } elseif ($result === false) {

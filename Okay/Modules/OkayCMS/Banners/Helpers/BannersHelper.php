@@ -89,11 +89,11 @@ class BannersHelper
         if (!empty($banner->categories)) {
             $banner->category_selected = explode(",", $banner->categories);//Создаем массив категорий
         }
-        if (!empty($banner->categories)) {
-            $banner->brand_selected     = explode(",",$banner->brands);//Создаем массив брендов
+        if (!empty($banner->brands)) {
+            $banner->brand_selected = explode(",",$banner->brands);//Создаем массив брендов
         }
-        if (!empty($banner->categories)) {
-            $banner->page_selected      = explode(",",$banner->pages);//Создаем массив страниц
+        if (!empty($banner->pages)) {
+            $banner->page_selected = explode(",",$banner->pages);//Создаем массив страниц
         }
         return ExtenderFacade::execute(__METHOD__, $banner, func_get_args());
     }

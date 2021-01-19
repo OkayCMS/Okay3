@@ -5,10 +5,13 @@ namespace Okay\Controllers;
 
 
 use Okay\Core\Notify;
+use Okay\Core\Response;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\OrderStatusEntity;
 use Okay\Entities\UsersEntity;
 use Okay\Core\Router;
+use Okay\Helpers\CommentsHelper;
+use Okay\Helpers\OrdersHelper;
 use Okay\Helpers\UserHelper;
 use Okay\Helpers\ValidateHelper;
 use Okay\Requests\UserRequest;
@@ -21,7 +24,10 @@ class UserController extends AbstractController
         ValidateHelper $validateHelper,
         UserRequest $userRequest,
         OrdersEntity $ordersEntity,
-        OrderStatusEntity $orderStatusEntity
+        OrderStatusEntity $orderStatusEntity,
+        UserHelper $userHelper,
+        CommentsHelper $commentsHelper,
+        OrdersHelper $ordersHelper
     ) {
         if (empty($this->user->id)) {
             $this->response->redirectTo(Router::generateUrl('login', [], true));
@@ -34,6 +40,7 @@ class UserController extends AbstractController
             } elseif($usersEntity->update($this->user->id, $user)) {
                 $this->user = $usersEntity->get((int)$this->user->id);
                 $this->design->assign('user', $this->user);
+                $this->design->assign('user_updated', true, true);
             } else {
                 $this->design->assign('error', 'unknown error');
             }
@@ -45,11 +52,57 @@ class UserController extends AbstractController
 
         /*Выборка истории заказов клиента*/
         $orders = $ordersEntity->mappedBy('id')->find(['user_id'=>$this->user->id]);
+        
+        foreach ($orders as $order) {
+            $order->purchases = $ordersHelper->getOrderPurchasesList(intval($order->id));
+
+            // Скидки
+            $order->discounts = $ordersHelper->getDiscounts($order->id);
+        }
+
         $allStatuses = $orderStatusEntity->mappedBy('id')->find();
 
+        $paymentMethods = $userHelper->getPaymentMethodsListForUser();
+        $deliveries = $userHelper->getDeliveriesListForUser($paymentMethods);
+        $this->design->assign('payment_methods', $paymentMethods);
+        $this->design->assign('deliveries', $deliveries);
+        
+        if (!empty($this->user->preferred_payment_method_id) && isset($paymentMethods[$this->user->preferred_payment_method_id])) {
+            $this->design->assign('active_payment', $paymentMethods[$this->user->preferred_payment_method_id]);
+        }
+        
+        if (!empty($this->user->preferred_delivery_id) && isset($deliveries[$this->user->preferred_delivery_id])) {
+            $activeDelivery = $deliveries[$this->user->preferred_delivery_id];
+        } else {
+            $activeDelivery = reset($deliveries);
+        }
+        $this->design->assign('active_delivery', $activeDelivery);
+
+        $userComments = $commentsHelper->getList(['user_id' => $this->user->id]);
+        $userComments = $commentsHelper->attachTargetEntitiesToComments($userComments);
+        $userComments = $commentsHelper->attachAnswers($userComments);
+        $this->design->assign('user_comments', $userComments);
+        
         $this->design->assign('orders_status', $allStatuses);
         $this->design->assign('orders', $orders);
 
+        $activeTab = null;
+        switch (Router::getCurrentRouteName()) {
+            case 'user_orders':
+                $activeTab = 'orders';
+                break;
+            case 'user_comments':
+                $activeTab = 'comments';
+                break;
+            case 'user_favorites':
+                $activeTab = 'favorites';
+                break;
+            case 'user_browsed':
+                $activeTab = 'browsed';
+                break;
+        }
+        
+        $this->design->assign('active_tab', $activeTab);
         $this->design->assign('meta_title', $this->user->name);
         $this->response->setContent('user.tpl');
     }
@@ -83,7 +136,7 @@ class UserController extends AbstractController
         if ($this->request->method('post')) {
             $email    = $this->request->post('email');
             $password = $this->request->post('password');
-            $this->design->assign('email', $email);// todo читать из реквеста
+            $this->design->assign('email', $email);
 
             if ($error = $validateHelper->getUserLoginError($email, $password)) {
                 $this->design->assign('error', $error);
@@ -104,7 +157,7 @@ class UserController extends AbstractController
         return;
     }
     
-    public function passwordRemind(UsersEntity $usersEntity, Notify $notify, $code = '')
+    public function passwordRemind(UsersEntity $usersEntity, Notify $notify, UserHelper $userHelper, $code = '')
     {
         
         if (!empty($code)) {
@@ -124,6 +177,12 @@ class UserController extends AbstractController
 
             // Залогиниваемся под пользователем и переходим в кабинет для изменения пароля
             $_SESSION['user_id'] = $user->id;
+            
+            $userHelper->mergeCart();
+            $userHelper->mergeWishlist();
+            $userHelper->mergeComparison();
+            $userHelper->mergeBrowsedProducts();
+            
             $this->response->redirectTo(Router::generateUrl('user', [], true));
         }
         
@@ -149,6 +208,11 @@ class UserController extends AbstractController
         }
         
         $this->response->setContent('password_remind.tpl');
+    }
+ 
+    public function wellKnownChangePassword()
+    {
+        Response::redirectTo(Router::generateUrl('user', [], true), 302);
     }
     
 }

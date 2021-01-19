@@ -43,8 +43,6 @@ class BannerAdmin extends IndexAdmin
                     $bannersHelper->update($preparedBanner->id, $preparedBanner);
                     $this->design->assign('message_success', 'updated');
                 }
-
-                $bannersEntity->update($banner->id, $banner);
             }
             $banner = $bannersHelper->addSelectedEntities($banner);
         } else {

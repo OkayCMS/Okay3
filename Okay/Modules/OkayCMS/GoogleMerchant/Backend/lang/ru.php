@@ -36,3 +36,4 @@ $lang['okaycms__google_merchant__add_feed'] = 'Добавить выгрузку
 $lang['okaycms__google_merchant__remove_feed'] = 'Удалить выгрузку';
 $lang['okaycms__google_merchant__error_url_exist'] = 'Выгрузка с таким URL уже существует';
 $lang['okaycms__google_merchant__error_url_cyrillic'] = 'В URL должны быть только латинские буквы и цифры';
+$lang['okaycms__google_merchant__upload_without_images'] = 'Выгружать товары без изображений';

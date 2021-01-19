@@ -10,6 +10,7 @@ use Okay\Core\QueryFactory;
 use Okay\Core\Request;
 use Okay\Entities\CurrenciesEntity;
 use Okay\Core\Modules\Extender\ExtenderFacade;
+use Okay\Entities\DiscountsEntity;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\CouponsEntity;
 use Okay\Entities\VariantsEntity;
@@ -123,7 +124,15 @@ class BackendCurrenciesHelper
                 $this->db->query($sql);
 
                 $sql = $this->queryFactory->newSqlQuery();
+                $sql->setStatement("UPDATE ".OrdersEntity::getTable()." SET undiscounted_total_price=undiscounted_total_price*{$coef}");
+                $this->db->query($sql);
+
+                $sql = $this->queryFactory->newSqlQuery();
                 $sql->setStatement("UPDATE ".OrdersEntity::getTable()." SET total_price=total_price*{$coef}");
+                $this->db->query($sql);
+
+                $sql = $this->queryFactory->newSqlQuery();
+                $sql->setStatement("UPDATE ".PurchasesEntity::getTable()." SET undiscounted_price=undiscounted_price*{$coef}");
                 $this->db->query($sql);
 
                 $sql = $this->queryFactory->newSqlQuery();
@@ -139,7 +148,7 @@ class BackendCurrenciesHelper
                 $this->db->query($sql);
 
                 $sql = $this->queryFactory->newSqlQuery();
-                $sql->setStatement("UPDATE ".OrdersEntity::getTable()." SET coupon_discount=coupon_discount*{$coef}");
+                $sql->setStatement("UPDATE ".DiscountsEntity::getTable()." SET value=value*{$coef} WHERE type='absolute'");
                 $this->db->query($sql);
             }
 

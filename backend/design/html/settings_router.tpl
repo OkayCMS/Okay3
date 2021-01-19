@@ -376,7 +376,7 @@
                             </i>
                         </label>
                         <label class="switch switch-default">
-                            <input class="switch-input" name="blog_item_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->blog_item_routes_template_slash_end}checked=""{/if}/>
+                            <input class="switch-input" name="post_routes_template_slash_end" value='1' type="checkbox" id="visible_checkbox" {if $settings->post_routes_template_slash_end}checked=""{/if}/>
                             <span class="switch-label"></span>
                             <span class="switch-handle"></span>
                         </label>

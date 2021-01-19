@@ -86,7 +86,7 @@
             {foreach $currencies as $c}
             {if $c->enabled}
             <li>
-                <a class="{if $currency->id== $c->id} active{/if}" href="#" onClick="change_currency({$c->id}); return false;">
+                <a class="{if $currency->id== $c->id} active{/if}" href="#" onclick="document.location.href = '{url currency_id=$c->id}'">
                     <span class="">{$c->name} </span> <span class=""> ({$c->sign})</span>
                 </a>
             </li>
@@ -136,7 +136,7 @@
 {foreach $settings->site_phones as $phone}
 <ul>
     <li>
-        <a class="phone icon icon-phone-callback" href="tel:{preg_replace('~[^0-9]~', '', $phone)}">
+        <a class="phone icon icon-phone-callback" href="tel:{preg_replace('~[^0-9\+]~', '', $phone)}">
             <span>{$phone|escape}</span>
         </a>
     </li>

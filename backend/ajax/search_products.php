@@ -11,7 +11,8 @@ if (!$managers->access('products', $manager)) {
 }
 
 /*Поиск товаров*/
-$keyword = $request->get('query', 'string');
+$keyword = $request->post('query', 'string');
+$filter = $request->post('filter');
 
 /** @var ProductsEntity $productsEntity */
 $productsEntity = $entityFactory->get(ProductsEntity::class);
@@ -29,7 +30,11 @@ $productFields = [
 ];
 $imagesIds = [];
 $products = [];
-foreach ($productsEntity->cols($productFields)->find(['keyword' => $keyword, 'limit' => 10]) as $product) {
+if (empty($filter))
+    $filter = [];
+if (!isset($filter['limit']))
+    $filter['limit'] = 10;
+foreach ($productsEntity->cols($productFields)->find(['keyword' => $keyword] + $filter) as $product) {
     $products[$product->id] = $product;
     $imagesIds[] = $product->main_image_id;
 }
@@ -45,7 +50,7 @@ foreach ($products as $product) {
     if (!empty($product->image)) {
         $product->image = $imagesCore->getResizeModifier($product->image, 35, 35);
     }
-    
+
     $suggestion = new stdClass();
     $suggestion->value = $product->name;
     $suggestion->data = $product;

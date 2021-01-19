@@ -5,7 +5,7 @@ namespace Okay\Admin\Controllers;
 
 
 use Okay\Core\Languages;
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Entities\LanguagesEntity;
 use Okay\Entities\TranslationsEntity;
 
@@ -14,12 +14,12 @@ class TranslationsAdmin extends IndexAdmin
     
     public function fetch(
         TranslationsEntity $translationsEntity,
-        TemplateConfig $templateConfig,
+        FrontTemplateConfig $frontTemplateConfig,
         LanguagesEntity $languagesEntity,
         Languages $languagesCore
     ) {
         
-        $lockedTheme = is_file('design/' . $templateConfig->getTheme() . '/locked');
+        $lockedTheme = is_file('design/' . $frontTemplateConfig->getTheme() . '/locked');
         $this->design->assign('locked_theme', $lockedTheme);
 
         // Обработка действий

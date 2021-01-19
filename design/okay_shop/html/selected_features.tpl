@@ -11,7 +11,7 @@
                 {if $prices->current->min !== '' && $prices->current->max !== '' && $prices->current->min !== null}
                     <div class="filter__selected_feature">
                         <form class="filter__selected_feature_item" method="post">
-                            <button type="submit" name="prg_seo_hide" class="fn_filter_reset d-flex align-items-center filter__sf_link checked" value="{furl absolute=1}">
+                            <button type="submit" name="prg_seo_hide" class="fn_filter_reset d-flex align-items-center filter__sf_link checked" value="{furl params=[route=>$furlRoute]}">
                                 <span>{$lang->features_price}: <i>{$prices->current->min|escape} - {$prices->current->max|escape}</i></span>
                                 {include file="svg.tpl" svgId="remove_icon"}
                             </button>
@@ -23,7 +23,7 @@
                 {if $other_filters && $selected_other_filters}
                     {foreach $other_filters as $f}
                         {if in_array($f->url, $selected_other_filters)}
-                            {$furl = {furl params=[filter=>$f->url, page=>null, absolute=>1]}}
+                            {$furl = {furl params=[filter=>$f->url, page=>null, route=>$furlRoute]}}
                             <div class="filter__selected_feature">
                                 <form class="filter__selected_feature_item" method="post">
                                     <button type="submit" name="prg_seo_hide" class="d-flex align-items-center filter__sf_link checked" value="{$furl|escape}">
@@ -40,7 +40,7 @@
                 {if $category->brands && $selected_brands_ids}
                     {foreach $category->brands as $b}
                         {if $brand->id == $b->id || in_array($b->id, $selected_brands_ids)}
-                            {$furl = {furl params=[brand=>$b->url, page=>null, absolute=>1]}}
+                            {$furl = {furl params=[brand=>$b->url, page=>null, route=>$furlRoute]}}
                             <div class="filter__selected_feature">
                                 <form class="filter__selected_feature_item" method="post">
                                     <button type="submit" name="prg_seo_hide" class="d-flex align-items-center filter__sf_link checked" value="{$furl|escape}">
@@ -59,7 +59,7 @@
                         {if $selected_filters[$f->id]}
                             {foreach $f->features_values as $fv}
                                 {if isset($selected_filters[$f->id][$fv->id])}
-                                    {$furl = {furl params=[$f->url=>$fv->translit, page=>null, absolute=>1]}}
+                                    {$furl = {furl params=[$f->url=>$fv->translit, page=>null, route=>$furlRoute]}}
                                     <div class="filter__selected_feature">
                                         <form class="filter__selected_feature_item" method="post">
                                             <button type="submit" name="prg_seo_hide" class="d-flex align-items-center filter__sf_link checked" value="{$furl|escape}">
@@ -78,7 +78,7 @@
             {if $category}
                 <div class="filter__selected_feature_reset">
                     <form method="post">
-                        <button type="submit" name="prg_seo_hide" class="fn_filter_reset  filter__sf_reset" value="{url_generator route="category" url=$category->url absolute=1}">
+                        <button type="submit" name="prg_seo_hide" class="fn_filter_reset  filter__sf_reset" value="{url_generator route="category" url=$category->url}">
                             {$lang->selected_features_reset}
                         </button>
                     </form>
@@ -86,7 +86,7 @@
             {elseif $brand}
                 <div class="filter__selected_feature_reset">   
                     <form method="post">
-                        <button type="submit" name="prg_seo_hide" class="fn_filter_reset filter__sf_reset" value="{url_generator route="brand" url=$brand->url absolute=1}">
+                        <button type="submit" name="prg_seo_hide" class="fn_filter_reset filter__sf_reset" value="{url_generator route="brand" url=$brand->url}">
                             {$lang->selected_features_reset}
                         </button>
                     </form>

@@ -78,7 +78,7 @@
     <div class="sidebar__boxed">
         <div class="filters">
             {* Ajax Price filter *}
-            {if $prices->range->min != '' && $prices->range->max != ''}
+            {if $prices->range->min != '' && $prices->range->max != '' && $prices->range->min != $prices->range->max}
                 <div class="fn_switch filter__name d-flex align-items-center justify-content-between">
                     <span data-language="features_price">{$lang->features_price}</span>
                     <span class="d-flex align-items-center filter__name_arrow fa fa-chevron-down"></span>
@@ -113,7 +113,7 @@
                     {* Display all brands *}
                     <div class="filter__item">
                         <form method="post">
-                            {$furl = {furl params=[filter=>null, page=>null, absolute=>1]}}
+                            {$furl = {furl params=[filter=>null, page=>null]}}
                             <button type="submit" name="prg_seo_hide" class="filter__link {if !$selected_other_filters} checked{/if}" value="{$furl|escape}">
                                 <span class="filter__checkbox">
                                     <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -127,7 +127,7 @@
                     {* Other filter list *}
                     {foreach $other_filters as $f}
                         <div class="filter__item">
-                            {$furl = {furl params=[filter=>$f->url, page=>null, absolute=>1]}}
+                            {$furl = {furl params=[filter=>$f->url, page=>null, route=>$furlRoute]}}
                             {if $seo_hide_filter || ($selected_other_filters && in_array($f->url, $selected_other_filters))}
                                 <form method="post">
                                     <button type="submit" name="prg_seo_hide" class="filter__link{if $selected_other_filters && in_array($f->url, $selected_other_filters)} checked{/if}" value="{$furl|escape}">
@@ -165,7 +165,7 @@
                     {* Display all brands *}
                     <div class="filter__item">
                         <form method="post">
-                            {$furl = {furl params=[brand=>null, page=>null, absolute=>1]}}
+                            {$furl = {furl params=[brand=>null, page=>null, route=>$furlRoute]}}
                             <button type="submit" name="prg_seo_hide" class="filter__link {if !$brand->id && !$selected_brands_ids} checked{/if}" value="{$furl|escape}">
                                 <span class="filter__checkbox">
                                     <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -180,7 +180,7 @@
                     {foreach $category->brands as $b}
                         {$b_count = $b_count+1}
                         <div class="filter__item {if $b && $b_count > 4} {if $brand->id == $b->id || $selected_brands_ids && in_array($b->id,$selected_brands_ids)}opened{else}closed{/if}{/if}">
-                            {$furl = {furl params=[brand=>$b->url, page=>null, absolute=>1]}}
+                            {$furl = {furl params=[brand=>$b->url, page=>null, route=>$furlRoute]}}
                             {if $seo_hide_filter || ($brand->id == $b->id || $selected_brands_ids && in_array($b->id,$selected_brands_ids))}
                                 <form method="post">
                                     <button type="submit" name="prg_seo_hide" class="filter__link{if $brand->id == $b->id || $selected_brands_ids && in_array($b->id,$selected_brands_ids)} checked{/if}" value="{$furl|escape}">
@@ -223,7 +223,7 @@
                         {* Display all features *}
                         <div class="filter__item">
                             <form method="post">
-                                {$furl = {furl params=[$f->url=>null, page=>null, absolute=>1]}}
+                                {$furl = {furl params=[$f->url=>null, page=>null, route=>$furlRoute]}}
                                 <button type="submit" name="prg_seo_hide" class="filter__link {if !isset($selected_filters[$f->id])} checked{/if}" value="{$furl|escape}">
                                     <span class="filter__checkbox">
                                         <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -240,7 +240,7 @@
                         {foreach $f->features_values as $fv}
                             {$f_count = $f_count+1}
                             <div class="filter__item {if $fv && $f_count > 4} {if $selected_filters[$f->id] && isset($selected_filters[$f->id][$fv->id])}opened{else}closed{/if}{/if}"> 
-                                {$furl = {furl params=[$f->url=>$fv->translit, page=>null, absolute=>1]}}
+                                {$furl = {furl params=[$f->url=>$fv->translit, page=>null, route=>$furlRoute]}}
                                 {if !$fv->to_index || $seo_hide_filter || ($selected_filters[$f->id] && isset($selected_filters[$f->id][$fv->id]))}
                                     <form method="post">
                                         <button type="submit" name="prg_seo_hide" class="filter__link{if $selected_filters[$f->id] && isset($selected_filters[$f->id][$fv->id])} checked{/if}" value="{$furl|escape}">

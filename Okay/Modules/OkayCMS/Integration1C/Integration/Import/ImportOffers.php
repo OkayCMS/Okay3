@@ -183,8 +183,8 @@ class ImportOffers extends AbstractImport
             }
         }
 
-        // Если $stock_from_1c = true берем кол-во из 1с или у нас бесконечное количество товара.
-        if ($this->integration1C->stock_from_1c) {
+        // Если $stockFrom1c = true берем кол-во из 1с или у нас бесконечное количество товара.
+        if ($this->integration1C->stockFrom1c) {
             $variant->stock = (int)$xmlVariant->Количество;
         } else {
             $variant->stock = NULL;

@@ -21,6 +21,7 @@ class CommentsEntity extends Entity
         'date',
         'approved',
         'lang_id',
+        'user_id',
     ];
 
     protected static $defaultOrderFields = [
@@ -56,6 +57,19 @@ class CommentsEntity extends Entity
     protected function filter__has_parent($value)
     {
         $this->select->where('c.parent_id' . (!empty($value) ? '>0' : '=0'));
+    }
+
+    protected function filter__composite_object_type_id($value)
+    {
+        $conditions = [];
+        $binds = [];
+        foreach ($value as $type => $ids) {
+            $conditions[$type] = "(`type` = :type_{$type} AND `object_id` IN (:type_{$type}_ids))";
+            $binds = $binds + ["type_{$type}" => $type, "type_{$type}_ids" => $ids];
+        }
+        $condition = implode(' OR ', $conditions);
+        $this->select->where("({$condition})");
+        $this->select->bindValues($binds);
     }
     
     public function delete($ids)

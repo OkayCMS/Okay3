@@ -48,6 +48,11 @@ class Settings
         }
     }
     
+    public function has($param)
+    {
+        return isset($this->vars_lang[$param]) || isset($this->vars[$param]);
+    }
+    
     public function set($param, $value)
     {
         if (isset($this->vars_lang[$param])) {

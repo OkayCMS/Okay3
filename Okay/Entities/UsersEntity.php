@@ -15,6 +15,7 @@ class UsersEntity extends Entity
         'email',
         'password',
         'name',
+        'last_name',
         'phone',
         'address',
         'group_id',
@@ -22,6 +23,8 @@ class UsersEntity extends Entity
         'created',
         'remind_code',
         'remind_expire',
+        'preferred_delivery_id',
+        'preferred_payment_method_id',
         'g.discount',
         'g.name as group_name',
     ];
@@ -161,7 +164,7 @@ class UsersEntity extends Entity
                 $orderFields = ['u.created DESC'];
                 break;
             case 'cnt_order':
-                $orderFields = ["(select count(o.id) as count from __orders o where o.user_id = u.id) DESC"];
+                $orderFields = ["(select count(o.id) from __orders o where o.user_id = u.id) DESC"];
                 break;
         }
 

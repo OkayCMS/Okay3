@@ -32,7 +32,7 @@ class Date extends Modifier
     
     public function run($date, $format = null) 
     {
-        if (!$time = strtotime($date)) {
+        if (is_numeric($date) || (!$time = strtotime($date))) {
             $time = $date;
         }
         if ($format !== null) {

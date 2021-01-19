@@ -124,6 +124,11 @@ class PrefixAndPathStrategy extends AbstractRouteStrategy
 
     private function compareUrlStartsNoSuccess($categoryPathUrl, $url)
     {
+
+        if (strpos($url, 'category_features') !== false) {
+            $url = substr($url, strlen('category_features') + 1);
+        }
+        
         $categoryPathUrl = ltrim($categoryPathUrl, '/');
         $compareAccessUri = substr($url, 0, strlen($categoryPathUrl));
         return $categoryPathUrl !== $compareAccessUri;
@@ -131,6 +136,10 @@ class PrefixAndPathStrategy extends AbstractRouteStrategy
 
     private function matchFiltersUrl($categoryPathUrl, $url)
     {
+        if (strpos($url, 'category_features') !== false) {
+            $url = substr($url, strlen('category_features') + 1);
+        }
+        
         return substr($url, strlen($categoryPathUrl) + 1);
     }
 }

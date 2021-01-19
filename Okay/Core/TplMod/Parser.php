@@ -86,19 +86,19 @@ class Parser
             $matchesText) = $this->parseString($this->string)) {
 
             if (!empty($matchesText) ) {
-                if (empty($matchesText[1])) {
+                if (mb_strlen(trim($matchesText[1])) == 0) {
                     break;
                 }
                 
                 $this->string = isset($matchesText[2]) ? $matchesText[2] : '';
                 $content = trim($matchesText[1]);
-                if (!empty($content)) {
+                if (mb_strlen($content) > 0) {
                     $node = new TextNode($content);
                 }
-            } elseif (!empty($matchesHtmlComment[1])) {
+            } elseif (!empty($matchesHtmlComment)) {
                 $this->string = $matchesHtmlComment[2];
                 $node = new HtmlCommentNode('<!--' . $matchesHtmlComment[1] . '-->');
-            } elseif (!empty($matchesSmartyComment[1])) {
+            } elseif (!empty($matchesSmartyComment)) {
                 $this->string = $matchesSmartyComment[2];
                 $node = new SmartyCommentNode('{*' . $matchesSmartyComment[1] . '*}');
             } elseif (!empty($matchesHtml)) {
@@ -127,7 +127,7 @@ class Parser
                     }
                     $this->string = $matchesScript[2];
                     // todo ниже добавил регулярку, смотреть мож убрать эту часть условия
-                } elseif (!preg_match('~^\s*(</' . $openTagName . '>)(.*)$~is', $this->string) && !in_array(mb_strtolower($openTagName), $this->selfClosing)) {
+                } elseif (/*!preg_match('~^\s*(</' . $openTagName . '>)(.*)$~is', $this->string) && */!in_array(mb_strtolower($openTagName), $this->selfClosing)) {
                     $this->parseLevel($node, $openTagName);
                 }
 

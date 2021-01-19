@@ -19,3 +19,6 @@ const MISSING_PRODUCTS_HIDE  = 'hide';
 const MODULE_TYPE_PAYMENT  = 'payment';
 const MODULE_TYPE_DELIVERY  = 'delivery';
 const MODULE_TYPE_XML  = 'xml';
+
+const TC_POSITION_HEAD = 'head';
+const TC_POSITION_FOOTER = 'footer';

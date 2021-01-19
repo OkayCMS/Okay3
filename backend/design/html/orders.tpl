@@ -261,11 +261,11 @@
                                                         {include file='svg_icon.tpl' svgId='tag_search'} {$order->referer_channel}
                                                     </span>
                                                 {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_SOCIAL}
-                                                    <a href="{$order->referer_source|escape}" target="_blank" class="tag tag-chanel_social" title="{$order->referer_source}">
+                                                    <span class="tag tag-chanel_social" title="{$order->referer_source}">
                                                         {include file='svg_icon.tpl' svgId='tag_social'} {$order->referer_channel}
-                                                    </a>
+                                                    </span>
                                                 {elseif $order->referer_channel == Okay\Core\UserReferer\UserReferer::CHANNEL_REFERRAL}
-                                                    <a href="{$order->referer_source|escape}" target="_blank" class="tag tag-chanel_referral" title="{$order->referer_source}">
+                                                    <a href="https://{$order->referer_source|escape}" target="_blank" class="tag tag-chanel_referral" title="{$order->referer_source}">
                                                         {include file='svg_icon.tpl' svgId='tag_referral'} {$order->referer_channel}
                                                     </a>
                                                 {else}

@@ -40,8 +40,10 @@ class ExportOrders extends AbstractExport
         $orders = $ordersEntity->mappedBy('id')->find(['modified_since'=>$this->integration1C->settings->last_1c_orders_export_date]);
         
         $purchases = [];
-        foreach ($purchasesEntity->find(['order_id'=>array_keys($orders)]) as $purchase) {
-            $purchases[$purchase->order_id][] = $purchase;
+        if (!empty($orders)) {
+            foreach ($purchasesEntity->find(['order_id' => array_keys($orders)]) as $purchase) {
+                $purchases[$purchase->order_id][] = $purchase;
+            }
         }
         
         foreach ($orders as $order) {
@@ -58,6 +60,13 @@ class ExportOrders extends AbstractExport
             $doc->addChild ( "Сумма", $order->total_price);
             $doc->addChild ( "Время",  $date->format('H:i:s'));
             $doc->addChild ( "Комментарий", $order->comment. 'Адрес доставки: '.$order->address);
+
+            if ($order->total_price != $order->undiscounted_total_price) {
+                $t1_2 = $doc->addChild("Скидки");
+                $t1_3 = $t1_2->addChild("Скидка");
+                $t1_4 = $t1_3->addChild("Сумма", ($order->undiscounted_total_price - $order->total_price));
+                $t1_4 = $t1_3->addChild("УчтеноВСумме", "true");
+            }
 
             // Контрагенты
             $k1 = $doc->addChild ( 'Контрагенты' );
@@ -142,15 +151,15 @@ class ExportOrders extends AbstractExport
                             $name .= " $purchase->variant_name $id";
                         }
                         $t1_2 = $t1_1->addChild("Наименование", $name);
-                        $t1_2 = $t1_1->addChild("ЦенаЗаЕдиницу", round($purchase->price * (100 - $order->discount) / 100, 2));
+                        $t1_2 = $t1_1->addChild("ЦенаЗаЕдиницу", $purchase->price);
                         $t1_2 = $t1_1->addChild("Количество", $purchase->amount);
-                        $t1_2 = $t1_1->addChild("Сумма", round($purchase->amount * $purchase->price * (100 - $order->discount) / 100, 2));
+                        $t1_2 = $t1_1->addChild("Сумма", ($purchase->price * $purchase->amount));
 
 
-                        if ($order->discount > 0) {
+                        if ($purchase->price != $purchase->undiscounted_price) {
                             $t1_2 = $t1_1->addChild("Скидки");
                             $t1_3 = $t1_2->addChild("Скидка");
-                            $t1_4 = $t1_3->addChild("Сумма", round(($purchase->amount * $purchase->price) - ($purchase->amount * $purchase->price * (100 - $order->discount) / 100), 2));
+                            $t1_4 = $t1_3->addChild("Сумма", (($purchase->undiscounted_price - $purchase->price) * $purchase->amount));
                             $t1_4 = $t1_3->addChild("УчтеноВСумме", "true");
                         }
 

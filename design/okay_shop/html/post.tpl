@@ -3,7 +3,7 @@
 {* The canonical address of the page *}
 {$canonical="{url_generator route=$route_name url=$post->url absolute=1}" scope=global}
 
-<div class="clearfix">
+<div class="d-lg-flex align-items-lg-start justify-content-lg-between flex-lg-row-reverse">
     {* Sidebar with post *}
     <div class="fn_mobile_toogle sidebar sidebar--right position_sticky d-lg-flex flex-lg-column">
         {include 'blog_sidebar.tpl'}
@@ -325,13 +325,13 @@
 
                                 {* User's name *}
                                 <div class="form__group">
-                                    <input class="form__input form__placeholder--focus" type="text" name="name" value="{$request_data.name|escape}" />
+                                    <input class="form__input form__placeholder--focus" type="text" name="name" value="{if $request_data.name}{$request_data.name|escape}{elseif $user->name}{$user->name|escape}{/if}" />
                                     <span class="form__placeholder">{$lang->form_name}*</span>
                                 </div>
 
                                 {* User's email *}
                                 <div class="form__group">
-                                    <input class="form__input form__placeholder--focus" type="text" name="email" value="{$request_data.email|escape}" data-language="form_email" />
+                                    <input class="form__input form__placeholder--focus" type="text" name="email" value="{if $request_data.email}{$request_data.email|escape}{elseif $user->email}{$user->email|escape}{/if}" data-language="form_email" />
                                     <span class="form__placeholder">{$lang->form_email}</span>
                                 </div>
 

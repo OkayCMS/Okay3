@@ -171,6 +171,7 @@ if (($controllerParams = $module->getBackendControllerParams($backendControllerN
         $menu = $managerMenu->getMenu($manager);
         $subMenu = reset($menu);
         $backendControllerName = reset($subMenu);
+        $backendControllerName = $backendControllerName['controller'];
     }
     if (($controllerParams = $module->getBackendControllerParams($backendControllerName)) && in_array($backendControllerName, $modulesBackendControllers)) {
 
@@ -187,7 +188,7 @@ if (($controllerParams = $module->getBackendControllerParams($backendControllerN
     }
 }
 
-$backend = new $controllerName($manager, $backendControllerName);
+$backend = new $controllerName($manager, $backendControllerName, $methodName);
 
 $access = call_user_func_array([$backend, 'onInit'], getMethodParams($backend, 'onInit'));
 if ($access) {

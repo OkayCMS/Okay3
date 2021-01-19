@@ -33,3 +33,4 @@ $lang['okaycms__yandex_xml_vendor_model__add_feed'] = 'Add upload';
 $lang['okaycms__yandex_xml_vendor_model__remove_feed'] = 'Remove upload';
 $lang['okaycms__yandex_xml_vendor_model__error_url_exist'] = 'An upload with the same URL already exists';
 $lang['okaycms__yandex_xml_vendor_model__error_url_cyrillic'] = 'The URL should contain only Latin letters and numbers';
+$lang['okaycms__yandex_xml_vendor_model__upload_without_images'] = 'Unload goods without images';

@@ -44,6 +44,15 @@ class Installer
             $module->vendor  = $vendor;
             $module->module_name = $moduleName;
             $module->enabled = 1;
+
+            $moduleParams = $this->module->getModuleParams($vendor, $moduleName);
+            
+            if (!empty($moduleParams->version)) {
+                $module->version = $moduleParams->version;
+            } else {
+                $module->version = '1.0.0';
+            }
+            
             if (!$moduleId = $this->modulesEntity->add($module)) {
                 // todo ошибка во время утановки
             }
@@ -57,4 +66,47 @@ class Installer
         
         return $moduleId;
     }
+    
+    public function update($moduleId)
+    {
+        if (!$module = $this->modulesEntity->findOne(['id' => $moduleId])) {
+            return;
+        }
+        
+        if (!($moduleParams = $this->module->getModuleParams($module->vendor, $module->module_name)) || empty($moduleParams->version)) {
+            return;
+        }
+
+        if ($initClassName = $this->module->getInitClassName($module->vendor, $module->module_name)) {
+            $reflection = new \ReflectionClass($initClassName);
+            $updateMethods = [];
+            
+            //  Собираем список методов обновления, которые нужно вызвать
+            foreach ($reflection->getMethods() as $method) {
+                $matches = [];
+                
+                if (preg_match('~^update_([0-9]+_[0-9]+_[0-9]+)~', $method->name, $matches)) {
+                    $version = str_replace('_', '.', $matches[1]);
+                    
+                    if ($version <= $moduleParams->version && $version > $module->version) {
+                        $updateMethods[$version] = $method->name;
+                    }
+                }
+            }
+            
+            ksort($updateMethods, SORT_NATURAL);
+            
+            // Вызываем поочередно методы для обновления модуля
+            if (!empty($updateMethods)) {
+                $initObject = new $initClassName($moduleId, $module->vendor, $module->module_name);
+                foreach ($updateMethods as $method) {
+                    $initObject->$method();
+                }
+            }
+
+            // Обновляем версию модуля в системе
+            $this->modulesEntity->update($moduleId, ['version' => $moduleParams->version]);
+        }
+    }
+    
 }

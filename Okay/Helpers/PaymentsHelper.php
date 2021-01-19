@@ -45,18 +45,21 @@ class PaymentsHelper
     /**
      * @param $paymentMethods
      * @param $activeDelivery
+     * @param object $user пользователь. Если залогинен
      * @return object
      * 
      * Метод возвращает активный способ оплаты, который должен быть отмечен как выбран
      */
-    public function getActivePaymentMethod($paymentMethods, $activeDelivery)
+    public function getActivePaymentMethod($paymentMethods, $activeDelivery, $user)
     {
         $SL = ServiceLocator::getInstance();
         
         /** @var Request $request */
         $request = $SL->getService(Request::class);
         
-        if (($paymentId = $request->post('payment_method_id', 'integer')) && isset($paymentMethods[$paymentId])) {
+        if (!empty($user->preferred_payment_method_id) && isset($paymentMethods[$user->preferred_payment_method_id]) && in_array($user->preferred_payment_method_id, $activeDelivery->payment_methods_ids)) {
+            $activePayment = $paymentMethods[$user->preferred_payment_method_id];
+        } elseif (($paymentId = $request->post('payment_method_id', 'integer')) && isset($paymentMethods[$paymentId])) {
             $activePayment = $paymentMethods[$paymentId];
         } elseif (!empty($activeDelivery->payment_methods_ids) 
             && ($firstDeliveryPaymentId = reset($activeDelivery->payment_methods_ids))

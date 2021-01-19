@@ -26,7 +26,12 @@ class Furl extends Func
             $params = reset($params);
         }
         
-        $routeName = $this->router->getCurrentRouteName();
+        if (!empty($params['route'])) {
+            $routeName = $params['route'];
+        } else {
+            $routeName = $this->router->getCurrentRouteName();
+        }
+        
         $isAbsolute = false;
         
         if (isset($params['absolute'])) {

@@ -8,6 +8,7 @@
     <title>Административная панель</title>
 
     <link href="design/css/okay.css" rel="stylesheet" type="text/css" />
+    <link href="design/css/grid.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="design/images/favicon.png" type="image/x-icon">
     <script src="design/js/jquery/jquery.js"></script>
 </head>

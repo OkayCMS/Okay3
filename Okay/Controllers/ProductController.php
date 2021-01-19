@@ -4,6 +4,7 @@
 namespace Okay\Controllers;
 
 
+use Okay\Core\BrowsedProducts;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\CategoriesEntity;
@@ -28,6 +29,7 @@ class ProductController extends AbstractController
         CommentsHelper $commentsHelper,
         RelatedProductsHelper $relatedProductsHelper,
         ProductMetadataHelper $productMetadataHelper,
+        BrowsedProducts $browsedProducts,
         $url
     ) {
         
@@ -55,15 +57,12 @@ class ProductController extends AbstractController
             $product->variant = reset($product->variants);
         }
 
-        // Автозаполнение имени для формы комментария
-        if (!empty($this->user)) {
-            $this->design->assign('comment_name', $this->user->name); // todo что с этим?
-            $this->design->assign('comment_email', $this->user->email);
-        }
-
         // Комментарии к товару
         $commentsHelper->addCommentProcedure('product', $product->id);
-        $comments = $commentsHelper->getCommentsList('product', $product->id);
+        $commentsFilter = $commentsHelper->getCommentsFilter('product', $product->id);
+        $commentsSort = $commentsHelper->getCurrentSort();
+        $comments = $commentsHelper->getList($commentsFilter, $commentsSort);
+        $comments = $commentsHelper->attachAnswers($comments);
         $this->design->assign('comments', $comments);
         
         // Связанные товары
@@ -98,8 +97,8 @@ class ProductController extends AbstractController
             $this->design->assign('next_product', $neighborsProducts['next']);
             $this->design->assign('prev_product', $neighborsProducts['prev']);
         }
-        
-        $productsHelper->setBrowsedProduct($product->id);
+
+        $browsedProducts->addItem($product->id);
 
         $this->response->setContent('product.tpl');
     }

@@ -36,8 +36,8 @@
                                 {/foreach}
                             </div>
                             {if $product->images|count > 1}
-                            <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div>
+                                <div class="swiper-button-next"></div>
+                                <div class="swiper-button-prev"></div>
                             {/if}
                         </div>
                         {if $product->featured || $product->special || $product->variant->compare_price}
@@ -73,6 +73,9 @@
                             </div>
                             {/foreach}
                         </div>
+                        {if $product->images|count > 4}
+                            <div class="swiper-scrollbar"></div>
+                        {/if}
                     </div>
                     {/if}
                 {else}
@@ -127,7 +130,7 @@
 
                     {* Anchor form comments *}
                     <div class="details_boxed__anchor_comments">
-                        <a href="#fn_products_tab" class="fn_anchor_comments d-inline-flex align-items-center anchor_comments__link">
+                        <a href="#comments" class="fn_anchor_comments d-inline-flex align-items-center anchor_comments__link">
                             {if $comments|count}
                                 {$comments|count}
                                 {$comments|count|plural:$lang->product_anchor_comment_plural1:$lang->product_anchor_comment_plural2:$lang->product_anchor_comment_plural3}
@@ -359,7 +362,7 @@
                                     <div class="features__value">
                                         {foreach $f->values as $value}
                                         {if $category && $f->url_in_product && $f->in_filter && $value->to_index}
-                                        <a href="{url_generator route="category" url=$category->url}/{$f->url}-{$value->translit}">{$value->value|escape}</a>{if !$value@last},{/if}{*todo генерация урла*}
+                                        <a href="{url_generator route="category" url=$category->url}{if !$settings->category_routes_template_slash_end}/{/if}{$f->url}-{$value->translit}">{$value->value|escape}</a>{if !$value@last},{/if}{*todo генерация урла*}
                                         {else}
                                         {$value->value|escape}{if !$value@last},{/if}
                                         {/if}
@@ -384,46 +387,46 @@
                         <div class="comment f_col-lg-7">
                             {if $comments}
                                 {function name=comments_tree level=0}
-                                {foreach $comments as $comment}
-                                <div class="comment__item {if $level > 0} admin_note{/if}">
-                                {* Comment anchor *}
-                                <a name="comment_{$comment->id}"></a>
-                                {* Comment list *}
-                                <div class="comment__inner"> 
-                                    <div class="comment__icon">
-                                        {if $level > 0}
-                                            {include file="svg.tpl" svgId="comment-admin_icon"} 
-                                        {else}
-                                            {include file="svg.tpl" svgId="comment-user_icon"}
-                                        {/if}
-                                    </div>
-                                    <div class="comment__boxed">
-                                        <div class="d-flex flex-wrap align-items-center justify-content-between comment__header">
-                                            {* Comment name *}
-                                            <div class="d-flex flex-wrap align-items-center comment__author">
-                                                <span class="comment__name">{$comment->name|escape}</span>
-                                                {* Comment status *}
-                                                {if !$comment->approved}
-                                                    <span class="comment__status" data-language="post_comment_status">({$lang->post_comment_status})</span>
-                                                {/if}
+                                    {foreach $comments as $comment}
+                                    <div class="comment__item {if $level > 0} admin_note{/if}">
+                                    {* Comment anchor *}
+                                    <a name="comment_{$comment->id}"></a>
+                                    {* Comment list *}
+                                    <div class="comment__inner"> 
+                                        <div class="comment__icon">
+                                            {if $level > 0}
+                                                {include file="svg.tpl" svgId="comment-admin_icon"} 
+                                            {else}
+                                                {include file="svg.tpl" svgId="comment-user_icon"}
+                                            {/if}
+                                        </div>
+                                        <div class="comment__boxed">
+                                            <div class="d-flex flex-wrap align-items-center justify-content-between comment__header">
+                                                {* Comment name *}
+                                                <div class="d-flex flex-wrap align-items-center comment__author">
+                                                    <span class="comment__name">{$comment->name|escape}</span>
+                                                    {* Comment status *}
+                                                    {if !$comment->approved}
+                                                        <span class="comment__status" data-language="post_comment_status">({$lang->post_comment_status})</span>
+                                                    {/if}
+                                                </div>
+                                                {* Comment date *}
+                                                <div class="comment__date">
+                                                    <span>{$comment->date|date}, {$comment->date|time}</span>
+                                                </div>
                                             </div>
-                                            {* Comment date *}
-                                            <div class="comment__date">
-                                                <span>{$comment->date|date}, {$comment->date|time}</span>
+    
+                                            {* Comment content *}
+                                            <div class="comment__body">
+                                                {$comment->text|escape|nl2br}
                                             </div>
                                         </div>
-
-                                        {* Comment content *}
-                                        <div class="comment__body">
-                                            {$comment->text|escape|nl2br}
-                                        </div>
                                     </div>
-                                </div>
-                                {if !empty($comment->children)}
-                                    {comments_tree comments=$comment->children level=$level+1}
-                                {/if}
-                                </div>
-                                {/foreach}
+                                    {if !empty($comment->children)}
+                                        {comments_tree comments=$comment->children level=$level+1}
+                                    {/if}
+                                    </div>
+                                    {/foreach}
                                 {/function}
                                 {comments_tree comments=$comments}
                             {else}
@@ -465,13 +468,13 @@
                                 <div class="form__body">
                                     {* User's name *}
                                     <div class="form__group">
-                                        <input class="form__input form__placeholder--focus" type="text" name="name" value="{$request_data.name|escape}" />
+                                        <input class="form__input form__placeholder--focus" type="text" name="name" value="{if $request_data.name}{$request_data.name|escape}{elseif $user->name}{$user->name|escape}{/if}" />
                                         <span class="form__placeholder">{$lang->form_name}*</span>
                                     </div>
 
                                     {* User's email *}
                                     <div class="form__group">
-                                        <input class="form__input form__placeholder--focus" type="text" name="email" value="{$request_data.email|escape}" data-language="form_email" />
+                                        <input class="form__input form__placeholder--focus" type="text" name="email" value="{if $request_data.email}{$request_data.email|escape}{elseif $user->email}{$user->email|escape}{/if}" data-language="form_email" />
                                         <span class="form__placeholder">{$lang->form_email}</span>
                                     </div>
                                     

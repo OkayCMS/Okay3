@@ -4,16 +4,17 @@
 namespace Okay\Controllers;
 
 
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
+use Okay\Core\TemplateConfig\JsConfig;
 
 class DynamicJsController extends AbstractController
 {
     
     public function getJs(
-        TemplateConfig $templateConfig,
+        FrontTemplateConfig $frontTemplateConfig,
         $fileId
     ) {
-        $dynamicJsFile = "design/" . $templateConfig->getTheme() . "/html/scripts.tpl";
+        $dynamicJsFile = "design/" . $frontTemplateConfig->getTheme() . "/html/scripts.tpl";
 
         $dynamicJs = '';
         
@@ -44,17 +45,17 @@ class DynamicJsController extends AbstractController
                     });';
             }
             
-            $dynamicJs = $templateConfig->minifyJs($dynamicJs);
+            $dynamicJs = JsConfig::minifyJs($dynamicJs);
         }
         
         $this->response->setContent($dynamicJs, RESPONSE_JAVASCRIPT);
     }
     
     public function getCommonJs(
-        TemplateConfig $templateConfig,
+        FrontTemplateConfig $frontTemplateConfig,
         $fileId
     ) {
-        $commonJsFile = "design/" . $templateConfig->getTheme() . "/html/common_js.tpl";
+        $commonJsFile = "design/" . $frontTemplateConfig->getTheme() . "/html/common_js.tpl";
 
         $commonJs = '';
         if (is_file($commonJsFile)) {
@@ -79,7 +80,7 @@ class DynamicJsController extends AbstractController
             $commonJs = $this->design->fetch('common_js.tpl');
             $commonJs = preg_replace('~<script(.*?)>(.*?)</script>~is', '$2', $commonJs);
 
-            $commonJs = $templateConfig->minifyJs($commonJs);
+            $commonJs = JsConfig::minifyJs($commonJs);
         }
         
         $this->response->setContent($commonJs, RESPONSE_JAVASCRIPT);

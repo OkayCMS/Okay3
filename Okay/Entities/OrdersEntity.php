@@ -19,18 +19,17 @@ class OrdersEntity extends Entity
         'paid',
         'payment_date',
         'closed',
-        'discount',
-        'coupon_code',
-        'coupon_discount',
         'date',
         'user_id',
         'name',
+        'last_name',
         'address',
         'phone',
         'email',
         'comment',
         'status_id',
         'url',
+        'undiscounted_total_price',
         'total_price',
         'note',
         'ip',
@@ -314,18 +313,57 @@ class OrdersEntity extends Entity
 
     public function updateTotalPrice($orderId)
     {
+        /** @var DiscountsEntity $discountsEntity */
+        $discountsEntity = $this->entity->get(DiscountsEntity::class);
+
+        /** @var PurchasesEntity $purchasesEntity */
+        $purchasesEntity = $this->entity->get(PurchasesEntity::class);
+
         $order = $this->get(intval($orderId));
         if (empty($order)) {
             return ExtenderFacade::execute([static::class, __FUNCTION__], false, func_get_args());
         }
 
-        $update = $this->queryFactory->newUpdate();
-        $update->table('__orders AS o')
-            ->set('o.total_price', 'IFNULL((SELECT SUM(p.price*p.amount)*(100-o.discount)/100 FROM __purchases p WHERE p.order_id=o.id), 0)+o.delivery_price*(1-IFNULL(o.separate_delivery, 0))-o.coupon_discount')
-            ->where('o.id=:id')
-            ->bindValue('id', $order->id);
+        $purchases = $purchasesEntity->find(['order_id' => $order->id]);
+        $undiscountedTotalPrice = 0;
+        $totalPrice = 0;
+        if (!empty($purchases)) {
+            foreach ($purchases as $purchase) {
+                $undiscountedTotalPrice += $purchase->price * $purchase->amount;
+            }
 
-        $this->db->query($update);
+            $totalPrice = $undiscountedTotalPrice;
+            $cartDiscounts = $discountsEntity->order('position')->find([
+                'entity' => 'order',
+                'entity_id' => $orderId
+            ]);
+            if (!empty($cartDiscounts)) {
+                foreach ($cartDiscounts as $discount) {
+                    switch ($discount->type) {
+                        case 'absolute':
+                            $totalPrice -= $discount->value;
+                            break;
+
+                        case 'percent':
+                            if ($discount->from_last_discount) {
+                                $totalPrice -= $totalPrice * ($discount->value / 100);
+                            } else {
+                                $totalPrice -= $undiscountedTotalPrice * ($discount->value / 100);
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+        if (!$order->separate_delivery) {
+            $totalPrice += $order->delivery_price;
+        }
+
+        $this->update($order->id, [
+            'undiscounted_total_price' => $undiscountedTotalPrice,
+            'total_price' => $totalPrice
+        ]);
         return ExtenderFacade::execute([static::class, __FUNCTION__], $order->id, func_get_args());
     }
 
@@ -340,7 +378,9 @@ class OrdersEntity extends Entity
     public function findOtherOfClient($order, $page = 1, $perPage = 10)
     {
         $offset       = $this->calculateOffset($page, $perPage);
-        $orderMatches = $this->determineOrderMatchParams($order, $page, $perPage);
+        if (!$orderMatches = $this->determineOrderMatchParams($order, $page, $perPage)) {
+            return [];
+        }
 
         $filter       = [];
         $filter['id'] = array_keys($orderMatches);

@@ -20,7 +20,7 @@ use Okay\Core\Response;
 use Okay\Core\Router;
 use Okay\Core\ServiceLocator;
 use Okay\Core\Settings;
-use Okay\Core\TemplateConfig;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Core\UserReferer\UserReferer;
 use Okay\Core\WishList;
 use Okay\Entities\AdvantagesEntity;
@@ -185,9 +185,12 @@ class MainHelper
         $design->assign('pages', $pages);
         
         // Передаем стили и скрипты в шаблон
-        $templateConfig = $this->SL->getService(TemplateConfig::class);
-        $design->assign('ok_head', $templateConfig->head());
-        $design->assign('ok_footer', $templateConfig->footer());
+        /** @var FrontTemplateConfig $frontTemplateConfig */
+        $frontTemplateConfig = $this->SL->getService(FrontTemplateConfig::class);
+        
+        $frontTemplateConfig->compileFiles();
+        $design->assign('ok_head', $frontTemplateConfig->head());
+        $design->assign('ok_footer', $frontTemplateConfig->footer());
 
         // Передаем в дизайн название текущего роута
         $design->assign('route_name', $router->getCurrentRouteName());

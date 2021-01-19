@@ -22,6 +22,7 @@ class CartRequest
         $order->payment_method_id = $this->request->post('payment_method_id', 'integer');
         $order->delivery_id = $this->request->post('delivery_id', 'integer');
         $order->name        = $this->request->post('name');
+        $order->last_name   = $this->request->post('last_name');
         $order->email       = $this->request->post('email');
         $order->address     = $this->request->post('address');
         $order->phone       = $this->request->post('phone');

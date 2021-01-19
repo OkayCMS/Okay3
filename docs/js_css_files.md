@@ -1,28 +1,30 @@
-# Подключение JS и CSS файлов
+# Подключение Js и Css файлов
 
-В OkayCMS JS и CSS файлы не подключаются напрямую через тег `<script></script>` или `<link />`, их нужно регистрировать.
+В OkayCMS Js и Css файлы не подключаются напрямую через тег `<script></script>` или `<link />`, их нужно регистрировать.
 Все зарегистрированные файлы собираются в несколько (зависит от параметров) общих, которые минифицируются, и 
 подключаются в шаблон.
-Регистрация JavaScript происходит в файле `design/<theme name>/js.php`, CSS соответственно в 
-`design/<theme name>/css.php`.
+Регистрация JavaScript для клиентской части происходит в файле `design/<theme name>/js.php`, Css соответственно в 
+`design/<theme name>/css.php`. 
+Для админ части регистрация происходит в `backend/design/js.php` и `backend/design/css.php`.
 
-Для подключения JS файлов, нужно создать файл `design/<theme name>/js.php`, который возвращает массив объектов
-[Okay\Core\TemplateConfig\Js](#TemplateConfigJS). Или файл `design/<theme name>/css.php` с массивом 
-[Okay\Core\TemplateConfig\CSS](#TemplateConfigCSS) соответственно.
+Для подключения Js файлов, нужно создать файл `design/<theme name>/js.php`, который возвращает массив объектов
+[Okay\Core\TemplateConfig\Js](#TemplateConfigJs). Или файл `design/<theme name>/css.php` с массивом 
+[Okay\Core\TemplateConfig\Css](#TemplateConfigCss) соответственно.
 
 Из модуля также эти файлы можно подключать, расположив регистрационные файлы в директории 
-`Okay/Modules/Vendor/Module/design/`.
+`Okay/Modules/Vendor/Module/design/` для подключения файлов в клиентский шаблон и в директорию
+`Okay/Modules/Vendor/Module/Backend/design/` для подключения файлов в админ часть.
 
 
 <a name="commonScript"></a>
-#### Общее описание классов Okay\Core\TemplateConfig\JS и Okay\Core\TemplateConfig\CSS
+#### Общее описание классов Okay\Core\TemplateConfig\Js и Okay\Core\TemplateConfig\Css
 
 Класс в конструктор принимает название файла, который нужно зарегистрировать (без пути).
 Если путь не указать, это имеется в виду, что файл лежит в `design/<theme name>/js/` или `design/<theme name>/css/`.
 В случае если подключается файл из модуля, имеется в виду директория 
 `Okay/Modules/Vendor/Module/design/js/` или `Okay/Modules/Vendor/Module/design/css/`.
 По умолчанию все зарегистрированные скрипты выводятся в одном общем файле в head шаблона.
-Оба класса (`Okay\Core\TemplateConfig\JS` и `Okay\Core\TemplateConfig\CSS`) имеют общую реализацию
+Оба класса (`Okay\Core\TemplateConfig\Js` и `Okay\Core\TemplateConfig\Css`) имеют общую реализацию
 (в `Okay\Core\TemplateConfig\Common`) следующих методов:
 
 
@@ -63,10 +65,19 @@ setIndividual( bool $individual)
 $individual | true - подключаем индивидуально, false - файл будет подключен в общем скомпилированном файле.
 
 
-<a name="TemplateConfigCSS"></a>
-#### Класс Okay\Core\TemplateConfig\CSS
+<a name="preload"></a>
+```php
+preload()
+```
 
-Класс `Okay\Core\TemplateConfig\CSS` не имеет индивидуальной реализации, содержит только 
+Установка флага, что нужно добавить для этого файла предзагрузчик link rel="preload". Работает только для файлов 
+отмеченных через setIndividual, предзагрузка общими файлами управляется в файле config/config.php директивами
+`preload_head_css`, `preload_head_js`, `preload_footer_css` и `preload_footer_js`
+
+<a name="TemplateConfigCss"></a>
+#### Класс Okay\Core\TemplateConfig\Css
+
+Класс `Okay\Core\TemplateConfig\Css` не имеет индивидуальной реализации, содержит только 
 [общие методы](#commonScript).
 
 Пример регистрации:
@@ -81,10 +92,10 @@ return [
 ```
 
 
-<a name="TemplateConfigJS"></a>
-#### Класс Okay\Core\TemplateConfig\JS
+<a name="TemplateConfigJs"></a>
+#### Класс Okay\Core\TemplateConfig\Js
 
-Класс `Okay\Core\TemplateConfig\JS` имеет индивидуальную реализацию следующего метода, в остальном он соответствует 
+Класс `Okay\Core\TemplateConfig\Js` имеет индивидуальную реализацию следующего метода, в остальном он соответствует 
 [общей реализации](#commonScript).
 
 <a name="setDefer"></a>
@@ -109,3 +120,18 @@ return [
 ];
 ```
 
+<a name="TemplateConfigSmarty"></a>
+#### Подключение файлов через Smarty
+
+Подключение файлов через Smarty может понадобиться если нужно подключить файл по условию.
+Для подключения файла нужно вызвать один из плагинов Smarty {css} или {js}. 
+Возможные аргументы плагина:
+
+Аргумент | Описание
+---|---
+filename | Имя подключаемого файла. То же что передается в конструктор Okay\Core\TemplateConfig\Js или Okay\Core\TemplateConfig\Css
+file | Синоним filename
+dir | Аналог метода Okay\Core\TemplateConfig\Js::setDir() или Okay\Core\TemplateConfig\Css::setDir()
+backend | Булев тип. Указание что подключаем файл для админ части. По умолчанию считается что подключается файл для клиентской части
+admin | Синоним backend
+defer | Булев тип. Указывает нужно ли добавлять атрибут defer. Доступно только для плагина {js}

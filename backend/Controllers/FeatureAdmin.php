@@ -114,18 +114,4 @@ class FeatureAdmin extends IndexAdmin
         $this->response->setContent($this->design->fetch('feature.tpl'));
     }
 
-    private function isNameForbidden($name) // todo доделать после импорта
-    {
-        $result = false;
-        /*foreach($this->import->columns_names as $i=>$names) {
-            $this->forbiddenNames = array_merge($this->forbiddenNames, $names);
-            foreach($names as $n) {
-                if(preg_match("~^".preg_quote($name)."$~ui", $n)) {
-                    $result = true;
-                }
-            }
-        }*/
-        return $result;
-    }
-    
 }

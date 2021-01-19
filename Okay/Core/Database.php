@@ -8,6 +8,7 @@ use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryInterface;
 use OkayLicense\License;
 use Psr\Log\LoggerInterface;
+use PDOStatement;
 
 class Database
 {
@@ -110,7 +111,11 @@ class Database
             $this->affectedRows = $this->result->rowCount();
 
             if ($debug === true) {
-                print $this->debug($bind) . PHP_EOL . PHP_EOL;
+                if ($queryString = $this->debug($this->result, $bind)) {
+                    print "<pre>" . $queryString . "</pre>" . PHP_EOL . PHP_EOL;
+                } else {
+                    print 'Error in query' . PHP_EOL . PHP_EOL;
+                }
             }
         } catch (\Exception $e) {
             $log = 'Sql query error: "' . $e->getMessage() . '"' . PHP_EOL;
@@ -134,13 +139,22 @@ class Database
         return $result;
     }
 
+    public function prepare(QueryInterface $query, $values)
+    {
+        return $this->pdo->prepareWithValues(
+            $this->tablePrefix($query), 
+            $values
+        );
+    }
+    
     /**
+     * @param PDOStatement $preparedQuery
      * @param array $bindValues
      * @return string
      * ВНИМАНИЕ: данный метод не возвращает запрос, который выполнял MySQL сервер
      * он лиш имитирует такой же запрос, не исключено что в определенных ситуациях это будут разные запросы
      */
-    private function debug($bindValues = [])
+    public function debug(PDOStatement $preparedQuery, $bindValues = [])
     {
         $binded = [];
         if (!empty($bindValues)) {
@@ -151,7 +165,7 @@ class Database
                 if (is_array($b)) {
                     $placeholderNum = 0;
                     foreach ($b as $kv => $v) {
-                        $this->result->bindValue($k . '_' . ($placeholderNum), $v);
+                        //$preparedQuery->bindValue($k . '_' . ($placeholderNum), $v);
                         $binded[$k . '_' . ($placeholderNum)] = $v;
                         $placeholderNum++;
                     }
@@ -165,8 +179,7 @@ class Database
                 $binded[':' . $k] = $this->escape($b);
             }
         }
-        
-        return strtr($this->result->queryString, $binded);
+        return strtr($preparedQuery->queryString, $binded);
     }
     
     public function customQuery($query)
@@ -211,7 +224,7 @@ class Database
         $this->result->setFetchMode(ExtendedPdo::FETCH_OBJ);
         
         foreach ($this->result->fetchAll() as $row) {
-            if (isset($row->$mapped)) {
+            if (property_exists($row, $mapped)) {
                 $mappedValue = $row->$mapped;
             } elseif (!empty($mapped)) {
                 throw new \Exception("Field named \"{$mapped}\" uses for mapped is not exists");

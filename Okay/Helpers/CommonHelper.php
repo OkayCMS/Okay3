@@ -22,19 +22,22 @@ class CommonHelper
     private $design;
     private $commonRequest;
     private $entityFactory;
+    private $userHelper;
 
     public function __construct(
         ValidateHelper $validateHelper,
         Notify $notify,
         Design $design,
         CommonRequest $commonRequest,
-        EntityFactory $entityFactory
+        EntityFactory $entityFactory,
+        UserHelper $userHelper
     ) {
         $this->validateHelper = $validateHelper;
         $this->notify = $notify;
         $this->design = $design;
         $this->commonRequest = $commonRequest;
         $this->entityFactory = $entityFactory;
+        $this->userHelper = $userHelper;
     }
     
     public function rootPostProcedure()
@@ -71,11 +74,23 @@ class CommonHelper
                 // Проверим, может такой пользователь уже существует
                 if ($tmpUser = $usersEntity->get((string)$user->email)) {
                     $_SESSION['user_id'] = $tmpUser->id;
+                    
+                    $this->userHelper->mergeCart();
+                    $this->userHelper->mergeWishlist();
+                    $this->userHelper->mergeComparison();
+                    $this->userHelper->mergeBrowsedProducts();
+                    
                     Response::redirectTo(Router::generateUrl('user', [], true));
                 } elseif (empty($usersEntity->count(['email' => (string)$user->email]))) {
                     $user->password = $usersEntity->generatePass(6);
                     $userId = $usersEntity->add($user);
                     $_SESSION['user_id'] = $userId;
+                    
+                    $this->userHelper->mergeCart();
+                    $this->userHelper->mergeWishlist();
+                    $this->userHelper->mergeComparison();
+                    $this->userHelper->mergeBrowsedProducts();
+                    
                     // Перенаправляем пользователя в личный кабинет
                     Response::redirectTo(Router::generateUrl('user', [], true));
                 }

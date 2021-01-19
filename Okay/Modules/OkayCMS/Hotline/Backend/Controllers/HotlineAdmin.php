@@ -84,34 +84,13 @@ class HotlineAdmin extends IndexAdmin
 
     private function updateCheckboxes()
     {
-        if ($this->request->post('okaycms__hotline__upload_only_available_to_hotline', 'integer')) {
-            $this->settings->set('okaycms__hotline__upload_only_available_to_hotline', 1);
-        } else {
-            $this->settings->set('okaycms__hotline__upload_only_available_to_hotline', 0);
-        }
 
-        if ($this->request->post('okaycms__hotline__use_full_description_to_hotline', 'integer')) {
-            $this->settings->set('okaycms__hotline__use_full_description_to_hotline', 1);
-        } else {
-            $this->settings->set('okaycms__hotline__use_full_description_to_hotline', 0);
-        }
-
-        if ($this->request->post('okaycms__hotline__no_export_without_price', 'integer')) {
-            $this->settings->set('okaycms__hotline__no_export_without_price', 1);
-        } else {
-            $this->settings->set('okaycms__hotline__no_export_without_price', 0);
-        }
-
-        if ($this->request->post('okaycms__hotline__pickup', 'integer')) {
-            $this->settings->set('okaycms__hotline__pickup', 1);
-        } else {
-            $this->settings->set('okaycms__hotline__pickup', 0);
-        }
-
-        if ($this->request->post('okaycms__hotline__store', 'integer')) {
-            $this->settings->set('okaycms__hotline__store', 1);
-        } else {
-            $this->settings->set('okaycms__hotline__store', 0);
-        }
+        $this->settings->set('okaycms__hotline__upload_only_available_to_hotline', $this->request->post('okaycms__hotline__upload_only_available_to_hotline', 'integer'));
+        $this->settings->set('okaycms__hotline__use_full_description_to_hotline', $this->request->post('okaycms__hotline__use_full_description_to_hotline', 'integer'));
+        $this->settings->set('okaycms__hotline__no_export_without_price', $this->request->post('okaycms__hotline__no_export_without_price', 'integer'));
+        $this->settings->set('okaycms__hotline__pickup', $this->request->post('okaycms__hotline__pickup', 'integer'));
+        $this->settings->set('okaycms__hotline__store', $this->request->post('okaycms__hotline__store', 'integer'));
+        $this->settings->set('okaycms__hotline__upload_without_images', $this->request->post('okaycms__hotline__upload_without_images', 'integer'));
+        
     }
 }

@@ -5,6 +5,7 @@ namespace Okay\Core;
 
 
 use Okay\Core\Modules\Extender\ExtenderFacade;
+use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Entities\BlogEntity;
 use Okay\Entities\CallbacksEntity;
 use Okay\Entities\CommentsEntity;
@@ -14,7 +15,6 @@ use Okay\Entities\FeedbacksEntity;
 use Okay\Entities\OrdersEntity;
 use Okay\Entities\OrderStatusEntity;
 use Okay\Entities\ProductsEntity;
-use Okay\Entities\TranslationsEntity;
 use Okay\Entities\UsersEntity;
 use Okay\Helpers\NotifyHelper;
 use Okay\Helpers\OrdersHelper;
@@ -29,7 +29,7 @@ class Notify
     private $languages;
     private $entityFactory;
     private $ordersHelper;
-    private $templateConfig;
+    private $frontTemplateConfig;
     private $design;
     private $backendTranslations;
     private $frontTranslations;
@@ -42,7 +42,7 @@ class Notify
         Languages $languages,
         EntityFactory $entityFactory,
         Design $design,
-        TemplateConfig $templateConfig,
+        FrontTemplateConfig $frontTemplateConfig,
         OrdersHelper $ordersHelper,
         BackendTranslations $backendTranslations,
         FrontTranslations $frontTranslations,
@@ -55,7 +55,7 @@ class Notify
         $this->settings = $settings;
         $this->languages = $languages;
         $this->design = $design;
-        $this->templateConfig = $templateConfig;
+        $this->frontTemplateConfig = $frontTemplateConfig;
         $this->ordersHelper = $ordersHelper;
         $this->entityFactory = $entityFactory;
         $this->backendTranslations = $backendTranslations;
@@ -206,6 +206,10 @@ class Notify
         
         $purchases = $this->ordersHelper->getOrderPurchasesList($order->id);
         $this->design->assign('purchases', $purchases);
+
+        // Скидки
+        $discounts = $this->ordersHelper->getDiscounts($order->id);
+        $this->design->assign('discounts', $discounts);
         
         // Способ доставки
         $delivery = $deliveriesEntity->get($order->delivery_id);
@@ -222,7 +226,7 @@ class Notify
         if ($this->design->smarty->getTemplateVars('currency') === null) {
             $this->design->assign('currency', current($currenciesEntity->find(['enabled'=>1])));
         }
-        $emailTemplate = $this->design->fetch($this->rootDir.'design/'.$this->templateConfig->getTheme().'/html/email/email_order.tpl');
+        $emailTemplate = $this->design->fetch($this->rootDir.'design/'.$this->frontTemplateConfig->getTheme().'/html/email/email_order.tpl');
         $subject = $this->design->getVar('subject');
         
         if ($debug === false) {
@@ -283,6 +287,10 @@ class Notify
         
         $purchases = $this->ordersHelper->getOrderPurchasesList($order->id);
         $this->design->assign('purchases', $purchases);
+
+        // Скидки
+        $discounts = $this->ordersHelper->getDiscounts($order->id);
+        $this->design->assign('discounts', $discounts);
         
         // Способ доставки
         $delivery = $deliveriesEntity->get($order->delivery_id);
@@ -416,8 +424,8 @@ class Notify
 
         $templateDir = $this->design->getTemplatesDir();
         $compiledDir = $this->design->getCompiledDir();
-        $this->design->setTemplatesDir('design/'.$this->templateConfig->getTheme().'/html');
-        $this->design->setCompiledDir('compiled/' . $this->templateConfig->getTheme());
+        $this->design->setTemplatesDir('design/'.$this->frontTemplateConfig->getTheme().'/html');
+        $this->design->setCompiledDir('compiled/' . $this->frontTemplateConfig->getTheme());
         
         /*lang_modify...*/
         if (!empty($parentComment->lang_id)) {
@@ -445,7 +453,7 @@ class Notify
         $this->design->assign('parent_comment', $parentComment);
 
         // Отправляем письмо
-        $emailTemplate = $this->design->fetch($this->rootDir.'design/'.$this->templateConfig->getTheme().'/html/email/email_comment_answer_to_user.tpl');
+        $emailTemplate = $this->design->fetch($this->rootDir.'design/'.$this->frontTemplateConfig->getTheme().'/html/email/email_comment_answer_to_user.tpl');
         $subject = $this->design->getVar('subject');
 
         $this->email($parentComment->email, $subject, $emailTemplate, $this->settings->get('notify_from_email'));
@@ -488,7 +496,7 @@ class Notify
         $this->design->assign('code', $code);
         
         // Отправляем письмо
-        $email_template = $this->design->fetch($this->rootDir.'design/'.$this->templateConfig->getTheme().'/html/email/email_password_remind.tpl');
+        $email_template = $this->design->fetch($this->rootDir.'design/'.$this->frontTemplateConfig->getTheme().'/html/email/email_password_remind.tpl');
         $subject = $this->design->getVar('subject');
         $from = ($this->settings->notify_from_name ? $this->settings->notify_from_name." <".$this->settings->notify_from_email.">" : $this->settings->notify_from_email);
         $this->email($user->email, $subject, $email_template, $from);
@@ -545,8 +553,8 @@ class Notify
 
         $templateDir = $this->design->getTemplatesDir();
         $compiledDir = $this->design->getCompiledDir();
-        $this->design->setTemplatesDir('design/'.$this->templateConfig->getTheme().'/html');
-        $this->design->setCompiledDir('compiled/' . $this->templateConfig->getTheme());
+        $this->design->setTemplatesDir('design/'.$this->frontTemplateConfig->getTheme().'/html');
+        $this->design->setCompiledDir('compiled/' . $this->frontTemplateConfig->getTheme());
         
         /*lang_modify...*/
         if (!empty($feedback->lang_id)) {
@@ -563,7 +571,7 @@ class Notify
         $this->design->assign('text', $text);
 
         // Отправляем письмо
-        $email_template = $this->design->fetch($this->rootDir.'design/'.$this->templateConfig->getTheme().'/html/email/email_feedback_answer_to_user.tpl');
+        $email_template = $this->design->fetch($this->rootDir.'design/'.$this->frontTemplateConfig->getTheme().'/html/email/email_feedback_answer_to_user.tpl');
         $subject = $this->design->getVar('subject');
         $from = ($this->settings->get('notify_from_name') ? $this->settings->get('notify_from_name')." <".$this->settings->get('notify_from_email').">" : $this->settings->get('notify_from_email'));
         $this->email($feedback->email, $subject, $email_template, $from, $from);

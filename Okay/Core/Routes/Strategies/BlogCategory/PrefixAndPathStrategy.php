@@ -106,6 +106,7 @@ class PrefixAndPathStrategy extends AbstractRouteStrategy
                 ],
                 []
             ];
+            break;
         }
 
         if (empty($matchedRoute)) {

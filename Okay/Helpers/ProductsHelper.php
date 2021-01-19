@@ -8,6 +8,7 @@ use Okay\Core\EntityFactory;
 use Okay\Core\Routes\ProductRoute;
 use Okay\Core\Settings;
 use Okay\Entities\ProductsEntity;
+use Okay\Entities\UserBrowsedProductsEntity;
 use Okay\Entities\VariantsEntity;
 use Okay\Entities\ImagesEntity;
 use Okay\Entities\FeaturesValuesEntity;
@@ -19,12 +20,18 @@ class ProductsHelper implements GetListInterface
     private $entityFactory;
     private $moneyHelper;
     private $settings;
+    private $mainHelper;
 
-    public function __construct(EntityFactory $entityFactory, MoneyHelper $moneyHelper, Settings $settings)
-    {
+    public function __construct(
+        EntityFactory $entityFactory,
+        MoneyHelper $moneyHelper,
+        Settings $settings,
+        MainHelper $mainHelper
+    ) {
         $this->entityFactory = $entityFactory;
         $this->moneyHelper = $moneyHelper;
         $this->settings = $settings;
+        $this->mainHelper = $mainHelper;
     }
 
     public function attachProductData($product)
@@ -113,26 +120,6 @@ class ProductsHelper implements GetListInterface
         }
         
         return ExtenderFacade::execute(__METHOD__, $orderAdditionalData, func_get_args());
-    }
-    
-    public function setBrowsedProduct($productId)
-    {
-        // Добавление в историю просмотров товаров
-        $maxVisitedProducts = 100; // Максимальное число хранимых товаров в истории
-        $expire = time()+60*60*24*30; // Время жизни - 30 дней
-        if (!empty($_COOKIE['browsed_products'])) {
-            $browsedProducts = explode(',', $_COOKIE['browsed_products']);
-            // Удалим текущий товар, если он был
-            if (($exists = array_search($productId, $browsedProducts)) !== false) {
-                unset($browsedProducts[$exists]);
-            }
-        }
-        // Добавим текущий товар
-        $browsedProducts[] = $productId;
-        $cookieVal = implode(',', array_slice($browsedProducts, -$maxVisitedProducts, $maxVisitedProducts));
-        setcookie("browsed_products", $cookieVal, $expire, "/");
-
-        ExtenderFacade::execute(__METHOD__, null, func_get_args());
     }
 
     public function attachVariants(array $products, array $variantsFilter = [])

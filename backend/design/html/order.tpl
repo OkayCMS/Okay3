@@ -187,7 +187,7 @@
                                         <div class="fn_row okay_list_body_item purchases">
                                             <div class="okay_list_row">
                                                 <input type=hidden name=purchases[id][{$purchase->id}] value='{$purchase->id}'>
-    
+
                                                 <div class="okay_list_boding okay_list_photo">
                                                     {if $purchase->variant}
                                                         <img class=product_icon src="{$purchase->product->image->filename|resize:50:50}">
@@ -198,34 +198,34 @@
                                                 <div class="okay_list_boding okay_list_order_name">
                                                     <div class="boxes_inline">
                                                         {if $purchase->product}
-                                                            <a class="{if $purchase->variant->stock == 0}hint-bottom-middle-t-info-s-small-mobile  hint-anim text_warning{/if}" {if $purchase->variant->stock == 0}data-hint="{$btr->product_out_stock|escape}"{/if} href="{url controller=ProductAdmin id=$purchase->product->id}">{$purchase->product_name|escape}</a>
+                                                            <a class="text_600 {if $purchase->variant->stock == 0}hint-bottom-middle-t-info-s-small-mobile  hint-anim text_500 text_warning{/if}" {if $purchase->variant->stock == 0}data-hint="{$btr->product_out_stock|escape}"{/if} href="{url controller=ProductAdmin id=$purchase->product->id}">{$purchase->product_name|escape}</a>
                                                             {if $purchase->variant_name}
-                                                                <span class="text_grey">{$btr->order_option|escape} {$purchase->variant_name|escape}</span>
+                                                                <div class="mt-q font_12"><span class="text_grey">{$btr->order_option|escape}</span> {$purchase->variant_name|escape}</div>
                                                             {/if}
                                                             {if $purchase->sku}
-                                                                <span class="text_grey">{$btr->general_sku|escape} {$purchase->sku|default:"&mdash;"}</span>
+                                                                <div class="mt-q font_12"><span class="text_grey">{$btr->general_sku|escape}:</span> {$purchase->sku|default:"&mdash;"}</div>
                                                             {/if}
                                                         {else}
-                                                            <div class="text_grey">{$purchase->product_name|escape}</div>
+                                                            <div class="text_grey text_600">{$purchase->product_name|escape}</div>
                                                             {if $purchase->variant_name}
-                                                                <div class="text_grey">{$btr->order_option|escape}{$purchase->variant_name|escape}</div>
+                                                                <div class="mt-q font_12"><span class="text_grey">{$btr->order_option|escape}</span> {$purchase->variant_name|escape}</div>
                                                             {/if}
                                                             {if $purchase->sku}
-                                                                <div class="text_grey">{$btr->general_sku|escape}{$purchase->sku|default:"&mdash;"}</div>
+                                                                <div class="mt-q font_12"><span class="text_grey">{$btr->general_sku|escape}:</span> {$purchase->sku|default:"&mdash;"}</div>
                                                             {/if}
                                                         {/if}
                                                         <div class="hidden-lg-up mt-q">
-                                                            <span class="text_primary text_600">{$purchase->price}</span>
+                                                            <span class="text_primary text_600 {if $purchase->discounts}text_warning{/if}">{$purchase->price}</span>
                                                             <span class="hidden-md-up text_500">
                                                             {$purchase->amount} {if $purchase->units}{$purchase->units|escape}{else}{$settings->units|escape}{/if}</span>
                                                         </div>
                                                         {get_design_block block="order_purchase_name" vars=['purchase'=>$purchase]}
                                                     </div>
-    
+
                                                     {if !$purchase->variant}
                                                         <input class="form-control " type="hidden" name="purchases[variant_id][{$purchase->id}]" value="" />
                                                     {else}
-                                                        <div class="boxes_inline">
+                                                        <div class="boxes_inline mt-h">
                                                             <select name="purchases[variant_id][{$purchase->id}]" class="selectpicker form-control {if $purchase->product->variants|count == 1}hidden{/if} fn_purchase_variant">
                                                                 {foreach $purchase->product->variants as $v}
                                                                     <option data-price="{$v->price}" data-units="{if $v->units}{$v->units|escape}{else}{$settings->units|escape}{/if}" data-amount="{$v->stock}" value="{$v->id}" {if $v->id == $purchase->variant_id}selected{/if} >
@@ -239,10 +239,18 @@
                                                             </select>
                                                         </div>
                                                     {/if}
+                                                    {if $purchase->discounts}
+                                                    <div class="mt-h">
+                                                        <span class="tag tag-danger fn_discounted_toggle">
+                                                            <span>Скидки</span>   
+                                                            <i class="fn_icon_arrow fa fa-angle-down fa-lg m-t-2 "></i>
+                                                        </span>
+                                                    </div>
+                                                    {/if}
                                                 </div>
                                                 <div class="okay_list_boding okay_list_price">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control fn_purchase_price" name="purchases[price][{$purchase->id}]" value="{$purchase->price}">
+                                                        <input type="text" class="form-control fn_purchase_price" name="purchases[undiscounted_price][{$purchase->id}]" value="{$purchase->undiscounted_price}">
                                                         <span class="input-group-addon">{$currency->code}</span>
                                                     </div>
                                                 </div>
@@ -255,9 +263,9 @@
                                                     </div>
                                                 </div>
                                                 <div class="okay_list_boding okay_list_order_amount_price">
-                                                    <div class="text_dark">
-                                                        <span>{($purchase->price) * ($purchase->amount)}</span>
-                                                        <span class="">{$currency->sign}</span>
+                                                    <div class="text_dark {if $purchase->discounts}text_warning text_600{/if}">
+                                                        <span class="font_16">{($purchase->price) * ($purchase->amount)}</span>
+                                                        <span class="font_12">{$currency->sign}</span>
                                                     </div>
                                                 </div>
                                                 <div class="okay_list_boding okay_list_close">
@@ -267,18 +275,20 @@
                                                     </button>
                                                 </div>
                                             </div>
+
+                                            {include 'order_purchase_discount.tpl'}
                                         </div>
                                     {/foreach}
                                 </div>
                                 <div class="okay_list_body fn_new_purchase" style="display: none">
                                     <div class="fn_row okay_list_body_item " >
                                     <div class="okay_list_row">
-    
+
                                         <div class="okay_list_boding okay_list_photo">
                                             <input type="hidden" name="purchases[id][]" value="" />
                                             <img class="fn_new_image" src="">
                                         </div>
-    
+
                                         <div class="okay_list_boding okay_list_order_name">
                                             <div class="boxes_inline">
                                                 <a class="fn_new_product" href=""></a>
@@ -288,11 +298,11 @@
                                             <div class="boxes_inline">
                                                 <select name="purchases[variant_id][]" class="fn_new_variant"></select>
                                             </div>
-    
+
                                         </div>
                                         <div class="okay_list_boding okay_list_price">
                                             <div class="input-group">
-                                                <input type="text" class="form-control fn_purchase_price" name=purchases[price][] value="">
+                                                <input type="text" class="form-control fn_purchase_price" name=purchases[undiscounted_price][] value="">
                                                 <span class="input-group-addon">{$currency->code|escape}</span>
                                             </div>
                                         </div>
@@ -319,7 +329,7 @@
                                 </div>
                                 </div>
                             </div>
-    
+
                             <div class="row mt-2 mb-1">
                                 <div class="col-lg-6 col-md-12">
                                     <div class="autocomplete_arrow">
@@ -338,7 +348,7 @@
                             </div>
                             {get_design_block block="order_purchases"}
                         </div>
-                        
+
                         {if $order->id}
                             <div id="tab2" class="tab">
                                 {include 'order_history.tpl'}
@@ -364,6 +374,21 @@
                 </div>
             </div>
 
+            {*Скидки к заказу*}
+            {if $discounts}
+                <div class="boxed fn_toggle_wrap min_height_230px">
+                    <div class="heading_box">
+                        {$btr->order_discount_title|escape} 
+                        <div class="toggle_arrow_wrap fn_toggle_card text-primary">
+                            <a class="btn-minimize" href="javascript:;" ><i class="icon-arrow-down"></i></a>
+                        </div>
+                    </div>
+                    <div class="toggle_body_wrap on fn_card">
+                        {include 'order_discount.tpl'}
+                    </div>
+                </div>
+            {/if}
+
             {*Информация по заказу*}
             <div class="boxed fn_toggle_wrap min_height_230px fn_step-3">
                 <div class="heading_box">
@@ -377,44 +402,6 @@
                         <div class="">
                             <div class="okay_list">
                                 <div class="okay_list_body">
-                                    <div class="okay_list_body_item">
-                                        <div class="okay_list_row  d_flex">
-                                            <div class="okay_list_boding okay_list_ordfig_name">
-                                                <div class="text_600 text_dark">{$btr->general_discount|escape}</div>
-                                            </div>
-                                            <div class="okay_list_boding okay_list_ordfig_val">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" name="discount" value="{$order->discount}">
-                                                    <span class="input-group-addon p-0"><i class="fa fa-percent"></i></span>
-                                                </div>
-                                            </div>
-                                            <div class="okay_list_boding okay_list_ordfig_price">
-                                                <div class="text_dark">
-                                                    <span>{($subtotal-$subtotal*$order->discount/100)|round:2}</span>
-                                                    <span class="">{$currency->sign|escape}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="okay_list_body_item">
-                                        <div class="okay_list_row d_flex">
-                                            <div class="okay_list_boding okay_list_ordfig_name">
-                                                <div class="text_600 text_dark">{$btr->general_coupon|escape}{if $order->coupon_code} ({$order->coupon_code}){/if}</div>
-                                            </div>
-                                            <div class="okay_list_boding okay_list_ordfig_val">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" name="coupon_discount" value="{$order->coupon_discount}" />
-                                                    <span class="input-group-addon p-0">{$currency->code|escape}</span>
-                                                </div>
-                                            </div>
-                                            <div class="okay_list_boding okay_list_ordfig_price">
-                                                <div class="text_dark">
-                                                    <span>{($subtotal-$subtotal*$order->discount/100-$order->coupon_discount)|round:2}</span>
-                                                    <span class="">{$currency->sign|escape}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="okay_list_body_item">
                                         <div class="okay_list_row  d_flex">
                                             <div class="okay_list_boding okay_list_ordfig_name">
@@ -513,7 +500,7 @@
                     </div>
                 </div>
                 <div class="toggle_body_wrap on fn_card">
-                    <div class="box_border_buyer">
+                    <div class="box_border_buyer fn_contact_info">
                         <div class="mb-1">
                             <div class="heading_label boxes_inline">{$btr->order_date|escape}</div>
                             <div class="boxes_inline text_dark text_600">{$order->date|date} {$order->date|time}</div>
@@ -521,6 +508,10 @@
                         <div class="mb-1">
                             <div class="heading_label">{$btr->index_name|escape}</div>
                             <input name="name" class="form-control" type="text" value="{$order->name|escape}" />
+                        </div>
+                        <div class="mb-1">
+                            <div class="heading_label">{$btr->index_last_name|escape}</div>
+                            <input name="last_name" class="form-control" type="text" value="{$order->last_name|escape}" />
                         </div>
                         <div class="mb-1">
                             <div class="heading_label">{$btr->general_phone|escape}</div>
@@ -590,7 +581,7 @@
                                         <div class="heading_label boxes_inline">
                                             {$btr->order_buyer|escape}
                                             <a href="{url controller=UserAdmin id=$user->id}" target=_blank>
-                                                 {$user->name|escape}
+                                                 {$user->name|escape} {$user->last_name|escape}
                                             </a>
                                         </div>
                                         <a href="javascript:;" data-hint="{$btr->users_delete|escape}" class="btn_close delete_grey fn_delete_user hint-bottom-right-t-info-s-small-mobile  hint-anim boxes_inline" >
@@ -656,6 +647,12 @@ $(function() {
          return false;
     });
 
+    // Отобразить список скидок
+    $(document).on('click','.fn_discounted_toggle',function(){
+        $(this).find('.fn_icon_arrow').toggleClass('rotate_180');
+        $(this).parents('.fn_row').find('.order_discounted_block').slideToggle(300);
+    });
+
     $(".fn_labels_show").click(function(){
         $(this).next('.fn_labels_hide').toggleClass("active_labels");
     });
@@ -701,7 +698,7 @@ $(function() {
             }
         });
     });
-    
+
     // Добавление товара
     var new_purchase = $('#fn_purchase .fn_new_purchase').clone(true);
     $('#fn_purchase .fn_new_purchase').remove().removeAttr('class');
@@ -752,7 +749,7 @@ $(function() {
             }
 
             {/literal}{get_design_block block="order_new_purchase_js_block"}{literal}
-            
+
             $("input#fn_add_purchase").val('').focus().blur();
             new_item.show();
         },
@@ -785,16 +782,22 @@ $(function() {
         minChars:0,
         orientation:'auto',
         noCache: false,
-        onSelect:
-            function(suggestion){
-                $('input[name="user_id"]').val(suggestion.data.id);
-            },
-            formatResult:
-                function(suggestions, currentValue){
-                        var reEscape = new RegExp('(\\' + ['/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\'].join('|\\') + ')', 'g');
-                        var pattern = '(' + currentValue.replace(reEscape, '\\$1') + ')';
-                        return "<span>" + suggestions.value.replace(new RegExp(pattern, 'gi'), '<strong>$1<\/strong>') + "</span>";
-                    }
+        onSelect:function(suggestion){
+            $('input[name="user_id"]').val(suggestion.data.id);
+
+            for (let key in suggestion.data) {
+                let contactField = $('.fn_contact_info [name="' + key + '"]');
+                if (contactField.length > 0 && contactField.val() == '') {
+                    contactField.val(suggestion.data[key]);
+                }
+            }
+            
+        },
+        formatResult: function(suggestions, currentValue){
+            var reEscape = new RegExp('(\\' + ['/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\'].join('|\\') + ')', 'g');
+            var pattern = '(' + currentValue.replace(reEscape, '\\$1') + ')';
+            return "<span>" + suggestions.value.replace(new RegExp(pattern, 'gi'), '<strong>$1<\/strong>') + "</span>";
+        }
     });
 
     $(document).on("click", ".fn_delete_user", function () {
@@ -805,6 +808,11 @@ $(function() {
 
     $("select.fn_purchase_variant").bind("change", function(){
         change_variant($(this));
+    });
+
+    $(document).on('click', '.fn_discount_remove', function() {
+        console.log($(this));
+        $(this).closest('.fn_row').remove();
     });
 
 });

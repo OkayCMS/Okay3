@@ -13,11 +13,7 @@ $keyword = $request->get('query', 'string');
 /** @var UsersEntity $usersEntity */
 $usersEntity = $entityFactory->get(UsersEntity::class);
 
-$users = $usersEntity->cols([
-    'id',
-    'name',
-    'email',
-])->find(['keyword' => $keyword]);
+$users = $usersEntity->find(['keyword' => $keyword]);
 
 $suggestions = [];
 foreach($users as $user) {

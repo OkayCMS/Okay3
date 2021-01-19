@@ -13,6 +13,7 @@ JS файлы, языковые файлы.
     .
     ├── Init
     |   ├── Init.php
+    |   ├── module.json
     |   ├── routes.php
     |   ├── SmartyPlugins.php
     |   └── services.php
@@ -26,8 +27,10 @@ JS файлы, языковые файлы.
     |   |   |   └── Файлы стилей бекенда
     |   |   ├── js
     |   |   |   └── Файлы стилей бекенда
-    |   |   └── images
-    |   |       └── Файлы изображений бекенда
+    |   |   ├── images
+    |   |   |   └── Файлы изображений бекенда
+    |   |   ├── css.php
+    |   |   └── js.php
     |   └── lang
     |       └── Файлы переводов бекенда
     ├── config
@@ -65,6 +68,8 @@ Okay\Core\Modules\AbstractInit.
 [migrateEntityTable()](./table_migrate.md), [setModuleType()](#typesOfModules).
 [Пример инициализации модуля](./quick_start.md#InitInitphp) и [полное описание инициализации](./init.md).
 
+Файл `Init/module.json` Файл содержащий мета информацию об модуле. [Подробнее](./module_json.md)
+
 Файл `Init/routes.php` содержит роуты для текущего модуля. Структура файла полностью повторяет структуру 
 [системных роутов](./../routes.md)
 
@@ -83,6 +88,9 @@ Okay\Core\Modules\AbstractInit.
 Файл `settings.xml` нужен для модулей доставок и оплат. Файл содержит структуру настроек, которые нужно вывести
 в админ-панели в способе доставки или способе оплаты. (Используется при [установке типа модуля](#typesOfModules)
 MODULE_TYPE_PAYMENT или MODULE_TYPE_DELIVERY).
+
+Файлы `design/js.php`, `design/css.php`, `Backend/design/js.php` и `Backend/design/css.php` нужны для [регистрации js
+и css файлов](./../js_css_files.md).
 
 Структура файла:
 ```xml

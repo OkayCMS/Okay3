@@ -29,7 +29,7 @@
                                 <div class="purchase__group_title hidden-xs-down">
                                     <span data-language="cart_head_price">{$lang->cart_head_price}</span>
                                 </div>
-                                <div class="purchase__group_content">{($purchase->variant->price)|convert} <span class="currency">{$currency->sign}</span> {if $purchase->variant->units}/ {$purchase->variant->units|escape}{/if}</div>
+                                <div class="purchase__group_content">{($purchase->price)|convert} <span class="currency">{$currency->sign}</span> {if $purchase->variant->units}/ {$purchase->variant->units|escape}{/if}</div>
                             </div>
                             <div class="purchase__amount">
                                 <div class="purchase__group_title hidden-xs-down">
@@ -73,7 +73,7 @@
 {else}
     <div class="block">
         {* The page heading *}
-        <h1 class="h1"><span data-language="cart_header">{$lang->cart_header}</span></h1>
+        <div class="h1"><span data-language="cart_header">{$lang->cart_header}</span></div>
 
         <p class="block padding" data-language="cart_empty">{$lang->cart_empty}</p>
     </div>

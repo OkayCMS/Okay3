@@ -20,10 +20,11 @@ class CouponHelper
         $this->entityFactory = $entityFactory;
     }
 
-    public function registerUseIfExists($coupon)
+    public function registerUseIfExists($couponCode)
     {
-        if (!empty($coupon)) {
+        if (!empty($couponCode)) {
             $couponsEntity = $this->entityFactory->get(CouponsEntity::class);
+            $coupon = $couponsEntity->get((string) $couponCode);
 
             $couponsEntity->update($coupon->id, [
                 'usages' => $coupon->usages+1

@@ -27,7 +27,7 @@ class Integration1C
     
     public $onlyEnabledCurrencies = false; // Учитывает все валюты(false) или только включенные(true)
     
-    public $stock_from_1c = true;   // TRUE Учитывать количество товара из 1с FALSE установить доступность в бесконечное количество
+    public $stockFrom1c = true;   // TRUE Учитывать количество товара из 1с FALSE установить доступность в бесконечное количество
     
     public $importProductsOnly = false;   // TRUE Импортировать только товары, без услуг и прочего (ВидНоменклатуры == Товар)
 
@@ -109,6 +109,38 @@ class Integration1C
         $this->maxExecTime = min(30, @ini_get("max_execution_time"));
         if (empty($this->maxExecTime)) {
             $this->maxExecTime = 30;
+        }
+        $this->configureFromSettings();
+    }
+    
+    public function configureFromSettings()
+    {
+        if ($this->settings->has('integration1cFullUpdate')) {
+            $this->fullUpdate = (bool)$this->settings->get('integration1cFullUpdate');
+        }
+        
+        if ($this->settings->has('integration1cBrandOptionName') && ($brandOptionName = $this->settings->get('integration1cBrandOptionName'))) {
+            $this->brandOptionName = $brandOptionName;
+        }
+        
+        if ($this->settings->has('integration1cOnlyEnabledCurrencies')) {
+            $this->onlyEnabledCurrencies = (bool)$this->settings->get('integration1cOnlyEnabledCurrencies');
+        }
+        
+        if ($this->settings->has('integration1cStockFrom1c')) {
+            $this->stockFrom1c = (bool)$this->settings->get('integration1cStockFrom1c');
+        }
+        
+        if ($this->settings->has('integration1cImportProductsOnly')) {
+            $this->importProductsOnly = (bool)$this->settings->get('integration1cImportProductsOnly');
+        }
+        
+        if ($this->settings->has('integration1cGuidPriceFrom1C')) {
+            $this->guidPriceFrom1C = $this->settings->get('integration1cGuidPriceFrom1C');
+        }
+        
+        if ($this->settings->has('integration1cGuidComparePriceFrom1C')) {
+            $this->guidComparePriceFrom1C = $this->settings->get('integration1cGuidComparePriceFrom1C');
         }
     }
 

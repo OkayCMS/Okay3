@@ -156,7 +156,7 @@ class Router {
 
                 $flexibleRoute = self::$routeFactory->create($routeName, $params);
                 if ($flexibleRoute) {
-                    $currentUri           = $_SERVER['REQUEST_URI'];
+                    $currentUri           = Request::getCurrentQueryPath();
                     $lastSymbolCurrentUrl = mb_substr($currentUri, -1, 1);
 
                     if ($flexibleRoute->hasSlashAtEnd() && $lastSymbolCurrentUrl !== "/") {
@@ -210,8 +210,7 @@ class Router {
                 $routeVars = array_merge($routeVars, $matches[1]);
 
                 $settings = $this->serviceLocator->getService(Settings::class);
-                $siteDisabled = $settings->get('site_work') === 'off' && empty($_SESSION['admin']);
-                if ($siteDisabled) {
+                if ((!isset($route['always_active']) || $route['always_active'] !== true) && $settings->get('site_work') === 'off' && empty($_SESSION['admin'])) {
                     $controllerName = self::DEFAULT_CONTROLLER_NAMESPACE . 'ErrorController';
                     $method = 'siteDisabled';
                 }
@@ -480,7 +479,7 @@ class Router {
         if (!empty($routeVars)) {
             foreach ($routeVars as $key => $routeVar) {
                 $param = isset($routeParams[$key]) ? $routeParams[$key] : null;
-                $param = trim(strip_tags(htmlspecialchars($param)));
+                $param = strip_tags(htmlspecialchars($param));
                 
                 $allParams[$routeVar] = (empty($param) && !empty($defaults['{$' . $routeVar . '}']) ? $defaults['{$' . $routeVar . '}'] : $param);
             }

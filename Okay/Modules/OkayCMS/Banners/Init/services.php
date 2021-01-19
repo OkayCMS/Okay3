@@ -9,6 +9,7 @@ use Okay\Core\Database;
 use Okay\Core\Design;
 use Okay\Core\EntityFactory;
 use Okay\Core\Image;
+use Okay\Core\Languages;
 use Okay\Core\Modules\Module;
 use Okay\Core\OkayContainer\Reference\ParameterReference as PR;
 use Okay\Core\OkayContainer\Reference\ServiceReference as SR;
@@ -39,6 +40,7 @@ return [
             new SR(QueryFactory::class),
             new SR(Database::class),
             new SR(Request::class),
+            new SR(Languages::class),
         ],
     ],
     BannersImagesRequest::class => [

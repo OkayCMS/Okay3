@@ -26,11 +26,12 @@ class BackendUsersRequest
         $user = new \stdClass;
         $user->id = $this->request->post('id', 'integer');
         $user->name = $this->request->post('name');
+        $user->last_name = $this->request->post('last_name');
         $user->email = $this->request->post('email');
         $user->phone = Phone::toSave($this->request->post('phone'));
         $user->address = $this->request->post('address');
         $user->group_id = $this->request->post('group_id');
-
+    
         return ExtenderFacade::execute(__METHOD__, $user, func_get_args());
     }
     

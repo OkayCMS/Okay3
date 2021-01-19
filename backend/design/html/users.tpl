@@ -113,7 +113,7 @@
 
                                         <div class="okay_list_boding okay_list_users_name">
                                             <a href="{url controller=UserAdmin id=$user->id}">
-                                                {$user->name|escape}
+                                                {$user->name|escape} {$user->last_name|escape} 
                                             </a>
                                             {get_design_block block="users_list_name" vars=['user' => $user]}
                                         </div>

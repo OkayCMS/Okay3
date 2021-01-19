@@ -87,6 +87,21 @@ class Validator
         // ...
         return true;
     }
+    
+    public function isDomain($url = "", $is_required = false)
+    {
+        // general
+        if (!$this->isSafe($url)) {
+            return false;
+        }
+        if (empty($url)) {
+            return !$is_required;
+        }
+        if (!preg_match("/^(?:https?://)?[a-zA-Zа-яА-Я\d]+?(?:-+[a-zA-Zа-яА-Я\d]+?)*\.(?:[a-zA-Zа-яА-Я\d.]+?(?:-+[a-zA-Zа-яА-Я\d]+?)*)+/?$/ui", $url)) {
+            return false;
+        }
+        return true;
+    }
 
     public function isAddress($address = "", $is_required = false)
     {

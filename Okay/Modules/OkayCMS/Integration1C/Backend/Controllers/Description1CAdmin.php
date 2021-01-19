@@ -19,6 +19,15 @@ class Description1CAdmin extends IndexAdmin
             foreach($statuses as $id => $status) {
                 $orderStatusEntity->update($id, ['status_1c' => $status]);
             }
+            
+            $this->settings->set('integration1cBrandOptionName', $this->request->post('integration1cBrandOptionName'));
+            $this->settings->set('integration1cGuidPriceFrom1C', $this->request->post('integration1cGuidPriceFrom1C'));
+            $this->settings->set('integration1cGuidComparePriceFrom1C', $this->request->post('integration1cGuidComparePriceFrom1C'));
+            
+            $this->settings->set('integration1cFullUpdate', $this->request->post('integration1cFullUpdate', 'int'));
+            $this->settings->set('integration1cOnlyEnabledCurrencies', $this->request->post('integration1cOnlyEnabledCurrencies', 'int'));
+            $this->settings->set('integration1cStockFrom1c', $this->request->post('integration1cStockFrom1c', 'int'));
+            $this->settings->set('integration1cImportProductsOnly', $this->request->post('integration1cImportProductsOnly', 'int'));
         }
 
         $ordersStatuses = $orderStatusEntity->find();

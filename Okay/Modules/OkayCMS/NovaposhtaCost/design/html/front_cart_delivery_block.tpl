@@ -4,7 +4,7 @@
         
         {if $delivery->settings['service_type'] == 'DoorsDoors' || $delivery->settings['service_type'] == 'WarehouseDoors'}
             <div class="form__group">
-                <input class="city_novaposhta_for_door form__input form__placeholder--focus" name="novaposhta_city" autocomplete="off" type="text" value="{$request_data.novaposhta_city|escape}" >
+                <input class="city_novaposhta_for_door form__input form__placeholder--focus" name="novaposhta_city" autocomplete="on" type="text" value="{$request_data.novaposhta_city|escape}" >
                 <span class="form__placeholder">{$lang->np_cart_city}*</span>
             </div>
 
@@ -37,7 +37,7 @@
             
         {else}
             <div class="form__group">
-                <input class="city_novaposhta form__input form__placeholder--focus" name="novaposhta_city" autocomplete="off" type="text" value="{$request_data.novaposhta_city|escape}" >
+                <input class="city_novaposhta form__input form__placeholder--focus" name="novaposhta_city" autocomplete="on" type="text" value="{$request_data.novaposhta_city|escape}" >
                 <span class="form__placeholder">{$lang->np_cart_city}*</span>
             </div>
             

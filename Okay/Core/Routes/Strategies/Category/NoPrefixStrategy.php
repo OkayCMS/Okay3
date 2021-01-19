@@ -49,8 +49,7 @@ class NoPrefixStrategy extends AbstractRouteStrategy
 
     private function matchCategoryUrl($url)
     {
-        preg_match("/([^\/]+)/ui", $url, $matches);
-
+        preg_match("~(?:category_features/)?([^/]+)~ui", $url, $matches);
         if (isset($matches[1])) {
             return $matches[1];
         }
@@ -60,6 +59,9 @@ class NoPrefixStrategy extends AbstractRouteStrategy
 
     private function matchFiltersUrl($categoryUrl, $url)
     {
+        if (strpos($url, 'category_features') !== false) {
+            $url = substr($url, strlen('category_features') + 1);
+        }
         return substr($url, strlen($categoryUrl) + 1);
     }
 }
