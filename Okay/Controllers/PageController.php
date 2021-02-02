@@ -4,6 +4,7 @@
 namespace Okay\Controllers;
 
 
+use Okay\Core\Router;
 use Okay\Entities\PagesEntity;
 
 class PageController extends AbstractController
@@ -25,6 +26,7 @@ class PageController extends AbstractController
         }
         
         $this->design->assign('page', $page);
+        $this->design->assign('canonical', Router::generateUrl('page', ['url' => $page->url], true));
         
         $this->response->setContent('page.tpl');
     }

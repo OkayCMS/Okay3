@@ -5,7 +5,6 @@ namespace Okay\Core;
 
 
 use Okay\Core\Adapters\Response\AdapterManager;
-use OkayLicense\License;
 
 class Response
 {
@@ -14,14 +13,12 @@ class Response
     private $adapterManager;
     private $headers;
     private $type;
-    private $license;
     private $isStream = false;
     private $statusCode = 200;
     
-    public function __construct(AdapterManager $adapterManager, License $license)
+    public function __construct(AdapterManager $adapterManager)
     {
         $this->adapterManager = $adapterManager;
-        $this->license = $license;
         $this->type = RESPONSE_HTML;
     }
 
@@ -108,7 +105,6 @@ class Response
         /** @var Adapters\Response\AbstractResponse $adapter */
         $adapter = $this->adapterManager->getAdapter($this->type);
 
-        $this->license->setResponseType($this->type);
         $adapter->send([$content]);
     }
     
@@ -124,8 +120,6 @@ class Response
         if ($this->headersExists()) {
             $this->sendHeaders();
         }
-
-        $this->license->setResponseType($this->type);
         
         $adapter->send($this->content);
     }

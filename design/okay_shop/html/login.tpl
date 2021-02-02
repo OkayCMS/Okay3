@@ -1,8 +1,5 @@
 {* Login page *}
 
-{* The canonical address of the page *}
-{$canonical="{url_generator route="login"}" scope=global}
-
 {* The page title *}
 {$meta_title = $lang->login_title scope=global}
 

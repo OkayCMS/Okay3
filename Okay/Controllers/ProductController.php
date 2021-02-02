@@ -5,6 +5,7 @@ namespace Okay\Controllers;
 
 
 use Okay\Core\BrowsedProducts;
+use Okay\Core\Router;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\CategoriesEntity;
@@ -99,6 +100,8 @@ class ProductController extends AbstractController
         }
 
         $browsedProducts->addItem($product->id);
+
+        $this->design->assign('canonical', Router::generateUrl('product', ['url' => $product->url], true));
 
         $this->response->setContent('product.tpl');
     }

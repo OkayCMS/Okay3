@@ -1,7 +1,5 @@
 ;<? exit(); ?>
 
-license = 6krnbqvtld bcwcejpzgj nvwnxosqyt ovrztnqqr1 xutb9nhlsl ik7a6y9z zqwhhrtwdx gihygryqik sxknuyr6xn qus8rtylvl fzzrotobdm 9qjpshflqm xwhjoxhmyn rumsknsnnl rdpcqnplvm rnavvrbt6f qsqs8zhofs hymnurdttq mzyfvryc kwwbrqqozk povbqn8kpx dmvkswonpz 9trlkmtwvy vnevholswk k6zvmqlzxd nppptcvivx mtkyzxxztq rmdxpympvt i9pgr7tvko nmpsklravr mtudvsskxl wwumxjcmxz fwyvktgywo gibfedydq9 ezjrhtsrzg ovjiqevq vooqyktn zp7z4wo2lx y8ylkeghxr yjsevsjvsn zikgnljhoh puvlswwsxy xvf2dlzobk obyvhepz pbvapwoyhq xwozmqqmiz skntlxuutx rfqny5xpf6 i7pp9ewg8a bzbhrlelmn kitumtymls vywouvlqpk ycostvrmsp xegu9xpifu ogay9zweyp dvxnenvnfq qwirwpyuj1 lgupzbwot6 q8xe7uixwz hegzfiqg9i qzfkfntzdu hyxpyulqsy zsxjvqvvvs xjxnptvvjm 4tkwavel6n 9xrnjokzjr nyflrlttxx sty9weslnh rjtdztqrsg yhyi3i9lhz modrzqtpou a2xjj6mlks syx6pmmhsq pkwwsvopsw vnvnznmzov 9seonrdom4 9bvdtebnom l8erpzsjpf xpndqrqjuf nhwousuyyr ux7vewsut9 6u677ypnhe shswghomud woxnwiojru nwlwwuvrvs tywtcarl74 9dp7eom9jp bzovmvjehy vvfnxuxtql stvnpyolot yvv8pmx97h xm57ukciwn zbjwnugxzh cflvpnoovo uympwotxor pbpwzevzw7 rldr88ef8v fjdw
-
 [database]
 
 ;Сервер базы данных

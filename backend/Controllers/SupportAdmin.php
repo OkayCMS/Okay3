@@ -27,6 +27,16 @@ class SupportAdmin extends IndexAdmin
                 exit();
             }
         }
+        
+        if ($this->request->method('post') && !empty($this->request->post('manual_save_keys'))) {
+            $supportInfoEntity->updateInfo([
+                'public_key' => str_replace("\r\n", "\n", $this->request->post('public_key')),
+                'private_key'  => str_replace("\r\n", "\n", $this->request->post('private_key')),
+            ]);
+            $this->response->addHeader("Refresh:0");
+            $this->response->sendHeaders();
+            exit();
+        }
 
         $supportInfo = $supportInfoEntity->getInfo();
         if ($error) {

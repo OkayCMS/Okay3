@@ -148,7 +148,14 @@ class PrefixAndPathStrategy extends AbstractRouteStrategy
             $noCategoryPathUri = substr($noCategoryPathUri, 1);
         }
 
-        return explode('/', $noCategoryPathUri)[0];
+        $urlParams = explode('/', $noCategoryPathUri);
+
+        // Здесь остался только урл товара и если после урла товара еще что-то есть, бросаем 404
+        if (!empty($urlParams[1])) {
+            return false;
+        }
+
+        return $urlParams[0];
     }
 
     private function uriNoContainsValidCategoryPathUrl($url, $categoryPathUrl)

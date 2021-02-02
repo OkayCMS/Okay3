@@ -18,7 +18,6 @@ use Okay\Entities\ManagersEntity;
 use Okay\Core\EntityFactory;
 use Okay\Core\Modules\Modules;
 use Okay\Core\BackendTranslations;
-use OkayLicense\License;
 
 require_once('vendor/autoload.php');
 $DI = include 'Okay/Core/config/container.php';
@@ -28,17 +27,10 @@ $config = $DI->get(Config::class);
 
 $smartyPlugins = include_once 'Okay/Core/SmartyPlugins/SmartyPlugins.php';
 
-/** @var License $license */
-$license = $DI->get(License::class);
-$license->check();
-
 /** @var Modules $modules */
 $modules = $DI->get(Modules::class);
 $modules->startEnabledModules();
-
-$license->registerSmartyPlugins();
-
-$license->bindModulesRoutes();
+$modules->registerSmartyPlugins();
 
 /** @var BackendTranslations $backendTranslations */
 $backendTranslations = $DI->get(BackendTranslations::class);

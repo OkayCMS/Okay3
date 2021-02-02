@@ -4,6 +4,7 @@
 namespace Okay\Controllers;
 
 
+use Okay\Core\Router;
 use Okay\Core\WishList;
 
 class WishListController extends AbstractController
@@ -11,6 +12,7 @@ class WishListController extends AbstractController
     
     public function render()
     {
+        $this->design->assign('canonical', Router::generateUrl('wishlist', [], true));
         $this->response->setContent('wishlist.tpl');
     }
     

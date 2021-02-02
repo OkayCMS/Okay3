@@ -12,7 +12,6 @@ use Okay\Core\Response;
 use Okay\Core\Managers;
 use Okay\Core\ManagerMenu;
 use Okay\Core\Config;
-use OkayLicense\License;
 use Okay\Core\Entity\Entity;
 use Okay\Core\Languages;
 use Okay\Entities\LanguagesEntity;
@@ -94,17 +93,11 @@ $design = $DI->get(Design::class);
 /** @var Module $module */
 $module = $DI->get(Module::class);
 
-/** @var License $license */
-$license = $DI->get(License::class);
-$license->check();
-
 // Запускаем все модули
 $modules->startAllModules();
 
-$license->registerSmartyPlugins();
+$modules->registerSmartyPlugins();
 $modules->indexingNotInstalledModules();
-
-$license->bindModulesRoutes();
 
 $smartyPlugins = include_once 'Okay/Core/SmartyPlugins/SmartyPlugins.php';
 

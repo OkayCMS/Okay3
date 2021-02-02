@@ -1,8 +1,5 @@
 {* Registration page *}
 
-{* The canonical address of the page *}
-{$canonical="{url_generator route="register" absolute=1}" scope=global}
-
 {* The page title *}
 {$meta_title = $lang->register_title scope=global}
 

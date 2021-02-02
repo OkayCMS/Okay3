@@ -20,8 +20,6 @@ use Okay\Helpers\ProductsHelper;
 class ProductsController extends AbstractController
 {
 
-    private $catalogType;
-
     public function render(
         CatalogHelper $catalogHelper,
         ProductsHelper $productsHelper,
@@ -34,9 +32,9 @@ class ProductsController extends AbstractController
         $filtersUrl = ''
     ) {
         
-        $this->catalogType = $router->getCurrentRouteName();
+        $catalogType = $router->getCurrentRouteName();
         
-        switch ($this->catalogType) {
+        switch ($catalogType) {
             case 'bestsellers':
                 $this->setMetadataHelper($bestsellersMetadataHelper);
                 break;
@@ -65,7 +63,7 @@ class ProductsController extends AbstractController
         
         // данный фильтр может быть применен только на странице search (all-products)
         if (($currentOtherFilters = $filterHelper->getCurrentOtherFilters($filtersUrl)) === false
-            || $this->catalogType != 'search' && !empty($currentOtherFilters)) {
+            || $catalogType != 'search' && !empty($currentOtherFilters)) {
             return false;
         }
 
@@ -91,11 +89,11 @@ class ProductsController extends AbstractController
         } else {
             $sortProducts = 'position';
         }
-        $this->design->assign('sort', $currentSort);
+        $this->design->assign('sort', $sortProducts);
         
-        $filter['price'] = $catalogHelper->getPriceFilter($this->catalogType);
+        $filter['price'] = $catalogHelper->getPriceFilter($catalogType);
         
-        if ($this->catalogType == 'search') {
+        if ($catalogType == 'search') {
             $this->design->assign('other_filters', $catalogHelper->getOtherFilters($filter));
         }
 
@@ -103,10 +101,10 @@ class ProductsController extends AbstractController
             $this->design->assign('is_filter_page', true);
         }
         
-        $prices = $catalogHelper->getPrices($filter, $this->catalogType);
+        $prices = $catalogHelper->getPrices($filter, $catalogType);
         $this->design->assign('prices', $prices);
         
-        switch ($this->catalogType) {
+        switch ($catalogType) {
             case 'bestsellers':
                 $filter = $filterHelper->getFeaturedProductsFilter($filter);
                 break;
@@ -161,7 +159,7 @@ class ProductsController extends AbstractController
 
         //lastModify
         $lastModifyFilter = ['limit' => 1];
-        switch ($this->catalogType) {
+        switch ($catalogType) {
             case 'bestsellers':
                 $lastModifyFilter['featured'] = true;
                 break;
@@ -180,7 +178,14 @@ class ProductsController extends AbstractController
 
         $relPrevNext = $this->design->fetch('products_rel_prev_next.tpl');
         $this->design->assign('rel_prev_next', $relPrevNext);
-        $this->design->assign('sort_canonical', $filterHelper->getSortCanonical());
+        
+        if (!empty($currentSort) || !empty($keyword)) {
+            $this->design->assign('noindex_follow', true);
+        }
+
+        $canonical = Router::generateUrl($catalogType, [], true);
+
+        $this->design->assign('canonical', $canonical);
         
         $this->response->setContent('products.tpl');
     }

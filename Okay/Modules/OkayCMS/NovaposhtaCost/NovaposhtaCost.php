@@ -134,14 +134,14 @@ class NovaposhtaCost
         $languagesEntity = $this->entityFactory->get(LanguagesEntity::class);
 
         $ruLanguage = $languagesEntity->findOne(['label' => 'ru']);
-        $uaLanguage = $languagesEntity->findOne(['label' => 'ua']);
+        $languages = $languagesEntity->find();
         
         $response = $this->npRequest(json_encode($request));
         if ($response->success) {
 
             /** @var NPCitiesEntity $citiesEntity */
             $citiesEntity = $this->entityFactory->get(NPCitiesEntity::class);
-            $cities = $citiesEntity->mappedBy('ref')->find();
+            $cities = $citiesEntity->mappedBy('ref')->noLimit()->find();
             $currentCitiesIds = [];
             foreach ($cities as $c) {
                 $currentCitiesIds[$c->ref] = $c->id;
@@ -165,17 +165,17 @@ class NovaposhtaCost
                         $citiesEntity->update($city->id, $city);
                     }
                 } else {
-                    if (!empty($uaLanguage)) {
-                        $this->languages->setLangId($uaLanguage->id);
+
+                    foreach ($languages as $l) {
+                        $this->languages->setLangId($l->id);
                         $city = $cities[$cityData->Ref];
-                        $city->name = htmlspecialchars($cityData->Description);
-                        $citiesEntity->update($city->id, $city);
-                    }
-                    if (!empty($ruLanguage)) {
-                        $this->languages->setLangId($ruLanguage->id);
-                        $city = $cities[$cityData->Ref];
-                        $city->name = htmlspecialchars($cityData->DescriptionRu);
-                        if (empty($city->name)) {
+
+                        if ($l->label == 'ru') {
+                            $city->name = htmlspecialchars($cityData->DescriptionRu);
+                            if (empty($city->name)) {
+                                $city->name = htmlspecialchars($cityData->Description);
+                            }
+                        } else {
                             $city->name = htmlspecialchars($cityData->Description);
                         }
                         $citiesEntity->update($city->id, $city);
@@ -216,14 +216,14 @@ class NovaposhtaCost
         $languagesEntity = $this->entityFactory->get(LanguagesEntity::class);
 
         $ruLanguage = $languagesEntity->findOne(['label' => 'ru']);
-        $uaLanguage = $languagesEntity->findOne(['label' => 'ua']);
+        $languages = $languagesEntity->find();
 
         $response = $this->npRequest(json_encode($request));
         if ($response->success) {
 
             /** @var NPWarehousesEntity $warehousesEntity */
             $warehousesEntity = $this->entityFactory->get(NPWarehousesEntity::class);
-            $warehouses = $warehousesEntity->mappedBy('ref')->find();
+            $warehouses = $warehousesEntity->mappedBy('ref')->noLimit()->find();
             $currentWarehousesIds = [];
             foreach ($warehouses as $c) {
                 $currentWarehousesIds[$c->ref] = $c->id;
@@ -248,17 +248,17 @@ class NovaposhtaCost
                         $warehousesEntity->update($warehouse->id, $warehouse);
                     }
                 } else {
-                    if (!empty($uaLanguage)) {
-                        $this->languages->setLangId($uaLanguage->id);
+                    
+                    foreach ($languages as $l) {
+                        $this->languages->setLangId($l->id);
                         $warehouse = $warehouses[$warehouseData->Ref];
-                        $warehouse->name = htmlspecialchars($warehouseData->Description);
-                        $warehousesEntity->update($warehouse->id, $warehouse);
-                    }
-                    if (!empty($ruLanguage)) {
-                        $this->languages->setLangId($ruLanguage->id);
-                        $warehouse = $warehouses[$warehouseData->Ref];
-                        $warehouse->name = htmlspecialchars($warehouseData->DescriptionRu);
-                        if (empty($warehouse->name)) {
+                        
+                        if ($l->label == 'ru') {
+                            $warehouse->name = htmlspecialchars($warehouseData->DescriptionRu);
+                            if (empty($warehouse->name)) {
+                                $warehouse->name = htmlspecialchars($warehouseData->Description);
+                            }
+                        } else {
                             $warehouse->name = htmlspecialchars($warehouseData->Description);
                         }
                         $warehousesEntity->update($warehouse->id, $warehouse);

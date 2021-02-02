@@ -4,6 +4,7 @@
 namespace Okay\Controllers;
 
 
+use Okay\Core\Router;
 use Okay\Entities\AuthorsEntity;
 use Okay\Entities\BlogEntity;
 use Okay\Helpers\AuthorsHelper;
@@ -63,6 +64,8 @@ class AuthorsController extends AbstractController
         $this->design->assign('posts', $posts);
         $this->design->assign('author', $author);
 
+        $this->design->assign('canonical', Router::generateUrl('author', ['url' => $author->url], true));
+
         $this->response->setContent('author.tpl');
     }
     
@@ -93,6 +96,8 @@ class AuthorsController extends AbstractController
 
         // Передаем в шаблон
         $this->design->assign('authors', $authors);
+
+        $this->design->assign('canonical', Router::generateUrl('authors', [], true));
 
         $this->response->setContent('authors.tpl');
     }

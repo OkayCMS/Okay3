@@ -12,7 +12,6 @@ use Okay\Core\Config;
 use Okay\Core\Database;
 use Okay\Core\QueryFactory;
 use Okay\Core\Response;
-use OkayLicense\License;
 
 ini_set('display_errors', 'on');
 error_reporting(E_ALL & ~E_DEPRECATED);
@@ -39,10 +38,6 @@ $config = $DI->get(Config::class);
 
 /** @var Response $response */
 $response = $DI->get(Response::class);
-
-/** @var License $license */
-$license = $DI->get(License::class);
-$license->check();
 
 /** @var QueryFactory $queryFactory */
 $queryFactory = $DI->get(QueryFactory::class);

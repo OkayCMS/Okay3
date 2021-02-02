@@ -238,7 +238,20 @@
         <tr>
             <td>
                 <div class="view_purchase">
-                    {$purchase->product_name|escape} {$purchase->variant_name|escape} {if $purchase->sku} ({$btr->general_sku|escape} {$purchase->sku|escape}){/if}
+                    {if $purchase->product->name}
+                        {$purchase->product->name|escape}
+                    {else}
+                        {$purchase->product_name|escape}
+                    {/if}
+                    {if $purchase->variant->name}
+                        {$purchase->variant->name|escape}
+                    {else}
+                        {$purchase->product_name|escape}
+                    {/if}
+                    {if $purchase->sku} 
+                        ({$btr->general_sku|escape} 
+                        {$purchase->sku|escape})
+                    {/if}
                     {get_design_block block="order_print_purchase_name" vars=['purchase'=>$purchase]}
                 </div>
             </td>

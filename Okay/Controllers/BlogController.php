@@ -4,6 +4,7 @@
 namespace Okay\Controllers;
 
 
+use Okay\Core\Router;
 use Okay\Entities\BlogCategoriesEntity;
 use Okay\Entities\BlogEntity;
 use Okay\Helpers\BlogHelper;
@@ -73,6 +74,8 @@ class BlogController extends AbstractController
             $this->design->assign('prev_post', $neighborsProducts['prev']);
         }
 
+        $this->design->assign('canonical', Router::generateUrl('post', ['url' => $post->url], true));
+        
         $this->response->setContent('post.tpl');
     }
     
@@ -125,6 +128,18 @@ class BlogController extends AbstractController
         
         // Передаем в шаблон
         $this->design->assign('posts', $posts);
+
+        if (!empty($category)) {
+            $canonical = Router::generateUrl('blog_category', ['url' => $category->url], true);
+        } else {
+            $canonical = Router::generateUrl('blog', [], true);
+        }
+
+        if (!empty($currentSort)) {
+            $this->design->assign('noindex_follow', true);
+        }
+
+        $this->design->assign('canonical', $canonical);
         
         $this->response->setContent('blog.tpl');
     }

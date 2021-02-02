@@ -25,7 +25,6 @@ use Okay\Core\Translit;
 use Okay\Entities\ManagersEntity;
 use Okay\Entities\LanguagesEntity;
 use Okay\Entities\CurrenciesEntity;
-use OkayLicense\License;
 use Okay\Entities\SupportInfoEntity;
 
 class IndexAdmin
@@ -105,7 +104,6 @@ class IndexAdmin
         Response $response,
         Settings $settings,
         Config $config,
-        License $license,
         Languages $languages,
         EntityFactory $entityFactory,
         ManagerMenu $managerMenu,
@@ -202,8 +200,6 @@ class IndexAdmin
         if (!empty($mainLanguage->id)) {
             $design->assign('main_lang_id', $mainLanguage->id);
         }
-        
-        $design->assign('is_valid_license', $license->check());
 
         if ($request->method('post') && !empty($this->manager->id)) {
             $managersEntity->updateLastActivityDate($this->manager->id);

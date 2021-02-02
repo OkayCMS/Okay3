@@ -5,6 +5,7 @@ namespace Okay\Controllers;
 
 
 use Okay\Core\Notify;
+use Okay\Core\Router;
 use Okay\Entities\FeedbacksEntity;
 use Okay\Helpers\ValidateHelper;
 use Okay\Requests\CommonRequest;
@@ -33,6 +34,8 @@ class FeedbackController extends AbstractController {
                 $notify->emailFeedbackAdmin($feedbackId);
             }
         }
+
+        $this->design->assign('canonical', Router::generateUrl('page', ['url' => $this->page->url], true));
         
         $this->response->setContent('feedback.tpl');
     }

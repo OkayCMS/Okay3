@@ -150,6 +150,8 @@ class CartController extends AbstractController
             $this->design->assign('coupon_request', true);
         }
 
+        $this->design->assign('noindex_follow', true);
+        
         $this->response->setContent('cart.tpl');
     }
     

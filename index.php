@@ -6,11 +6,11 @@ use Okay\Core\Router;
 use Okay\Core\Request;
 use Okay\Core\Response;
 use Okay\Core\Config;
-use OkayLicense\License;
 use Okay\Core\Modules\Modules;
 use Psr\Log\LoggerInterface;
 
-ini_set('display_errors', 'off');
+ini_set('display_errors', 'on');
+error_reporting(E_ALL);
 
 if (!empty($_SERVER['HTTP_USER_AGENT'])) {
     session_name(md5($_SERVER['HTTP_USER_AGENT']));
@@ -59,16 +59,11 @@ try {
         
         $response->redirectTo($request->getRootUrl());
     }
-
-    /** @var License $license */
-    $license = $DI->get(License::class);
-    $license->check();
     
     /** @var Modules $modules */
     $modules = $DI->get(Modules::class);
     $modules->startEnabledModules();
     
-    $license->bindModulesRoutes();
     $router->run();
 
     if ($response->getContentType() == RESPONSE_HTML) {

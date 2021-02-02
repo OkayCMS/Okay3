@@ -1,6 +1,4 @@
 {* The main page template *}
-{* The canonical address of the page *}
-{$canonical="{url_generator route="main" absolute=1}" scope=global}
 
 {* Featured products *}
 {get_featured_products var=featured_products limit=5}

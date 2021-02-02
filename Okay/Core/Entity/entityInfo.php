@@ -158,6 +158,13 @@ trait entityInfo
         }
     }
 
+    final public static function addAdditionalField($name)
+    {
+        if (!in_array($name, static::getAdditionalFields())) {
+            static::$additionalFields[] = $name;
+        }
+    }
+
     final public static function addLangField($name)
     {
         if (!in_array($name, static::getLangFields())) {

@@ -404,6 +404,18 @@ abstract class AbstractInit
     }
 
     /**
+     * @param $entityClassName
+     * @param $fieldName
+     * 
+     * Регистрация дополнительных полей к существующим сущностям.
+     * Это поле не обязательно должно быть в таблице сущности, это может быть дополнительный запрос и результат как колонка сущности
+     */
+    protected function registerEntityAdditionalField($entityClassName, $fieldName)
+    {
+        $entityClassName::addAdditionalField($fieldName);
+    }
+
+    /**
      * Регистрация ленговой таблицы для указанного Entity. Нужно в случае, если стандартный Entity был не мультиязычна, 
      * а нужно чтобы он стал мультиязычным.
      * 

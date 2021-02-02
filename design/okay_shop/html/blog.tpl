@@ -1,11 +1,5 @@
 {* The blog page template *}
 
-{* The canonical address of the page *}
-{if $route_name == 'blog_category'}
-    {$canonical="{url_generator route=$route_name url=$category->url absolute=1}" scope=global}
-{else}
-    {$canonical="{url_generator route=$route_name absolute=1}" scope=global}
-{/if}
 <div class="d-lg-flex align-items-lg-start justify-content-lg-between flex-lg-row-reverse clearfix">
     {* Sidebar with blog *}
     <div class="fn_mobile_toogle sidebar sidebar--right d-lg-flex flex-lg-column">

@@ -8,7 +8,6 @@ use Okay\Core\ManagerMenu;
 use Okay\Core\BackendTranslations;
 use Okay\Entities\LanguagesEntity;
 use Okay\Entities\ManagersEntity;
-use OkayLicense\License;
 use Okay\Core\Modules\Modules;
 
 chdir('../../../../');
@@ -28,15 +27,11 @@ $config = $DI->get(Config::class);
 /** @var ManagerMenu $managerMenu */
 $managerMenu = $DI->get(ManagerMenu::class);
 
-/** @var License $license */
-$license = $DI->get(License::class);
-$license->check();
-
 /** @var Modules $modules */
 $modules = $DI->get(Modules::class);
 $modules->startEnabledModules();
 
-$license->registerSmartyPlugins();
+$modules->registerSmartyPlugins();
 
 // Кеширование нам не нужно
 /** @var Response $response */

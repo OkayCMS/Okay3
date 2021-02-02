@@ -38,7 +38,7 @@
                 {include file='pagination.tpl'}
             </div>
             <div class="col-lg-12 col-md-12 col-sm-12">
-                <form class="fn_form_list" method="post">
+                <form method="post">
                     <input type="hidden" name="session_id" value="{$smarty.session.id}">
 
                     <div class="orders_list okay_list fn_sort_list">
@@ -105,31 +105,55 @@
                     <div class="alert__content">
                         <div class="alert__title">
                             {if $message_error == 'empty_key'}
-                            {$btr->support_no_keys|escape}
+                                {$btr->support_no_keys|escape}
                             {elseif $message_error == 'domain_not_found'}
-                            {$btr->support_no_domain|escape}
+                                {$btr->support_no_domain|escape}
                             {elseif $message_error == 'domain_disabled'}
-                            {$btr->support_domain_blocked|escape}
+                                {$btr->support_domain_blocked|escape}
                             {elseif $message_error == 'wrong_key'}
-                            {$btr->support_wrong_keys|escape}
+                                {$btr->support_wrong_keys|escape}
                             {elseif $message_error == 'domain_has_already_gotten_keys'}
-                            {$btr->support_already_receive_keys|escape}
+                                {$btr->support_already_receive_keys|escape}
                             {elseif $message_error == 'request_has_already_sent'}
-                            {$btr->support_already_sent|escape}
+                                {$btr->support_already_sent|escape}
                             {elseif $message_error == 'localhost'}
-                            {$btr->support_local|escape}
+                                {$btr->support_local|escape}
                             {else}
-                            {$message_error|escape}
+                                {$message_error|escape}
                             {/if}
                         </div>
-                        {if in_array($message_error, array('empty_key', 'domain_not_found'))}
+                        
                         <div class="text_box mt-1">
-                            <form class="fn_form_list" method="post">
-                                <input type="hidden" name="session_id" value="{$smarty.session.id}">
-                                <input class="btn btn_small btn-warning" type="submit" name="get_new_keys" value="{$btr->support_get_keys|escape}"/>
+                            <form method="post">
+                                {if in_array($message_error, array('empty_key', 'domain_not_found'))}
+                                    <input type="hidden" name="session_id" value="{$smarty.session.id}">
+                                    <input class="btn btn_small btn-warning mr-1" type="submit" name="get_new_keys" value="{$btr->support_get_keys|escape}"/>
+                                {/if}
+                                <input class="btn btn_small btn-info fn_manual_keys_button" type="button" value="{$btr->support_manual_save_keys|escape}"/>
                             </form>
                         </div>
-                        {/if}
+                        
+                        <div class="text_box mt-1 fn_manual_keys_block" style="display: none">
+                            <form method="post">
+                                <input type="hidden" name="session_id" value="{$smarty.session.id}">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="heading_label">Public key</div>
+                                        <textarea name="public_key" class="form-control okay_textarea"></textarea>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 pl-0">
+                                        <div class="heading_label">Private key</div>
+                                        <textarea name="private_key" class="form-control okay_textarea"></textarea>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 mt-1">
+                                        <button type="submit" name="manual_save_keys" value="1" class="fn_step-15 btn btn_small btn_blue float-md-right">
+                                            {include file='svg_icon.tpl' svgId='checked'}
+                                            <span>{$btr->general_apply|escape}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -146,3 +170,9 @@
         </div>
     {/if}
 {/if}
+
+<script>
+    $('.fn_manual_keys_button').on('click', function () {
+        $('.fn_manual_keys_block').slideToggle();
+    });
+</script>

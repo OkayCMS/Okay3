@@ -1,18 +1,5 @@
 {* The Categories page *}
-{* The canonical address of the page *}
-{if $set_canonical || $current_page_num > 1 || $is_all_pages}
-    {if $category}
-        {$canonical="{if $cannonical}{$cannonical}{else}{url_generator route='category' url=$category->url absolute=1}{/if}" scope=global}
-    {elseif $brand}
-        {$canonical="{url_generator route='brand' url=$brand->url absolute=1}" scope=global}
-    {elseif $route_name == 'discounted'}
-        {$canonical="{url_generator route='discounted' absolute=1}" scope=global}
-    {elseif $route_name == 'bestsellers'}
-        {$canonical="{url_generator route='bestsellers' absolute=1}" scope=global}
-    {elseif $route_name == 'search'}
-        {$canonical="{url_generator route='search' absolute=1}" scope=global}
-    {/if}
-{/if}
+
 <div class="clearfix">
     {* Sidebar with filters *}
     <div class="fn_mobile_toogle sidebar d-lg-flex flex-lg-column">

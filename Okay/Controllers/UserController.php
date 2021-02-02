@@ -104,6 +104,10 @@ class UserController extends AbstractController
         
         $this->design->assign('active_tab', $activeTab);
         $this->design->assign('meta_title', $this->user->name);
+        
+        $this->design->assign('noindex_follow', true);
+        $this->design->assign('canonical', Router::generateUrl('user', [], true));
+        
         $this->response->setContent('user.tpl');
     }
     
@@ -123,6 +127,9 @@ class UserController extends AbstractController
                 $this->design->assign('error', 'unknown error');
             }
         }
+
+        $this->design->assign('noindex_follow', true);
+        $this->design->assign('canonical', Router::generateUrl('register', [], true));
         
         $this->response->setContent('register.tpl');
     }
@@ -147,6 +154,9 @@ class UserController extends AbstractController
             }
         }
 
+        $this->design->assign('noindex_follow', true);
+        $this->design->assign('canonical', Router::generateUrl('login', [], true));
+        
         $this->response->setContent('login.tpl');
     }
     
@@ -206,6 +216,9 @@ class UserController extends AbstractController
                 $this->design->assign('error', 'user_not_found');
             }
         }
+
+        $this->design->assign('noindex_follow', true);
+        $this->design->assign('canonical', Router::generateUrl('password_remind', [], true));
         
         $this->response->setContent('password_remind.tpl');
     }

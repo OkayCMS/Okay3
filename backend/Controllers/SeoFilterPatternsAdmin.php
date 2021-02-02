@@ -138,6 +138,7 @@ class SeoFilterPatternsAdmin extends IndexAdmin
                 $this->settings->set('max_filter_features_values', $this->request->post('max_filter_features_values', 'integer', 0));
                 $this->settings->set('max_filter_features', $this->request->post('max_filter_features', 'integer', 0));
                 $this->settings->set('max_filter_depth', $this->request->post('max_filter_depth', 'integer', 0));
+                $this->settings->set('filter_canonical_type', $this->request->post('filter_canonical_type', 'string', 'filter_page'));
 
                 $result->success = true;
 

@@ -4,6 +4,7 @@
 namespace Okay\Controllers;
 
 
+use Okay\Core\Router;
 use Okay\Entities\BrandsEntity;
 use Okay\Entities\ProductsEntity;
 use Okay\Entities\CategoriesEntity;
@@ -16,7 +17,6 @@ class BrandController extends AbstractController
 {
 
     private $catalogType = 'brand';
-    private $isFilterPage = false;
 
     /*Отображение страницы бренда*/
     public function render(
@@ -30,7 +30,8 @@ class BrandController extends AbstractController
         $url,
         $filtersUrl = ''
     ) {
-        
+
+        $isFilterPage = false;
         $filterHelper->setFiltersUrl($filtersUrl);
 
         $this->setMetadataHelper($brandMetadataHelper);
@@ -75,11 +76,11 @@ class BrandController extends AbstractController
             $_SESSION['sort'] = $currentSort;
         }
         if (!empty($_SESSION['sort'])) {
-            $currentSort = $sortProducts = $_SESSION['sort'];
+            $sortProducts = $_SESSION['sort'];
         } else {
             $sortProducts = 'position';
         }
-        $this->design->assign('sort', $currentSort);
+        $this->design->assign('sort', $sortProducts);
         
         $filter['price'] = $catalogHelper->getPriceFilter($this->catalogType, $brand->id);
         
@@ -90,9 +91,9 @@ class BrandController extends AbstractController
         $this->design->assign('other_filters', $catalogHelper->getOtherFilters($filter));
 
         if ((!empty($filter['price']) && $filter['price']['min'] !== '' && $filter['price']['max'] !== '' && $filter['price']['min'] !== null) || !empty($filter['other_filter'])) {
-            $this->isFilterPage = true;
+            $isFilterPage = true;
         }
-        $this->design->assign('is_filter_page', $this->isFilterPage);
+        $this->design->assign('is_filter_page', $isFilterPage);
         
         $prices = $catalogHelper->getPrices($filter, $this->catalogType, $brand->id);
         $this->design->assign('prices', $prices);
@@ -139,13 +140,28 @@ class BrandController extends AbstractController
         $this->response->setHeaderLastModify(max($lastModify));
         //lastModify END
 
-        if ($this->isFilterPage === true) {
-            $this->design->assign('set_canonical', 1);
+        if (!empty($currentSort)) {
+            $this->design->assign('noindex_follow', true);
         }
+        
+        $canonical = Router::generateUrl('brand', ['url' => $brand->url], true);
+
+        if ($isFilterPage || $currentPage > 1) {
+            if ($this->settings->get('filter_canonical_type') == 'none') {
+                $canonical = null;
+            } elseif ($this->settings->get('filter_canonical_type') == 'filter_page') {
+                $chpuUrl = $filterHelper->filterChpuUrl(['sort' => null, 'page' => null]);
+                $chpuUrl = ltrim($chpuUrl, '/');
+                if (!empty($chpuUrl)) {
+                    $canonical = rtrim($canonical, '/') . '/' . $chpuUrl;
+                }
+            }
+        }
+
+        $this->design->assign('canonical', $canonical);
 
         $relPrevNext = $this->design->fetch('products_rel_prev_next.tpl');
         $this->design->assign('rel_prev_next', $relPrevNext);
-        $this->design->assign('sort_canonical', $filterHelper->getSortCanonical());
         
         $this->response->setContent('products.tpl');
     }

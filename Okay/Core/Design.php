@@ -8,7 +8,6 @@ use Okay\Core\Modules\Module;
 use Okay\Core\Modules\Modules;
 use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Core\TplMod\TplMod;
-use OkayLicense\License;
 use Smarty;
 use Mobile_Detect;
 
@@ -335,7 +334,28 @@ class Design
         }
         
         $this->registerSmartyPlugins();
-        $html = License::getHtml($this, $template);
+
+        if ($this->isUseModuleDir() === false) {
+            $this->setSmartyTemplatesDir($this->getDefaultTemplatesDir());
+        } else {
+            $vendor = $this->getModuleVendorByPath($this->getModuleTemplatesDir());
+            $moduleName = $this->getModuleNameByPath($this->getModuleTemplatesDir());
+
+            /**
+             * Устанавливаем директории поиска файлов шаблона как:
+             * Директория модуля в дизайне (если модуль кастомизируют)
+             * Директория модуля
+             * Стандартная директория дизайна
+             */
+            $this->setSmartyTemplatesDir([
+                rtrim($this->getDefaultTemplatesDir(), '/') . "/../modules/{$vendor}/{$moduleName}/html",
+                $this->getModuleTemplatesDir(),
+                $this->getDefaultTemplatesDir(),
+            ]);
+        }
+
+        $html = $this->smarty->fetch($template);
+        
         if (!$this->smartyHtmlMinify && $forceMinify === true) {
             $this->smarty->unloadFilter('output', 'trimwhitespace');
         }
@@ -476,6 +496,18 @@ class Design
             }
             closedir($handle);
         }
+    }
+
+    private function getModuleVendorByPath($path)
+    {
+        $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
+        return preg_replace('~.*/?Okay/Modules/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/?.*~', '$1', $path);
+    }
+
+    private function getModuleNameByPath($path)
+    {
+        $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
+        return preg_replace('~.*/?Okay/Modules/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/?.*~', '$2', $path);
     }
 
 }

@@ -132,6 +132,12 @@ class OrdersHelper
         if (!empty($order->phone)) {
             $order->phone = Phone::toSave($order->phone);
         }
+
+        // Добавим источник, с которого пришел пользователь
+        if ($referer = UserReferer::getUserReferer()) {
+            $order->referer_channel = $referer['medium'];
+            $order->referer_source = $referer['source'];
+        }
         
         return ExtenderFacade::execute(__METHOD__, $order, func_get_args());
     }
@@ -139,12 +145,6 @@ class OrdersHelper
     public function add($order)
     {
         $ordersEntity = $this->entityFactory->get(OrdersEntity::class);
-
-        // Добавим источник, с которого пришел пользователь
-        if ($referer = UserReferer::getUserReferer()) {
-            $order->referer_channel = $referer['medium'];
-            $order->referer_source = $referer['source'];
-        }
         
         $result = $ordersEntity->add($order);
         return ExtenderFacade::execute(__METHOD__, $result, func_get_args());

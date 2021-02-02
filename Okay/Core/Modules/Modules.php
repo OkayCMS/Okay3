@@ -4,6 +4,8 @@
 namespace Okay\Core\Modules;
 
 
+use Okay\Core\OkayContainer\OkayContainer;
+use Okay\Core\Router;
 use Smarty;
 use Okay\Core\Design;
 use Okay\Core\Database;
@@ -12,7 +14,6 @@ use Okay\Core\Config;
 use Okay\Core\TemplateConfig\FrontTemplateConfig;
 use Okay\Entities\ModulesEntity;
 use Okay\Core\EntityFactory;
-use OkayLicense\License;
 use Okay\Core\ServiceLocator;
 
 class Modules // TODO: подумать, мож сюда переедет CRUD Entity/Modules
@@ -21,10 +22,6 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
      * @var Module
      */
     private $module;
-    /**
-     * @var License
-     */
-    private $license;
 
     /**
      * @var EntityFactory
@@ -67,10 +64,11 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
     private $modulesParams = [];
     private $modulesModifications = ['front' => [], 'backend' => []];
     private $modificationsInit = false;
+    
+    private $plugins;
 
     public function __construct(
         EntityFactory $entityFactory,
-        License       $license,
         Module        $module,
         QueryFactory  $queryFactory,
         Database      $database,
@@ -79,7 +77,6 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
     ) {
         $this->entityFactory = $entityFactory;
         $this->module        = $module;
-        $this->license       = $license;
         $this->queryFactory  = $queryFactory;
         $this->db            = $database;
         $this->config        = $config;
@@ -179,7 +176,7 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
                 $this->modulesParams[$module->vendor . '/' . $module->module_name] = $moduleParams;
             }
             
-            $this->backendControllersList = array_merge($this->backendControllersList, $this->license->startModule($module->id, $module->vendor, $module->module_name));
+            $this->backendControllersList = array_merge($this->backendControllersList, $this->startModule($module->id, $module->vendor, $module->module_name));
         }
     }
 
@@ -508,6 +505,77 @@ class Modules // TODO: подумать, мож сюда переедет CRUD E
         }
 
         return $resultLabel;
+    }
+
+    /**
+     * @param $moduleId
+     * @param $vendor
+     * @param $moduleName
+     * @param $design
+     * @return array
+     * @throws \Exception
+     * Запуск определенного модуля, по большому счету сделано чтобы можно было контроллировать
+     * какие модули запускать (для лайта), та и чтобы нельзя было просто так удалить лицензию
+     */
+    public function startModule($moduleId, $vendor, $moduleName)
+    {
+
+        if (empty($this->module)) {
+            return [];
+        }
+
+        $container = OkayContainer::getInstance();
+
+        $backendControllersList = [];
+        $initClassName = $this->module->getInitClassName($vendor, $moduleName);
+        if (!empty($initClassName)) {
+            /** @var AbstractInit $initObject */
+            $initObject = new $initClassName((int)$moduleId, $vendor, $moduleName);
+            $initObject->init();
+            foreach ($initObject->getBackendControllers() as $controllerName) {
+                $controllerName = $vendor . '.' . $moduleName . '.' . $controllerName;
+                if (!in_array($controllerName, $backendControllersList)) {
+                    $backendControllersList[] = $controllerName;
+                }
+            }
+        }
+
+        $routes = $this->module->getRoutes($vendor, $moduleName);
+        if (self::isActiveModule($vendor, $moduleName) === false) {
+            foreach ($routes as &$route) {
+                $route['mock'] = true;
+            }
+        }
+
+        if (self::isActiveModule($vendor, $moduleName) === true) {
+
+            $services = $this->module->getServices($vendor, $moduleName);
+            $container->bindServices($services);
+
+            $plugins = $this->module->getSmartyPlugins($vendor, $moduleName);
+            $container->bindServices($plugins);
+
+            foreach($plugins as $name => $plugin) {
+                $this->plugins[$name] = $plugin;
+            }
+        }
+
+        Router::bindRoutes($routes);
+
+        return $backendControllersList;
+    }
+
+    public function registerSmartyPlugins()
+    {
+        if (!empty($this->plugins)) {
+            $SL = ServiceLocator::getInstance();
+            $design = $SL->getService(Design::class);
+            $module = $SL->getService(Module::class);
+            foreach ($this->plugins as $plugin) {
+                $p = $SL->getService($plugin['class']);
+                $p->register($design, $module);
+            }
+        }
     }
     
 }

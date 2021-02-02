@@ -85,6 +85,16 @@
                 <div class="toggle_body_wrap on fn_card">
                     <div class="row">
                         <div class="col-lg-6 col-md-6">
+                            <div class="heading_label">{$btr->filter_canonical_type|escape}</div>
+                            <div class="mb-1">
+                                <select name="filter_canonical_type" class="selectpicker form-control" data-live-search="false">
+                                    <option value="filter_page"{if $settings->filter_canonical_type == 'filter_page'} selected{/if}>{$btr->filter_canonical_type_filter|escape}</option>
+                                    <option value="category_page"{if $settings->filter_canonical_type == 'category_page'} selected{/if}>{$btr->filter_canonical_type_category|escape}</option>
+                                    <option value="none"{if $settings->filter_canonical_type == 'none'} selected{/if}>{$btr->filter_canonical_type_none|escape}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
                             <div class="heading_label">{$btr->max_filter_brands|escape}</div>
                             <div class="mb-1">
                                 <input name="max_filter_brands" class="form-control" type="text" value="{$settings->max_filter_brands|escape}" />

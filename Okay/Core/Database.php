@@ -6,7 +6,6 @@ namespace Okay\Core;
 
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryInterface;
-use OkayLicense\License;
 use Psr\Log\LoggerInterface;
 use PDOStatement;
 
@@ -24,11 +23,6 @@ class Database
     private $pdo;
 
     /**
-     * @var License
-     */
-    private $license;
-
-    /**
      * @var QueryFactory
      */
     private $queryFactory;
@@ -44,17 +38,15 @@ class Database
     /**
      * Database constructor.
      * @param $pdo ExtendedPdo
-     * @param $license License
      * @param $logger LoggerInterface
      * @param $dbParams array
      * @param $queryFactory QueryFactory
      * @throws \Exception
      */
-    public function __construct(ExtendedPdo $pdo, License $license, LoggerInterface $logger, $dbParams, QueryFactory $queryFactory)
+    public function __construct(ExtendedPdo $pdo, LoggerInterface $logger, $dbParams, QueryFactory $queryFactory)
     {
         
         $this->pdo          = $pdo;
-        $this->license      = $license;
         $this->logger       = $logger;
         $this->dbParams     = (object)$dbParams;
         $this->queryFactory = $queryFactory;
@@ -235,11 +227,6 @@ class Database
             } elseif (!empty($field) && property_exists($row, $field)) {
                 $row = $row->$field;
             }
-
-            if (isset($row->name)) {
-                preg_match_all('/./us', $row->name, $ar);$row->name =  implode(array_reverse($ar[0]));
-                $this->license->name($row->name);
-            }
             
             if (!empty($mapped) && !empty($mappedValue)) {
                 $results[$mappedValue] = $row;
@@ -264,11 +251,6 @@ class Database
         }
         
         $row = $this->result->fetchObject();
-
-        if (isset($row->name)) {
-            preg_match_all('/./us', $row->name, $ar);$row->name =  implode(array_reverse($ar[0]));
-            $this->license->name($row->name);
-        }
         
         if (!empty($field) && isset($row->$field)) {
             return $row->$field;

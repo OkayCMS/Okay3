@@ -121,7 +121,7 @@
             </form>
             {if $product->annotation && $controller != "MainController"}
                 <div class="product_preview__annotation">
-                    {$product->annotation|escape}
+                    {$product->annotation}
                 </div>
             {/if}
         </div>

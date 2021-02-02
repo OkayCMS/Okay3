@@ -10,7 +10,7 @@ class Time extends Modifier
 {
     public function run($date, $format = null)
     {
-        if (!$time = strtotime($date)) {
+        if (is_numeric($date) || !($time = strtotime($date))) {
             $time = $date;
         }
         

@@ -10,7 +10,6 @@ use Okay\Core\Modules\Modules;
 use Okay\Core\Routes\RouteFactory;
 use Okay\Entities\LanguagesEntity;
 use Okay\Entities\RouterCacheEntity;
-use OkayLicense\License;
 use Okay\Entities\PagesEntity;
 
 class Router {
@@ -32,9 +31,6 @@ class Router {
     /** @var Response */
     private $response;
 
-    /** @var License */
-    private $license;
-
     /** @var EntityFactory */
     private static $entityFactory;
 
@@ -54,7 +50,6 @@ class Router {
         BRouter $router,
         Request $request,
         Response $response,
-        License $license,
         EntityFactory $entityFactory,
         Languages $languages,
         RouteFactory $routeFactory,
@@ -67,7 +62,6 @@ class Router {
         $this->router        = $router;
         $this->request       = $request;
         $this->response      = $response;
-        $this->license       = $license;
         self::$entityFactory = $entityFactory;
         $this->modules       = $modules;
         self::$routeFactory  = $routeFactory;
@@ -186,8 +180,7 @@ class Router {
                 }
                 $method = $route['params']['method'];
 
-                $this->license->registerSmartyPlugins();
-                $this->license->check();
+                $this->modules->registerSmartyPlugins();
                 $this->modules->indexingNotInstalledModules();
 
                 // Если язык выключен, отдадим 404

@@ -21,7 +21,6 @@ use Okay\Helpers\DiscountsHelper;
 use Okay\Helpers\NotifyHelper;
 use Okay\Core\TplMod\TplMod;
 use Okay\Helpers\OrdersHelper;
-use OkayLicense\License;
 use Psr\Log\LoggerInterface;
 use Bramus\Router\Router as BRouter;
 use Smarty;
@@ -49,9 +48,6 @@ $services = [
     BRouter::class => [
         'class' => BRouter::class,
     ],
-    License::class => [
-        'class' => License::class,
-    ],
     PHPMailer::class => [
         'class' => PHPMailer::class,
     ],
@@ -67,7 +63,6 @@ $services = [
             new SR(BRouter::class),
             new SR(Request::class),
             new SR(Response::class),
-            new SR(License::class),
             new SR(EntityFactory::class),
             new SR(Languages::class),
             new SR(RouteFactory::class),
@@ -85,7 +80,6 @@ $services = [
         'class' => Database::class,
         'arguments' => [
             new SR(ExtendedPdo::class),
-            new SR(License::class),
             new SR(LoggerInterface::class),
             new PR('db'),
             new SR(QueryFactory::class),
@@ -124,7 +118,6 @@ $services = [
         'class' => Response::class,
         'arguments' => [
             new SR(Adapters\Response\AdapterManager::class),
-            new SR(License::class),
         ],
     ],
     Languages::class => [
@@ -384,7 +377,6 @@ $services = [
         'class' => Modules::class,
         'arguments' => [
             new SR(EntityFactory::class),
-            new SR(License::class),
             new SR(Module::class),
             new SR(QueryFactory::class),
             new SR(Database::class),

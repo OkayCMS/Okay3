@@ -99,11 +99,11 @@ class CategoryController extends AbstractController
             $_SESSION['sort'] = $currentSort;
         }
         if (!empty($_SESSION['sort'])) {
-            $currentSort = $sortProducts = $_SESSION['sort'];
+            $sortProducts = $_SESSION['sort'];
         } else {
             $sortProducts = 'position';
         }
-        $this->design->assign('sort', $currentSort);
+        $this->design->assign('sort', $sortProducts);
 
         // Свойства товаров
         if (!empty($categoryFeatures)) {
@@ -195,16 +195,29 @@ class CategoryController extends AbstractController
         //lastModify END
         
         if ($isSetCanonical = $filterHelper->isSetCanonical($filtersUrl)) {
-            $this->design->assign('set_canonical', $isSetCanonical);
-        } else {
-            $this->design->assign('set_canonical', true);
-            $this->design->assign('need_indexing', true);
-            $this->design->assign('canonical', Router::generateUrl('category', ['url' => $category->url], true));
+            $this->design->assign('noindex_nofollow', true);
+        } elseif (!empty($currentSort)) {
+            $this->design->assign('noindex_follow', true);
         }
+        
+        $canonical = Router::generateUrl('category', ['url' => $category->url], true);
+        
+        if ($isFilterPage || $currentPage > 1) {
+            if ($this->settings->get('filter_canonical_type') == 'none') {
+                $canonical = null;
+            } elseif ($this->settings->get('filter_canonical_type') == 'filter_page') {
+                $chpuUrl = $filterHelper->filterChpuUrl(['sort' => null]);
+                $chpuUrl = ltrim($chpuUrl, '/');
+                if (!empty($chpuUrl)) {
+                    $canonical = rtrim($canonical, '/') . '/' . $chpuUrl;
+                }
+            }
+        }
+        
+        $this->design->assign('canonical', $canonical);
         
         $relPrevNext = $this->design->fetch('products_rel_prev_next.tpl');
         $this->design->assign('rel_prev_next', $relPrevNext);
-        $this->design->assign('sort_canonical', $filterHelper->getSortCanonical());
 
         $this->response->setContent('products.tpl');
     }

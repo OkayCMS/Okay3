@@ -87,6 +87,8 @@ class OrderController extends AbstractController
         // Скидки
         $discounts = $ordersHelper->getDiscounts($order->id);
         $this->design->assign('discounts', $discounts);
+
+        $this->design->assign('noindex_nofollow', true);
         
         // Выводим заказ
         $this->response->setContent('order.tpl');

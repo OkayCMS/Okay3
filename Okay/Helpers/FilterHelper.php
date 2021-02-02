@@ -651,16 +651,6 @@ class FilterHelper
         return ExtenderFacade::execute(__METHOD__, $setCanonical, [$filtersUrl]);
     }
     
-    public function getSortCanonical()
-    {
-        $routeParams = $this->router->getCurrentRouteRequiredParams();
-        $baseUrl = $this->router->generateUrl($this->router->getCurrentRouteName(), $routeParams, true);
-        $chpuUrl = $this->filterChpuUrl(['sort'=>null]);
-        $baseUrl = trim($baseUrl, '/');
-        $chpuUrl = trim($chpuUrl, '/');
-        return ExtenderFacade::execute(__METHOD__, $baseUrl . (!empty($chpuUrl) ? '/' . $chpuUrl : ''), func_get_args());
-    }
-    
     public function changeLangUrls($filtersUrl)
     {
 
@@ -761,7 +751,9 @@ class FilterHelper
 
         $resultArray = ['brand'=>[],'features'=>[], 'filter'=>[], 'sort'=>null,'page'=>null];
         $uriArray = $this->parseFilterUrl($this->filtersUrl);
-        $currentFeaturesValues = $this->getCurrentCategoryFeatures($this->filtersUrl);
+        if (($currentFeaturesValues = $this->getCurrentCategoryFeatures($this->filtersUrl)) === false) {
+            return ExtenderFacade::execute(__METHOD__, false, func_get_args());
+        }
         $categoryFeatures = $this->getCategoryFeatures();
 
         $resultArray = $this->getCurrentUrlParams($uriArray, $currentFeaturesValues, $resultArray);
@@ -783,9 +775,6 @@ class FilterHelper
     {
         if (!empty($this->filtersUrl)) {
             foreach ($uriArray as $k => $v) {
-                if (strpos('-', $v) === false) {
-                    continue;
-                }
                 
                 list($paramName, $paramValues) = explode('-', $v);
 

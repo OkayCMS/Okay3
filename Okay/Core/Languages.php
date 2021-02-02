@@ -150,9 +150,9 @@ class Languages
                 if (isset($data->$f)) {
                     $description->$f = $data->$f;
                 }
-                if ($this->mainLanguage->id != $this->getLangId() && $clear === true) {
+                /*if ($this->mainLanguage->id != $this->getLangId() && $clear === true) {
                     unset($data->$f);
-                }
+                }*/
             }
             $result = new \stdClass();
             $result->description = $description;

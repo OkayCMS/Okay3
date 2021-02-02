@@ -1,8 +1,5 @@
 {* Post page *}
 
-{* The canonical address of the page *}
-{$canonical="{url_generator route=$route_name url=$post->url absolute=1}" scope=global}
-
 <div class="d-lg-flex align-items-lg-start justify-content-lg-between flex-lg-row-reverse">
     {* Sidebar with post *}
     <div class="fn_mobile_toogle sidebar sidebar--right position_sticky d-lg-flex flex-lg-column">

@@ -870,6 +870,7 @@ textarea:focus,
 .form__textarea.error,
 .form__input.error {
     border-color: rgb(231, 71, 71);
+    font-size: 14px;
 }
 input::-moz-placeholder,
 input:-ms-input-placeholder,

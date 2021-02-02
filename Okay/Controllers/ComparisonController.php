@@ -5,6 +5,7 @@ namespace Okay\Controllers;
 
 
 use Okay\Core\Comparison;
+use Okay\Core\Router;
 use Okay\Helpers\ComparisonHelper;
 
 class ComparisonController extends AbstractController
@@ -12,6 +13,7 @@ class ComparisonController extends AbstractController
     
     public function render()
     {
+        $this->design->assign('canonical', Router::generateUrl('comparison', [], true));
         $this->response->setContent('comparison.tpl');
     }
     

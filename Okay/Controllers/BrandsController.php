@@ -4,6 +4,7 @@
 namespace Okay\Controllers;
 
 
+use Okay\Core\Router;
 use Okay\Helpers\BrandsHelper;
 
 class BrandsController extends AbstractController
@@ -21,6 +22,8 @@ class BrandsController extends AbstractController
         /*Выбираем все бренды*/
         $brands = $brandsHelper->getList($filter, $currentSort);
         $this->design->assign('brands', $brands);
+
+        $this->design->assign('canonical', Router::generateUrl('brands', [], true));
 
         $this->response->setContent('brands.tpl');
     }

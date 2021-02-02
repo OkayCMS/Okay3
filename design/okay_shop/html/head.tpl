@@ -115,21 +115,9 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
-    {if $controller == 'CategoryController' || $controller == 'BrandController' || $controller == 'ProductsController'}
-        {if $set_canonical && !$need_indexing}
-            <meta name="robots" content="noindex,nofollow">
-        {elseif $sort}
-            <meta name="robots" content="noindex,follow">
-        {elseif isset($smarty.get.keyword)}
-            <meta name="robots" content="noindex,follow">
-        {else}
-            <meta name="robots" content="index,follow">
-        {/if}
-    {elseif $controller == "RegisterController" || $controller == "LoginController" || $controller == "UserController" || $controller == "CartController"}
-        <meta name="robots" content="noindex,follow">
-    {elseif $controller == "OrderController"}
+    {if $noindex_nofollow}
         <meta name="robots" content="noindex,nofollow">
-    {elseif $controller == "CartController"}
+    {elseif $noindex_follow}
         <meta name="robots" content="noindex,follow">
     {else}
         <meta name="robots" content="index,follow">
@@ -180,7 +168,7 @@
         <meta name="twitter:label1" content="{$product->variant->price|convert:null:false} {$currency->code|escape}">
         <meta name="twitter:data2" content="{$lang->meta_organization}">
         <meta name="twitter:label2" content="{$settings->site_name|escape}">
-    {elseif $controller == "CategoryController" || $controller == "ProductsController"} 
+    {elseif $controller == "CategoryController"} 
         <meta property="og:title" content="{$h1|escape}">
         <meta property="og:type" content="website">
         <meta property="og:url" content="{$canonical}">
@@ -229,8 +217,6 @@
     {* The canonical address of the page *}
     {if isset($canonical)}
         <link rel="canonical" href="{$canonical|escape}">
-    {elseif $sort}
-        <link rel="canonical" href="{$sort_canonical|escape}">
     {/if}
 
     {* Language attribute *}

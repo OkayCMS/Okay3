@@ -1,7 +1,5 @@
 {* The brand page template *}
 
-{* The canonical address of the page *}
-{$canonical="{url_generator route='brands' absolute=1}" scope=global}
 <div class="block">
 	{* The page heading *}
 	<div class="block__header block__header--boxed block__header--border">

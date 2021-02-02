@@ -91,7 +91,7 @@ trait CRUD
         $this->select->distinct(true);
         $this->select->cols($this->getAllFields());
         
-        $this->db->query($this->select, $this->debug);
+        $this->db->query($this->customChangeSelect($this->select), $this->debug);
         
         // Получаем результирующие поля сущности
         $resultFields = $this->getAllFieldsWithoutAlias();
@@ -103,6 +103,11 @@ trait CRUD
 
         $results = $this->getResults($field, $this->mappedBy);
         return ExtenderFacade::execute([static::class, __FUNCTION__], $results, func_get_args());
+    }
+
+    public function customChangeSelect(Select $select)
+    {
+        return ExtenderFacade::execute([static::class, __FUNCTION__], $select, func_get_args());
     }
 
     /**
@@ -120,7 +125,7 @@ trait CRUD
         $this->select->resetGroupBy();
         $this->select->resetOrderBy();
 
-        $this->db->query($this->select, $this->debug);
+        $this->db->query($this->customChangeSelect($this->select), $this->debug);
 
         $count = $this->getResult('count');
         return ExtenderFacade::execute([static::class, __FUNCTION__], $count, func_get_args());
