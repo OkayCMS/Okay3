@@ -117,7 +117,7 @@
                         <span class="fn_switch_quickview menu_switch">
                             <span class="menu_hamburger"></span>
                         </span>
-                    <a class="logo_box">
+                    <a href="index.php?controller=ProductsAdmin" class="logo_box">
                         <img src="design/images/logo_title.png" alt="OkayCMS"/>
                     </a>
                 </div>
@@ -229,7 +229,7 @@
         <div class="sidebar_header">
             <a href="javascript:;" id="fix_logo" class="hidden-lg-down"></a>
 
-            <a class="logo_box">
+            <a href="index.php?controller=ProductsAdmin" class="logo_box">
                 <img src="design/images/logo_title.png" alt="OkayCMS"/>
             </a>
             {if $is_mobile === false && $is_tablet === false}
