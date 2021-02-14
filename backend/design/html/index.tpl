@@ -63,16 +63,16 @@
     {/literal}
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300i,700|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&subset=cyrillic,cyrillic-ext,latin-ext" rel="stylesheet" type="text/css">
-    
+
     {$ok_head}
-    
+
     <link rel="icon" href="design/images/favicon.png" type="image/x-icon" />
 
     {if in_array($smarty.get.controller, array("OrdersAdmin", "PostAdmin", "ReportStatsAdmin", "CouponsAdmin", "CategoryStatsAdmin"))}
         {js file="jquery/datepicker/jquery.ui.datepicker-{$manager->lang}.js" admin=true}
         {js file="jquery/datepicker/jquery.datepicker.extension.range.min.js" admin=true}
     {/if}
-    
+
     <!-- Google Tag Manager -->
     {if $settings->gather_enabled}
         {literal}
@@ -461,7 +461,7 @@
             }
 
         {/if}
-        
+
         /* Initializing the scrollbar */
         if($('.scrollbar-inner').size()>0){
             $('.scrollbar-inner').scrollbar({
@@ -497,7 +497,7 @@
 
             if($('form.fn_fast_button').size()>0){
             {literal}
-            
+
             // Связка селектов массовых действий
             $(document).on('change', '.fn_action_block:not(.fn_fast_action_block) select', function(e, trigger) {
                 if (!trigger) {
@@ -506,7 +506,7 @@
                     $('.fn_fast_save select[name="' + name + '"]').val(selected).trigger('change', {trigger: true});
                 }
             });
-            
+
             $(document).on('change', '.fn_fast_save select', function(e, trigger) {
                 if (!trigger) {
                     var name = $(this).attr('name'),
@@ -515,7 +515,7 @@
                 }
             });
             {/literal}
-            
+
             if ($('.fn_action_block').size()>0) {
                 var action_block = $('.okay_list_option').clone(true);
                 $('.fn_fast_action_block .action').html(action_block);
@@ -524,7 +524,7 @@
                     $('.fn_fast_action_block .additional_params').html(additional_params);
                 }
             }
-            
+
             $('input,textarea,select, .dropdown-toggle, .fn_sort_item, .fn_category_item').bind('keyup change dragover',function(){
                $('.fn_fast_save').show();
             });
@@ -639,7 +639,7 @@
                     save_menu();
                 }
             });
-    
+
             if($(".fn_sort_menu_item").size()>0) {
                 $(".fn_sort_menu_item").each(function() {
                     Sortable.create(this, {
@@ -655,7 +655,7 @@
                     });
                 });
             }
-    
+
             function save_menu() {
                 $.ajax({
                     type: "POST",
@@ -680,7 +680,7 @@
                     dragClass: "sortable-drag",  // Class name for the dragging item
                     scrollSensitivity: 100, // px, how near the mouse must be to an edge to start scrolling.
                     scrollSpeed: 10, // px
-                    
+
                     // Changed sorting within list
                     onUpdate: function (evt) {
                         if ($(".product_images_list").size() > 0) {
@@ -697,10 +697,10 @@
         }
 
         if($(".sort_extended").size()>0) {
-            
+
             /*Явно указываем высоту списка, иначе когда скрипт удаляет элемент и ставит на его место заглушку, страница подпрыгивает*/
             $(".fn_sort_list").css('min-height', $(".fn_sort_list").outerHeight());
-            
+
             $(".sort_extended").sortable({
                 items: ".fn_sort_item",
                 tolerance: "pointer",
@@ -744,7 +744,7 @@
                 }
             });
         }
-        
+
         $(".fn_pagination a.droppable").droppable({
             activeClass: "drop_active",
             hoverClass: "drop_hover",
@@ -757,7 +757,7 @@
                 return false;
             }
         });
-        
+
         /* Call an ajax entity update */
         if($(".fn_ajax_action").size()>0){
             $(document).on("click",".fn_ajax_action",function () {
@@ -979,7 +979,7 @@
 
         function generate_meta_keywords() {
             let result = $('input[name="name"]').val();
-            
+
             if ($(".fn_meta_brand").size() > 0) {
                 let brand = $('select[name="brand_id"] option:selected').data('brand_name');
                 if (typeof(brand) == 'string' && brand != '')
@@ -1065,7 +1065,7 @@
                 cur_nav.children().removeClass('selected');
                 cur_nav.children('[href="#{$smarty.get.active_tab|escape}"]').addClass('selected');
             {/if}
-            
+
             if (cur_nav.children('.selected').size() > 0) {
                 cur_tab = $(cur_nav.children('.selected').attr("href"));
             } else {
