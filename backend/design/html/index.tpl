@@ -343,7 +343,7 @@
                 </div>
                 <footer id="footer" class="">
                     <div class="col-md-12 font_12 text_white">
-                        <a href="https://okay-cms.com">OkayCMS </a> &copy; {$smarty.now|date_format:"%Y"} v.{$config->version} | {$btr->index_logged|escape}  {$manager->login|escape}
+                        <a href="https://okay-cms.com">OkayCMS </a> &copy; {$smarty.now|date_format:"%Y"} v.{$config->version} | {$btr->index_logged|escape} <a href="index.php?controller=ManagerAdmin&id={$manager->id}">{$manager->login|escape}</a> (<a href="{$rootUrl}?logout">{$btr->index_exit|escape}</a>)
                         <div class="float-md-right">
                             <a href='index.php?controller=LicenseAdmin' class="text_white">{$btr->license_text|escape} </a>
                             ,
